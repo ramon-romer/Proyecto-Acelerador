@@ -1,3 +1,3 @@
 # Proyecto-Acelerador
 Proyecto Acelerador CEU
-1. Primera decición Booststarp
+1. Primera decisión Booststarp
