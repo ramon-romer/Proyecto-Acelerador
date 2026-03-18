@@ -12,6 +12,7 @@ Proyecto Acelerador CEU
      - $id_profesor ==> Integer(10) se guarda el id del profesor
      - $nombre ==> Varchar(100) se guarda el nombre del profesor
      - $apellidos ==> Varchar(200) se guarda los apellidos del profesor
+     - $password ==> Varchar(200) se guarda la contraseña del profesor encriptada
      - $dni ==> Varchar(9) se guarda el DNI del profesor
      - $doi ==> Varchar(15) se guarda el DOI del profesor
      - $telefono ==> Integer(9) se guarda el telefono del profesor
@@ -23,4 +24,3 @@ Proyecto Acelerador CEU
    - Tabla Usuario (Login)
      - $id_usuario ==> Integer(10) se guarda el id del usuario
      - $correo ==> Varchar(100) se guarda el correo del usuario
-     - $password ==> Varchar(200) se guarda la contraseña del profesor encriptada
