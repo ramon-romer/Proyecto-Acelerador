@@ -1,0 +1,2 @@
+<?php
+// Validar publicaciones
