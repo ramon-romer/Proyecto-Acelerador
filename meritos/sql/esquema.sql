@@ -31,6 +31,7 @@ CREATE TABLE `tbl_profesor` (
   `id_profesor` int(10) NOT NULL,
   `nombre` varchar(100) DEFAULT NULL,
   `apellidos` varchar(200) DEFAULT NULL,
+  `password` varchar(255) DEFAULT NULL,
   `DNI` varchar(9) DEFAULT NULL,
   `DOI` varchar(15) DEFAULT NULL,
   `telefono` int(9) DEFAULT NULL,
@@ -49,7 +50,6 @@ CREATE TABLE `tbl_profesor` (
 CREATE TABLE `tbl_usuario` (
   `id_usuario` int(10) NOT NULL,
   `correo` varchar(255) DEFAULT NULL,
-  `password` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=armscii8 COLLATE=armscii8_bin;
 
 --
