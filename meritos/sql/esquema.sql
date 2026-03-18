@@ -36,7 +36,8 @@ CREATE TABLE `tbl_profesor` (
   `telefono` int(9) DEFAULT NULL,
   `facultad` varchar(100) DEFAULT NULL,
   `departamento` varchar(100) DEFAULT NULL,
-  `numero_personal` varchar(10) DEFAULT NULL
+  `numero_personal` varchar(10) DEFAULT NULL,
+  `correo` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=armscii8 COLLATE=armscii8_bin;
 
 -- --------------------------------------------------------
