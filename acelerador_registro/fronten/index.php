@@ -29,90 +29,95 @@ error_reporting(0);
     <div class="contenedor">
       <div class="formulario">
         <form method="POST">
-          <div class="item1">
-            <div class="mb-3">
-              <label for="exampleInputEmail1" class="form-label">Coreo electronico</label>
-              <div class="cuerpo">
-                <input type="email" class="form-control" id="exampleInputEmail1" name="correo"
-                  aria-describedby="emailHelp">
+          <div class="conte">
+            <div class="item1">
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">Coreo electronico</label>
+                <div class="cuerpo">
+                  <input type="email" class="form-control" id="exampleInputEmail1" name="correo"
+                    aria-describedby="emailHelp">
+
+                </div>
+              </div>
+              <div class="mb-3" id="contraseña">
+                <label for="exampleInputPassword1" class="form-label">Nombre</label>
+                <div class="cuerpo">
+                  <input type="text" class="form-control" id="nombre" name="nombre">
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">Apellidos</label>
+                <div class="cuerpo">
+                  <input type="text" class="form-control" id="apellidos" name="apellidos" aria-describedby="emailHelp">
+
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">contraseña</label>
+                <div class="cuerpo">
+                  <input type="password" class="form-control" id="exampleInputEmail1" name="pdw"
+                    aria-describedby="emailHelp">
+
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">repetir contraseña</label>
+                <div class="cuerpo">
+                  <input type="password" class="form-control" id="exampleInputEmail1" name="pdw2"
+                    aria-describedby="emailHelp">
+
+                </div>
 
               </div>
             </div>
-            <div class="mb-3" id="contraseña">
-              <label for="exampleInputPassword1" class="form-label">Nombre</label>
-              <div class="cuerpo">
-                <input type="text" class="form-control" id="nombre" name="nombre">
-              </div>
-            </div>
-            <div class="mb-3">
-              <label for="exampleInputEmail1" class="form-label">Apellidos</label>
-              <div class="cuerpo">
-                <input type="text" class="form-control" id="apellidos" name="apellidos" aria-describedby="emailHelp">
+            <div class="item2">
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">DNI</label>
+                <div class="cuerpo">
+                  <input type="text" class="form-control" id="exampleInputEmail1" name="dni"
+                    aria-describedby="emailHelp">
+
+                </div>
 
               </div>
-            </div>
-            <div class="mb-3">
-              <label for="exampleInputEmail1" class="form-label">contraseña</label>
-              <div class="cuerpo">
-                <input type="password" class="form-control" id="exampleInputEmail1" name="pdw"
-                  aria-describedby="emailHelp">
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">DOI</label>
+                <div class="cuerpo">
+                  <input type="text" class="form-control" id="exampleInputEmail1" name="doi"
+                    aria-describedby="emailHelp">
+
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">Telefono</label>
+                <div class="cuerpo">
+                  <input type="number" class="form-control" id="exampleInputEmail1" name="telefono"
+                    aria-describedby="emailHelp">
+
+                </div>
 
               </div>
-            </div>
-            <div class="mb-3">
-              <label for="exampleInputEmail1" class="form-label">repetir contraseña</label>
-              <div class="cuerpo">
-                <input type="password" class="form-control" id="exampleInputEmail1" name="pdw2"
-                  aria-describedby="emailHelp">
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">facultad</label>
+                <div class="cuerpo">
+                  <input type="text" class="form-control" id="exampleInputEmail1" name="facultad"
+                    aria-describedby="emailHelp">
+
+                </div>
 
               </div>
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">Numero personal</label>
+                <div class="cuerpo">
+                  <input type="number" class="form-control" id="exampleInputEmail1" name="numerop"
+                    aria-describedby="emailHelp">
 
+                </div>
+
+              </div>
             </div>
           </div>
-          <div class="item2">
-            <div class="mb-3">
-              <label for="exampleInputEmail1" class="form-label">DNI</label>
-              <div class="cuerpo">
-                <input type="text" class="form-control" id="exampleInputEmail1" name="dni" aria-describedby="emailHelp">
 
-              </div>
-
-            </div>
-            <div class="mb-3">
-              <label for="exampleInputEmail1" class="form-label">DOI</label>
-              <div class="cuerpo">
-                <input type="text" class="form-control" id="exampleInputEmail1" name="doi" aria-describedby="emailHelp">
-
-              </div>
-            </div>
-            <div class="mb-3">
-              <label for="exampleInputEmail1" class="form-label">Telefono</label>
-              <div class="cuerpo">
-                <input type="number" class="form-control" id="exampleInputEmail1" name="telefono"
-                  aria-describedby="emailHelp">
-
-              </div>
-
-            </div>
-            <div class="mb-3">
-              <label for="exampleInputEmail1" class="form-label">facultad</label>
-              <div class="cuerpo">
-                <input type="text" class="form-control" id="exampleInputEmail1" name="facultad"
-                  aria-describedby="emailHelp">
-
-              </div>
-
-            </div>
-            <div class="mb-3">
-              <label for="exampleInputEmail1" class="form-label">Numero personal</label>
-              <div class="cuerpo">
-                <input type="number" class="form-control" id="exampleInputEmail1" name="numerop"
-                  aria-describedby="emailHelp">
-
-              </div>
-
-            </div>
-          </div>
 
           <div class="boton">
             <button type="submit" name="btn" class="btn btn-primary">Ingresar</button>
@@ -164,7 +169,7 @@ error_reporting(0);
         </div>
       </div>
       <div class="piepag">
-        <p>&copy; CEU Lab. Todos los derechos reservados.</p>
+        <p>&copy; UF3. Todos los derechos reservados.</p>
       </div>
     </div>
   </footer>

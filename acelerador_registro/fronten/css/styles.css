@@ -3,7 +3,14 @@
     margin: auto;
     background-color: rgba(20, 88, 204, 0.5);
     border-radius: 20px;
-    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+}
+
+.conte{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
 }
 
 .contenedor {
@@ -56,6 +63,9 @@
 }
 
 
+
+
+
 .check {
     width: 64%;
     gap: 20px;
@@ -95,7 +105,7 @@ body {
 form {
     width: 100%;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     padding: 20px;
 }
 
@@ -103,11 +113,6 @@ form {
     height: 200px;
     width: 200px;
 }
-
-
-
-
-
 
 .mipie {
     background-color: rgba(20, 88, 204, 0.5);

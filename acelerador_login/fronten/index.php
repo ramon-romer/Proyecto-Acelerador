@@ -55,7 +55,11 @@ error_reporting(0);
         <div class="boton">
           <button type="submit" name="btn" class="btn btn-primary">Ingresar</button>
         </div>
-
+        <div class="textoenlace" style="display: flex; justify-content: center; align-items: center;color: lightsgray;">
+          <small><a href="../../acelerador_registro/fronten/index.php" target="_blank" style="color:lightgray">
+              <p>¿No tienes perfil?Registrate!!</p>
+            </a></small>
+        </div>
       </form>
     </div>
   </main>
@@ -100,7 +104,7 @@ error_reporting(0);
         </div>
       </div>
       <div class="piepag">
-        <p>&copy; CEU Lab. Todos los derechos reservados.</p>
+        <p>&copy; UF3. Todos los derechos reservados.</p>
       </div>
     </div>
   </footer>
