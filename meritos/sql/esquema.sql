@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 17-03-2026 a las 12:19:26
+-- Tiempo de generación: 19-03-2026 a las 12:39:46
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -20,6 +20,50 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `acelerador`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tbl_convocatoria`
+--
+
+CREATE TABLE `tbl_convocatoria` (
+  `id_convocatoria` int(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=armscii8 COLLATE=armscii8_bin;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tbl_grupo`
+--
+
+CREATE TABLE `tbl_grupo` (
+  `id_grupo` int(10) NOT NULL,
+  `nombre` varchar(100) DEFAULT NULL,
+  `id_tutor` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=armscii8 COLLATE=armscii8_bin;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tbl_grupo_profesor`
+--
+
+CREATE TABLE `tbl_grupo_profesor` (
+  `id` int(10) NOT NULL,
+  `id_grupo` int(10) NOT NULL,
+  `id_profesor` int(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=armscii8 COLLATE=armscii8_bin;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tbl_merito`
+--
+
+CREATE TABLE `tbl_merito` (
+  `id_merito` int(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=armscii8 COLLATE=armscii8_bin;
 
 -- --------------------------------------------------------
 
@@ -45,12 +89,23 @@ CREATE TABLE `tbl_profesor` (
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `tbl_publicacion`
+--
+
+CREATE TABLE `tbl_publicacion` (
+  `id_publicación` int(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=armscii8 COLLATE=armscii8_bin;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `tbl_usuario`
 --
 
 CREATE TABLE `tbl_usuario` (
   `id_usuario` int(10) NOT NULL,
   `correo` varchar(255) DEFAULT NULL,
+  `password` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=armscii8 COLLATE=armscii8_bin;
 
 --
@@ -58,10 +113,36 @@ CREATE TABLE `tbl_usuario` (
 --
 
 --
+-- Indices de la tabla `tbl_convocatoria`
+--
+ALTER TABLE `tbl_convocatoria`
+  ADD PRIMARY KEY (`id_convocatoria`);
+
+--
+-- Indices de la tabla `tbl_grupo`
+--
+ALTER TABLE `tbl_grupo`
+  ADD PRIMARY KEY (`id_grupo`);
+
+--
+-- Indices de la tabla `tbl_grupo_profesor`
+--
+ALTER TABLE `tbl_grupo_profesor`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `id_grupo` (`id_grupo`),
+  ADD KEY `fk_profesor` (`id_profesor`);
+
+--
 -- Indices de la tabla `tbl_profesor`
 --
 ALTER TABLE `tbl_profesor`
   ADD PRIMARY KEY (`id_profesor`);
+
+--
+-- Indices de la tabla `tbl_publicacion`
+--
+ALTER TABLE `tbl_publicacion`
+  ADD PRIMARY KEY (`id_publicación`);
 
 --
 -- Indices de la tabla `tbl_usuario`
@@ -74,10 +155,45 @@ ALTER TABLE `tbl_usuario`
 --
 
 --
+-- AUTO_INCREMENT de la tabla `tbl_convocatoria`
+--
+ALTER TABLE `tbl_convocatoria`
+  MODIFY `id_convocatoria` int(10) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `tbl_grupo`
+--
+ALTER TABLE `tbl_grupo`
+  MODIFY `id_grupo` int(10) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `tbl_grupo_profesor`
+--
+ALTER TABLE `tbl_grupo_profesor`
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de la tabla `tbl_profesor`
 --
 ALTER TABLE `tbl_profesor`
   MODIFY `id_profesor` int(10) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `tbl_publicacion`
+--
+ALTER TABLE `tbl_publicacion`
+  MODIFY `id_publicación` int(10) NOT NULL AUTO_INCREMENT;
+
+--
+-- Restricciones para tablas volcadas
+--
+
+--
+-- Filtros para la tabla `tbl_grupo_profesor`
+--
+ALTER TABLE `tbl_grupo_profesor`
+  ADD CONSTRAINT `fk_grupo` FOREIGN KEY (`id_grupo`) REFERENCES `tbl_grupo` (`id_grupo`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_profesor` FOREIGN KEY (`id_profesor`) REFERENCES `tbl_profesor` (`id_profesor`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
