@@ -1,0 +1,2 @@
+<?php
+// Cierre de sesión
