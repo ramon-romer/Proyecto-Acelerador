@@ -26,41 +26,36 @@ error_reporting(0);
   </header>
   <main>
     <div class="formulario">
-      <form method="POST">
-        <div class="mb-3">
-          <label for="exampleInputEmail1" class="form-label">Coreo electronico</label>
-          <div class="cuerpo">
-            <input type="email" class="form-control" id="exampleInputEmail1" name="usuario"
-              aria-describedby="emailHelp">
-            
-          </div>
+      <div class="listas">
+        <div class="lista1">
+          <ul>
+            <li>Correo electronico: </li>
+            <li>Nombre: </li>
+            <li>Apellidos: </li>
+            <li>DNI: </li>
+          </ul>
+        </div>
+        <div class="lista2">
+          <ul>
+            <li>DOI: </li>
+            <li>Telefono: </li>
+            <li>Facultad: </li>
+            <li>Numero personal: </li>
+          </ul>
 
         </div>
-        <div class="mb-3" id="contraseña">
-          <label for="exampleInputPassword1" class="form-label">Contraseña</label>
-          <div class="cuerpo">
-            <input type="password" name="pwd" class="form-control" id="exampleInputPassword1">
+      </div>
 
-          </div>
 
-        </div>
-        <div class="check" id="check">
-          <input type="checkbox" class="form-check-input" id="exampleCheck1">
-          <label class="form-check-label" for="exampleCheck1" id="check2">Confirmo que acepto los términos
-            del
-            contrato de
-            la
-            cuenta y que estoy de acuerdo con la politica de privacidad.</label>
-        </div>
-        <div class="boton">
-          <button type="submit" name="btn" class="btn btn-primary">Ingresar</button>
-        </div>
-        <div class="textoenlace" style="display: flex; justify-content: center; align-items: center;color: lightsgray;">
-          <small><a href="../../acelerador_registro/fronten/index.php" target="_blank" style="color:lightgray">
-              <p>¿No tienes perfil?Registrate!!</p>
-            </a></small>
-        </div>
-      </form>
+      <div class="boton">
+        <button type="submit" name="btn" class="btn btn-primary">Ingresar</button>
+      </div>
+      <div class="textoenlace" style="display: flex; justify-content: center; align-items: center;color: lightsgray;">
+        <small><a href="../../acelerador_registro/fronten/index.php" target="_blank" style="color:lightgray">
+            <p>¿Falta algun dato? Haznoslo saber!!!</p>
+          </a></small>
+      </div>
+
     </div>
   </main>
   <footer>

@@ -69,6 +69,14 @@ error_reporting(0);
                 </div>
 
               </div>
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">Departamento</label>
+                <div class="cuerpo">
+                  <input type="text" class="form-control" id="departamento" name="departamento"
+                    aria-describedby="emailHelp">
+
+                </div>
+              </div>
             </div>
             <div class="item2">
               <div class="mb-3">
@@ -78,7 +86,6 @@ error_reporting(0);
                     aria-describedby="emailHelp">
 
                 </div>
-
               </div>
               <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">DOI</label>
@@ -112,6 +119,16 @@ error_reporting(0);
                   <input type="number" class="form-control" id="exampleInputEmail1" name="numerop"
                     aria-describedby="emailHelp">
 
+                </div>
+
+              </div>
+              <div class="mb-3">
+                <label for="select" class="form-label">Perfil</label>
+                <div class="cuerpo">
+                  <select id="select" class="form-select" name="perfil">
+                    <option>Profesor</option>
+                    <option>Tutor</option>
+                  </select>
                 </div>
 
               </div>
@@ -169,7 +186,7 @@ error_reporting(0);
         </div>
       </div>
       <div class="piepag">
-        <p>&copy; UF3. Todos los derechos reservados.</p>
+        <p>&copy; CEU Lab. Todos los derechos reservados.</p>
       </div>
     </div>
   </footer>
@@ -196,7 +213,9 @@ $dni = $_POST["dni"];
 $doi = $_POST["doi"];
 $telefono = $_POST["telefono"];
 $facultad = $_POST["facultad"];
+$departamento = $_POST["departamento"];
 $numerop = $_POST["numerop"];
+$perfil = $_POST["perfil"];
 
 
 //Para iniciar sesión
@@ -205,14 +224,22 @@ if (isset($_POST["btn"])) {
 
 
   if ($pass == $pass2) {
-    $queryusuario = "INSERT INTO tbl_profesor (nombre,apellidos,DNI,DOI,telefono,facultad,departamento,numero_personal,correo) 
-    VALUES ('$nombre','$apellidos','$pass','$dni','$doi',$telefono,'$facultad',$numerop,'$correo')";
-    $conect = mysqli_query($conn, $queryusuario);
-    if ($connect) {
-      echo "Registro completado";
+    // 1. Preparamos la consulta
+    $queryusuario = "INSERT INTO tbl_profesor (nombre, apellidos, password, DNI, DOI, telefono, perfil, facultad, departamento, numero_personal, correo) 
+    VALUES ('$nombre', '$apellidos', '$pass', '$dni', '$doi', '$telefono', '$perfil', '$facultad', '$departamento', '$numerop', '$correo')";
+
+    // 2. Ejecutamos la consulta (Guardamos el resultado en $ejecutar)
+    $ejecutar = mysqli_query($conn, $queryusuario);
+
+    // 3. Comprobamos si la ejecución fue exitosa
+    if ($ejecutar) {
+      echo "Registro completado con éxito";
+    } else {
+      // Esto te ayudará a saber qué falló si no funciona
+      echo "Error en el registro: " . mysqli_error($conn);
     }
-
-
+  } else {
+    echo "Las contraseñas no coinciden";
   }
 
 
