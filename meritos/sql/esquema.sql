@@ -35,10 +35,11 @@ CREATE TABLE `tbl_profesor` (
   `DNI` varchar(9) DEFAULT NULL,
   `DOI` varchar(15) DEFAULT NULL,
   `telefono` int(9) DEFAULT NULL,
+  `perfil` varchar(100) DEFAULT NULL,
   `facultad` varchar(100) DEFAULT NULL,
   `departamento` varchar(100) DEFAULT NULL,
-  `numero_personal` varchar(10) DEFAULT NULL,
-  `correo` varchar(100) DEFAULT NULL
+  `numero_personal` varchar(10) DEFAULT NULL
+  `correo` varchar(100) DEFAULT NULL,
 ) ENGINE=InnoDB DEFAULT CHARSET=armscii8 COLLATE=armscii8_bin;
 
 -- --------------------------------------------------------
