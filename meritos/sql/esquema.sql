@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 19-03-2026 a las 12:39:46
+-- Tiempo de generación: 19-03-2026 a las 12:47:31
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -40,7 +40,7 @@ CREATE TABLE `tbl_convocatoria` (
 CREATE TABLE `tbl_grupo` (
   `id_grupo` int(10) NOT NULL,
   `nombre` varchar(100) DEFAULT NULL,
-  `id_tutor` int(11) NOT NULL
+  `id_tutor` int(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=armscii8 COLLATE=armscii8_bin;
 
 -- --------------------------------------------------------
@@ -122,7 +122,8 @@ ALTER TABLE `tbl_convocatoria`
 -- Indices de la tabla `tbl_grupo`
 --
 ALTER TABLE `tbl_grupo`
-  ADD PRIMARY KEY (`id_grupo`);
+  ADD PRIMARY KEY (`id_grupo`),
+  ADD KEY `fk_tutor` (`id_tutor`);
 
 --
 -- Indices de la tabla `tbl_grupo_profesor`
@@ -187,6 +188,12 @@ ALTER TABLE `tbl_publicacion`
 --
 -- Restricciones para tablas volcadas
 --
+
+--
+-- Filtros para la tabla `tbl_grupo`
+--
+ALTER TABLE `tbl_grupo`
+  ADD CONSTRAINT `fk_tutor` FOREIGN KEY (`id_tutor`) REFERENCES `tbl_profesor` (`id_profesor`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `tbl_grupo_profesor`
