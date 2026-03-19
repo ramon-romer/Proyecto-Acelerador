@@ -9,7 +9,7 @@ Proyecto Acelerador CEU
      Ejemplo: ACC-BAC-FOR-01 ==> acelerador-backend-formulario-01
 3. Variables para las tablas (todas las variables tiene que empezar con un $ y debe de seguir este orden).
    - Tabla Profesor (Login)
-     - $id_profesor ==> Integer(10) se guarda el id del profesor
+     - $id_profesor ==> Integer(10) se guarda el id del profesor, not null
      - $nombre ==> Varchar(100) se guarda el nombre del profesor
      - $apellidos ==> Varchar(200) se guarda los apellidos del profesor
      - $password ==> Varchar(200) se guarda la contraseña del profesor encriptada
@@ -22,5 +22,20 @@ Proyecto Acelerador CEU
      - $correo ==> Varchar(10) se guarda el correo del profesor
        
    - Tabla Usuario (Login)
-     - $id_usuario ==> Integer(10) se guarda el id del usuario
+     - $id_usuario ==> Integer(10) se guarda el id del usuario, not null
      - $correo ==> Varchar(100) se guarda el correo del usuario
+   - Tabla Convocatoria
+     - $id_convocatoria ==> Integer(10) se guarda el id de la convocatoria, not null
+   - Tabla Grupo
+     - $id_grupo ==> Integer(10) se guarda el id del grupo
+     - $nombre ==> Varchar(100) se guarda el nombre del grupo
+     - $id_tutor ==> Integer(10) se guarda el id del tutor, FK de la tabla profesor
+   - Tabla Grupo_Profesor
+     - $id ==> Integer(10) se guarda el id de la tabla intermedia, not null
+     - $id_grupo ==> Integer(10) se guarda el id del grupo, not null FK
+     - $id_profesor ==> Integer(10) se guarda el id del profesor, not null FK
+   - Tabla Mérito
+     - $id_merito ==> Integer(10) se guarda el id del mérito, not null
+   - Tabla Publicación
+     - $id_publicacion ==> Integer(10) se guarda el id de la publicación, not null
+     
