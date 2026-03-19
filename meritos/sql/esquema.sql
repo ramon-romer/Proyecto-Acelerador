@@ -31,9 +31,11 @@ CREATE TABLE `tbl_profesor` (
   `id_profesor` int(10) NOT NULL,
   `nombre` varchar(100) DEFAULT NULL,
   `apellidos` varchar(200) DEFAULT NULL,
+  `password` varchar(100) DEFAULT NULL,
   `DNI` varchar(9) DEFAULT NULL,
   `DOI` varchar(15) DEFAULT NULL,
   `telefono` int(9) DEFAULT NULL,
+  `perfil` varchar(100) DEFAULT NULL,
   `facultad` varchar(100) DEFAULT NULL,
   `departamento` varchar(100) DEFAULT NULL,
   `numero_personal` varchar(10) DEFAULT NULL
