@@ -31,15 +31,15 @@ CREATE TABLE `tbl_profesor` (
   `id_profesor` int(10) NOT NULL,
   `nombre` varchar(100) DEFAULT NULL,
   `apellidos` varchar(200) DEFAULT NULL,
-  `password` varchar(255) DEFAULT NULL,
+  `password` varchar(255) NOT NULL,
   `DNI` varchar(9) DEFAULT NULL,
-  `DOI` varchar(15) DEFAULT NULL,
+  `ORCID` varchar(15) DEFAULT NULL,
   `telefono` int(9) DEFAULT NULL,
-  `perfil` varchar(100) DEFAULT NULL,
+  `perfil` varchar(100) NOT NULL,
   `facultad` varchar(100) DEFAULT NULL,
   `departamento` varchar(100) DEFAULT NULL,
   `numero_personal` varchar(10) DEFAULT NULL,
-  `correo` varchar(100) DEFAULT NULL,
+  `correo` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=armscii8 COLLATE=armscii8_bin;
 
 -- --------------------------------------------------------
