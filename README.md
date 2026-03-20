@@ -50,7 +50,7 @@ Proyecto Acelerador CEU
      - $id_publicacion ==> Integer(10) se guarda el id de la publicación asociada al mérito, not null, FK de la tabla publicación
      - $id_convocatoria ==> Integer(10) se guarda el id de la convocatoria asociada al mérito, not null, FK de la tabla convocatoria
      - $aportacion_personal ==> Text se guarda la aportación personal del profesor en el mérito, not null
-     - $valoracion ==> Integer(2) se guarda la valoración numérica del mérito, not null
+     - $valoracion ==> Integer(2) se guarda la valoración numérica del mérito, not null, el numero máximo es 10
      - $observaciones ==> Text se guardan las observaciones del mérito, not null
 
    - Tabla Publicación
