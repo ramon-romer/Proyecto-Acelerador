@@ -1,7 +1,7 @@
 <?php
 include('login.php');
 include('config.php');
-error_reporting(0);
+
 ?>
 
 <!doctype html>
@@ -164,18 +164,7 @@ error_reporting(0);
                 </div>
               </div>
 
-              <!-- Teléfono personal -->
-              <div class="mb-3">
-                <label class="form-label">Teléfono personal</label>
-                <div class="cuerpo">
-                  <div style="position:relative;">
-                    <input type="text" class="form-control" id="telefonoPersonal" name="telefonop">
-                    <ul id="telPersonalError" class="errorBox">
-                      <li>El teléfono debe tener 9 dígitos</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
+
 
               <!-- Perfil -->
               <div class="mb-3">
@@ -196,16 +185,17 @@ error_reporting(0);
                 <div class="cuerpo">
                   <div style="position:relative;">
                     <select class="form-select" id="rama" name="rama">
-                      <option>Selecciones una rama</option>
-                      <option>Salud</option>
-                      <option>Tecnicas</option>
-                      <option>S Y J</option>
-                      <option>Humanidades</option>
-                      <option>Experimentales</option>
+                      <option value="">Seleccione una rama</option>
+                      <option value="SALUD">SALUD</option>
+                      <option value="TECNICAS">Técnicas</option>
+                      <option value="SYJ">S Y J</option>
+                      <option value="HUMANIDADES">Humanidades</option>
+                      <option value="EXPERIMENTALES">Experimentales</option>
                     </select>
                   </div>
                 </div>
               </div>
+
 
             </div>
 
@@ -305,13 +295,12 @@ error_reporting(0);
 
 
 <?php
-include("conexion.php");
 
 if (isset($_POST["btn"])) {
 
   $nombre = $_POST["nombre"];
   $apellidos = $_POST["apellidos"];
-  $pass = $_POST["pass"];   // ← ahora sí funciona
+  $pass = $_POST["pass"];
   $pass2 = $_POST["pass2"];
   $dni = $_POST["dni"];
   $orcid = $_POST["orcid"];
@@ -319,31 +308,29 @@ if (isset($_POST["btn"])) {
   $perfil = $_POST["perfil"];
   $facultad = $_POST["facultad"];
   $departamento = $_POST["departamento"];
-  $numerop = $_POST["numerop"];
   $correo = $_POST["correo"];
-  $rama = $_POST["rama"];
+  $rama = $_POST["rama"];  // ✔ AQUI LLEGA LA RAMA
 
-  // VALIDACIÓN PHP (sin alerts)
+  // VALIDACIÓN BÁSICA PHP
   if ($pass !== $pass2) {
   } elseif (strlen($pass) < 8) {
   } elseif (!preg_match('/[A-Z]/', $pass)) {
   } elseif (!preg_match('/[\W]/', $pass)) {
   } else {
 
-
+    // INSERT FINAL sin teléfono personal
     $queryusuario = "INSERT INTO tbl_profesor 
-        (nombre, apellidos, password, DNI, ORCID, telefono, perfil, facultad, departamento, numero_personal, correo, rama) 
-        VALUES 
-        ('$nombre', '$apellidos', '$pass', '$dni', '$orcid', '$telefono', '$perfil', '$facultad', '$departamento', '$numerop', '$correo', '$rama')";
+      (nombre, apellidos, password, DNI, ORCID, telefono, perfil, facultad, departamento, correo, rama) 
+      VALUES 
+      ('$nombre', '$apellidos', '$pass', '$dni', '$orcid', '$telefono', '$perfil', '$facultad', '$departamento', '$correo', '$rama')";
 
     $ejecutar = mysqli_query($conn, $queryusuario);
   }
 }
 ?>
-<script>
-  /* ==========================================================
-     ACTIVAR TOOLTIP FLOTANTE (CONTRASEÑA + FORMATO)
-  ========================================================== */
+<script>/* ==========================================================
+ACTIVAR TOOLTIP FLOTANTE
+========================================================== */
   function activarTooltip(idInput, idTooltip) {
     const input = document.getElementById(idInput);
     const tooltip = document.getElementById(idTooltip);
@@ -360,7 +347,7 @@ if (isset($_POST["btn"])) {
   }
 
   /* ==========================================================
-     VALIDACIÓN CONTRASEÑA (4 REQUISITOS)
+     VALIDACIÓN CONTRASEÑA
   ========================================================== */
   activarTooltip("pass", "requisitos");
 
@@ -374,7 +361,7 @@ if (isset($_POST["btn"])) {
   });
 
   /* ==========================================================
-     VALIDACIÓN GENÉRICA DE FORMATO (DNI, TELÉFONOS, ORCID)
+     VALIDACIÓN GENÉRICA (DNI, TELÉFONO, ORCID)
   ========================================================== */
   function validarCampo(idInput, idTooltip, regex) {
     const input = document.getElementById(idInput);
@@ -389,50 +376,39 @@ if (isset($_POST["btn"])) {
 
   validarCampo("dni", "dniError", /^[0-9]{8}[A-Za-z]$/);
   validarCampo("telefono", "telError", /^[0-9]{9}$/);
-  validarCampo("telefonoPersonal", "telPersonalError", /^[0-9]{9}$/);
   validarCampo("orcid", "orcidError", /^[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}$/);
 
   /* ==========================================================
-     VALIDACIÓN DE CAMPOS VACÍOS → POPUP CON LISTA
+     POPUP CAMPOS VACÍOS
   ========================================================== */
   document.querySelector("form").addEventListener("submit", function (e) {
 
     let camposVacios = [];
 
-    // Buscar inputs y selects del formulario
     this.querySelectorAll("input, select").forEach(campo => {
 
       if (campo.type === "submit") return;
 
       let valor = campo.value.trim();
 
-      // 1️⃣ CAMPOS VACÍOS NORMALES
       if (valor === "") {
         let label = campo.closest(".mb-3")?.querySelector(".form-label")?.innerText
-          || campo.name
-          || "Campo sin nombre";
-
+          || campo.name;
         camposVacios.push(label);
         return;
       }
 
-      // 2️⃣ SELECTS EN "Seleccione..."
       if (campo.tagName === "SELECT") {
         let texto = campo.options[campo.selectedIndex].text.trim().toLowerCase();
-
         if (texto.includes("seleccione")) {
           let label = campo.closest(".mb-3")?.querySelector(".form-label")?.innerText
-            || campo.name
-            || "Campo sin nombre";
-
+            || campo.name;
           camposVacios.push(label);
           return;
         }
       }
-
     });
 
-    // SI HAY CAMPOS VACÍOS → MOSTRAR POPUP
     if (camposVacios.length > 0) {
       e.preventDefault();
 
@@ -450,9 +426,8 @@ if (isset($_POST["btn"])) {
     }
 
     /* ======================================================
-       VALIDACIÓN DE FORMATO ANTES DEL ENVÍO
+       VALIDACIÓN DE FORMATO FINAL
     ======================================================= */
-
     const passOK =
       document.getElementById("req1").classList.contains("ok") &&
       document.getElementById("req2").classList.contains("ok") &&
@@ -461,18 +436,16 @@ if (isset($_POST["btn"])) {
 
     const dniOK = /^[0-9]{8}[A-Za-z]$/.test(document.getElementById("dni").value);
     const telOK = /^[0-9]{9}$/.test(document.getElementById("telefono").value);
-    const telPerOK = /^[0-9]{9}$/.test(document.getElementById("telefonoPersonal").value);
     const orcidOK = /^[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}$/.test(document.getElementById("orcid").value);
 
-    if (!passOK || !dniOK || !telOK || !telPerOK || !orcidOK) {
+    if (!passOK || !dniOK || !telOK || !orcidOK) {
       e.preventDefault();
     }
   });
 
   /* ==========================================================
-     CERRAR POPUP AL HACER CLICK
+     CERRAR POPUP
   ========================================================== */
   document.getElementById("popupFaltan").addEventListener("click", function () {
     this.style.display = "none";
-  });
-</script>
+  });</script>
