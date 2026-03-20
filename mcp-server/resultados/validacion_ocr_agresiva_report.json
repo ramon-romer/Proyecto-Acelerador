@@ -1,0 +1,2916 @@
+﻿{
+    "generated_at":  "2026-03-20T12:25:26",
+    "binaries":  {
+                     "pdftoppm_path":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\mcp-server\\.tools\\poppler\\poppler-25.07.0\\Library\\bin\\pdftoppm.exe",
+                     "pdftoppm_version":  "pdftoppm.exe : pdftoppm version 25.07.0\r\nEn C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\mcp-server\\test_extract_pdf_ocr_aggressive.ps1: 137 Carácter: \r\n23\r\n+ $pdftoppmVersionRaw = \u0026 $pdftoppmPath -v 2\u003e\u00261\r\n+                       ~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : NotSpecified: (pdftoppm version 25.07.0:String) [], RemoteException\r\n    + FullyQualifiedErrorId : NativeCommandError\r\n \r\nCopyright 2005-2025 The Poppler Developers - http://poppler.freedesktop.org\r\nCopyright 1996-2011, 2022 Glyph \u0026 Cog, LLC",
+                     "tesseract_path":  "C:\\Program Files\\Tesseract-OCR\\tesseract.exe",
+                     "tesseract_version":  "tesseract v5.5.0.20241111",
+                     "tessdata_prefix":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\mcp-server\\.tools\\tessdata",
+                     "spa_detected":  true
+                 },
+    "summary":  {
+                    "files_tested":  6,
+                    "iterations":  20,
+                    "total_full_runs":  120,
+                    "full_ok":  120,
+                    "full_non_ok":  0,
+                    "total_forced_ocr_runs":  120,
+                    "forced_ocr_ok":  80,
+                    "forced_ocr_empty":  40,
+                    "forced_ocr_hard_errors":  0,
+                    "duration_ms_avg":  1069.95,
+                    "duration_ms_p95":  3154.48
+                },
+    "targets":  [
+                    "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document2_pdfcreator_nocompressed.pdf",
+                    "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document3_pdfcreator_nocompressed.pdf",
+                    "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue665.pdf",
+                    "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue727.pdf",
+                    "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.pdf",
+                    "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.5.pdf"
+                ],
+    "full_runs":  [
+                      {
+                          "iteration":  1,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document2_pdfcreator_nocompressed.pdf",
+                          "mode":  "full",
+                          "duration_ms":  627.19,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  6
+                      },
+                      {
+                          "iteration":  1,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document3_pdfcreator_nocompressed.pdf",
+                          "mode":  "full",
+                          "duration_ms":  1332.11,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  6
+                      },
+                      {
+                          "iteration":  1,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue665.pdf",
+                          "mode":  "full",
+                          "duration_ms":  457.96,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  0
+                      },
+                      {
+                          "iteration":  1,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue727.pdf",
+                          "mode":  "full",
+                          "duration_ms":  3168.76,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  0
+                      },
+                      {
+                          "iteration":  1,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.pdf",
+                          "mode":  "full",
+                          "duration_ms":  450.08,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  4
+                      },
+                      {
+                          "iteration":  1,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.5.pdf",
+                          "mode":  "full",
+                          "duration_ms":  464.18,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  4
+                      },
+                      {
+                          "iteration":  2,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document2_pdfcreator_nocompressed.pdf",
+                          "mode":  "full",
+                          "duration_ms":  582.63,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  6
+                      },
+                      {
+                          "iteration":  2,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document3_pdfcreator_nocompressed.pdf",
+                          "mode":  "full",
+                          "duration_ms":  1272.73,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  6
+                      },
+                      {
+                          "iteration":  2,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue665.pdf",
+                          "mode":  "full",
+                          "duration_ms":  451.04,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  0
+                      },
+                      {
+                          "iteration":  2,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue727.pdf",
+                          "mode":  "full",
+                          "duration_ms":  3158.63,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  0
+                      },
+                      {
+                          "iteration":  2,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.pdf",
+                          "mode":  "full",
+                          "duration_ms":  468.39,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  4
+                      },
+                      {
+                          "iteration":  2,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.5.pdf",
+                          "mode":  "full",
+                          "duration_ms":  456.56,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  4
+                      },
+                      {
+                          "iteration":  3,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document2_pdfcreator_nocompressed.pdf",
+                          "mode":  "full",
+                          "duration_ms":  612.25,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  6
+                      },
+                      {
+                          "iteration":  3,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document3_pdfcreator_nocompressed.pdf",
+                          "mode":  "full",
+                          "duration_ms":  1252.29,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  6
+                      },
+                      {
+                          "iteration":  3,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue665.pdf",
+                          "mode":  "full",
+                          "duration_ms":  449.25,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  0
+                      },
+                      {
+                          "iteration":  3,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue727.pdf",
+                          "mode":  "full",
+                          "duration_ms":  3152.01,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  0
+                      },
+                      {
+                          "iteration":  3,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.pdf",
+                          "mode":  "full",
+                          "duration_ms":  455.53,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  4
+                      },
+                      {
+                          "iteration":  3,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.5.pdf",
+                          "mode":  "full",
+                          "duration_ms":  465.45,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  4
+                      },
+                      {
+                          "iteration":  4,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document2_pdfcreator_nocompressed.pdf",
+                          "mode":  "full",
+                          "duration_ms":  688.4,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  6
+                      },
+                      {
+                          "iteration":  4,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document3_pdfcreator_nocompressed.pdf",
+                          "mode":  "full",
+                          "duration_ms":  1267.28,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  6
+                      },
+                      {
+                          "iteration":  4,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue665.pdf",
+                          "mode":  "full",
+                          "duration_ms":  476.86,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  0
+                      },
+                      {
+                          "iteration":  4,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue727.pdf",
+                          "mode":  "full",
+                          "duration_ms":  3145.23,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  0
+                      },
+                      {
+                          "iteration":  4,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.pdf",
+                          "mode":  "full",
+                          "duration_ms":  454.05,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  4
+                      },
+                      {
+                          "iteration":  4,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.5.pdf",
+                          "mode":  "full",
+                          "duration_ms":  481.27,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  4
+                      },
+                      {
+                          "iteration":  5,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document2_pdfcreator_nocompressed.pdf",
+                          "mode":  "full",
+                          "duration_ms":  601.31,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  6
+                      },
+                      {
+                          "iteration":  5,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document3_pdfcreator_nocompressed.pdf",
+                          "mode":  "full",
+                          "duration_ms":  1267.84,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  6
+                      },
+                      {
+                          "iteration":  5,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue665.pdf",
+                          "mode":  "full",
+                          "duration_ms":  443.9,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  0
+                      },
+                      {
+                          "iteration":  5,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue727.pdf",
+                          "mode":  "full",
+                          "duration_ms":  3231.99,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  0
+                      },
+                      {
+                          "iteration":  5,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.pdf",
+                          "mode":  "full",
+                          "duration_ms":  421.59,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  4
+                      },
+                      {
+                          "iteration":  5,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.5.pdf",
+                          "mode":  "full",
+                          "duration_ms":  468.01,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  4
+                      },
+                      {
+                          "iteration":  6,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document2_pdfcreator_nocompressed.pdf",
+                          "mode":  "full",
+                          "duration_ms":  592.18,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  6
+                      },
+                      {
+                          "iteration":  6,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document3_pdfcreator_nocompressed.pdf",
+                          "mode":  "full",
+                          "duration_ms":  1310.63,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  6
+                      },
+                      {
+                          "iteration":  6,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue665.pdf",
+                          "mode":  "full",
+                          "duration_ms":  452.44,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  0
+                      },
+                      {
+                          "iteration":  6,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue727.pdf",
+                          "mode":  "full",
+                          "duration_ms":  3149.98,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  0
+                      },
+                      {
+                          "iteration":  6,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.pdf",
+                          "mode":  "full",
+                          "duration_ms":  455.73,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  4
+                      },
+                      {
+                          "iteration":  6,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.5.pdf",
+                          "mode":  "full",
+                          "duration_ms":  459.04,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  4
+                      },
+                      {
+                          "iteration":  7,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document2_pdfcreator_nocompressed.pdf",
+                          "mode":  "full",
+                          "duration_ms":  589.61,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  6
+                      },
+                      {
+                          "iteration":  7,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document3_pdfcreator_nocompressed.pdf",
+                          "mode":  "full",
+                          "duration_ms":  1255.66,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  6
+                      },
+                      {
+                          "iteration":  7,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue665.pdf",
+                          "mode":  "full",
+                          "duration_ms":  457.45,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  0
+                      },
+                      {
+                          "iteration":  7,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue727.pdf",
+                          "mode":  "full",
+                          "duration_ms":  3168.43,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  0
+                      },
+                      {
+                          "iteration":  7,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.pdf",
+                          "mode":  "full",
+                          "duration_ms":  456.46,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  4
+                      },
+                      {
+                          "iteration":  7,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.5.pdf",
+                          "mode":  "full",
+                          "duration_ms":  424.76,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  4
+                      },
+                      {
+                          "iteration":  8,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document2_pdfcreator_nocompressed.pdf",
+                          "mode":  "full",
+                          "duration_ms":  598.55,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  6
+                      },
+                      {
+                          "iteration":  8,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document3_pdfcreator_nocompressed.pdf",
+                          "mode":  "full",
+                          "duration_ms":  1238.05,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  6
+                      },
+                      {
+                          "iteration":  8,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue665.pdf",
+                          "mode":  "full",
+                          "duration_ms":  563.29,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  0
+                      },
+                      {
+                          "iteration":  8,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue727.pdf",
+                          "mode":  "full",
+                          "duration_ms":  3134.38,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  0
+                      },
+                      {
+                          "iteration":  8,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.pdf",
+                          "mode":  "full",
+                          "duration_ms":  473.08,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  4
+                      },
+                      {
+                          "iteration":  8,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.5.pdf",
+                          "mode":  "full",
+                          "duration_ms":  425.24,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  4
+                      },
+                      {
+                          "iteration":  9,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document2_pdfcreator_nocompressed.pdf",
+                          "mode":  "full",
+                          "duration_ms":  580.8,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  6
+                      },
+                      {
+                          "iteration":  9,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document3_pdfcreator_nocompressed.pdf",
+                          "mode":  "full",
+                          "duration_ms":  1245.08,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  6
+                      },
+                      {
+                          "iteration":  9,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue665.pdf",
+                          "mode":  "full",
+                          "duration_ms":  485.57,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  0
+                      },
+                      {
+                          "iteration":  9,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue727.pdf",
+                          "mode":  "full",
+                          "duration_ms":  3154.48,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  0
+                      },
+                      {
+                          "iteration":  9,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.pdf",
+                          "mode":  "full",
+                          "duration_ms":  584.68,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  4
+                      },
+                      {
+                          "iteration":  9,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.5.pdf",
+                          "mode":  "full",
+                          "duration_ms":  456.09,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  4
+                      },
+                      {
+                          "iteration":  10,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document2_pdfcreator_nocompressed.pdf",
+                          "mode":  "full",
+                          "duration_ms":  588.95,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  6
+                      },
+                      {
+                          "iteration":  10,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document3_pdfcreator_nocompressed.pdf",
+                          "mode":  "full",
+                          "duration_ms":  1240.83,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  6
+                      },
+                      {
+                          "iteration":  10,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue665.pdf",
+                          "mode":  "full",
+                          "duration_ms":  463.77,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  0
+                      },
+                      {
+                          "iteration":  10,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue727.pdf",
+                          "mode":  "full",
+                          "duration_ms":  3184.1,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  0
+                      },
+                      {
+                          "iteration":  10,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.pdf",
+                          "mode":  "full",
+                          "duration_ms":  461.59,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  4
+                      },
+                      {
+                          "iteration":  10,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.5.pdf",
+                          "mode":  "full",
+                          "duration_ms":  417.88,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  4
+                      },
+                      {
+                          "iteration":  11,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document2_pdfcreator_nocompressed.pdf",
+                          "mode":  "full",
+                          "duration_ms":  579.26,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  6
+                      },
+                      {
+                          "iteration":  11,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document3_pdfcreator_nocompressed.pdf",
+                          "mode":  "full",
+                          "duration_ms":  1249.96,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  6
+                      },
+                      {
+                          "iteration":  11,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue665.pdf",
+                          "mode":  "full",
+                          "duration_ms":  486.32,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  0
+                      },
+                      {
+                          "iteration":  11,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue727.pdf",
+                          "mode":  "full",
+                          "duration_ms":  3116.79,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  0
+                      },
+                      {
+                          "iteration":  11,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.pdf",
+                          "mode":  "full",
+                          "duration_ms":  455.42,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  4
+                      },
+                      {
+                          "iteration":  11,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.5.pdf",
+                          "mode":  "full",
+                          "duration_ms":  436.46,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  4
+                      },
+                      {
+                          "iteration":  12,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document2_pdfcreator_nocompressed.pdf",
+                          "mode":  "full",
+                          "duration_ms":  590.67,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  6
+                      },
+                      {
+                          "iteration":  12,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document3_pdfcreator_nocompressed.pdf",
+                          "mode":  "full",
+                          "duration_ms":  1252.01,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  6
+                      },
+                      {
+                          "iteration":  12,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue665.pdf",
+                          "mode":  "full",
+                          "duration_ms":  466.97,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  0
+                      },
+                      {
+                          "iteration":  12,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue727.pdf",
+                          "mode":  "full",
+                          "duration_ms":  3117.75,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  0
+                      },
+                      {
+                          "iteration":  12,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.pdf",
+                          "mode":  "full",
+                          "duration_ms":  500.13,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  4
+                      },
+                      {
+                          "iteration":  12,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.5.pdf",
+                          "mode":  "full",
+                          "duration_ms":  445.52,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  4
+                      },
+                      {
+                          "iteration":  13,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document2_pdfcreator_nocompressed.pdf",
+                          "mode":  "full",
+                          "duration_ms":  600.56,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  6
+                      },
+                      {
+                          "iteration":  13,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document3_pdfcreator_nocompressed.pdf",
+                          "mode":  "full",
+                          "duration_ms":  1252.97,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  6
+                      },
+                      {
+                          "iteration":  13,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue665.pdf",
+                          "mode":  "full",
+                          "duration_ms":  470.23,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  0
+                      },
+                      {
+                          "iteration":  13,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue727.pdf",
+                          "mode":  "full",
+                          "duration_ms":  3096.16,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  0
+                      },
+                      {
+                          "iteration":  13,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.pdf",
+                          "mode":  "full",
+                          "duration_ms":  489.81,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  4
+                      },
+                      {
+                          "iteration":  13,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.5.pdf",
+                          "mode":  "full",
+                          "duration_ms":  456.12,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  4
+                      },
+                      {
+                          "iteration":  14,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document2_pdfcreator_nocompressed.pdf",
+                          "mode":  "full",
+                          "duration_ms":  597.82,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  6
+                      },
+                      {
+                          "iteration":  14,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document3_pdfcreator_nocompressed.pdf",
+                          "mode":  "full",
+                          "duration_ms":  1250.22,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  6
+                      },
+                      {
+                          "iteration":  14,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue665.pdf",
+                          "mode":  "full",
+                          "duration_ms":  468.86,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  0
+                      },
+                      {
+                          "iteration":  14,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue727.pdf",
+                          "mode":  "full",
+                          "duration_ms":  3090.47,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  0
+                      },
+                      {
+                          "iteration":  14,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.pdf",
+                          "mode":  "full",
+                          "duration_ms":  485.17,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  4
+                      },
+                      {
+                          "iteration":  14,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.5.pdf",
+                          "mode":  "full",
+                          "duration_ms":  452.91,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  4
+                      },
+                      {
+                          "iteration":  15,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document2_pdfcreator_nocompressed.pdf",
+                          "mode":  "full",
+                          "duration_ms":  589.57,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  6
+                      },
+                      {
+                          "iteration":  15,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document3_pdfcreator_nocompressed.pdf",
+                          "mode":  "full",
+                          "duration_ms":  1278.36,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  6
+                      },
+                      {
+                          "iteration":  15,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue665.pdf",
+                          "mode":  "full",
+                          "duration_ms":  485.37,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  0
+                      },
+                      {
+                          "iteration":  15,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue727.pdf",
+                          "mode":  "full",
+                          "duration_ms":  3124.99,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  0
+                      },
+                      {
+                          "iteration":  15,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.pdf",
+                          "mode":  "full",
+                          "duration_ms":  462.49,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  4
+                      },
+                      {
+                          "iteration":  15,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.5.pdf",
+                          "mode":  "full",
+                          "duration_ms":  462.83,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  4
+                      },
+                      {
+                          "iteration":  16,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document2_pdfcreator_nocompressed.pdf",
+                          "mode":  "full",
+                          "duration_ms":  596.88,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  6
+                      },
+                      {
+                          "iteration":  16,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document3_pdfcreator_nocompressed.pdf",
+                          "mode":  "full",
+                          "duration_ms":  1301.48,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  6
+                      },
+                      {
+                          "iteration":  16,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue665.pdf",
+                          "mode":  "full",
+                          "duration_ms":  480.77,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  0
+                      },
+                      {
+                          "iteration":  16,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue727.pdf",
+                          "mode":  "full",
+                          "duration_ms":  3138.17,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  0
+                      },
+                      {
+                          "iteration":  16,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.pdf",
+                          "mode":  "full",
+                          "duration_ms":  439.15,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  4
+                      },
+                      {
+                          "iteration":  16,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.5.pdf",
+                          "mode":  "full",
+                          "duration_ms":  461.47,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  4
+                      },
+                      {
+                          "iteration":  17,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document2_pdfcreator_nocompressed.pdf",
+                          "mode":  "full",
+                          "duration_ms":  690.43,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  6
+                      },
+                      {
+                          "iteration":  17,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document3_pdfcreator_nocompressed.pdf",
+                          "mode":  "full",
+                          "duration_ms":  1298.89,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  6
+                      },
+                      {
+                          "iteration":  17,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue665.pdf",
+                          "mode":  "full",
+                          "duration_ms":  490.64,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  0
+                      },
+                      {
+                          "iteration":  17,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue727.pdf",
+                          "mode":  "full",
+                          "duration_ms":  3253.05,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  0
+                      },
+                      {
+                          "iteration":  17,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.pdf",
+                          "mode":  "full",
+                          "duration_ms":  476.18,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  4
+                      },
+                      {
+                          "iteration":  17,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.5.pdf",
+                          "mode":  "full",
+                          "duration_ms":  476.96,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  4
+                      },
+                      {
+                          "iteration":  18,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document2_pdfcreator_nocompressed.pdf",
+                          "mode":  "full",
+                          "duration_ms":  624.63,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  6
+                      },
+                      {
+                          "iteration":  18,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document3_pdfcreator_nocompressed.pdf",
+                          "mode":  "full",
+                          "duration_ms":  1263.1,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  6
+                      },
+                      {
+                          "iteration":  18,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue665.pdf",
+                          "mode":  "full",
+                          "duration_ms":  470.49,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  0
+                      },
+                      {
+                          "iteration":  18,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue727.pdf",
+                          "mode":  "full",
+                          "duration_ms":  3137.56,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  0
+                      },
+                      {
+                          "iteration":  18,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.pdf",
+                          "mode":  "full",
+                          "duration_ms":  471.83,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  4
+                      },
+                      {
+                          "iteration":  18,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.5.pdf",
+                          "mode":  "full",
+                          "duration_ms":  484.44,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  4
+                      },
+                      {
+                          "iteration":  19,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document2_pdfcreator_nocompressed.pdf",
+                          "mode":  "full",
+                          "duration_ms":  599.21,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  6
+                      },
+                      {
+                          "iteration":  19,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document3_pdfcreator_nocompressed.pdf",
+                          "mode":  "full",
+                          "duration_ms":  1265.38,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  6
+                      },
+                      {
+                          "iteration":  19,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue665.pdf",
+                          "mode":  "full",
+                          "duration_ms":  488.7,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  0
+                      },
+                      {
+                          "iteration":  19,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue727.pdf",
+                          "mode":  "full",
+                          "duration_ms":  3091.09,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  0
+                      },
+                      {
+                          "iteration":  19,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.pdf",
+                          "mode":  "full",
+                          "duration_ms":  458.31,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  4
+                      },
+                      {
+                          "iteration":  19,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.5.pdf",
+                          "mode":  "full",
+                          "duration_ms":  461.85,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  4
+                      },
+                      {
+                          "iteration":  20,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document2_pdfcreator_nocompressed.pdf",
+                          "mode":  "full",
+                          "duration_ms":  598.92,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  6
+                      },
+                      {
+                          "iteration":  20,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document3_pdfcreator_nocompressed.pdf",
+                          "mode":  "full",
+                          "duration_ms":  1272.84,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  6
+                      },
+                      {
+                          "iteration":  20,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue665.pdf",
+                          "mode":  "full",
+                          "duration_ms":  476.96,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  0
+                      },
+                      {
+                          "iteration":  20,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue727.pdf",
+                          "mode":  "full",
+                          "duration_ms":  3095.21,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  0
+                      },
+                      {
+                          "iteration":  20,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.pdf",
+                          "mode":  "full",
+                          "duration_ms":  453.57,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  4
+                      },
+                      {
+                          "iteration":  20,
+                          "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.5.pdf",
+                          "mode":  "full",
+                          "duration_ms":  470.09,
+                          "exit_code":  0,
+                          "status":  "ok",
+                          "error":  null,
+                          "missing_keys":  [
+
+                                           ],
+                          "preview_length":  4
+                      }
+                  ],
+    "forced_ocr_runs":  [
+                            {
+                                "iteration":  1,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document2_pdfcreator_nocompressed.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  546.17,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  6,
+                                "ocr_preview":  "Google"
+                            },
+                            {
+                                "iteration":  1,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document3_pdfcreator_nocompressed.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  1349.38,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  6,
+                                "ocr_preview":  "ISOOS)"
+                            },
+                            {
+                                "iteration":  1,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue665.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  512.92,
+                                "exit_code":  0,
+                                "status":  "empty_ocr",
+                                "error":  null,
+                                "ocr_len":  0,
+                                "ocr_preview":  ""
+                            },
+                            {
+                                "iteration":  1,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue727.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  3092.24,
+                                "exit_code":  0,
+                                "status":  "empty_ocr",
+                                "error":  null,
+                                "ocr_len":  0,
+                                "ocr_preview":  ""
+                            },
+                            {
+                                "iteration":  1,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  448.86,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  4,
+                                "ocr_preview":  "TEST"
+                            },
+                            {
+                                "iteration":  1,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.5.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  465.76,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  4,
+                                "ocr_preview":  "TEST"
+                            },
+                            {
+                                "iteration":  2,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document2_pdfcreator_nocompressed.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  560.25,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  6,
+                                "ocr_preview":  "Google"
+                            },
+                            {
+                                "iteration":  2,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document3_pdfcreator_nocompressed.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  1266.23,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  6,
+                                "ocr_preview":  "ISOOS)"
+                            },
+                            {
+                                "iteration":  2,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue665.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  459.78,
+                                "exit_code":  0,
+                                "status":  "empty_ocr",
+                                "error":  null,
+                                "ocr_len":  0,
+                                "ocr_preview":  ""
+                            },
+                            {
+                                "iteration":  2,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue727.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  3078.59,
+                                "exit_code":  0,
+                                "status":  "empty_ocr",
+                                "error":  null,
+                                "ocr_len":  0,
+                                "ocr_preview":  ""
+                            },
+                            {
+                                "iteration":  2,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  427.69,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  4,
+                                "ocr_preview":  "TEST"
+                            },
+                            {
+                                "iteration":  2,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.5.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  466.87,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  4,
+                                "ocr_preview":  "TEST"
+                            },
+                            {
+                                "iteration":  3,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document2_pdfcreator_nocompressed.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  594.8,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  6,
+                                "ocr_preview":  "Google"
+                            },
+                            {
+                                "iteration":  3,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document3_pdfcreator_nocompressed.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  1276.1,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  6,
+                                "ocr_preview":  "ISOOS)"
+                            },
+                            {
+                                "iteration":  3,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue665.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  440.35,
+                                "exit_code":  0,
+                                "status":  "empty_ocr",
+                                "error":  null,
+                                "ocr_len":  0,
+                                "ocr_preview":  ""
+                            },
+                            {
+                                "iteration":  3,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue727.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  3084.06,
+                                "exit_code":  0,
+                                "status":  "empty_ocr",
+                                "error":  null,
+                                "ocr_len":  0,
+                                "ocr_preview":  ""
+                            },
+                            {
+                                "iteration":  3,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  418.44,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  4,
+                                "ocr_preview":  "TEST"
+                            },
+                            {
+                                "iteration":  3,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.5.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  470.03,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  4,
+                                "ocr_preview":  "TEST"
+                            },
+                            {
+                                "iteration":  4,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document2_pdfcreator_nocompressed.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  578.31,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  6,
+                                "ocr_preview":  "Google"
+                            },
+                            {
+                                "iteration":  4,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document3_pdfcreator_nocompressed.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  1255.57,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  6,
+                                "ocr_preview":  "ISOOS)"
+                            },
+                            {
+                                "iteration":  4,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue665.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  461.88,
+                                "exit_code":  0,
+                                "status":  "empty_ocr",
+                                "error":  null,
+                                "ocr_len":  0,
+                                "ocr_preview":  ""
+                            },
+                            {
+                                "iteration":  4,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue727.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  3062.73,
+                                "exit_code":  0,
+                                "status":  "empty_ocr",
+                                "error":  null,
+                                "ocr_len":  0,
+                                "ocr_preview":  ""
+                            },
+                            {
+                                "iteration":  4,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  416.3,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  4,
+                                "ocr_preview":  "TEST"
+                            },
+                            {
+                                "iteration":  4,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.5.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  451.78,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  4,
+                                "ocr_preview":  "TEST"
+                            },
+                            {
+                                "iteration":  5,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document2_pdfcreator_nocompressed.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  559.55,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  6,
+                                "ocr_preview":  "Google"
+                            },
+                            {
+                                "iteration":  5,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document3_pdfcreator_nocompressed.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  1269.26,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  6,
+                                "ocr_preview":  "ISOOS)"
+                            },
+                            {
+                                "iteration":  5,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue665.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  481.28,
+                                "exit_code":  0,
+                                "status":  "empty_ocr",
+                                "error":  null,
+                                "ocr_len":  0,
+                                "ocr_preview":  ""
+                            },
+                            {
+                                "iteration":  5,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue727.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  3086.7,
+                                "exit_code":  0,
+                                "status":  "empty_ocr",
+                                "error":  null,
+                                "ocr_len":  0,
+                                "ocr_preview":  ""
+                            },
+                            {
+                                "iteration":  5,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  443.13,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  4,
+                                "ocr_preview":  "TEST"
+                            },
+                            {
+                                "iteration":  5,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.5.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  455.44,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  4,
+                                "ocr_preview":  "TEST"
+                            },
+                            {
+                                "iteration":  6,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document2_pdfcreator_nocompressed.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  597.04,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  6,
+                                "ocr_preview":  "Google"
+                            },
+                            {
+                                "iteration":  6,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document3_pdfcreator_nocompressed.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  1273.82,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  6,
+                                "ocr_preview":  "ISOOS)"
+                            },
+                            {
+                                "iteration":  6,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue665.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  462.62,
+                                "exit_code":  0,
+                                "status":  "empty_ocr",
+                                "error":  null,
+                                "ocr_len":  0,
+                                "ocr_preview":  ""
+                            },
+                            {
+                                "iteration":  6,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue727.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  3102.11,
+                                "exit_code":  0,
+                                "status":  "empty_ocr",
+                                "error":  null,
+                                "ocr_len":  0,
+                                "ocr_preview":  ""
+                            },
+                            {
+                                "iteration":  6,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  411.19,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  4,
+                                "ocr_preview":  "TEST"
+                            },
+                            {
+                                "iteration":  6,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.5.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  446.7,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  4,
+                                "ocr_preview":  "TEST"
+                            },
+                            {
+                                "iteration":  7,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document2_pdfcreator_nocompressed.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  570.36,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  6,
+                                "ocr_preview":  "Google"
+                            },
+                            {
+                                "iteration":  7,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document3_pdfcreator_nocompressed.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  1263.92,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  6,
+                                "ocr_preview":  "ISOOS)"
+                            },
+                            {
+                                "iteration":  7,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue665.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  422.98,
+                                "exit_code":  0,
+                                "status":  "empty_ocr",
+                                "error":  null,
+                                "ocr_len":  0,
+                                "ocr_preview":  ""
+                            },
+                            {
+                                "iteration":  7,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue727.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  3087.86,
+                                "exit_code":  0,
+                                "status":  "empty_ocr",
+                                "error":  null,
+                                "ocr_len":  0,
+                                "ocr_preview":  ""
+                            },
+                            {
+                                "iteration":  7,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  436.38,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  4,
+                                "ocr_preview":  "TEST"
+                            },
+                            {
+                                "iteration":  7,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.5.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  436.56,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  4,
+                                "ocr_preview":  "TEST"
+                            },
+                            {
+                                "iteration":  8,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document2_pdfcreator_nocompressed.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  586.56,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  6,
+                                "ocr_preview":  "Google"
+                            },
+                            {
+                                "iteration":  8,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document3_pdfcreator_nocompressed.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  1293.51,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  6,
+                                "ocr_preview":  "ISOOS)"
+                            },
+                            {
+                                "iteration":  8,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue665.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  424.98,
+                                "exit_code":  0,
+                                "status":  "empty_ocr",
+                                "error":  null,
+                                "ocr_len":  0,
+                                "ocr_preview":  ""
+                            },
+                            {
+                                "iteration":  8,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue727.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  3061.7,
+                                "exit_code":  0,
+                                "status":  "empty_ocr",
+                                "error":  null,
+                                "ocr_len":  0,
+                                "ocr_preview":  ""
+                            },
+                            {
+                                "iteration":  8,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  448.71,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  4,
+                                "ocr_preview":  "TEST"
+                            },
+                            {
+                                "iteration":  8,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.5.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  466.51,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  4,
+                                "ocr_preview":  "TEST"
+                            },
+                            {
+                                "iteration":  9,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document2_pdfcreator_nocompressed.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  578.99,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  6,
+                                "ocr_preview":  "Google"
+                            },
+                            {
+                                "iteration":  9,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document3_pdfcreator_nocompressed.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  1279.3,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  6,
+                                "ocr_preview":  "ISOOS)"
+                            },
+                            {
+                                "iteration":  9,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue665.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  415.24,
+                                "exit_code":  0,
+                                "status":  "empty_ocr",
+                                "error":  null,
+                                "ocr_len":  0,
+                                "ocr_preview":  ""
+                            },
+                            {
+                                "iteration":  9,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue727.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  3063.82,
+                                "exit_code":  0,
+                                "status":  "empty_ocr",
+                                "error":  null,
+                                "ocr_len":  0,
+                                "ocr_preview":  ""
+                            },
+                            {
+                                "iteration":  9,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  448.65,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  4,
+                                "ocr_preview":  "TEST"
+                            },
+                            {
+                                "iteration":  9,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.5.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  472.8,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  4,
+                                "ocr_preview":  "TEST"
+                            },
+                            {
+                                "iteration":  10,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document2_pdfcreator_nocompressed.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  598.87,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  6,
+                                "ocr_preview":  "Google"
+                            },
+                            {
+                                "iteration":  10,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document3_pdfcreator_nocompressed.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  1285.81,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  6,
+                                "ocr_preview":  "ISOOS)"
+                            },
+                            {
+                                "iteration":  10,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue665.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  425.12,
+                                "exit_code":  0,
+                                "status":  "empty_ocr",
+                                "error":  null,
+                                "ocr_len":  0,
+                                "ocr_preview":  ""
+                            },
+                            {
+                                "iteration":  10,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue727.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  3083.02,
+                                "exit_code":  0,
+                                "status":  "empty_ocr",
+                                "error":  null,
+                                "ocr_len":  0,
+                                "ocr_preview":  ""
+                            },
+                            {
+                                "iteration":  10,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  447.48,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  4,
+                                "ocr_preview":  "TEST"
+                            },
+                            {
+                                "iteration":  10,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.5.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  451.12,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  4,
+                                "ocr_preview":  "TEST"
+                            },
+                            {
+                                "iteration":  11,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document2_pdfcreator_nocompressed.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  673.33,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  6,
+                                "ocr_preview":  "Google"
+                            },
+                            {
+                                "iteration":  11,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document3_pdfcreator_nocompressed.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  1273.25,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  6,
+                                "ocr_preview":  "ISOOS)"
+                            },
+                            {
+                                "iteration":  11,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue665.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  422.6,
+                                "exit_code":  0,
+                                "status":  "empty_ocr",
+                                "error":  null,
+                                "ocr_len":  0,
+                                "ocr_preview":  ""
+                            },
+                            {
+                                "iteration":  11,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue727.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  3047.03,
+                                "exit_code":  0,
+                                "status":  "empty_ocr",
+                                "error":  null,
+                                "ocr_len":  0,
+                                "ocr_preview":  ""
+                            },
+                            {
+                                "iteration":  11,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  451.94,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  4,
+                                "ocr_preview":  "TEST"
+                            },
+                            {
+                                "iteration":  11,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.5.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  444.94,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  4,
+                                "ocr_preview":  "TEST"
+                            },
+                            {
+                                "iteration":  12,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document2_pdfcreator_nocompressed.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  579.58,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  6,
+                                "ocr_preview":  "Google"
+                            },
+                            {
+                                "iteration":  12,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document3_pdfcreator_nocompressed.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  1287.57,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  6,
+                                "ocr_preview":  "ISOOS)"
+                            },
+                            {
+                                "iteration":  12,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue665.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  450.02,
+                                "exit_code":  0,
+                                "status":  "empty_ocr",
+                                "error":  null,
+                                "ocr_len":  0,
+                                "ocr_preview":  ""
+                            },
+                            {
+                                "iteration":  12,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue727.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  3178.86,
+                                "exit_code":  0,
+                                "status":  "empty_ocr",
+                                "error":  null,
+                                "ocr_len":  0,
+                                "ocr_preview":  ""
+                            },
+                            {
+                                "iteration":  12,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  455.51,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  4,
+                                "ocr_preview":  "TEST"
+                            },
+                            {
+                                "iteration":  12,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.5.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  463.26,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  4,
+                                "ocr_preview":  "TEST"
+                            },
+                            {
+                                "iteration":  13,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document2_pdfcreator_nocompressed.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  563.87,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  6,
+                                "ocr_preview":  "Google"
+                            },
+                            {
+                                "iteration":  13,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document3_pdfcreator_nocompressed.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  1296.49,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  6,
+                                "ocr_preview":  "ISOOS)"
+                            },
+                            {
+                                "iteration":  13,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue665.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  434.86,
+                                "exit_code":  0,
+                                "status":  "empty_ocr",
+                                "error":  null,
+                                "ocr_len":  0,
+                                "ocr_preview":  ""
+                            },
+                            {
+                                "iteration":  13,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue727.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  3041.65,
+                                "exit_code":  0,
+                                "status":  "empty_ocr",
+                                "error":  null,
+                                "ocr_len":  0,
+                                "ocr_preview":  ""
+                            },
+                            {
+                                "iteration":  13,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  463,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  4,
+                                "ocr_preview":  "TEST"
+                            },
+                            {
+                                "iteration":  13,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.5.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  435.4,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  4,
+                                "ocr_preview":  "TEST"
+                            },
+                            {
+                                "iteration":  14,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document2_pdfcreator_nocompressed.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  583.13,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  6,
+                                "ocr_preview":  "Google"
+                            },
+                            {
+                                "iteration":  14,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document3_pdfcreator_nocompressed.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  1268.62,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  6,
+                                "ocr_preview":  "ISOOS)"
+                            },
+                            {
+                                "iteration":  14,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue665.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  457.75,
+                                "exit_code":  0,
+                                "status":  "empty_ocr",
+                                "error":  null,
+                                "ocr_len":  0,
+                                "ocr_preview":  ""
+                            },
+                            {
+                                "iteration":  14,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue727.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  3055.6,
+                                "exit_code":  0,
+                                "status":  "empty_ocr",
+                                "error":  null,
+                                "ocr_len":  0,
+                                "ocr_preview":  ""
+                            },
+                            {
+                                "iteration":  14,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  452.95,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  4,
+                                "ocr_preview":  "TEST"
+                            },
+                            {
+                                "iteration":  14,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.5.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  413.76,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  4,
+                                "ocr_preview":  "TEST"
+                            },
+                            {
+                                "iteration":  15,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document2_pdfcreator_nocompressed.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  561.48,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  6,
+                                "ocr_preview":  "Google"
+                            },
+                            {
+                                "iteration":  15,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document3_pdfcreator_nocompressed.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  1236.98,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  6,
+                                "ocr_preview":  "ISOOS)"
+                            },
+                            {
+                                "iteration":  15,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue665.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  453.53,
+                                "exit_code":  0,
+                                "status":  "empty_ocr",
+                                "error":  null,
+                                "ocr_len":  0,
+                                "ocr_preview":  ""
+                            },
+                            {
+                                "iteration":  15,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue727.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  3098.85,
+                                "exit_code":  0,
+                                "status":  "empty_ocr",
+                                "error":  null,
+                                "ocr_len":  0,
+                                "ocr_preview":  ""
+                            },
+                            {
+                                "iteration":  15,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  456.12,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  4,
+                                "ocr_preview":  "TEST"
+                            },
+                            {
+                                "iteration":  15,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.5.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  437.94,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  4,
+                                "ocr_preview":  "TEST"
+                            },
+                            {
+                                "iteration":  16,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document2_pdfcreator_nocompressed.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  562.55,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  6,
+                                "ocr_preview":  "Google"
+                            },
+                            {
+                                "iteration":  16,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document3_pdfcreator_nocompressed.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  1228.48,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  6,
+                                "ocr_preview":  "ISOOS)"
+                            },
+                            {
+                                "iteration":  16,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue665.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  452.46,
+                                "exit_code":  0,
+                                "status":  "empty_ocr",
+                                "error":  null,
+                                "ocr_len":  0,
+                                "ocr_preview":  ""
+                            },
+                            {
+                                "iteration":  16,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue727.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  3116.66,
+                                "exit_code":  0,
+                                "status":  "empty_ocr",
+                                "error":  null,
+                                "ocr_len":  0,
+                                "ocr_preview":  ""
+                            },
+                            {
+                                "iteration":  16,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  466.94,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  4,
+                                "ocr_preview":  "TEST"
+                            },
+                            {
+                                "iteration":  16,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.5.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  483.47,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  4,
+                                "ocr_preview":  "TEST"
+                            },
+                            {
+                                "iteration":  17,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document2_pdfcreator_nocompressed.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  562.12,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  6,
+                                "ocr_preview":  "Google"
+                            },
+                            {
+                                "iteration":  17,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document3_pdfcreator_nocompressed.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  1242.44,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  6,
+                                "ocr_preview":  "ISOOS)"
+                            },
+                            {
+                                "iteration":  17,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue665.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  448.79,
+                                "exit_code":  0,
+                                "status":  "empty_ocr",
+                                "error":  null,
+                                "ocr_len":  0,
+                                "ocr_preview":  ""
+                            },
+                            {
+                                "iteration":  17,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue727.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  3115.34,
+                                "exit_code":  0,
+                                "status":  "empty_ocr",
+                                "error":  null,
+                                "ocr_len":  0,
+                                "ocr_preview":  ""
+                            },
+                            {
+                                "iteration":  17,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  429.87,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  4,
+                                "ocr_preview":  "TEST"
+                            },
+                            {
+                                "iteration":  17,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.5.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  449.17,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  4,
+                                "ocr_preview":  "TEST"
+                            },
+                            {
+                                "iteration":  18,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document2_pdfcreator_nocompressed.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  607.66,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  6,
+                                "ocr_preview":  "Google"
+                            },
+                            {
+                                "iteration":  18,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document3_pdfcreator_nocompressed.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  1280.56,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  6,
+                                "ocr_preview":  "ISOOS)"
+                            },
+                            {
+                                "iteration":  18,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue665.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  427.84,
+                                "exit_code":  0,
+                                "status":  "empty_ocr",
+                                "error":  null,
+                                "ocr_len":  0,
+                                "ocr_preview":  ""
+                            },
+                            {
+                                "iteration":  18,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue727.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  3067.48,
+                                "exit_code":  0,
+                                "status":  "empty_ocr",
+                                "error":  null,
+                                "ocr_len":  0,
+                                "ocr_preview":  ""
+                            },
+                            {
+                                "iteration":  18,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  453.68,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  4,
+                                "ocr_preview":  "TEST"
+                            },
+                            {
+                                "iteration":  18,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.5.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  421.58,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  4,
+                                "ocr_preview":  "TEST"
+                            },
+                            {
+                                "iteration":  19,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document2_pdfcreator_nocompressed.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  642.05,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  6,
+                                "ocr_preview":  "Google"
+                            },
+                            {
+                                "iteration":  19,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document3_pdfcreator_nocompressed.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  1255.45,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  6,
+                                "ocr_preview":  "ISOOS)"
+                            },
+                            {
+                                "iteration":  19,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue665.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  452.83,
+                                "exit_code":  0,
+                                "status":  "empty_ocr",
+                                "error":  null,
+                                "ocr_len":  0,
+                                "ocr_preview":  ""
+                            },
+                            {
+                                "iteration":  19,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue727.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  3092.89,
+                                "exit_code":  0,
+                                "status":  "empty_ocr",
+                                "error":  null,
+                                "ocr_len":  0,
+                                "ocr_preview":  ""
+                            },
+                            {
+                                "iteration":  19,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  443.71,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  4,
+                                "ocr_preview":  "TEST"
+                            },
+                            {
+                                "iteration":  19,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.5.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  413.53,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  4,
+                                "ocr_preview":  "TEST"
+                            },
+                            {
+                                "iteration":  20,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document2_pdfcreator_nocompressed.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  547.07,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  6,
+                                "ocr_preview":  "Google"
+                            },
+                            {
+                                "iteration":  20,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document3_pdfcreator_nocompressed.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  1296.57,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  6,
+                                "ocr_preview":  "ISOOS)"
+                            },
+                            {
+                                "iteration":  20,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue665.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  486.16,
+                                "exit_code":  0,
+                                "status":  "empty_ocr",
+                                "error":  null,
+                                "ocr_len":  0,
+                                "ocr_preview":  ""
+                            },
+                            {
+                                "iteration":  20,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue727.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  3078.29,
+                                "exit_code":  0,
+                                "status":  "empty_ocr",
+                                "error":  null,
+                                "ocr_len":  0,
+                                "ocr_preview":  ""
+                            },
+                            {
+                                "iteration":  20,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  469.72,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  4,
+                                "ocr_preview":  "TEST"
+                            },
+                            {
+                                "iteration":  20,
+                                "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.5.pdf",
+                                "mode":  "forced_ocr",
+                                "duration_ms":  412.71,
+                                "exit_code":  0,
+                                "status":  "ok",
+                                "error":  null,
+                                "ocr_len":  4,
+                                "ocr_preview":  "TEST"
+                            }
+                        ]
+}

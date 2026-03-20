@@ -1,0 +1,699 @@
+﻿{
+    "generated_at":  "2026-03-20T12:21:07",
+    "script_path":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\mcp-server\\extract_pdf.php",
+    "lint":  {
+                 "exit_code":  0,
+                 "output":  "No syntax errors detected in mcp-server\\extract_pdf.php",
+                 "ok":  true
+             },
+    "edge_cases":  [
+                       {
+                           "Name":  "no_argument",
+                           "ExitCode":  1,
+                           "IsJson":  true,
+                           "Result":  "error_expected",
+                           "ErrorType":  "other_error",
+                           "Details":  "No se proporciono una fuente de datos."
+                       },
+                       {
+                           "Name":  "file_not_found",
+                           "ExitCode":  1,
+                           "IsJson":  true,
+                           "Result":  "error_expected",
+                           "ErrorType":  "file_not_found",
+                           "Details":  "El archivo no existe: Z:\\no-existe\\archivo.pdf"
+                       },
+                       {
+                           "Name":  "corrupted_pdf",
+                           "ExitCode":  1,
+                           "IsJson":  true,
+                           "Result":  "error_expected",
+                           "ErrorType":  "corrupted",
+                           "Details":  "Unable to find xref (PDF corrupted?)"
+                       },
+                       {
+                           "Name":  "sample_pdf",
+                           "ExitCode":  0,
+                           "IsJson":  true,
+                           "Result":  "ok",
+                           "ErrorType":  "none",
+                           "MissingKeys":  {
+
+                                           },
+                           "Details":  "preview_len=139"
+                       }
+                   ],
+    "sample_sweep":  {
+                         "root":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples",
+                         "summary":  {
+                                         "total":  57,
+                                         "ok":  55,
+                                         "errors":  2,
+                                         "invalid_json":  0,
+                                         "ocr_missing":  0,
+                                         "corrupted":  1,
+                                         "secured_pdf":  1,
+                                         "other_error":  0,
+                                         "success_missing_keys":  0
+                                     }
+                     },
+    "without_mcp":  {
+                        "usable":  true,
+                        "cli_command":  "php mcp-server/extract_pdf.php \u003cruta.pdf\u003e",
+                        "library_example":  "require \u0027mcp-server/extract_pdf.php\u0027; (new PdfProcessor())-\u003eprocesarPdf(\u0027ruta.pdf\u0027);",
+                        "library_probe":  {
+                                              "ExitCode":  0,
+                                              "Output":  "[\"tipo_documento\",\"numero\",\"fecha\",\"total_bi\",\"iva\",\"total_a_pagar\",\"texto_preview\"]",
+                                              "WorksWithoutMcp":  true
+                                          }
+                    },
+    "details":  [
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\corrupted.pdf",
+                        "exit_code":  1,
+                        "status":  "error",
+                        "error_type":  "corrupted",
+                        "error":  "Unable to find xref (PDF corrupted?)",
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  null
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document-Word-Landscape-printedaspdf.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  19
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document1_foxitreader.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  1200
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document1_pdfcreator.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  1200
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document1_pdfcreator_nocompressed.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  1200
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document1_pdfxchange.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  1200
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document2_pdfcreator_nocompressed.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  6
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\Document3_pdfcreator_nocompressed.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  6
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\DocumentWithLotsOfObjects.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  1200
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\ImproperFontFallback.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  1200
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\InternationalChars.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  1200
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\not_really_encrypted.pdf",
+                        "exit_code":  1,
+                        "status":  "error",
+                        "error_type":  "secured_pdf",
+                        "error":  "Secured pdf file are currently not supported.",
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  null
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\SimpleInvoiceFilledExample1.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  663
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\SimpleInvoiceFilledExample2.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  677
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\XMP_Metadata.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  251
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue104a.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  54
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue18.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  19
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue202.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  17
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue229_mac_roman_encoding.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  598
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue267_array_access_on_int.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  550
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue322.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  276
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue33.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  1200
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue331.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  1200
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue334.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  1200
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue336_decode_hexadecimal.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  86
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue356.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  1200
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue359.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  352
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue391.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  1200
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue398.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  802
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue405.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  32
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue450.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  83
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue454.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  1200
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue479.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  597
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue494.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  1200
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue557.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  1200
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue585.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  1098
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue592.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  1200
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue608.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  1200
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue609.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  904
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue621.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  1200
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue629.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  776
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue665.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  0
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue668.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  1200
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue673.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  1200
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue727.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  0
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\Issue95_ANSI.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  7
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\PullRequest457.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  1200
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\bugs\\PullRequest500.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  173
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\Document_Generated_by_SmallPDF.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  183
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\Mostly_German_Text_Generated_By_Microsoft_Word_2016.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  1200
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\Mostly_German_Text_Generated_by_Power_PDF_Create.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  1200
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\Mostly_Turkish_Text_Generated_by_Word_için_Acrobat_PDFMaker_17.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  1024
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\R2RML-Spec_Generated_by_Chromium-SaveAs-PDF.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  1200
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\RichDocument_Generated_by_Libreoffice-6.4_PDF-v1.4.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  813
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  4
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.5.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  4
+                    },
+                    {
+                        "file":  "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\vendor\\smalot\\pdfparser\\samples\\grouped-by-generator\\Wikipedia-PDF_Generated_by_Microsoft_Print-to-PDF.pdf",
+                        "exit_code":  0,
+                        "status":  "ok",
+                        "error_type":  null,
+                        "error":  null,
+                        "missing_keys":  [
+
+                                         ],
+                        "preview_length":  1200
+                    }
+                ]
+}

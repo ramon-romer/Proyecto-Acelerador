@@ -1,0 +1,5 @@
+﻿{
+  "dsn": "sqlite:mcp-server/resultados/fuente_test.db",
+  "query": "SELECT texto FROM docs",
+  "text_column": "texto"
+}
