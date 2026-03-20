@@ -90,7 +90,7 @@ error_reporting(0);
               <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">DOI</label>
                 <div class="cuerpo">
-                  <input type="text" class="form-control" id="exampleInputEmail1" name="doi"
+                  <input type="text" class="form-control" id="exampleInputEmail1" name="orcid"
                     aria-describedby="emailHelp">
 
                 </div>
@@ -210,7 +210,7 @@ $apellidos = $_POST["apellidos"];
 $pass = $_POST["pdw"];
 $pass2 = $_POST["pdw2"];
 $dni = $_POST["dni"];
-$doi = $_POST["doi"];
+$orcid = $_POST["orcid"];
 $telefono = $_POST["telefono"];
 $facultad = $_POST["facultad"];
 $departamento = $_POST["departamento"];
@@ -225,8 +225,8 @@ if (isset($_POST["btn"])) {
 
   if ($pass == $pass2) {
     // 1. Preparamos la consulta
-    $queryusuario = "INSERT INTO tbl_profesor (nombre, apellidos, password, DNI, DOI, telefono, perfil, facultad, departamento, numero_personal, correo) 
-    VALUES ('$nombre', '$apellidos', '$pass', '$dni', '$doi', '$telefono', '$perfil', '$facultad', '$departamento', '$numerop', '$correo')";
+    $queryusuario = "INSERT INTO tbl_profesor (nombre, apellidos, password, DNI, ORCID, telefono, perfil, facultad, departamento, numero_personal, correo) 
+    VALUES ('$nombre', '$apellidos', '$pass', '$dni', '$orcid', '$telefono', '$perfil', '$facultad', '$departamento', '$numerop', '$correo')";
 
     // 2. Ejecutamos la consulta (Guardamos el resultado en $ejecutar)
     $ejecutar = mysqli_query($conn, $queryusuario);
