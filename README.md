@@ -16,7 +16,7 @@ Proyecto Acelerador CEU
      - $dni ==> Varchar(9) se guarda el DNI del profesor, not null
      - $orcid ==> Varchar(19) se guarda el DOI del profesor, not null
      - $telefono ==> Integer(9) se guarda el telefono del profesor, not null
-     - $perfil ==> Varchar(100) se guarda el perfil del profesor, not null
+     - $perfil ==> Enum('ADMIN', 'PROFESOR', 'TUTOR') se guarda el perfil del profesor, not null
      - $facultad ==> Varchar(100) se guarda la facultad del profesor, not null
      - $departamento ==> Varchar(100) se guarda el departamento del profesor, not null
      - $correo ==> Varchar(10) se guarda el correo del profesor, not null
