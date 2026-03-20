@@ -26,42 +26,24 @@ error_reporting(0);
   </header>
   <main>
     <div class="formulario">
-      <form method="POST">
-        <div class="mb-3">
-          <label for="exampleInputEmail1" class="form-label">Coreo electronico</label>
-          <div class="cuerpo">
-            <input type="email" class="form-control" id="exampleInputEmail1" name="usuario"
-              aria-describedby="emailHelp">
-            
-          </div>
 
-        </div>
-        <div class="mb-3" id="contraseña">
-          <label for="exampleInputPassword1" class="form-label">Contraseña</label>
-          <div class="cuerpo">
-            <input type="password" name="pwd" class="form-control" id="exampleInputPassword1">
+      <h1>Listado de grupos</h1>
 
-          </div>
+      <div class="boton">
+        <button id="ocultar" type="submit" name="btn" class="btn btn-primary">Añadir grupo</button>
+      </div>
 
-        </div>
-        <div class="check" id="check">
-          <input type="checkbox" class="form-check-input" id="exampleCheck1">
-          <label class="form-check-label" for="exampleCheck1" id="check2">Confirmo que acepto los términos
-            del
-            contrato de
-            la
-            cuenta y que estoy de acuerdo con la politica de privacidad.</label>
-        </div>
-        <div class="boton">
-          <button type="submit" name="btn" class="btn btn-primary">Ingresar</button>
-        </div>
-        <div class="textoenlace" style="display: flex; justify-content: center; align-items: center;color: lightsgray;">
-          <small><a href="../../acelerador_registro/fronten/index.php" target="_blank" style="color:lightgray">
-              <p>¿No tienes perfil?Registrate!!</p>
-            </a></small>
-        </div>
-      </form>
+
     </div>
+
+    <div class="formulario2">
+
+      <h1>Crear grupo</h1>
+      <div class="boton">
+        <button id="ocultar" type="submit" name="btn" class="btn btn-primary">Crear grupo</button>
+      </div>
+    </div>
+
   </main>
   <footer>
     <div class="mipie" id="mipie">
@@ -116,30 +98,3 @@ error_reporting(0);
 </body>
 
 </html>
-
-<?php
-
-
-
-
-$nombre = $_POST["usuario"];
-$pass = $_POST["pwd"];
-
-//Para iniciar sesión
-if (isset($_POST["btn"])) {
-
-  $queryusuario = mysqli_query($conn, "SELECT * FROM tbl_usuario WHERE correo = '$nombre' and password ='$pass' ");
-  $nr = mysqli_num_rows($queryusuario);
-  //$mostrar	= mysqli_fetch_array($queryusuario); 
-
-  if (($nr == 1) /*&& (password_verify($pass,$mostrar['pass'])*/) {
-    echo "<script> alert('Bienvenido'); </script>";
-    /*
-    session_start();
-    $_SESSION['nombredelusuario']=$nombre;
-    header("Location: principal.php");*/
-  } else {
-    echo "<script> alert('Usuario o contraseña incorrecto.');</script>";
-  }
-}
-?>

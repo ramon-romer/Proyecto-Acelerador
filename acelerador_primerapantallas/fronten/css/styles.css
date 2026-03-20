@@ -1,67 +1,49 @@
 /* Contenedor principal del formulario */
 .formulario {
-    width: 40%;
-    margin: auto;
+    width: 60%;
+    margin: 50px auto;
     background-color: rgba(20, 88, 204, 0.5);
     border-radius: 20px;
+    padding: 30px;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-/* Fila de cada elemento del formulario (label + input) */
-.mb-3 {
+/* Este es el contenedor que obliga a las listas a estar una al lado de la otra */
+.listas {
     display: flex;
     flex-direction: row;
-    width: 63%;
-    gap: 30px;
-    margin: 0 auto;
-    margin-top: 20px;
-    justify-content: space-between;
-    align-items: center;
-}
-
-/* Contenedor interior del formulario */
-.cuerpo {
-    display: flex;
-    position: relative;
-    flex-direction: column;
-    width: 80%;
-}
-
-/* Inputs del formulario */
-.form-control {
-    display: flex;
+    /* CLAVE: Pone lista1 y lista2 en la misma línea */
     width: 100%;
+    margin-top: 30px;
+    justify-content: center;
+    gap: 40px;
+    /* Espacio entre las dos columnas */
 }
 
-/* Etiquetas del formulario */
-.form-label {
-    padding-left: 3px;
-    align-items: center;
+/* Configuración de las dos columnas */
+.lista1,
+.lista2 {
     display: flex;
-    width: 20%;
+    flex-direction: column;
+    /* Restamos la mitad del gap (20px) al 50% para que encajen perfectas */
+    width: calc(50% - 20px);
 }
 
-/* Zona de checkbox */
-.check {
-    width: 64%;
-    gap: 20px;
-    padding: 10px;
-    display: flex;
-    margin: auto;
-    align-items: center;
-    justify-content: flex-start;
-}
 
-/* Contenedor del botón */
+
+
+/* Contenedor del botón centrado abajo */
 .boton {
+    width: 100%;
+    display: flex;
     justify-content: center;
     align-items: center;
-    display: flex;
-    margin-bottom: 20px;
-    margin-top: 20px;
+    margin-top: 30px;
+    margin-bottom: 10px;
 }
+
 
 /* Estilos del body */
 body {
@@ -76,19 +58,9 @@ body {
     color: lightgray;
 }
 
-/* Texto de ayuda del email */
-#emailHelp {
-    color: lightgray;
-}
 
-/* Estilos del formulario */
-form {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 20px;
-}
+
+/*Apartir de aqui solo hay cosas del footer*/
 
 /* Elemento #acele (imagen o caja) */
 #acele {
