@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 20-03-2026 a las 12:30:59
+-- Tiempo de generación: 20-03-2026 a las 13:07:22
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -89,7 +89,7 @@ CREATE TABLE `tbl_profesor` (
   `DNI` varchar(9) NOT NULL,
   `ORCID` varchar(19) NOT NULL,
   `telefono` int(9) NOT NULL,
-  `perfil` varchar(100) NOT NULL,
+  `perfil` enum('ADMIN','PROFESOR','TUTOR') NOT NULL,
   `facultad` varchar(100) NOT NULL,
   `departamento` varchar(100) NOT NULL,
   `correo` varchar(100) NOT NULL,
@@ -101,7 +101,7 @@ CREATE TABLE `tbl_profesor` (
 --
 
 INSERT INTO `tbl_profesor` (`id_profesor`, `nombre`, `apellidos`, `password`, `DNI`, `ORCID`, `telefono`, `perfil`, `facultad`, `departamento`, `correo`, `rama`) VALUES
-(1, 'ramon', 'Romero Rodriguez', '1234', '12345678P', '', 653471245, 'Profesor', 'Ciencias', 'Polinecnica', 'ramon@gmail.com', '');
+(1, 'ramon', 'Romero Rodriguez', '1234', '12345678P', '', 653471245, '', 'Ciencias', 'Polinecnica', 'ramon@gmail.com', '');
 
 -- --------------------------------------------------------
 
@@ -199,61 +199,3 @@ ALTER TABLE `tbl_usuario`
 ALTER TABLE `tbl_convocatoria`
   MODIFY `id_convocatoria` int(10) NOT NULL AUTO_INCREMENT;
 
---
--- AUTO_INCREMENT de la tabla `tbl_grupo`
---
-ALTER TABLE `tbl_grupo`
-  MODIFY `id_grupo` int(10) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de la tabla `tbl_grupo_profesor`
---
-ALTER TABLE `tbl_grupo_profesor`
-  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de la tabla `tbl_profesor`
---
-ALTER TABLE `tbl_profesor`
-  MODIFY `id_profesor` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- AUTO_INCREMENT de la tabla `tbl_publicacion`
---
-ALTER TABLE `tbl_publicacion`
-  MODIFY `id_publicación` int(10) NOT NULL AUTO_INCREMENT;
-
---
--- Restricciones para tablas volcadas
---
-
---
--- Filtros para la tabla `tbl_grupo`
---
-ALTER TABLE `tbl_grupo`
-  ADD CONSTRAINT `fk_tutor` FOREIGN KEY (`id_tutor`) REFERENCES `tbl_profesor` (`id_profesor`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Filtros para la tabla `tbl_grupo_profesor`
---
-ALTER TABLE `tbl_grupo_profesor`
-  ADD CONSTRAINT `fk_grupo` FOREIGN KEY (`id_grupo`) REFERENCES `tbl_grupo` (`id_grupo`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_profesor` FOREIGN KEY (`id_profesor`) REFERENCES `tbl_profesor` (`id_profesor`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Filtros para la tabla `tbl_merito`
---
-ALTER TABLE `tbl_merito`
-  ADD CONSTRAINT `FK_convocatoria` FOREIGN KEY (`id_convocatoria`) REFERENCES `tbl_convocatoria` (`id_convocatoria`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `FK_publicacion` FOREIGN KEY (`id_publicacion`) REFERENCES `tbl_publicacion` (`id_publicación`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Filtros para la tabla `tbl_publicacion`
---
-ALTER TABLE `tbl_publicacion`
-  ADD CONSTRAINT `FK_autor` FOREIGN KEY (`ORCID_autor`) REFERENCES `tbl_profesor` (`ORCID`) ON DELETE CASCADE ON UPDATE CASCADE;
-COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
