@@ -5,8 +5,23 @@
     background-color: rgba(20, 88, 204, 0.5);
     border-radius: 20px;
     display: flex;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+
     flex-direction: column;
     align-items: center;
+    margin-bottom: 70px;
+    margin-top: 45px;
+}
+
+.contenedor {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    margin-bottom: 95px;
+    margin-top: 95px;
 }
 
 /* Fila de cada elemento del formulario (label + input) */
@@ -20,6 +35,13 @@
     justify-content: space-between;
     align-items: center;
 }
+
+header {
+    height: 30px;
+}
+
+
+
 
 /* Contenedor interior del formulario */
 .cuerpo {

@@ -5,7 +5,10 @@
     border-radius: 20px;
     display: flex;
     flex-direction: column;
-   
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 
 
