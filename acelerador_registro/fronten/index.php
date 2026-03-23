@@ -171,8 +171,8 @@ include('config.php');
                 <label class="form-label">Perfil</label>
                 <div class="cuerpo">
                   <div style="position:relative;">
-                    <select id="select" class="form-select" name="perfil">
-                      <option>Seleccione una perfil</option>
+                    <select id="select" class="form-select" name="perfil" value="">
+                      <option value="" disabled selected hidden>Seleccione un perfil</option>
                       <option>Profesor</option>
                       <option>Tutor</option>
                     </select>
@@ -185,7 +185,7 @@ include('config.php');
                 <div class="cuerpo">
                   <div style="position:relative;">
                     <select class="form-select" id="rama" name="rama">
-                      <option value="">Seleccione una rama</option>
+                      <option value="" disabled selected hidden>Seleccione una rama</option>
                       <option value="SALUD">SALUD</option>
                       <option value="TECNICAS">Técnicas</option>
                       <option value="SYJ">S Y J</option>
