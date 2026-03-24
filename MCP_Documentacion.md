@@ -176,3 +176,77 @@ El script está diseñado para ser parte del flujo del MCP. Esto significa que:
   - Coordina con el equipo encargado del scraping para definir cómo se integrará su solución con este script.
 - **Documentación continua**:
   - Actualiza esta documentación a medida que se implementen nuevas funcionalidades o se realicen cambios en el flujo.
+---
+
+## ACTUALIZACION 2026-03-23 (ROBUSTEZ Y ESCALABILIDAD)
+
+### Estado actual
+Se reforzo el flujo de extraccion para trabajar de forma estable con PDFs y bases de datos, incluyendo casos de alto volumen.
+
+### Mejoras implementadas
+1. Extraccion PDF robusta:
+- Fallback de binarios OCR en entorno local (`mcp-server/.tools`) y rutas globales.
+- Resolucion automatica de `TESSDATA_PREFIX`.
+- OCR por lotes de paginas para reducir picos de memoria y disco.
+- Limites configurables para OCR:
+  - `MAX_OCR_PAGES` (default 400)
+  - `OCR_BATCH_SIZE` (default 10)
+
+2. Estrategia sync/async para PDFs:
+- Diagnostico previo para decidir procesamiento sincrono o asincrono.
+- Umbrales configurables:
+  - `MAX_SYNC_PDF_BYTES` (default 15MB)
+  - `MAX_SYNC_PAGES` (default 80)
+- Si supera umbrales, se encola job y se devuelve `job_id`.
+
+3. API de procesamiento:
+- `POST /extract-pdf`: recibe PDF y procesa sync/async segun diagnostico.
+- `POST /extract-data`: entrada unificada por JSON para `fuente.tipo=pdf` o `fuente.tipo=db`.
+- `GET /jobs/{job_id}`: consulta estado y resultado/error de jobs.
+
+4. Worker asincrono:
+- Nuevo script `mcp-server/worker_jobs.php`.
+- Modos:
+  - `--once` para procesar una tanda.
+  - `--loop` para procesamiento continuo.
+
+5. Robustez en base de datos:
+- Lectura iterativa (`fetch`) en lugar de `fetchAll`.
+- Limites de seguridad:
+  - `max_rows` (maximo 10000)
+  - `max_text_chars` / `MAX_DB_TEXT_CHARS` (default 2000000)
+  - `query_timeout_seconds` / `MAX_DB_QUERY_SECONDS` (default 30)
+- Manejo de errores controlado cuando se exceden limites.
+
+6. Robustez de entrada JSON:
+- Tolerancia a BOM y a `Content-Type` imperfecto cuando el body es JSON valido.
+
+7. Configuracion multi-fuente:
+- Config activo con defaults seguros:
+  - `mcp-server/resultados/fuente_db_config.json`
+- Plantillas por fuente:
+  - `mcp-server/resultados/fuente_db_config_aneca.example.json`
+  - `mcp-server/resultados/fuente_db_config_dialnet.example.json`
+
+### Validacion realizada
+- Lint OK en scripts principales (`extract_pdf.php`, `server.php`, `worker_jobs.php`).
+- Unit tests OK (`passed=13 failed=0`).
+- Validado flujo async con PDF grande real (encolado, proceso de worker y consulta por `job_id`).
+- Validado endpoint unificado `extract-data` para `db` y `pdf`.
+
+### Pendiente (proxima fase)
+Se deja preparado para implementar cuando esten definidas las reglas de negocio y contratos:
+- Orquestacion por criterios (`ORCID`, `DOI`, `rama`).
+- Reglas por fuente (ANECA, Dialnet y PDFs origen X/Y).
+- Matching consolidado y salida JSON unificada por evidencia.
+- Contratos de entrada/salida y JSON Schema formal.
+
+### Referencia tecnica
+Para trazabilidad detallada de esta sesion:
+- `mcp-server/REGISTRO_TECNICO_2026-03-23.md`
+
+### Actualizacion de referencias (2026-03-24)
+Documentacion consolidada MVP disponible en:
+- `docs/2026-03-24-resumen-trabajo.md`
+- `docs/estado-tecnico-mvp.md`
+- `docs/estrategia-testing-mvp.md`

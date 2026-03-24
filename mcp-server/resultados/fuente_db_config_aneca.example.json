@@ -1,0 +1,13 @@
+{
+  "dsn": "mysql:host=HOST_ANECA;port=3306;dbname=DB_ANECA;charset=utf8mb4",
+  "usuario": "USUARIO_ANECA",
+  "password": "PASSWORD_ANECA",
+  "query": "SELECT campo_texto FROM tabla_origen WHERE fecha >= :desde ORDER BY id DESC",
+  "params": {
+    "desde": "2025-01-01"
+  },
+  "text_column": "campo_texto",
+  "max_rows": 3000,
+  "max_text_chars": 3000000,
+  "query_timeout_seconds": 45
+}

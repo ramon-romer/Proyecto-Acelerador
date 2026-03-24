@@ -1,5 +1,8 @@
-﻿{
+{
   "dsn": "sqlite:mcp-server/resultados/fuente_test.db",
   "query": "SELECT texto FROM docs",
-  "text_column": "texto"
+  "text_column": "texto",
+  "max_rows": 1000,
+  "max_text_chars": 2000000,
+  "query_timeout_seconds": 30
 }

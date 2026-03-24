@@ -89,6 +89,9 @@ final class PdfProcessor
     private DocumentoExtractor $documentoExtractor;
     private ?string $pdftoppmPath;
     private ?string $tesseractPath;
+    private ?string $tessdataPrefix;
+    private int $maxOcrPages;
+    private int $ocrBatchSize;
 
     public function __construct(?DocumentoExtractor $documentoExtractor = null)
     {
@@ -97,6 +100,7 @@ final class PdfProcessor
         $this->pdftoppmPath = $this->resolverRutaBinario(
             'PDFTOPPM_PATH',
             [
+                __DIR__ . DIRECTORY_SEPARATOR . '.tools' . DIRECTORY_SEPARATOR . 'poppler' . DIRECTORY_SEPARATOR . 'poppler-25.07.0' . DIRECTORY_SEPARATOR . 'Library' . DIRECTORY_SEPARATOR . 'bin' . DIRECTORY_SEPARATOR . 'pdftoppm.exe',
                 'C:\\poppler\\Library\\bin\\pdftoppm.exe',
                 'C:\\poppler\\bin\\pdftoppm.exe',
             ],
@@ -104,9 +108,23 @@ final class PdfProcessor
         );
         $this->tesseractPath = $this->resolverRutaBinario(
             'TESSERACT_PATH',
-            ['C:\\Program Files\\Tesseract-OCR\\tesseract.exe'],
+            [
+                'C:\\Program Files\\Tesseract-OCR\\tesseract.exe',
+                'C:\\Program Files (x86)\\Tesseract-OCR\\tesseract.exe',
+                __DIR__ . DIRECTORY_SEPARATOR . '.tools' . DIRECTORY_SEPARATOR . 'tesseract' . DIRECTORY_SEPARATOR . 'tesseract.exe',
+            ],
             'tesseract'
         );
+        $this->tessdataPrefix = $this->resolverDirectorio(
+            'TESSDATA_PREFIX',
+            [
+                __DIR__ . DIRECTORY_SEPARATOR . '.tools' . DIRECTORY_SEPARATOR . 'tessdata',
+                'C:\\Program Files\\Tesseract-OCR\\tessdata',
+                'C:\\Program Files (x86)\\Tesseract-OCR\\tessdata',
+            ]
+        );
+        $this->maxOcrPages = $this->leerEnteroEnv('MAX_OCR_PAGES', 400, 1, 5000);
+        $this->ocrBatchSize = $this->leerEnteroEnv('OCR_BATCH_SIZE', 10, 1, 100);
     }
 
     public function procesarPdf(string $rutaPdf): array
@@ -121,6 +139,40 @@ final class PdfProcessor
 
         $texto = $this->obtenerTextoDesdePdf($rutaPdf);
         return $this->extraerCamposDesdeTexto($texto);
+    }
+
+    public function diagnosticarPdf(string $rutaPdf): array
+    {
+        if (!is_file($rutaPdf)) {
+            throw new RuntimeException('El archivo no existe: ' . $rutaPdf);
+        }
+
+        $fileSize = filesize($rutaPdf);
+        if ($fileSize === false) {
+            $fileSize = 0;
+        }
+
+        $maxSyncPdfBytes = $this->leerEnteroEnv('MAX_SYNC_PDF_BYTES', 15 * 1024 * 1024, 1024 * 1024, 1024 * 1024 * 1024);
+        $maxSyncPages = $this->leerEnteroEnv('MAX_SYNC_PAGES', 80, 1, 5000);
+        $totalPaginas = $this->contarPaginasPdf($rutaPdf);
+
+        $reasons = [];
+        if ($fileSize > $maxSyncPdfBytes) {
+            $reasons[] = 'size_exceeds_sync_threshold';
+        }
+        if ($totalPaginas !== null && $totalPaginas > $maxSyncPages) {
+            $reasons[] = 'pages_exceed_sync_threshold';
+        }
+
+        return [
+            'file_size_bytes' => $fileSize,
+            'total_pages' => $totalPaginas,
+            'ocr_available' => $this->ocrDisponible(),
+            'max_sync_pdf_bytes' => $maxSyncPdfBytes,
+            'max_sync_pages' => $maxSyncPages,
+            'recommended_mode' => empty($reasons) ? 'sync' : 'async',
+            'reasons' => $reasons,
+        ];
     }
 
     public function procesarFuente(array $fuente): array
@@ -202,6 +254,20 @@ final class PdfProcessor
         if ($maxRows > 10000) {
             $maxRows = 10000;
         }
+        $maxTextChars = (int)($fuente['max_text_chars'] ?? $this->leerEnteroEnv('MAX_DB_TEXT_CHARS', 2_000_000, 100, 20_000_000));
+        if ($maxTextChars < 100) {
+            $maxTextChars = 100;
+        }
+        if ($maxTextChars > 20_000_000) {
+            $maxTextChars = 20_000_000;
+        }
+        $queryTimeoutSeconds = (int)($fuente['query_timeout_seconds'] ?? $this->leerEnteroEnv('MAX_DB_QUERY_SECONDS', 30, 1, 600));
+        if ($queryTimeoutSeconds < 1) {
+            $queryTimeoutSeconds = 1;
+        }
+        if ($queryTimeoutSeconds > 600) {
+            $queryTimeoutSeconds = 600;
+        }
 
         $params = $fuente['params'] ?? [];
         if (is_string($params) && trim($params) !== '') {
@@ -216,29 +282,43 @@ final class PdfProcessor
         }
 
         try {
+            $pdoOptions = [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            ];
+            if (defined('PDO::ATTR_TIMEOUT')) {
+                $pdoOptions[PDO::ATTR_TIMEOUT] = $queryTimeoutSeconds;
+            }
+
             $pdo = new PDO(
                 $dsn,
                 is_string($usuario) ? $usuario : null,
                 is_string($password) ? $password : null,
-                [
-                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                ]
+                $pdoOptions
             );
             $stmt = $pdo->prepare($query);
             $stmt->execute($params);
-            $rows = $stmt->fetchAll();
         } catch (Throwable $e) {
             throw new RuntimeException('Error al consultar base de datos: ' . $e->getMessage());
         }
 
-        if (!is_array($rows) || count($rows) === 0) {
-            throw new RuntimeException('La consulta a base de datos no devolvio filas.');
-        }
-
         $partesTexto = [];
         $count = 0;
-        foreach ($rows as $row) {
+        $charsAcumulados = 0;
+        $inicio = microtime(true);
+
+        while (true) {
+            if ((microtime(true) - $inicio) > $queryTimeoutSeconds) {
+                throw new RuntimeException(
+                    'La construccion de texto desde DB excedio el timeout (' . $queryTimeoutSeconds . 's).'
+                );
+            }
+
+            $row = $stmt->fetch();
+            if ($row === false) {
+                break;
+            }
+
             if ($count >= $maxRows) {
                 break;
             }
@@ -251,7 +331,16 @@ final class PdfProcessor
             if ($columnaTexto !== '' && array_key_exists($columnaTexto, $row)) {
                 $valor = $row[$columnaTexto];
                 if ($valor !== null && !is_array($valor) && !is_object($valor)) {
-                    $partesTexto[] = (string)$valor;
+                    $textoFila = (string)$valor;
+                    $lenFila = mb_strlen($textoFila);
+                    if (($charsAcumulados + $lenFila) > $maxTextChars) {
+                        throw new RuntimeException(
+                            'Texto acumulado desde DB excede max_text_chars (' . $maxTextChars . '). '
+                            . 'Reduce el alcance de la query o aumenta max_text_chars.'
+                        );
+                    }
+                    $partesTexto[] = $textoFila;
+                    $charsAcumulados += $lenFila + 1;
                 }
                 continue;
             }
@@ -264,8 +353,21 @@ final class PdfProcessor
                 $linea[] = (string)$key . ': ' . (string)$valor;
             }
             if (!empty($linea)) {
-                $partesTexto[] = implode(' | ', $linea);
+                $textoFila = implode(' | ', $linea);
+                $lenFila = mb_strlen($textoFila);
+                if (($charsAcumulados + $lenFila) > $maxTextChars) {
+                    throw new RuntimeException(
+                        'Texto acumulado desde DB excede max_text_chars (' . $maxTextChars . '). '
+                        . 'Reduce el alcance de la query o aumenta max_text_chars.'
+                    );
+                }
+                $partesTexto[] = $textoFila;
+                $charsAcumulados += $lenFila + 1;
             }
+        }
+
+        if ($count === 0) {
+            throw new RuntimeException('La consulta a base de datos no devolvio filas.');
         }
 
         $texto = $this->normalizarTexto(implode("\n", $partesTexto));
@@ -288,13 +390,48 @@ final class PdfProcessor
         $textoCompleto = '';
 
         try {
-            $imagenes = $this->convertirPdfAImagenes($rutaPdf, $directorioTemporal);
+            $totalPaginas = $this->contarPaginasPdf($rutaPdf);
+            if ($totalPaginas !== null) {
+                if ($totalPaginas > $this->maxOcrPages) {
+                    throw new RuntimeException(
+                        'PDF demasiado largo para OCR en modo sincrono: ' . $totalPaginas
+                        . ' paginas (maximo permitido: ' . $this->maxOcrPages . ').'
+                    );
+                }
 
-            if (empty($imagenes)) {
-                throw new RuntimeException('No se generaron imagenes para OCR.');
+                for ($inicio = 1; $inicio <= $totalPaginas; $inicio += $this->ocrBatchSize) {
+                    $fin = min($totalPaginas, $inicio + $this->ocrBatchSize - 1);
+                    $imagenes = $this->convertirPdfAImagenes($rutaPdf, $directorioTemporal, $inicio, $fin);
+                    if (empty($imagenes)) {
+                        continue;
+                    }
+                    $textoCompleto .= $this->procesarImagenesConOcr($imagenes, $directorioTemporal);
+                }
+            } else {
+                // Fallback robusto: escanea pagina por pagina hasta el limite, evitando generar todo el PDF de una vez.
+                $pagina = 1;
+                $paginasProcesadas = 0;
+                while ($pagina <= $this->maxOcrPages) {
+                    $imagenes = $this->convertirPdfAImagenes($rutaPdf, $directorioTemporal, $pagina, $pagina);
+                    if (empty($imagenes)) {
+                        break;
+                    }
+                    $textoCompleto .= $this->procesarImagenesConOcr($imagenes, $directorioTemporal);
+                    $paginasProcesadas++;
+                    $pagina++;
+                }
+
+                if ($pagina > $this->maxOcrPages) {
+                    throw new RuntimeException(
+                        'OCR alcanzo el limite de paginas (' . $this->maxOcrPages . '). '
+                        . 'Aumenta MAX_OCR_PAGES o procesa el documento por lotes.'
+                    );
+                }
+
+                if ($paginasProcesadas === 0) {
+                    throw new RuntimeException('No se generaron imagenes para OCR.');
+                }
             }
-
-            $textoCompleto = $this->procesarImagenesConOcr($imagenes, $directorioTemporal);
         } finally {
             $this->eliminarDirectorioRecursivo($directorioTemporal);
         }
@@ -302,16 +439,29 @@ final class PdfProcessor
         return $textoCompleto;
     }
 
-    private function convertirPdfAImagenes(string $rutaPdf, string $directorioTemporal): array
+    private function convertirPdfAImagenes(
+        string $rutaPdf,
+        string $directorioTemporal,
+        ?int $paginaInicio = null,
+        ?int $paginaFin = null
+    ): array
     {
         if ($this->pdftoppmPath === null) {
             throw new RuntimeException('pdftoppm no disponible para conversion a imagen.');
         }
 
-        $prefijoSalida = $directorioTemporal . DIRECTORY_SEPARATOR . 'pagina';
-        $comando = escapeshellarg($this->pdftoppmPath)
-            . ' -png '
-            . escapeshellarg($rutaPdf)
+        $prefijoSalida = $directorioTemporal . DIRECTORY_SEPARATOR . 'pagina_' . uniqid('', true);
+        $comando = escapeshellarg($this->pdftoppmPath) . ' -png ';
+
+        if ($paginaInicio !== null) {
+            $comando .= '-f ' . (int)$paginaInicio . ' ';
+        }
+        if ($paginaFin !== null) {
+            $comando .= '-l ' . (int)$paginaFin . ' ';
+        }
+
+        $comando .=
+            escapeshellarg($rutaPdf)
             . ' '
             . escapeshellarg($prefijoSalida)
             . ' 2>&1';
@@ -334,6 +484,10 @@ final class PdfProcessor
     {
         if ($this->tesseractPath === null) {
             throw new RuntimeException('tesseract no disponible para OCR.');
+        }
+
+        if ($this->tessdataPrefix !== null) {
+            putenv('TESSDATA_PREFIX=' . $this->tessdataPrefix);
         }
 
         $textoCompleto = '';
@@ -363,6 +517,8 @@ final class PdfProcessor
             }
 
             $textoCompleto .= file_get_contents($txtGenerado) . "\n\n";
+            @unlink($txtGenerado);
+            @unlink($rutaImagen);
         }
 
         return $textoCompleto;
@@ -464,6 +620,58 @@ final class PdfProcessor
         return $estado === 0 && !empty($salida);
     }
 
+    private function resolverDirectorio(string $envVar, array $rutasFallback): ?string
+    {
+        $rutaEnv = getenv($envVar);
+        if (is_string($rutaEnv) && trim($rutaEnv) !== '') {
+            $rutaEnv = trim($rutaEnv);
+            if (is_dir($rutaEnv)) {
+                return $rutaEnv;
+            }
+        }
+
+        foreach ($rutasFallback as $ruta) {
+            if (is_dir($ruta)) {
+                return $ruta;
+            }
+        }
+
+        return null;
+    }
+
+    private function contarPaginasPdf(string $rutaPdf): ?int
+    {
+        try {
+            $pdf = $this->parser->parseFile($rutaPdf);
+            $paginas = $pdf->getPages();
+            if (is_array($paginas) && count($paginas) > 0) {
+                return count($paginas);
+            }
+        } catch (Throwable $e) {
+            return null;
+        }
+
+        return null;
+    }
+
+    private function leerEnteroEnv(string $envVar, int $default, int $min, int $max): int
+    {
+        $valor = getenv($envVar);
+        if (!is_string($valor) || trim($valor) === '') {
+            return $default;
+        }
+
+        $parseado = (int)trim($valor);
+        if ($parseado < $min) {
+            return $min;
+        }
+        if ($parseado > $max) {
+            return $max;
+        }
+
+        return $parseado;
+    }
+
     private function crearDirectorioTemporal(): string
     {
         $base = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'pdf_extract_' . uniqid('', true);
@@ -539,7 +747,7 @@ function usoCli(): string
         'Uso:',
         '  php mcp-server/extract_pdf.php <ruta_pdf>',
         '  php mcp-server/extract_pdf.php --fuente=pdf --ruta=<ruta_pdf>',
-        '  php mcp-server/extract_pdf.php --fuente=db --dsn=<dsn> --query=<sql> [--user=<u>] [--pass=<p>] [--text_column=<col>] [--params=<json>]',
+        '  php mcp-server/extract_pdf.php --fuente=db --dsn=<dsn> --query=<sql> [--user=<u>] [--pass=<p>] [--text_column=<col>] [--params=<json>] [--max_rows=<n>] [--max_text_chars=<n>] [--query_timeout_seconds=<n>]',
         '  php mcp-server/extract_pdf.php --fuente=db --config=<archivo_json>',
     ]);
 }
@@ -649,6 +857,12 @@ function parsearArgumentosCli(array $argv): array
         }
         if (isset($options['max_rows'])) {
             $fuente['max_rows'] = (int)$options['max_rows'];
+        }
+        if (isset($options['max_text_chars'])) {
+            $fuente['max_text_chars'] = (int)$options['max_text_chars'];
+        }
+        if (isset($options['query_timeout_seconds'])) {
+            $fuente['query_timeout_seconds'] = (int)$options['query_timeout_seconds'];
         }
         if (isset($options['params'])) {
             $fuente['params'] = (string)$options['params'];

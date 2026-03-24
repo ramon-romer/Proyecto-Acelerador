@@ -55,13 +55,21 @@ Ejemplo de `fuente_db_config.json`:
 {
   "dsn": "sqlite:mcp-server/resultados/fuente_test.db",
   "query": "SELECT texto FROM docs",
-  "text_column": "texto"
+  "text_column": "texto",
+  "max_rows": 1000,
+  "max_text_chars": 2000000,
+  "query_timeout_seconds": 30
 }
 ```
 
 Notas:
 - `--params=<json>` permite enviar parametros para consultas preparadas.
 - `--max_rows=<n>` limita filas leidas desde DB.
+- `--max_text_chars=<n>` limita el texto total construido desde DB.
+- `--query_timeout_seconds=<n>` corta consultas/procesado muy lentos.
+- Para multi-fuente (ANECA, Dialnet, etc.) puedes mantener un JSON por fuente en `mcp-server/resultados/`:
+  - `fuente_db_config_aneca.example.json`
+  - `fuente_db_config_dialnet.example.json`
 
 ## Integracion como libreria
 
@@ -130,3 +138,14 @@ powershell -NoProfile -ExecutionPolicy Bypass -File mcp-server/test_extract_pdf_
 Resultados detallados de la ultima bateria "bestia":
 - Ver `mcp-server/TESTS_RESULTS.md`
 - Ver reportes en `mcp-server/resultados/`
+
+## Registro de avances
+
+- Registro tecnico de la sesion actual:
+  - `mcp-server/REGISTRO_TECNICO_2026-03-23.md`
+
+## Documentacion MVP (2026-03-24)
+
+- `docs/2026-03-24-resumen-trabajo.md`
+- `docs/estado-tecnico-mvp.md`
+- `docs/estrategia-testing-mvp.md`

@@ -7,3 +7,9 @@ Proyecto Acelerador CEU
      El siguiente campo sería "XXX" donde XXX puede ser "FRO", "LOG", "REG", etc según sea frontend, loging, registro
      El siguente campo es el numero de orden que será 01 en adelante
      Ejemplo: ACC-BAC-FOR-01 ==> acelerador-backend-formulario-01
+
+## Documentacion MVP (2026-03-24)
+
+- [Resumen de trabajo](docs/2026-03-24-resumen-trabajo.md)
+- [Estado tecnico MVP](docs/estado-tecnico-mvp.md)
+- [Estrategia de testing y calidad](docs/estrategia-testing-mvp.md)
