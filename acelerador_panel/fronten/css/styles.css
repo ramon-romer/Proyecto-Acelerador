@@ -1,0 +1,274 @@
+/* Contenedor principal del formulario */
+.formulario {
+    width: 40%;
+    margin: auto;
+    background-color: rgba(20, 88, 204, 0.5);
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Cuadro de error */
+.cuadroPrincipal {
+    width: 40%;
+    min-width: 350px;
+    height: auto;
+    min-height: 350px;
+    margin: 50px auto;
+    background-color: rgba(20, 88, 204, 0.4);
+    backdrop-filter: blur(2px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    border-radius: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.cuadroPrincipal:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.45);
+}
+
+.cuadroError {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.error-title h2 {
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.hover-text-white {
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.hover-text-white:hover {
+    color: white !important;
+}
+
+.transition-all {
+    transition: all 0.3s ease;
+}
+
+/* Fila de cada elemento del formulario (label + input) */
+.mb-3 {
+    display: flex;
+    flex-direction: row;
+    width: 63%;
+    gap: 30px;
+    margin: 0 auto;
+    margin-top: 20px;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Contenedor interior del formulario */
+.cuerpo {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    width: 80%;
+}
+
+/* Inputs del formulario */
+.form-control {
+    display: flex;
+    width: 100%;
+}
+
+/* Etiquetas del formulario */
+.form-label {
+    padding-left: 3px;
+    align-items: center;
+    display: flex;
+    width: 20%;
+}
+
+/* Zona de checkbox */
+.check {
+    width: 64%;
+    gap: 20px;
+    padding: 10px;
+    display: flex;
+    margin: auto;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+/* Contenedor del botón */
+.boton {
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+/* Estilos del body */
+body {
+    width: 100%;
+    height: 100vh;
+    min-height: 30vh;
+    background-image: url('../img/Image (3).jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: fixed;
+    color: lightgray;
+}
+
+/* Texto de ayuda del email */
+#emailHelp {
+    color: lightgray;
+}
+
+/* Estilos del formulario */
+form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 20px;
+}
+
+/* Contenedor de la lista unificada del perfil */
+.lista-perfil {
+    width: 80%;
+    max-width: 600px;
+    margin: 20px auto;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Elemento #acele (imagen o caja) */
+#acele {
+    height: 200px;
+    width: 200px;
+    object-fit: contain;
+}
+
+/* Footer principal */
+.mipie {
+    background-color: rgba(20, 88, 204, 0.5);
+    color: #c5c6c7;
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-top: 30px;
+}
+
+/* Imágenes dentro del footer */
+.mipie img {
+    width: 90px;
+    height: 90px;
+    margin-top: 15px;
+    margin-left: 15px;
+}
+
+/* Texto dentro de la dirección del footer */
+.direccion p {
+    margin-left: 15px;
+}
+
+/* Columna de dirección del footer */
+.direccion {
+    max-height: 15vh;
+    display: flex;
+    width: 30%;
+    flex-direction: column;
+}
+
+/* Contenedor de requisitos legales */
+.requerimientolegal {
+    max-height: 15vh;
+    display: flex;
+    width: 70%;
+    flex-direction: row;
+    margin-top: 15px;
+}
+
+/* Columnas internas de la zona legal */
+.columna {
+    max-height: 15vh;
+    display: flex;
+    width: 33%;
+    flex-direction: column;
+}
+
+/* Pie final del footer */
+.piepag {
+    margin-top: 10px;
+    display: flex;
+    max-height: 15vh;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Estilo principal de la tabla con efecto Glassmorphism */
+.tabla-glass {
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    color: white;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+/* Cabecera de la tabla */
+.tabla-glass th {
+    background-color: rgba(0, 0, 0, 0.3);
+    color: white;
+    border-bottom: 2px solid rgba(255,255,255,0.2);
+    padding: 15px;
+}
+
+/* Celdas del cuerpo de la tabla */
+.tabla-glass td {
+    background-color: rgba(0, 0, 0, 0.1);
+    color: white;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding: 15px;
+}
+
+/* Efecto highlight (hover) en las filas de la tabla */
+.tabla-glass tbody tr:hover td {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Botón estandarizado de Volver */
+.btn-volver {
+    background-color: rgba(20, 88, 204, 0.8);
+    border: none;
+    color: white;
+}
+
+/* Efecto hover del botón Volver */
+.btn-volver:hover {
+    background-color: rgba(20, 88, 204, 1);
+    color: white;
+}
+
+/* Contenedor más ancho del formulario (para la tabla) */
+.formulario-tabla {
+    width: 80%;
+    max-width: 1000px;
+    margin: 50px auto;
+    background-color: rgba(20, 88, 204, 0.4);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    border-radius: 24px;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
