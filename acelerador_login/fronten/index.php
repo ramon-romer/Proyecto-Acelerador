@@ -1,32 +1,38 @@
 <?php
-include("config.php"); // ← ESTE ES TU ARCHIVO DE CONEXIÓN REAL
+include("config.php");
 session_start();
 error_reporting(0);
 
-$nombre = $_POST["usuario"];
-$pass = $_POST["pwd"];
-
-//Para iniciar sesión
 if (isset($_POST["btn"])) {
 
-  $queryusuario = mysqli_query($conn, "SELECT * FROM tbl_usuario WHERE correo = '$nombre' and password ='$pass' ");
-  $nr = mysqli_num_rows($queryusuario);
+  $correo = $_POST["usuario"];
+  $passIntroducida = $_POST["pwd"];
 
-  if ($nr == 1) {
+  // 1. Buscar usuario por correo
+  $query = mysqli_query($conn, "SELECT * FROM tbl_usuario WHERE correo = '$correo' LIMIT 1");
 
-    // 🔥 Guardamos el usuario logueado (tal como tú lo llamaste)
-    $_SESSION['nombredelusuario'] = $nombre;
+  if (mysqli_num_rows($query) == 1) {
 
-    // 🔥 Redirigir a tu pantalla de perfil
-    header("Location: ../../acelerador_primerapantallas/fronten/index.php");
-    exit();
+    $userData = mysqli_fetch_assoc($query);
+    $hashEnBD = $userData["password"];
+
+    // 2. Comparar contraseña introducida con el hash
+    if (password_verify($passIntroducida, $hashEnBD)) {
+
+      $_SESSION['nombredelusuario'] = $correo;
+      header("Location: ../../acelerador_primerapantallas/fronten/index.php");
+      exit();
+
+    } else {
+      echo "<script>alert('Usuario o contraseña incorrecto.');</script>";
+    }
 
   } else {
     echo "<script>alert('Usuario o contraseña incorrecto.');</script>";
   }
 }
-
 ?>
+
 
 
 <!doctype html>

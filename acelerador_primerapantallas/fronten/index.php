@@ -2,9 +2,6 @@
 session_start();
 include("config.php");
 
-// ===============================
-// PROTEGER LA PANTALLA
-// ===============================
 if (!isset($_SESSION['nombredelusuario'])) {
   echo "<script>alert('Debes iniciar sesión primero'); window.location='../../acelerador_registro/login.php';</script>";
   exit();
@@ -31,24 +28,60 @@ if (isset($_POST["guardar"])) {
   // Sanitizar entradas
   function limpiar($conn, $campo)
   {
-    return mysqli_real_escape_string($conn, trim($_POST[$campo]));
+    return mysqli_real_escape_string($conn, trim($_POST[$campo] ?? ''));
   }
 
-  $nombre = limpiar($conn, "nombre");
-  $apellidos = limpiar($conn, "apellidos");
-  $dni = limpiar($conn, "dni");
-  $departamento = limpiar($conn, "departamento");
-  $orcid = limpiar($conn, "orcid");
-  $telefono = limpiar($conn, "telefono");
-  $perfil = limpiar($conn, "perfil");
-  $facultad = limpiar($conn, "facultad");
-  $rama = limpiar($conn, "rama");
-  $correoNuevo = limpiar($conn, "correoNuevo");
-  $pass = limpiar($conn, "password");
+  $nombre        = limpiar($conn, "nombre");
+  $apellidos     = limpiar($conn, "apellidos");
+  $dni           = limpiar($conn, "dni");
+  $departamento  = limpiar($conn, "departamento");
+  $orcid         = limpiar($conn, "orcid");
+  $telefono      = limpiar($conn, "telefono");
+  $perfil        = limpiar($conn, "perfil");       // viene como "Profesor"/"Tutor" en el <select>
+  $facultad      = limpiar($conn, "facultad");
+  $rama          = limpiar($conn, "rama");         // puede venir como "TECNICAS", "SYJ", etc.
+  $correoNuevo   = limpiar($conn, "correoNuevo");
+  $pass          = limpiar($conn, "password");
 
   $errores = [];
 
-  // Validaciones
+  // =========================
+  // NORMALIZAR PERFIL Y RAMA
+  // (sin tocar tu HTML: solo adaptamos al ENUM de BD)
+  // =========================
+
+  // PERFIL: normalizamos a mayúsculas -> "PROFESOR"/"TUTOR"
+  $perfil = strtoupper($perfil);
+  $perfilesValidos = ["PROFESOR", "TUTOR"];
+  if (!in_array($perfil, $perfilesValidos, true)) {
+    $errores[] = "El perfil seleccionado no es válido.";
+  }
+
+  // RAMA: normalizamos y mapeamos a los literales del ENUM de BD
+  // (ajusta el mapa si tu ENUM fuera diferente)
+  $ramaUp = strtoupper($rama);
+  $ramaUp = preg_replace('/\s+/', ' ', $ramaUp); // compacta espacios para "S   Y   J" -> "S Y J"
+
+  $mapRama = [
+    'SALUD'          => 'SALUD',
+    'TECNICAS'       => 'TECNICA',     // del form a BD (si tu ENUM es "TECNICA")
+    'TECNICA'        => 'TECNICA',
+    'SYJ'            => 'S Y J',       // del form sin espacios a BD con espacios
+    'S Y J'          => 'S Y J',
+    'HUMANIDADES'    => 'HUMANIDADES',
+    'EXPERIMENTALES' => 'EXPERIMENTALES',
+  ];
+  $rama = $mapRama[$ramaUp] ?? $ramaUp;
+
+  $ramasValidas = ["SALUD", "TECNICA", "S Y J", "HUMANIDADES", "EXPERIMENTALES"];
+  if (!in_array($rama, $ramasValidas, true)) {
+    $errores[] = "La rama seleccionada no es válida.";
+  }
+
+  // =========================
+  // VALIDACIONES
+  // =========================
+
   if (!preg_match('/^[0-9]{8}[A-Za-z]$/', $dni)) {
     $errores[] = "El DNI debe seguir el formato 12345678X";
   }
@@ -59,11 +92,6 @@ if (isset($_POST["guardar"])) {
 
   if (!preg_match('/^[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}$/', $orcid)) {
     $errores[] = "El ORCID debe tener el formato 0000-0000-0000-0000";
-  }
-
-  $ramasValidas = ["SALUD", "TECNICAS", "SYJ", "HUMANIDADES", "EXPERIMENTALES"];
-  if (!in_array($rama, $ramasValidas)) {
-    $errores[] = "La rama seleccionada no es válida.";
   }
 
   if (!empty($pass)) {
@@ -84,16 +112,19 @@ if (isset($_POST["guardar"])) {
 
     echo "<script>
             let lista = document.getElementById('listaErroresEditar');
-            lista.innerHTML = '';
+            if (lista) lista.innerHTML = '';
           </script>";
 
     foreach ($errores as $e) {
       $e = addslashes($e);
       echo "<script>
               let lista = document.getElementById('listaErroresEditar');
-              let li = document.createElement('li');
-              li.textContent = '$e';
-              lista.appendChild(li);
+              if (lista) {
+                let li = document.createElement('li');
+                li.textContent = '$e';
+                li.style.color = 'black';
+                lista.appendChild(li);
+              }
             </script>";
     }
 
@@ -102,35 +133,58 @@ if (isset($_POST["guardar"])) {
   }
 
   // ========================================================
-  // UPDATE PROFESOR
+  // UPDATE PROFESOR  (no machacar password si viene vacío)
   // ========================================================
-  mysqli_query($conn, "
-        UPDATE tbl_profesor SET
-            nombre='$nombre',
-            apellidos='$apellidos',
-            DNI='$dni',
-            departamento='$departamento',
-            ORCID='$orcid',
-            telefono='$telefono',
-            perfil='$perfil',
-            facultad='$facultad',
-            rama='$rama',
-            correo='$correoNuevo'
-        WHERE correo='$correo'
-    ");
+  $setPass = "";
+  if (!empty($pass)) {
+    $pass_cambiada = password_hash($pass, PASSWORD_DEFAULT);
+    $setPass = ", password='$pass_cambiada'";
+  }
+
+  $sqlProf = "
+    UPDATE tbl_profesor SET
+      nombre='$nombre',
+      apellidos='$apellidos',
+      DNI='$dni',
+      departamento='$departamento',
+      ORCID='$orcid',
+      telefono='$telefono',
+      perfil='$perfil',
+      facultad='$facultad',
+      rama='$rama',
+      correo='$correoNuevo'
+      $setPass
+    WHERE correo='$correo'
+  ";
+
+  if (!mysqli_query($conn, $sqlProf)) {
+    error_log('Error SQL PROFESOR: ' . mysqli_error($conn));
+    echo "<script>alert('No se pudo guardar (error de base de datos en profesor).');</script>";
+    exit();
+  }
 
   // UPDATE USUARIO (correo)
-  mysqli_query($conn, "
-        UPDATE tbl_usuario SET correo='$correoNuevo'
-        WHERE correo='$correo'
-    ");
+  $sqlUserCorreo = "
+    UPDATE tbl_usuario SET correo='$correoNuevo'
+    WHERE correo='$correo'
+  ";
+  if (!mysqli_query($conn, $sqlUserCorreo)) {
+    error_log('Error SQL USUARIO (correo): ' . mysqli_error($conn));
+    echo "<script>alert('No se pudo guardar (error de base de datos en usuario/correo).');</script>";
+    exit();
+  }
 
-  // UPDATE CONTRASEÑA
+  // UPDATE CONTRASEÑA (solo si se escribió)
   if (!empty($pass)) {
-    mysqli_query($conn, "
-            UPDATE tbl_usuario SET password='$pass'
-            WHERE correo='$correoNuevo'
-        ");
+    $sqlUserPass = "
+      UPDATE tbl_usuario SET password='$pass_cambiada'
+      WHERE correo='$correoNuevo'
+    ";
+    if (!mysqli_query($conn, $sqlUserPass)) {
+      error_log('Error SQL USUARIO (password): ' . mysqli_error($conn));
+      echo "<script>alert('No se pudo guardar (error de base de datos en usuario/password).');</script>";
+      exit();
+    }
   }
 
   // Actualizar sesión
@@ -140,10 +194,8 @@ if (isset($_POST["guardar"])) {
   exit();
 }
 ?>
-
 <!doctype html>
 <html lang="es">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -154,12 +206,9 @@ if (isset($_POST["guardar"])) {
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
 
   <style>
-    .listas ul li {
-      color: lightgray !important;
-    }
+    .listas ul li { color: lightgray !important; }
   </style>
 </head>
-
 <body>
 
   <header>
@@ -243,9 +292,10 @@ if (isset($_POST["guardar"])) {
                 </li>
 
                 <li>Perfil:
+                  <!-- Deja visibles las etiquetas como quieras, el servidor normaliza a MAYÚSCULAS -->
                   <select class="form-select" name="perfil">
-                    <option value="Profesor" <?= $fila['perfil'] == "Profesor" ? "selected" : "" ?>>Profesor</option>
-                    <option value="Tutor" <?= $fila['perfil'] == "Tutor" ? "selected" : "" ?>>Tutor</option>
+                    <option value="Profesor" <?= $fila['perfil'] == "PROFESOR" ? "selected" : "" ?>>Profesor</option>
+                    <option value="Tutor"    <?= $fila['perfil'] == "TUTOR"    ? "selected" : "" ?>>Tutor</option>
                   </select>
                 </li>
 
@@ -254,14 +304,13 @@ if (isset($_POST["guardar"])) {
                 </li>
 
                 <li>Rama:
+                  <!-- Visiblemente usas estos textos; el servidor mapeará a los literales del ENUM -->
                   <select class="form-select" name="rama">
-                    <option value="SALUD" <?= $fila['rama'] == "SALUD" ? "selected" : "" ?>>SALUD</option>
-                    <option value="TECNICAS" <?= $fila['rama'] == "TECNICAS" ? "selected" : "" ?>>Técnicas</option>
-                    <option value="SYJ" <?= $fila['rama'] == "SYJ" ? "selected" : "" ?>>S Y J</option>
-                    <option value="HUMANIDADES" <?= $fila['rama'] == "HUMANIDADES" ? "selected" : "" ?>>Humanidades
-                    </option>
-                    <option value="EXPERIMENTALES" <?= $fila['rama'] == "EXPERIMENTALES" ? "selected" : "" ?>>
-                      Experimentales</option>
+                    <option value="SALUD"         <?= $fila['rama'] == "SALUD" ? "selected" : "" ?>>SALUD</option>
+                    <option value="TECNICAS"      <?= $fila['rama'] == "TECNICA" ? "selected" : "" ?>>Técnicas</option>
+                    <option value="SYJ"           <?= $fila['rama'] == "S Y J" ? "selected" : "" ?>>S Y J</option>
+                    <option value="HUMANIDADES"   <?= $fila['rama'] == "HUMANIDADES" ? "selected" : "" ?>>HUMANIDADES</option>
+                    <option value="EXPERIMENTALES"<?= $fila['rama'] == "EXPERIMENTALES" ? "selected" : "" ?>>EXPERIMENTALES</option>
                   </select>
                 </li>
 
@@ -269,13 +318,13 @@ if (isset($_POST["guardar"])) {
                   <input class="form-control" type="password" name="password" id="passwordInput">
 
                   <ul id="requisitosEditar" style="
-      margin-top: 10px;
-      padding: 10px;
-      border-radius: 10px;
-      background: #f8f8f8;
-      border: 1px solid #ddd;
-      list-style: none;
-      font-size: 14px;">
+                    margin-top: 10px;
+                    padding: 10px;
+                    border-radius: 10px;
+                    background: #f8f8f8;
+                    border: 1px solid #ddd;
+                    list-style: none;
+                    font-size: 14px;">
                     <li id="reEdit1">• Mínimo 8 caracteres</li>
                     <li id="reEdit2">• Al menos una mayúscula</li>
                     <li id="reEdit3">• Al menos un carácter especial</li>
@@ -350,7 +399,6 @@ if (isset($_POST["guardar"])) {
     document.getElementById("popupEditar").addEventListener("click", () => {
       document.getElementById("popupEditar").style.display = "none";
     });
-
     document.getElementById("popupEditar").style.color = "black";
 
     /* ========================================================
@@ -358,24 +406,13 @@ if (isset($_POST["guardar"])) {
     ======================================================== */
     const passEdit = document.getElementById("passwordInput");
     const reqEdit = document.getElementById("requisitosEditar");
-
-    // Ocultamos de inicio
     reqEdit.style.display = "none";
 
-    // Mostrar al hacer clic
-    passEdit.addEventListener("focus", () => {
-      reqEdit.style.display = "block";
-    });
+    passEdit.addEventListener("focus", () => { reqEdit.style.display = "block"; });
+    passEdit.addEventListener("blur",  () => { setTimeout(() => reqEdit.style.display = "none", 150); });
 
-    // Ocultar al salir
-    passEdit.addEventListener("blur", () => {
-      setTimeout(() => reqEdit.style.display = "none", 150);
-    });
-
-    // Cambiar colores en tiempo real
     passEdit.addEventListener("input", () => {
       const v = passEdit.value;
-
       document.getElementById("reEdit1").style.color = (v.length >= 8) ? "green" : "red";
       document.getElementById("reEdit2").style.color = /[A-Z]/.test(v) ? "green" : "red";
       document.getElementById("reEdit3").style.color = /[\W]/.test(v) ? "green" : "red";
@@ -387,15 +424,14 @@ if (isset($_POST["guardar"])) {
     ======================================================== */
     function validarCampo(nombre, regex) {
       const input = document.querySelector(`input[name="${nombre}"]`);
-
+      if (!input) return;
       input.addEventListener("input", e => {
         e.target.style.borderColor = regex.test(e.target.value) ? "green" : "red";
       });
     }
-
-    validarCampo("dni", /^[0-9]{8}[A-Za-z]$/);
-    validarCampo("orcid", /^[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}$/);
-    validarCampo("telefono", /^[0-9]{9}$/);
+    validarCampo("dni",       /^[0-9]{8}[A-Za-z]$/);
+    validarCampo("orcid",     /^[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}$/);
+    validarCampo("telefono",  /^[0-9]{9}$/);
 
     /* ========================================================
        BLOQUEAR ENVÍO SI HAY ERRORES → MOSTRAR POPUP
@@ -403,53 +439,38 @@ if (isset($_POST["guardar"])) {
     document.querySelector("form").addEventListener("submit", function (e) {
       let errores = [];
 
-      const dni = document.querySelector('input[name="dni"]').value.trim();
-      const orcid = document.querySelector('input[name="orcid"]').value.trim();
+      const dni      = document.querySelector('input[name="dni"]').value.trim();
+      const orcid    = document.querySelector('input[name="orcid"]').value.trim();
       const telefono = document.querySelector('input[name="telefono"]').value.trim();
-      const pass = passEdit.value.trim();
+      const pass     = passEdit.value.trim();
 
-      // Validación de DNI
-      if (!/^[0-9]{8}[A-Za-z]$/.test(dni)) {
-        errores.push("El DNI no tiene el formato correcto (12345678X).");
-      }
+      if (!/^[0-9]{8}[A-Za-z]$/.test(dni))        errores.push("El DNI no tiene el formato correcto (12345678X).");
+      if (!/^[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}$/.test(orcid)) errores.push("El ORCID no tiene el formato correcto (0000-0000-0000-0000).");
+      if (!/^[0-9]{9}$/.test(telefono))           errores.push("El teléfono debe contener 9 dígitos.");
 
-      // Validación de ORCID
-      if (!/^[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}$/.test(orcid)) {
-        errores.push("El ORCID no tiene el formato correcto (0000-0000-0000-0000).");
-      }
-
-      // Validación de Teléfono
-      if (!/^[0-9]{9}$/.test(telefono)) {
-        errores.push("El teléfono debe contener 9 dígitos.");
-      }
-
-      // Validación de Contraseña (si el usuario la escribe)
       if (pass.length > 0) {
-        if (pass.length < 8) errores.push("La contraseña debe tener mínimo 8 caracteres.");
+        if (pass.length < 8)   errores.push("La contraseña debe tener mínimo 8 caracteres.");
         if (!/[A-Z]/.test(pass)) errores.push("La contraseña debe incluir una mayúscula.");
-        if (!/[\W]/.test(pass)) errores.push("La contraseña debe incluir un carácter especial.");
+        if (!/[\W]/.test(pass))  errores.push("La contraseña debe incluir un carácter especial.");
         if (!/[0-9]/.test(pass)) errores.push("La contraseña debe incluir un número.");
       }
 
-      // SI HAY ERRORES → BLOQUEAR ENVÍO Y MOSTRAR POPUP
       if (errores.length > 0) {
         e.preventDefault();
-
         const lista = document.getElementById("listaErroresEditar");
-        lista.innerHTML = "";
-
-        errores.forEach(err => {
-          let li = document.createElement("li");
-          li.textContent = err;
-          li.style.color = "black";
-          lista.appendChild(li);
-        });
-
+        if (lista) {
+          lista.innerHTML = "";
+          errores.forEach(err => {
+            let li = document.createElement("li");
+            li.textContent = err;
+            li.style.color = "black";
+            lista.appendChild(li);
+          });
+        }
         document.getElementById("popupEditar").style.display = "flex";
       }
     });
   </script>
 
 </body>
-
 </html>
