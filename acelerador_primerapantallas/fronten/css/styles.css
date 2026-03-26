@@ -1,0 +1,135 @@
+/* Contenedor principal del formulario */
+.formulario {
+    width: 60%;
+    margin: 50px auto;
+    background-color: rgba(20, 88, 204, 0.5);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Este es el contenedor que obliga a las listas a estar una al lado de la otra */
+.listas {
+    display: flex;
+    flex-direction: row;
+    color: lightgray !important;
+    /* CLAVE: Pone lista1 y lista2 en la misma línea */
+    width: 100%;
+    margin-top: 30px;
+    justify-content: center;
+    gap: 40px;
+    /* Espacio entre las dos columnas */
+}
+
+/* Configuración de las dos columnas */
+.lista1,
+.lista2 {
+    display: flex;
+    flex-direction: column;
+    /* Restamos la mitad del gap (20px) al 50% para que encajen perfectas */
+    width: calc(50% - 20px);
+}
+
+#btnCancelar {
+    background-color: red;
+}
+
+
+/* Contenedor del botón centrado abajo */
+.boton {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+    margin-bottom: 10px;
+}
+
+
+/* Estilos del body */
+body {
+    width: 100%;
+    height: 100vh;
+    min-height: 30vh;
+    background-image: url('../img/Image (3).jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: fixed;
+    color: lightgray !important;
+}
+
+
+
+/*Apartir de aqui solo hay cosas del footer*/
+
+/* Elemento #acele (imagen o caja) */
+#acele {
+    height: 200px;
+    width: 200px;
+}
+
+/* Footer principal */
+.mipie {
+    background-color: rgba(20, 88, 204, 0.5);
+    color: #c5c6c7;
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-top: 30px;
+}
+
+/* Imágenes dentro del footer */
+.mipie img {
+    width: 90px;
+    height: 90px;
+    margin-top: 15px;
+    margin-left: 15px;
+}
+
+/* Texto dentro de la dirección del footer */
+.direccion p {
+    margin-left: 15px;
+}
+
+/* Columna de dirección del footer */
+.direccion {
+    max-height: 15vh;
+    display: flex;
+    width: 30%;
+    flex-direction: column;
+}
+
+/* Contenedor de requisitos legales */
+.requerimientolegal {
+    max-height: 15vh;
+    display: flex;
+    width: 70%;
+    flex-direction: row;
+    margin-top: 15px;
+}
+
+/* Columnas internas de la zona legal */
+.columna {
+    max-height: 15vh;
+    display: flex;
+    width: 33%;
+    flex-direction: column;
+}
+
+/* Pie final del footer */
+.piepag {
+    margin-top: 10px;
+    display: flex;
+    max-height: 15vh;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+}

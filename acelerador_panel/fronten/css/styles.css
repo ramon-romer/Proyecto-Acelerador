@@ -272,3 +272,14 @@ form {
     flex-direction: column;
     align-items: center;
 }
+
+.input-orcid::placeholder { 
+    color: rgba(255,255,255,0.35); 
+}
+
+.input-orcid:focus { 
+    background-color: rgba(255,255,255,0.15) !important; 
+    color: white !important; 
+    box-shadow: 0 0 0 0.2rem rgba(20, 88, 204, 0.4) !important; 
+    border-color: rgba(255,255,255,0.4) !important; 
+}
