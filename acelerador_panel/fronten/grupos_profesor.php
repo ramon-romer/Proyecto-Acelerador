@@ -1,45 +1,19 @@
 <?php
-session_start();
 include('login.php');
+require_once __DIR__ . '/lib/auth_tutor.php';
+require_once __DIR__ . '/lib/tutor_grupos_service.php';
 error_reporting(0);
 
-// Si no hay sesión activa, redirigir al login
-if (!isset($_SESSION['nombredelusuario']) || $_SESSION['nombredelusuario'] == '') {
-    header("Location: ../../acelerador_login/fronten/index.php");
-    exit();
+try {
+    $correo = require_authenticated_user($conn);
+    $tutorContext = require_tutor_context($conn, $correo);
+} catch (RuntimeException $e) {
+    acelerador_redirect_for_auth_error($e);
 }
 
-$correo = $_SESSION['nombredelusuario'];
-
-// Conseguir id_tutor y nombre
-$query_tutor = mysqli_query($conn, "SELECT id_profesor, nombre, apellidos FROM tbl_profesor WHERE correo = '$correo'");
-$id_tutor = 0;
-$nombre_tutor = '';
-if ($query_tutor && mysqli_num_rows($query_tutor) > 0) {
-    $tutor_data = mysqli_fetch_assoc($query_tutor);
-    $id_tutor = $tutor_data['id_profesor'];
-    $nombre_tutor = $tutor_data['nombre'] . ' ' . $tutor_data['apellidos'];
-}
-
-// Conseguir los profesores de su grupo — todos los campos excepto password
-$query_profesores = mysqli_query($conn, "
-    SELECT p.id_profesor, p.ORCID, p.nombre, p.apellidos, p.DNI, p.telefono, 
-           p.perfil, p.facultad, p.departamento, p.correo, p.rama,
-           g.nombre as grupo_nombre, g.id_grupo
-    FROM tbl_grupo g
-    LEFT JOIN tbl_grupo_profesor gp ON g.id_grupo = gp.id_grupo
-    LEFT JOIN tbl_profesor p ON gp.id_profesor = p.id_profesor
-    WHERE g.id_tutor = '$id_tutor'
-    ORDER BY g.nombre ASC, p.nombre ASC
-");
-
-// Guardar resultados en un array para poder generar modales después
-$profesores = [];
-if ($query_profesores && mysqli_num_rows($query_profesores) > 0) {
-    while ($row = mysqli_fetch_assoc($query_profesores)) {
-        $profesores[] = $row;
-    }
-}
+$id_tutor = (int)($tutorContext['id_profesor'] ?? 0);
+$nombre_tutor = trim((string)($tutorContext['nombre'] ?? '') . ' ' . (string)($tutorContext['apellidos'] ?? ''));
+$profesores = get_tutor_groups_with_members($conn, $id_tutor);
 ?>
 
 <!doctype html>

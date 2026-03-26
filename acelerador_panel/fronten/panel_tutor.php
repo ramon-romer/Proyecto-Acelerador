@@ -1,31 +1,38 @@
 <?php
-session_start();
 include('login.php');
+require_once __DIR__ . '/lib/auth_tutor.php';
 error_reporting(0);
 
-// Si no hay sesión activa, redirigir al login
-if (!isset($_SESSION['nombredelusuario']) || $_SESSION['nombredelusuario'] == '') {
-    header("Location: ../../acelerador_login/fronten/index.php");
-    exit();
+try {
+    $correo = require_authenticated_user($conn);
+    $tutorContext = require_tutor_context($conn, $correo);
+} catch (RuntimeException $e) {
+    acelerador_redirect_for_auth_error($e);
 }
 
-$correo = $_SESSION['nombredelusuario'];
+$nombre = 'No registrado';
+$apellidos = 'No registrado';
+$dni = 'No registrado';
+$orcid = 'No registrado';
 
+$stmt = mysqli_prepare(
+    $conn,
+    'SELECT nombre, apellidos, DNI AS dni, ORCID AS orcid FROM tbl_profesor WHERE id_profesor = ? LIMIT 1'
+);
+if ($stmt) {
+    $idTutor = (int)($tutorContext['id_profesor'] ?? 0);
+    mysqli_stmt_bind_param($stmt, 'i', $idTutor);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    $datosPerfil = $result ? mysqli_fetch_assoc($result) : null;
+    mysqli_stmt_close($stmt);
 
-// Consultar los datos correspondientes en tbl_profesor
-$query_perfil = mysqli_query($conn, "SELECT nombre, apellidos, DNI as dni, ORCID as orcid FROM tbl_profesor WHERE correo = '$correo'");
-
-if ($query_perfil && mysqli_num_rows($query_perfil) > 0) {
-    $datos_perfil = mysqli_fetch_array($query_perfil);
-    $nombre = htmlspecialchars($datos_perfil['nombre'] ?? '');
-    $apellidos = htmlspecialchars($datos_perfil['apellidos'] ?? '');
-    $dni = htmlspecialchars($datos_perfil['dni'] ?? '');
-    $orcid = htmlspecialchars($datos_perfil['orcid'] ?? '');
-} else {
-    $nombre = 'No registrado';
-    $apellidos = 'No registrado';
-    $dni = 'No registrado';
-    $orcid = 'No registrado';
+    if ($datosPerfil) {
+        $nombre = htmlspecialchars((string)($datosPerfil['nombre'] ?? ''));
+        $apellidos = htmlspecialchars((string)($datosPerfil['apellidos'] ?? ''));
+        $dni = htmlspecialchars((string)($datosPerfil['dni'] ?? ''));
+        $orcid = htmlspecialchars((string)($datosPerfil['orcid'] ?? ''));
+    }
 }
 ?>
 

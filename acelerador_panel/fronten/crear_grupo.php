@@ -1,52 +1,24 @@
 <?php
-session_start();
 include('login.php');
+require_once __DIR__ . '/lib/auth_tutor.php';
+require_once __DIR__ . '/lib/tutor_grupos_service.php';
 error_reporting(0);
 
-// Si no hay sesión activa, redirigir al login
-if (!isset($_SESSION['nombredelusuario']) || $_SESSION['nombredelusuario'] == '') {
-    header("Location: ../../acelerador_login/fronten/index.php");
-    exit();
+try {
+    $correo = require_authenticated_user($conn);
+    $tutorContext = require_tutor_context($conn, $correo);
+} catch (RuntimeException $e) {
+    acelerador_redirect_for_auth_error($e);
 }
 
-$correo = $_SESSION['nombredelusuario'];
-
-// Conseguir id_tutor
-$query_tutor = mysqli_query($conn, "SELECT id_profesor FROM tbl_profesor WHERE correo = '$correo'");
-$id_tutor = 0;
-if ($query_tutor && mysqli_num_rows($query_tutor) > 0) {
-    $id_tutor = mysqli_fetch_assoc($query_tutor)['id_profesor'];
-}
-
+$id_tutor = (int)($tutorContext['id_profesor'] ?? 0);
 $mensaje = '';
 $tipo_mensaje = '';
 
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nombre_grupo'])) {
-    $nombre_grupo = mysqli_real_escape_string($conn, trim($_POST['nombre_grupo']));
-
-    if (!empty($nombre_grupo)) {
-        // Verificar que no exista un grupo con el mismo nombre para este tutor
-        $check_query = "SELECT id_grupo FROM tbl_grupo WHERE nombre = '$nombre_grupo' AND id_tutor = $id_tutor";
-        $check_result = mysqli_query($conn, $check_query);
-
-        if (mysqli_num_rows($check_result) > 0) {
-            $mensaje = "Ya tienes un grupo con este nombre. Por favor, elige otro.";
-            $tipo_mensaje = "warning";
-        } else {
-            // Insertar nuevo grupo
-            $insert_query = "INSERT INTO tbl_grupo (nombre, id_tutor) VALUES ('$nombre_grupo', $id_tutor)";
-            if (mysqli_query($conn, $insert_query)) {
-                $mensaje = "El grupo <strong>" . htmlspecialchars($nombre_grupo) . "</strong> se ha creado correctamente.";
-                $tipo_mensaje = "success";
-            } else {
-                $mensaje = "Error al crear el grupo: " . mysqli_error($conn);
-                $tipo_mensaje = "danger";
-            }
-        }
-    } else {
-        $mensaje = "El nombre del grupo no puede estar vacío.";
-        $tipo_mensaje = "danger";
-    }
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['nombre_grupo'])) {
+    $resultado = create_group_for_tutor($conn, $id_tutor, (string)$_POST['nombre_grupo']);
+    $mensaje = (string)($resultado['message'] ?? '');
+    $tipo_mensaje = (string)($resultado['type'] ?? 'danger');
 }
 ?>
 

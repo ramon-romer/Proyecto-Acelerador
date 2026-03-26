@@ -1,92 +1,65 @@
 <?php
-session_start();
 include('login.php');
+require_once __DIR__ . '/lib/auth_tutor.php';
+require_once __DIR__ . '/lib/tutor_grupos_service.php';
 error_reporting(0);
 
-// Si no hay sesión activa, redirigir al login
-if (!isset($_SESSION['nombredelusuario']) || $_SESSION['nombredelusuario'] == '') {
-    header("Location: ../../acelerador_login/fronten/index.php");
-    exit();
+try {
+    $correo = require_authenticated_user($conn);
+    $tutorContext = require_tutor_context($conn, $correo);
+} catch (RuntimeException $e) {
+    acelerador_redirect_for_auth_error($e);
 }
 
-$correo = $_SESSION['nombredelusuario'];
+$id_tutor = (int)($tutorContext['id_profesor'] ?? 0);
 
-// Conseguir id_tutor
-$query_tutor = mysqli_query($conn, "SELECT id_profesor FROM tbl_profesor WHERE correo = '$correo'");
-$id_tutor = 0;
-if ($query_tutor && mysqli_num_rows($query_tutor) > 0) {
-    $id_tutor = mysqli_fetch_assoc($query_tutor)['id_profesor'];
-}
-
-// Obtener id_grupo: desde POST (navegación) o desde sesión (recarga/operación)
 if (isset($_POST['id_grupo_nav'])) {
-    $id_grupo = intval($_POST['id_grupo_nav']);
+    $id_grupo = (int)$_POST['id_grupo_nav'];
     $_SESSION['id_grupo_gestion'] = $id_grupo;
 } elseif (isset($_SESSION['id_grupo_gestion'])) {
-    $id_grupo = intval($_SESSION['id_grupo_gestion']);
+    $id_grupo = (int)$_SESSION['id_grupo_gestion'];
 } else {
-    header("Location: grupos_profesor.php");
+    header('Location: grupos_profesor.php');
     exit();
 }
 
-// Validar que el grupo pertenezca a este tutor
-$query_grupo = mysqli_query($conn, "SELECT nombre FROM tbl_grupo WHERE id_grupo = $id_grupo AND id_tutor = $id_tutor");
-if (!$query_grupo || mysqli_num_rows($query_grupo) == 0) {
+$nombre_grupo = get_group_name_for_tutor($conn, $id_grupo, $id_tutor);
+if ($nombre_grupo === null) {
     unset($_SESSION['id_grupo_gestion']);
-    header("Location: grupos_profesor.php");
+    header('Location: grupos_profesor.php');
     exit();
 }
-$nombre_grupo = mysqli_fetch_assoc($query_grupo)['nombre'];
 
-// ---- PROCESAMIENTO POST ----
 $mensaje = '';
 $tipo_mensaje = '';
 
 if (isset($_POST['accion'])) {
+    $accion = strtolower(trim((string)$_POST['accion']));
 
-    // AÑADIR profesor por ORCID
-    if ($_POST['accion'] == 'añadir' && !empty($_POST['orcid'])) {
-        $orcid = mysqli_real_escape_string($conn, trim($_POST['orcid']));
-        
-        // Buscar profesor por ORCID
-        $q = mysqli_query($conn, "SELECT id_profesor, nombre, apellidos FROM tbl_profesor WHERE ORCID = '$orcid'");
-        if ($q && mysqli_num_rows($q) > 0) {
-            $prof = mysqli_fetch_assoc($q);
-            $id_prof = $prof['id_profesor'];
-            
-            // Verificar que no esté ya en el grupo
-            $ya_existe = mysqli_query($conn, "SELECT id FROM tbl_grupo_profesor WHERE id_grupo = $id_grupo AND id_profesor = $id_prof");
-            if ($ya_existe && mysqli_num_rows($ya_existe) > 0) {
-                $mensaje = 'El profesor <strong>' . htmlspecialchars($prof['nombre'] . ' ' . $prof['apellidos']) . '</strong> ya está en este grupo.';
-                $tipo_mensaje = 'warning';
-            } else {
-                mysqli_query($conn, "INSERT INTO tbl_grupo_profesor (id_grupo, id_profesor) VALUES ($id_grupo, $id_prof)");
-                $mensaje = 'Profesor <strong>' . htmlspecialchars($prof['nombre'] . ' ' . $prof['apellidos']) . '</strong> añadido correctamente.';
-                $tipo_mensaje = 'success';
-            }
-        } else {
-            $mensaje = 'No se encontró ningún profesor con ORCID <strong>' . htmlspecialchars($orcid) . '</strong>.';
-            $tipo_mensaje = 'danger';
-        }
+    if ($accion === 'anadir' || $accion === 'añadir') {
+        $resultado = add_profesor_to_group_by_orcid(
+            $conn,
+            $id_grupo,
+            $id_tutor,
+            (string)($_POST['orcid'] ?? '')
+        );
+        $mensaje = (string)($resultado['message'] ?? '');
+        $tipo_mensaje = (string)($resultado['type'] ?? 'danger');
     }
 
-    // ELIMINAR profesor del grupo
-    if ($_POST['accion'] == 'eliminar' && !empty($_POST['id_profesor'])) {
-        $id_prof_eliminar = intval($_POST['id_profesor']);
-        mysqli_query($conn, "DELETE FROM tbl_grupo_profesor WHERE id_grupo = $id_grupo AND id_profesor = $id_prof_eliminar");
-        $mensaje = 'Profesor eliminado del grupo correctamente.';
-        $tipo_mensaje = 'success';
+    if ($accion === 'eliminar') {
+        $resultado = remove_profesor_from_group(
+            $conn,
+            $id_grupo,
+            $id_tutor,
+            (int)($_POST['id_profesor'] ?? 0)
+        );
+        $mensaje = (string)($resultado['message'] ?? '');
+        $tipo_mensaje = (string)($resultado['type'] ?? 'danger');
     }
 }
 
-// Consultar profesores actuales del grupo
-$query_profes = mysqli_query($conn, "
-    SELECT p.id_profesor, p.ORCID, p.nombre, p.apellidos, p.departamento, p.correo
-    FROM tbl_profesor p
-    INNER JOIN tbl_grupo_profesor gp ON p.id_profesor = gp.id_profesor
-    WHERE gp.id_grupo = $id_grupo
-    ORDER BY p.nombre ASC
-");
+$query_profes = get_group_members_for_tutor($conn, $id_grupo, $id_tutor);
 ?>
 
 <!doctype html>
@@ -128,7 +101,7 @@ $query_profes = mysqli_query($conn, "
       <div class="mx-auto mb-4 p-4 rounded-4" style="background-color: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); max-width: 600px; width: 100%;">
         <h6 class="text-white mb-2 fw-bold d-inline-flex align-items-center gap-1"><i class="bi bi-person-plus-fill"></i> Añadir profesor al grupo</h6>
         <form method="POST" style="padding: 0; margin: 0;">
-          <input type="hidden" name="accion" value="añadir">
+          <input type="hidden" name="accion" value="anadir">
           <div class="mb-2" style="display: flex; flex-direction: column; width: 100%; gap: 0; margin: 0;">
             <label class="form-label text-light small mb-1 w-100 text-start" style="font-size: 0.85rem;">ORCID del profesor</label>
             <input type="text" name="orcid" class="form-control input-orcid w-100" placeholder="0000-0000-0000-0000" required 
@@ -146,7 +119,7 @@ $query_profes = mysqli_query($conn, "
       <!-- Tabla de profesores del grupo -->
       <div class="w-100 mb-4 p-4 rounded-4" style="background-color: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);">
         <h6 class="text-white mb-2 fw-bold d-inline-flex align-items-center gap-1"><i class="bi bi-list-ul"></i> Profesores en este grupo</h6>
-        <?php if ($query_profes && mysqli_num_rows($query_profes) > 0): ?>
+        <?php if (count($query_profes) > 0): ?>
         <div class="table-responsive w-100" style="border-radius: 15px;">
           <table class="table tabla-glass mb-0">
             <thead>
@@ -159,7 +132,7 @@ $query_profes = mysqli_query($conn, "
               </tr>
             </thead>
             <tbody>
-              <?php while ($p = mysqli_fetch_assoc($query_profes)): ?>
+              <?php foreach ($query_profes as $p): ?>
               <tr>
                 <td class="border-end-0"><?php echo empty($p['ORCID']) ? '-' : htmlspecialchars($p['ORCID']); ?></td>
                 <td class="border-end-0"><?php echo htmlspecialchars($p['nombre'] . ' ' . $p['apellidos']); ?></td>
@@ -175,7 +148,7 @@ $query_profes = mysqli_query($conn, "
                   </form>
                 </td>
               </tr>
-              <?php endwhile; ?>
+              <?php endforeach; ?>
             </tbody>
           </table>
         </div>
