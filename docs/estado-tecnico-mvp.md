@@ -1,5 +1,10 @@
 # Estado Técnico MVP - Proyecto Acelerador
 
+> Estado de este archivo: baseline historico (corte 2026-03-24).
+> Para estado actualizado y comparativa:
+> - `docs/estado-tecnico-mvp-2026-03-26.md`
+> - `docs/control-versiones-estado-tecnico-mvp.md`
+
 ## Mapa del sistema detectado (estado real)
 
 ### Capa de extracción y parsing
