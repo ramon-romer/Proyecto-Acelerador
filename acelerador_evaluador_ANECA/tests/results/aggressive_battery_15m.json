@@ -1,0 +1,47 @@
+{
+    "startedAt": "2026-04-02T12:43:05+02:00",
+    "seed": 963768294507371541,
+    "targetDurationSeconds": 900,
+    "lint": {
+        "checked": 58,
+        "failed": 0,
+        "errors": []
+    },
+    "unitSrc": {
+        "ok": true,
+        "exit_code": 0,
+        "stdout": "[PASS] TextCleaner normaliza espacios y saltos\r\n[PASS] AnecaExtractor devuelve esquema base\r\n[PASS] AnecaExtractor detecta entidades relevantes\r\n[PASS] AnecaExtractor fuzz mantiene contrato\r\n[PASS] Pipeline falla con PDF inexistente\r\n[PASS] OcrProcessor gestiona error en entrada no valida\r\n\r\n=== ANECA Unit Summary ===\r\npassed=6 failed=0",
+        "stderr": ""
+    },
+    "areaStress": {
+        "runs": 14239,
+        "ok": 14239,
+        "failed": 0,
+        "byArea": {
+            "tecnicas": {
+                "ok": 2848,
+                "failed": 0
+            },
+            "salud": {
+                "ok": 2848,
+                "failed": 0
+            },
+            "humanidades": {
+                "ok": 2848,
+                "failed": 0
+            },
+            "csyj": {
+                "ok": 2848,
+                "failed": 0
+            },
+            "experimentales": {
+                "ok": 2847,
+                "failed": 0
+            }
+        },
+        "failSamples": []
+    },
+    "finalStatus": "PASS",
+    "actualDurationSeconds": 900.024,
+    "endedAt": "2026-04-02T12:58:09+02:00"
+}

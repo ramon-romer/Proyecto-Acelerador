@@ -74,6 +74,12 @@ function parseArguments(array $argv): array
  */
 function buildChecks(string $repositoryRoot, string $nivel): array
 {
+    $anecaTestsDir = $repositoryRoot
+        . DIRECTORY_SEPARATOR . 'acelerador_evaluador_ANECA'
+        . DIRECTORY_SEPARATOR . 'tests';
+    $anecaUnitPath = $anecaTestsDir . DIRECTORY_SEPARATOR . 'unit_src.php';
+    $anecaAggressivePath = $anecaTestsDir . DIRECTORY_SEPARATOR . 'run_aggressive_battery.php';
+
     $checks = [
         [
             'id' => 'php-version',
@@ -95,6 +101,15 @@ function buildChecks(string $repositoryRoot, string $nivel): array
         ],
     ];
 
+    if (is_file($anecaUnitPath)) {
+        $checks[] = [
+            'id' => 'aneca-unit-src',
+            'name' => 'ANECA unit src',
+            'command' => escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg($anecaUnitPath),
+            'optional' => false,
+        ];
+    }
+
     if ($nivel === 'medio' || $nivel === 'agresivo') {
         $checks[] = [
             'id' => 'inspect-schema',
@@ -105,11 +120,29 @@ function buildChecks(string $repositoryRoot, string $nivel): array
         $checks[] = [
             'id' => 'contract-routes',
             'name' => 'Contrato de rutas criticas',
-            'command' => 'rg -n -F "POST /api/tutorias" ' .
-                escapeshellarg($repositoryRoot . DIRECTORY_SEPARATOR . 'acelerador_panel' . DIRECTORY_SEPARATOR . 'backend' . DIRECTORY_SEPARATOR . 'docs' . DIRECTORY_SEPARATOR . '02-api-rest-contratos.md') . ' ' .
+            'command' => 'rg -n -F "/api/tutorias" ' .
+                escapeshellarg($repositoryRoot . DIRECTORY_SEPARATOR . 'acelerador_panel' . DIRECTORY_SEPARATOR . 'backend' . DIRECTORY_SEPARATOR . 'docs' . DIRECTORY_SEPARATOR . '02-api-rest-contratos.md') .
+                ' && rg -n -F "createTutoria" ' .
                 escapeshellarg($repositoryRoot . DIRECTORY_SEPARATOR . 'acelerador_panel' . DIRECTORY_SEPARATOR . 'backend' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Presentation' . DIRECTORY_SEPARATOR . 'Routes' . DIRECTORY_SEPARATOR . 'TutoriaRoutes.php'),
             'optional' => false,
         ];
+
+        if (is_file($anecaAggressivePath)) {
+            $duration = $nivel === 'agresivo' ? 180 : 45;
+            $progressInterval = $duration <= 120 ? 5 : 10;
+            $reportPath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'acelerador_aneca_aggressive_' . date('Ymd_His') . '.json';
+
+            $checks[] = [
+                'id' => 'aneca-aggressive',
+                'name' => 'ANECA bateria agresiva',
+                'command' => escapeshellarg(PHP_BINARY) . ' ' .
+                    escapeshellarg($anecaAggressivePath) .
+                    ' --duration-seconds=' . (int) $duration .
+                    ' --progress-interval=' . (int) $progressInterval .
+                    ' --report-file=' . escapeshellarg($reportPath),
+                'optional' => false,
+            ];
+        }
     }
 
     if ($nivel === 'agresivo') {
