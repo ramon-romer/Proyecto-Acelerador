@@ -139,5 +139,59 @@ Documentar e integrar de forma conservadora el aporte recibido en ZIP para el pa
 8. Correccion en `index.php` de login para validar perfil enrutable antes de iniciar sesion.
 9. Cierre de la tarea con verificacion tecnica de coherencia de rutas por perfil.
 
+## Anexo B. Actualizacion tecnica de cierre (Sesion/cache + backend JSON)
+
+### 1. Objetivo de la actualizacion
+- Cerrar el problema de retorno por navegador tras logout en vistas protegidas.
+- Extender la cobertura anti-cache al backend JSON sin abrir nuevos frentes funcionales.
+
+### 2. Cambios tecnicos aplicados
+- Se creo `acelerador_login/fronten/lib/session_security.php` con:
+  - headers anti-cache (`Cache-Control`, `Pragma`, `Expires`);
+  - guard de BFCache por `pageshow` para forzar recarga de paginas restauradas.
+- Se completo `acelerador_login/fronten/logout.php` con:
+  - `$_SESSION = []`;
+  - `session_unset()`;
+  - borrado de cookie de sesion cuando aplica;
+  - `session_destroy()`;
+  - mantenimiento de redireccion actual a login.
+- Se conecto el guard comun en puntos compartidos de vistas protegidas:
+  - `acelerador_panel/fronten/login.php`;
+  - `acelerador_segundapantallas/fronten/login.php`;
+  - `acelerador_primerapantallas/fronten/index.php`.
+- Cierre minimo backend:
+  - se anadieron headers anti-cache en `acelerador_panel/backend/public/index.php`.
+
+### 3. Cobertura resultante
+- Cobertura de vistas protegidas del flujo principal: completa.
+- Cobertura backend JSON: completada con anti-cache en el entrypoint.
+- ANECA: sin cambios en esta actualizacion, por decision explicita de alcance.
+
+### 4. Validacion tecnica ejecutada
+- Validacion de sintaxis (`php -l`) en archivos tocados de sesion/cache: sin errores.
+- Bateria intensiva real ejecutada:
+  - Suite: `ejecutar-tests:agresivo-1h`;
+  - Horario real: 2026-04-06 16:51:19 a 2026-04-06 17:51:26;
+  - Obligatorios: 7/7 superados;
+  - Fallidas: 0.
+- Resultado intensivo:
+  - ANECA agresivo: 2160s, PASS;
+  - Backend agresivo: 1080s, PASS, `unexpectedErrors=0`;
+  - MCP worker loop: 360s, PASS.
+- Observacion de entorno:
+  - `inspect-schema` marcado como no verificable (opcional) por `Unknown database 'acelerador'`.
+
+### 5. Evidencias de ejecucion
+- Log consolidado:
+  - `.agents/tmp/ejecutar_tests_agresivo_1h_20260406_165119.log`
+- Reportes intensivos:
+  - `C:\Users\basil\AppData\Local\Temp\acelerador_aneca_aggressive_20260406_165120.json`
+  - `C:\Users\basil\AppData\Local\Temp\acelerador_backend_aggressive_20260406_165120.json`
+
+### 6. Estado final del cierre
+- El flujo normal con sesion activa se mantiene sin cambios de comportamiento.
+- Tras logout, el retorno por atras queda bloqueado por invalidacion de sesion y controles de cache/BFCache.
+- Se cierra la actualizacion con impacto acotado y sin refactorizacion amplia.
+
 ## Firma
 Documento elaborado por Basilio Lagares como reflejo del estado tecnico real del trabajo realizado en la fecha indicada.

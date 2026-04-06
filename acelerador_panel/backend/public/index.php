@@ -41,6 +41,10 @@ date_default_timezone_set((string) ($appConfig['timezone'] ?? 'UTC'));
 
 header('Access-Control-Allow-Headers: Content-Type, X-Request-Id');
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+header('Cache-Control: post-check=0, pre-check=0', false);
+header('Pragma: no-cache');
+header('Expires: Thu, 01 Jan 1970 00:00:00 GMT');
 
 if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();

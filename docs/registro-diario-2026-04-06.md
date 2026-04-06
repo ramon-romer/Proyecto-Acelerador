@@ -58,6 +58,29 @@ ESTADO: En progreso
 - Tras revisar autenticacion/sesion se detecto desalineacion de roles `ADMIN` y `ADMINISTRADOR` en guards admin.
 - Se corrigieron guards en `panel_admin.php`, `admin_usuarios.php` y `admin_grupos.php` para aceptar ambos roles.
 - Se corrigio `acelerador_login/fronten/index.php` para validar perfil enrutable antes de crear sesion y enrutar correctamente perfiles admin.
+
+## 10. Registro tecnico agregado (Sesion/cache + cierre backend JSON)
+- Se diagnostico el problema de retorno por navegador tras logout como combinacion de sesion/cookie + cache de paginas protegidas.
+- Se implemento helper comun `acelerador_login/fronten/lib/session_security.php` para anti-cache y cobertura BFCache.
+- Se completo `logout.php` con `session_unset()` y se mantuvo la redireccion actual a login.
+- Se aplico el guard comun en puntos compartidos:
+  - `acelerador_panel/fronten/login.php`
+  - `acelerador_segundapantallas/fronten/login.php`
+  - `acelerador_primerapantallas/fronten/index.php`
+- Se aplico cierre minimo en backend JSON con headers anti-cache en:
+  - `acelerador_panel/backend/public/index.php`
+- Se realizo auditoria de cobertura real de rutas protegidas:
+  - flujo principal web cubierto;
+  - backend JSON cubierto tras el cierre minimo;
+  - ANECA fuera de alcance por decision explicita.
+- Se ejecuto bateria agresiva de 1 hora en tiempo real:
+  - suite `ejecutar-tests:agresivo-1h`;
+  - ventana real completada de 16:51:19 a 17:51:26;
+  - obligatorias superadas: 7/7;
+  - fallidas: 0;
+  - observacion: `inspect-schema` no verificable (opcional) por `Unknown database 'acelerador'`.
+
 ## Firma
 Registro elaborado por Basilio Lagares como constancia del trabajo técnico realizado durante la fecha indicada.
+
 

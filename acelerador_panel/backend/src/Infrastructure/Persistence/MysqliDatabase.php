@@ -21,16 +21,60 @@ final class MysqliDatabase
     {
         mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
-        $this->connection = new mysqli(
-            (string) ($config['host'] ?? 'localhost'),
-            (string) ($config['user'] ?? 'root'),
-            (string) ($config['password'] ?? ''),
-            (string) ($config['name'] ?? ''),
-            (int) ($config['port'] ?? 3306)
-        );
+        $host = (string) ($config['host'] ?? 'localhost');
+        $user = (string) ($config['user'] ?? 'root');
+        $password = (string) ($config['password'] ?? '');
+        $port = (int) ($config['port'] ?? 3306);
+
+        $dbCandidates = [];
+        $configuredCandidates = $config['nameCandidates'] ?? null;
+        if (is_array($configuredCandidates)) {
+            foreach ($configuredCandidates as $candidate) {
+                if (!is_string($candidate)) {
+                    continue;
+                }
+
+                $candidate = trim($candidate);
+                if ($candidate === '' || in_array($candidate, $dbCandidates, true)) {
+                    continue;
+                }
+
+                $dbCandidates[] = $candidate;
+            }
+        }
+
+        $configuredName = trim((string) ($config['name'] ?? ''));
+        if ($configuredName !== '' && !in_array($configuredName, $dbCandidates, true)) {
+            $dbCandidates[] = $configuredName;
+        }
+
+        if ($dbCandidates === []) {
+            $dbCandidates = ['Acelerador', 'acelerador'];
+        }
+
+        $lastException = null;
+        $connection = null;
+        foreach ($dbCandidates as $dbName) {
+            try {
+                $connection = new mysqli($host, $user, $password, $dbName, $port);
+                $lastException = null;
+                break;
+            } catch (mysqli_sql_exception $e) {
+                $lastException = $e;
+            }
+        }
+
+        if (!$connection instanceof mysqli) {
+            $message = 'Error de conexión a base de datos.';
+            if ($lastException instanceof mysqli_sql_exception) {
+                $message .= ' ' . $lastException->getMessage();
+            }
+            throw new ApiException(500, 'DB_CONNECTION_ERROR', $message);
+        }
 
         $charset = (string) ($config['charset'] ?? 'utf8mb4');
-        $this->connection->set_charset($charset);
+        $connection->set_charset($charset);
+        $this->connection = $connection;
     }
 
     public function connection(): mysqli

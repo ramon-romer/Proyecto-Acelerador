@@ -33,7 +33,7 @@ if (isset($_POST['accion']) && $_POST['accion'] == 'crear') {
     $nombre = mysqli_real_escape_string($conn, trim($_POST['nombre'] ?? ''));
     $apellidos = mysqli_real_escape_string($conn, trim($_POST['apellidos'] ?? ''));
     $correo_nuevo = mysqli_real_escape_string($conn, trim($_POST['correo'] ?? ''));
-    $pass = mysqli_real_escape_string($conn, trim($_POST['password'] ?? ''));
+    $pass_plano = trim($_POST['password'] ?? '');
     $dni = mysqli_real_escape_string($conn, trim($_POST['dni'] ?? ''));
     $orcid = mysqli_real_escape_string($conn, trim($_POST['orcid'] ?? ''));
     $telefono = mysqli_real_escape_string($conn, trim($_POST['telefono'] ?? ''));
@@ -42,7 +42,7 @@ if (isset($_POST['accion']) && $_POST['accion'] == 'crear') {
     $departamento = mysqli_real_escape_string($conn, trim($_POST['departamento'] ?? ''));
     $rama = mysqli_real_escape_string($conn, trim($_POST['rama'] ?? ''));
 
-    if (empty($nombre) || empty($apellidos) || empty($correo_nuevo) || empty($pass) || empty($orcid)) {
+    if (empty($nombre) || empty($apellidos) || empty($correo_nuevo) || empty($pass_plano) || empty($orcid)) {
         $mensaje = "Todos los campos obligatorios deben estar completos.";
         $tipo_mensaje = "danger";
     } else {
@@ -51,14 +51,26 @@ if (isset($_POST['accion']) && $_POST['accion'] == 'crear') {
             $mensaje = "Ya existe un usuario con ese ORCID.";
             $tipo_mensaje = "warning";
         } else {
-            $ins1 = mysqli_query($conn, "INSERT INTO tbl_profesor (ORCID, nombre, apellidos, password, DNI, telefono, perfil, facultad, departamento, correo, rama) VALUES ('$orcid','$nombre','$apellidos','$pass','$dni','$telefono','$perfil','$facultad','$departamento','$correo_nuevo','$rama')");
-            $ins2 = mysqli_query($conn, "INSERT INTO tbl_usuario (correo, password) VALUES ('$correo_nuevo','$pass')");
-            if ($ins1 && $ins2) {
-                $mensaje = "Usuario <strong>" . htmlspecialchars($nombre) . " " . htmlspecialchars($apellidos) . "</strong> creado correctamente.";
-                $tipo_mensaje = "success";
-            } else {
-                $mensaje = "Error al crear el usuario: " . mysqli_error($conn);
+            $pass_hash = password_hash($pass_plano, PASSWORD_DEFAULT);
+            if ($pass_hash === false) {
+                $mensaje = "No se pudo generar la contraseña segura para el nuevo usuario.";
                 $tipo_mensaje = "danger";
+            } else {
+                $pass = mysqli_real_escape_string($conn, $pass_hash);
+
+                mysqli_begin_transaction($conn);
+                $ins1 = mysqli_query($conn, "INSERT INTO tbl_profesor (ORCID, nombre, apellidos, password, DNI, telefono, perfil, facultad, departamento, correo, rama) VALUES ('$orcid','$nombre','$apellidos','$pass','$dni','$telefono','$perfil','$facultad','$departamento','$correo_nuevo','$rama')");
+                $ins2 = mysqli_query($conn, "INSERT INTO tbl_usuario (correo, password) VALUES ('$correo_nuevo','$pass')");
+
+                if ($ins1 && $ins2) {
+                    mysqli_commit($conn);
+                    $mensaje = "Usuario <strong>" . htmlspecialchars($nombre) . " " . htmlspecialchars($apellidos) . "</strong> creado correctamente.";
+                    $tipo_mensaje = "success";
+                } else {
+                    mysqli_rollback($conn);
+                    $mensaje = "Error al crear el usuario: " . mysqli_error($conn);
+                    $tipo_mensaje = "danger";
+                }
             }
         }
     }

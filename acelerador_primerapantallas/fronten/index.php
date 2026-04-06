@@ -1,6 +1,9 @@
 <?php
 session_start();
+require_once dirname(__DIR__, 2) . '/acelerador_login/fronten/lib/session_security.php';
 include("config.php");
+
+acelerador_apply_protected_page_session_guards();
 
 if (!isset($_SESSION['nombredelusuario'])) {
   echo "<script>alert('Debes iniciar sesión primero'); window.location='../../acelerador_registro/login.php';</script>";
