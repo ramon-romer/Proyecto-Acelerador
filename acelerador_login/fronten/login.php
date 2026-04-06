@@ -1,13 +1,5 @@
 <?php
-    $host = 'localhost';
-    $nom = 'root';
-    $pass = '';
-    $db = 'acelerador';
+require_once dirname(__DIR__, 2) . '/acelerador_frontend_db.php';
 
-    $conn = mysqli_connect($host,$nom,$pass,$db);
-
-    if (!$conn) {
-        die('ERROR EN LA CONEXIÖN'. mysqli_connect_error());
-    }
+$conn = acelerador_frontend_db_connect();
 ?>
-

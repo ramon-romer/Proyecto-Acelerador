@@ -1,0 +1,11 @@
+{
+    "phase5_run_id": "F5_PREP_20260406_114916",
+    "source_f4c_run_id": "F4C_EXEC_20260406_114115",
+    "counts": {
+        "mergeable_tbl_usuario": 5,
+        "mergeable_tbl_profesor": 5,
+        "mergeable_tbl_grupo": 0,
+        "mergeable_tbl_grupo_profesor": 0,
+        "mergeable_exclusions": 88
+    }
+}
