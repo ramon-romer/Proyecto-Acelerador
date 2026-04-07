@@ -31,11 +31,31 @@ if (isset($_POST["btn"])) {
   );
 
   if (session_status() !== PHP_SESSION_ACTIVE) {
-    session_start();
+  session_start();
   }
+
   session_regenerate_id(true);
+
+  /* Guardamos los datos básicos ya existentes */
   $_SESSION['nombredelusuario'] = $correo;
   $_SESSION['perfil_usuario'] = $perfil;
+
+  /* Buscamos ORCID y rama del profesor para reutilizarlos luego */
+  $stmtDatos = mysqli_prepare($conn, "SELECT ORCID, rama FROM tbl_profesor WHERE correo = ? LIMIT 1");
+
+  if ($stmtDatos) {
+    mysqli_stmt_bind_param($stmtDatos, 's', $correo);
+    mysqli_stmt_execute($stmtDatos);
+    $resDatos = mysqli_stmt_get_result($stmtDatos);
+    $filaDatos = $resDatos ? mysqli_fetch_assoc($resDatos) : null;
+    mysqli_stmt_close($stmtDatos);
+
+    $_SESSION['orcid_usuario'] = $filaDatos['ORCID'] ?? '';
+    $_SESSION['rama_usuario']  = $filaDatos['rama'] ?? '';
+  } else {
+    $_SESSION['orcid_usuario'] = '';
+    $_SESSION['rama_usuario']  = '';
+  }
 
   if ($perfil === "TUTOR") {
     header("Location: ../../acelerador_panel/fronten/panel_tutor.php");

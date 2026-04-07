@@ -96,30 +96,13 @@ if (isset($_POST["btn"])) {
   // --- DUPLICADOS ---
   $duplicados = [];
   $duplicadosCampos = [];
-  if (existeValor($conn, "SELECT 1 FROM tbl_profesor WHERE DNI = ? LIMIT 1", "s", $dni)) {
-    $duplicados[] = "El DNI introducido ya está registrado.";
-    $duplicadosCampos[] = "dni";
-  }
-  if (existeValor($conn, "SELECT 1 FROM tbl_profesor WHERE telefono = ? LIMIT 1", "s", $telefono)) {
-    $duplicados[] = "El número de teléfono ya está en uso.";
-    $duplicadosCampos[] = "telefono";
-  }
+  
+  
   if (existeValor($conn, "SELECT 1 FROM tbl_profesor WHERE ORCID = ? LIMIT 1", "s", $orcid)) {
     $duplicados[] = "El ORCID introducido ya pertenece a una cuenta.";
     $duplicadosCampos[] = "orcid";
   }
-  // Correo en PROFESOR
-  if (existeValor($conn, "SELECT 1 FROM tbl_profesor WHERE correo = ? LIMIT 1", "s", $correo)) {
-    $duplicados[] = "El correo electrónico ya está registrado.";
-    $duplicadosCampos[] = "correo";
-  }
-  // Correo en USUARIO
-  if (existeValor($conn, "SELECT 1 FROM tbl_usuario WHERE correo = ? LIMIT 1", "s", $correo)) {
-    if (!in_array('correo', $duplicadosCampos, true)) {
-      $duplicados[] = "El correo electrónico ya está registrado.";
-      $duplicadosCampos[] = "correo";
-    }
-  }
+  
 
   if (!empty($duplicados)) {
     $showDuplicados = true;
