@@ -96,13 +96,11 @@ if (isset($_POST["btn"])) {
   // --- DUPLICADOS ---
   $duplicados = [];
   $duplicadosCampos = [];
-  
-  
+
   if (existeValor($conn, "SELECT 1 FROM tbl_profesor WHERE ORCID = ? LIMIT 1", "s", $orcid)) {
     $duplicados[] = "El ORCID introducido ya pertenece a una cuenta.";
     $duplicadosCampos[] = "orcid";
   }
-  
 
   if (!empty($duplicados)) {
     $showDuplicados = true;
@@ -170,7 +168,7 @@ if (isset($_POST["btn"])) {
 
     // Mostrar el formulario de código (popup de verificación)
     $mostrarFormularioCodigo = true;
-   
+
   }
 }
 
@@ -280,7 +278,7 @@ IMPORTANTE: AÑADIMOS el <form method="post"> que faltaba.
       echo '<div class="err">' . $mensajeError . '</div>'; ?>
   </div>
 
- 
+
 <?php endif; ?>
 
 
