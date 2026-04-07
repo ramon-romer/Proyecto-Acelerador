@@ -11,8 +11,8 @@ require_once __DIR__ . '/vendor/autoload.php';
  */
 $BASE_PATH = dirname(__DIR__);
 $config = [
-  'smtp_user' => '',     // <-- tu Gmail remitente
-  'smtp_pass' => '',        // <-- App Password (no tu clave normal)
+  'smtp_user' => 'nacho.puemar@gmail.com',     // <-- tu Gmail remitente
+  'smtp_pass' => 'kurckwtldwksvebj',        // <-- App Password (no tu clave normal)
   'from_name' => 'Ignacio',
 ];
 if (is_file($BASE_PATH . '/mail.config.php')) {
