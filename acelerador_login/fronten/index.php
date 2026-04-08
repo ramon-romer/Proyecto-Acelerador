@@ -3,8 +3,8 @@ include('login.php');
 require_once __DIR__ . '/lib/auth_password.php';
 error_reporting(0);
 
-$correo = trim((string)($_POST["usuario"] ?? ''));
-$pass = (string)($_POST["pwd"] ?? '');
+$correo = trim((string) ($_POST["usuario"] ?? ''));
+$pass = (string) ($_POST["pwd"] ?? '');
 
 if (isset($_POST["btn"])) {
   $authResult = acelerador_authenticate_usuario($conn, $correo, $pass);
@@ -19,19 +19,19 @@ if (isset($_POST["btn"])) {
     exit();
   }
 
-  $perfil = strtoupper(trim((string)($authResult['perfil'] ?? '')));
+  $perfil = strtoupper(trim((string) ($authResult['perfil'] ?? '')));
 
   acelerador_auth_log_event(
     $authResult['event'] ?? 'AUTH_OK',
     $correo,
     [
-      'id_usuario' => (int)($authResult['id_usuario'] ?? 0),
+      'id_usuario' => (int) ($authResult['id_usuario'] ?? 0),
       'rehash_applied' => !empty($authResult['rehash_applied']) ? 1 : 0,
     ]
   );
 
   if (session_status() !== PHP_SESSION_ACTIVE) {
-  session_start();
+    session_start();
   }
 
   session_regenerate_id(true);
@@ -51,10 +51,10 @@ if (isset($_POST["btn"])) {
     mysqli_stmt_close($stmtDatos);
 
     $_SESSION['orcid_usuario'] = $filaDatos['ORCID'] ?? '';
-    $_SESSION['rama_usuario']  = $filaDatos['rama'] ?? '';
+    $_SESSION['rama_usuario'] = $filaDatos['rama'] ?? '';
   } else {
     $_SESSION['orcid_usuario'] = '';
-    $_SESSION['rama_usuario']  = '';
+    $_SESSION['rama_usuario'] = '';
   }
 
   if ($perfil === "TUTOR") {
@@ -95,10 +95,20 @@ if (isset($_POST["btn"])) {
 
 <body>
   <header>
-    <div class="imagen">
-      <img src="img/Image__4_-removebg-preview.png" id="acele" alt="Acelerador" />
+
+    <div class="contenedorimg">
+      <div class="imagen">
+        <img src="https://uf3ceu.es/wp-content/uploads/logo-uf3-2k25.svg" alt="CEU Universidad Fernando III"
+          style="height:50px; width:auto;" id="#acele" />
+      </div>
+
+      <div class="imagen">
+        <img src="img/AcademyAccelerator_def.png" id="academy" alt="academy" />
+      </div>
     </div>
+
   </header>
+
 
   <main>
     <div class="contenedor">
@@ -148,7 +158,7 @@ if (isset($_POST["btn"])) {
   <footer>
     <div class="mipie" id="mipie">
       <div class="direccion">
-        <img src="img/Image__4_-removebg-preview.png" alt="Logo" />
+        <img src="https://uf3ceu.es/wp-content/uploads/logo-uf3-2k25.svg" alt="CEU Universidad Fernando III"/>
         <p>
           Glorieta Ángel Herrera Oria, s/n,<br />
           41930 Bormujos,<br />

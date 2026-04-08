@@ -1,6 +1,6 @@
 .formulario {
     width: 70%;
-    margin: auto;
+    margin: 100px auto 0 auto;
     background-color: rgba(20, 88, 204, 0.4);
     border-radius: 20px;
     display: flex;
@@ -133,11 +133,14 @@ form {
     margin-top: 30px;
 }
 
+/* Imágenes dentro del footer */
 .mipie img {
-    width: 90px;
-    height: 90px;
+    width: 130px !important;
+    height: 130px !important;
     margin-top: 15px;
     margin-left: 15px;
+    object-fit: cover;
+    display: block;
 }
 
 .direccion p {
@@ -304,4 +307,25 @@ form {
 
 .popup-premium-btn:hover {
     background: #0c57b3;
+}
+
+.contenedorimg {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin: auto 0;
+    padding: 0 60px;
+}
+
+
+.imagen img {
+    max-height: 150px;
+    width: 150px;
+}
+
+
+
+header {
+    height: 20px;
 }

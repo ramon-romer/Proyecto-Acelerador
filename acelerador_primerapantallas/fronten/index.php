@@ -196,9 +196,18 @@ if (isset($_POST["guardar"])) {
 <body>
 
   <header>
-    <div class="imagen">
-      <img src="img/Image__4_-removebg-preview.png" id="acele" alt="Acelerador">
+
+    <div class="contenedorimg">
+      <div class="imagen">
+        <img src="https://uf3ceu.es/wp-content/uploads/logo-uf3-2k25.svg" alt="CEU Universidad Fernando III"
+          style="height:50px; width:auto;" id="#acele" />
+      </div>
+
+      <div class="imagen">
+        <img src="img/AcademyAccelerator_def.png" id="academy" alt="academy" />
+      </div>
     </div>
+
   </header>
 
   <main>
@@ -350,6 +359,50 @@ if (isset($_POST["guardar"])) {
 
     </div>
   </main>
+  <footer>
+    <div class="mipie" id="mipie">
+      <div class="direccion">
+        <img src="https://uf3ceu.es/wp-content/uploads/logo-uf3-2k25.svg" alt="CEU Universidad Fernando III" />
+        <p>
+          Glorieta Ángel Herrera Oria, s/n,<br />
+          41930 Bormujos,<br />
+          Sevilla
+        </p>
+      </div>
+
+      <div class="requerimientolegal">
+        <div class="columna">
+          <h4>La Empresa</h4>
+          <ul>
+            <li>Contacto</li>
+            <li>Preguntas Frecuentes (FAQ)</li>
+            <li>Centro de Ayuda</li>
+            <li>Soporte</li>
+          </ul>
+        </div>
+        <div class="columna">
+          <h4>Ayuda</h4>
+          <ul>
+            <li>Términos y Condiciones</li>
+            <li>Política de Cookies</li>
+          </ul>
+        </div>
+        <div class="columna">
+          <h4>Legal</h4>
+          <ul>
+            <li>Sobre nosotros</li>
+            <li>Política de Cookies</li>
+            <li>Blog</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="piepag">
+        <p>&copy; UF3. Todos los derechos reservados.</p>
+      </div>
+    </div>
+  </footer>
+  
 
   <!-- POPUP DE ERRORES -->
   <div id="popupEditar" style="
@@ -382,6 +435,8 @@ if (isset($_POST["guardar"])) {
       </p>
     </div>
   </div>
+
+
 
   <script>
     /* ========================================================

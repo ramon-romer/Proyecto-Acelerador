@@ -300,9 +300,18 @@ IMPORTANTE: AÑADIMOS el <form method="post"> que faltaba.
 
 <body>
   <header>
-    <div class="imagen">
-      <img src="img/Image__4_-removebg-preview.png" id="acele" alt="Logo" />
+
+    <div class="contenedorimg">
+      <div class="imagen">
+        <img src="https://uf3ceu.es/wp-content/uploads/logo-uf3-2k25.svg" alt="CEU Universidad Fernando III"
+          style="height:50px; width:auto;" id="#acele" />
+      </div>
+
+      <div class="imagen">
+        <img src="img/AcademyAccelerator_def.png" id="academy" alt="academy" />
+      </div>
     </div>
+
   </header>
 
   <main>
@@ -487,7 +496,8 @@ IMPORTANTE: AÑADIMOS el <form method="post"> que faltaba.
   <footer>
     <div class="mipie" id="mipie">
       <div class="direccion">
-        <img src="img/Image__4_-removebg-preview.png" alt="Logo" />
+        <img src="https://uf3ceu.es/wp-content/uploads/logo-uf3-2k25.svg" alt="CEU Universidad Fernando III"
+          style="height:50px; width:auto;" id="#acele" />
         <p>
           Glorieta Ángel Herrera Oria, s/n,<br />
           41930 Bormujos,<br />
