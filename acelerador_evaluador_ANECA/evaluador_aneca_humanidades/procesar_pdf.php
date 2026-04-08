@@ -32,13 +32,18 @@ $pipeline = new Pipeline();
 $jsonExtraido = $pipeline->procesar($rutaPdf);
 
 if (!is_array($jsonExtraido)) {
-    die('El pipeline no devolvió un array válido.');
+    die('El pipeline no devolviÃƒÂ³ un array vÃƒÂ¡lido.');
 }
 
-$jsonPlano = json_encode($jsonExtraido, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+$jsonFlags = JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE;
+if (defined('JSON_INVALID_UTF8_SUBSTITUTE')) {
+    $jsonFlags |= JSON_INVALID_UTF8_SUBSTITUTE;
+}
+
+$jsonPlano = json_encode($jsonExtraido, $jsonFlags);
 
 if ($jsonPlano === false) {
-    die('No se pudo convertir el JSON extraído.');
+    die('No se pudo convertir el JSON extraÃƒÂ­do.');
 }
 
 $contadores = [
@@ -52,12 +57,12 @@ $contadores = [
 ];
 
 hum_render_layout_start(
-    'Expediente extraído',
-    'Revisa el resumen de extracción y elige si quieres guardar la evaluación directamente o completar datos manuales antes de recalcular.',
+    'Expediente extraÃƒÂ­do',
+    'Revisa el resumen de extracciÃƒÂ³n y elige si quieres guardar la evaluaciÃƒÂ³n directamente o completar datos manuales antes de recalcular.',
     [
         ['label' => 'Portal ANECA', 'url' => hum_portal_url()],
         ['label' => 'Humanidades', 'url' => hum_index_url()],
-        ['label' => 'Expediente extraído'],
+        ['label' => 'Expediente extraÃƒÂ­do'],
     ],
     [
         ['label' => 'Volver a Humanidades', 'url' => hum_index_url(), 'class' => 'light'],
@@ -69,7 +74,7 @@ hum_render_layout_start(
     <div class="meta-grid">
         <div class="metric"><span class="label">Candidato</span><span class="value" style="font-size:20px"><?= h($nombre_candidato) ?></span></div>
         <div class="metric"><span class="label">Archivo</span><span class="value" style="font-size:18px"><?= h(basename($rutaPdf)) ?></span></div>
-        <div class="metric"><span class="label">Área</span><span class="value" style="font-size:20px">Humanidades</span></div>
+        <div class="metric"><span class="label">ÃƒÂrea</span><span class="value" style="font-size:20px">Humanidades</span></div>
     </div>
 
     <div class="stats-grid">
@@ -77,7 +82,7 @@ hum_render_layout_start(
         <div class="metric"><span class="label">Libros</span><span class="value"><?= h((string)$contadores['libros']) ?></span></div>
         <div class="metric"><span class="label">Proyectos</span><span class="value"><?= h((string)$contadores['proyectos']) ?></span></div>
         <div class="metric"><span class="label">Docencia</span><span class="value"><?= h((string)$contadores['docencia']) ?></span></div>
-        <div class="metric"><span class="label">Formación</span><span class="value"><?= h((string)$contadores['formacion']) ?></span></div>
+        <div class="metric"><span class="label">FormaciÃƒÂ³n</span><span class="value"><?= h((string)$contadores['formacion']) ?></span></div>
         <div class="metric"><span class="label">Experiencia</span><span class="value"><?= h((string)$contadores['experiencia']) ?></span></div>
     </div>
 </section>
@@ -85,7 +90,7 @@ hum_render_layout_start(
 <section class="card stack">
     <div>
         <h2>Siguiente paso</h2>
-        <p class="muted">Para pruebas, he dejado visible el JSON técnico, pero ya queda apartado en un bloque plegable para que no rompa la pantalla.</p>
+        <p class="muted">Para pruebas, he dejado visible el JSON tÃƒÂ©cnico, pero ya queda apartado en un bloque plegable para que no rompa la pantalla.</p>
     </div>
 
     <div class="toolbar">
@@ -105,8 +110,9 @@ hum_render_layout_start(
 
 <section class="card">
     <details>
-        <summary>Ver JSON extraído</summary>
+        <summary>Ver JSON extraÃƒÂ­do</summary>
         <pre><?= h($jsonPlano) ?></pre>
     </details>
 </section>
 <?php hum_render_layout_end(); ?>
+

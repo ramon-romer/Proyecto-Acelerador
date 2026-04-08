@@ -1,82 +1,115 @@
 <?php
 declare(strict_types=1);
 
+/**
+ * ============================================================
+ * VER UNA EVALUACIÓN CONCRETA
+ * ============================================================
+ *
+ * Muestra el detalle de una evaluación guardada,
+ * incluyendo el JSON original.
+ */
+
 require __DIR__ . '/config.php';
-require __DIR__ . '/ui.php';
 
 $id = (int)($_GET['id'] ?? 0);
 
-if ($id <= 0) { die('ID no válido.'); }
+if ($id <= 0) {
+    die('ID no válido.');
+}
 
 $sql = "SELECT * FROM evaluaciones WHERE id = :id LIMIT 1";
 $sentencia = $pdo->prepare($sql);
 $sentencia->execute([':id' => $id]);
+
 $evaluacion = $sentencia->fetch();
 
-if (!$evaluacion) { die('Evaluación no encontrada.'); }
-
-csyj_render_layout_start(
-    'Evaluación #' . (string)$evaluacion['id'],
-    'Detalle completo del expediente evaluado en CSyJ, con desglose y acceso al JSON original.',
-    [
-        ['label' => 'Portal ANECA', 'url' => csyj_portal_url()],
-        ['label' => 'CSyJ', 'url' => csyj_index_url()],
-        ['label' => 'Listado', 'url' => csyj_listado_url()],
-        ['label' => 'Evaluación #' . (string)$evaluacion['id']],
-    ],
-    [
-        ['label' => 'Volver al listado', 'url' => csyj_listado_url(), 'class' => 'light'],
-        ['label' => 'Nueva evaluación', 'url' => csyj_index_url(), 'class' => 'light'],
-    ]
-);
+if (!$evaluacion) {
+    die('Evaluación no encontrada.');
+}
 ?>
-<section class="card stack">
-    <div class="meta-grid">
-        <div class="metric"><span class="label">Candidato</span><span class="value" style="font-size:20px"><?= csyj_h($evaluacion['nombre_candidato']) ?></span></div>
-        <div class="metric"><span class="label">Resultado</span><span class="value" style="font-size:18px"><?= csyj_render_result_badge((string)$evaluacion['resultado']) ?></span></div>
-        <div class="metric"><span class="label">Fecha</span><span class="value" style="font-size:18px"><?= csyj_h($evaluacion['fecha_creacion']) ?></span></div>
-        <div class="metric"><span class="label">Área</span><span class="value" style="font-size:20px">Ciencias Sociales y Jurídicas</span></div>
-    </div>
-    <div class="kpis">
-        <div class="kpi"><span class="label">Bloque 1</span><strong><?= csyj_h((string)$evaluacion['bloque_1']) ?></strong></div>
-        <div class="kpi"><span class="label">Bloque 2</span><strong><?= csyj_h((string)$evaluacion['bloque_2']) ?></strong></div>
-        <div class="kpi"><span class="label">Bloque 3</span><strong><?= csyj_h((string)$evaluacion['bloque_3']) ?></strong></div>
-        <div class="kpi"><span class="label">Bloque 4</span><strong><?= csyj_h((string)$evaluacion['bloque_4']) ?></strong></div>
-        <div class="kpi"><span class="label">Total B1 + B2</span><strong><?= csyj_h((string)$evaluacion['total_b1_b2']) ?></strong></div>
-        <div class="kpi"><span class="label">Total final</span><strong><?= csyj_h((string)$evaluacion['total_final']) ?></strong></div>
-    </div>
-</section>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Ver evaluación</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            background: #f7f7f7;
+        }
+        .contenedor {
+            max-width: 1000px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+        }
+        th {
+            background: #efefef;
+        }
+        pre {
+            white-space: pre-wrap;
+            background: #f0f0f0;
+            padding: 12px;
+            border-radius: 8px;
+        }
+        a {
+            color: #1f6feb;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+<div class="contenedor">
+    <h1>Evaluación #<?= htmlspecialchars((string)$evaluacion['id']) ?></h1>
 
-<section class="card">
-    <h2>Desglose de puntuaciones</h2>
+    <p><strong>Candidato:</strong> <?= htmlspecialchars($evaluacion['nombre_candidato']) ?></p>
+    <p><strong>Resultado:</strong> <?= htmlspecialchars($evaluacion['resultado']) ?></p>
+    <p><strong>Fecha:</strong> <?= htmlspecialchars($evaluacion['fecha_creacion']) ?></p>
+
     <table>
         <tr><th>Concepto</th><th>Puntuación</th></tr>
-        <tr><td>1.A</td><td><?= csyj_h((string)$evaluacion['puntuacion_1a']) ?></td></tr>
-        <tr><td>1.B</td><td><?= csyj_h((string)$evaluacion['puntuacion_1b']) ?></td></tr>
-        <tr><td>1.C</td><td><?= csyj_h((string)$evaluacion['puntuacion_1c']) ?></td></tr>
-        <tr><td>1.D</td><td><?= csyj_h((string)$evaluacion['puntuacion_1d']) ?></td></tr>
-        <tr><td>1.E</td><td><?= csyj_h((string)$evaluacion['puntuacion_1e']) ?></td></tr>
-        <tr><td>1.F</td><td><?= csyj_h((string)$evaluacion['puntuacion_1f']) ?></td></tr>
-        <tr><td>1.G</td><td><?= csyj_h((string)$evaluacion['puntuacion_1g']) ?></td></tr>
-        <tr><td><strong>Bloque 1</strong></td><td><strong><?= csyj_h((string)$evaluacion['bloque_1']) ?></strong></td></tr>
-        <tr><td>2.A</td><td><?= csyj_h((string)$evaluacion['puntuacion_2a']) ?></td></tr>
-        <tr><td>2.B</td><td><?= csyj_h((string)$evaluacion['puntuacion_2b']) ?></td></tr>
-        <tr><td>2.C</td><td><?= csyj_h((string)$evaluacion['puntuacion_2c']) ?></td></tr>
-        <tr><td>2.D</td><td><?= csyj_h((string)$evaluacion['puntuacion_2d']) ?></td></tr>
-        <tr><td><strong>Bloque 2</strong></td><td><strong><?= csyj_h((string)$evaluacion['bloque_2']) ?></strong></td></tr>
-        <tr><td>3.A</td><td><?= csyj_h((string)$evaluacion['puntuacion_3a']) ?></td></tr>
-        <tr><td>3.B</td><td><?= csyj_h((string)$evaluacion['puntuacion_3b']) ?></td></tr>
-        <tr><td><strong>Bloque 3</strong></td><td><strong><?= csyj_h((string)$evaluacion['bloque_3']) ?></strong></td></tr>
-        <tr><td><strong>Bloque 4</strong></td><td><strong><?= csyj_h((string)$evaluacion['bloque_4']) ?></strong></td></tr>
-        <tr><td><strong>Total B1 + B2</strong></td><td><strong><?= csyj_h((string)$evaluacion['total_b1_b2']) ?></strong></td></tr>
-        <tr><td><strong>Total final</strong></td><td><strong><?= csyj_h((string)$evaluacion['total_final']) ?></strong></td></tr>
-    </table>
-</section>
+        <tr><td>1.A</td><td><?= htmlspecialchars((string)$evaluacion['puntuacion_1a']) ?></td></tr>
+        <tr><td>1.B</td><td><?= htmlspecialchars((string)$evaluacion['puntuacion_1b']) ?></td></tr>
+        <tr><td>1.C</td><td><?= htmlspecialchars((string)$evaluacion['puntuacion_1c']) ?></td></tr>
+        <tr><td>1.D</td><td><?= htmlspecialchars((string)$evaluacion['puntuacion_1d']) ?></td></tr>
+        <tr><td>1.E</td><td><?= htmlspecialchars((string)$evaluacion['puntuacion_1e']) ?></td></tr>
+        <tr><td>1.F</td><td><?= htmlspecialchars((string)$evaluacion['puntuacion_1f']) ?></td></tr>
+        <tr><td>1.G</td><td><?= htmlspecialchars((string)$evaluacion['puntuacion_1g']) ?></td></tr>
+        <tr><td><strong>Bloque 1</strong></td><td><strong><?= htmlspecialchars((string)$evaluacion['bloque_1']) ?></strong></td></tr>
 
-<section class="card">
-    <details>
-        <summary>Ver JSON de entrada</summary>
-        <pre><?= csyj_h($evaluacion['json_entrada']) ?></pre>
-    </details>
-</section>
-<?php csyj_render_layout_end(); ?>
+        <tr><td>2.A</td><td><?= htmlspecialchars((string)$evaluacion['puntuacion_2a']) ?></td></tr>
+        <tr><td>2.B</td><td><?= htmlspecialchars((string)$evaluacion['puntuacion_2b']) ?></td></tr>
+        <tr><td>2.C</td><td><?= htmlspecialchars((string)$evaluacion['puntuacion_2c']) ?></td></tr>
+        <tr><td>2.D</td><td><?= htmlspecialchars((string)$evaluacion['puntuacion_2d']) ?></td></tr>
+        <tr><td><strong>Bloque 2</strong></td><td><strong><?= htmlspecialchars((string)$evaluacion['bloque_2']) ?></strong></td></tr>
+
+        <tr><td>3.A</td><td><?= htmlspecialchars((string)$evaluacion['puntuacion_3a']) ?></td></tr>
+        <tr><td>3.B</td><td><?= htmlspecialchars((string)$evaluacion['puntuacion_3b']) ?></td></tr>
+        <tr><td><strong>Bloque 3</strong></td><td><strong><?= htmlspecialchars((string)$evaluacion['bloque_3']) ?></strong></td></tr>
+
+        <tr><td><strong>Bloque 4</strong></td><td><strong><?= htmlspecialchars((string)$evaluacion['bloque_4']) ?></strong></td></tr>
+        <tr><td><strong>Total B1 + B2</strong></td><td><strong><?= htmlspecialchars((string)$evaluacion['total_b1_b2']) ?></strong></td></tr>
+        <tr><td><strong>Total final</strong></td><td><strong><?= htmlspecialchars((string)$evaluacion['total_final']) ?></strong></td></tr>
+    </table>
+
+    <h2>JSON de entrada</h2>
+    <pre><?= htmlspecialchars($evaluacion['json_entrada']) ?></pre>
+
+    <p><a href="listado.php">Volver al listado</a></p>
+    <p><a href="index.php">Nueva evaluación</a></p>
+</div>
+</body>
+</html>

@@ -31,25 +31,30 @@ $pipeline = new Pipeline();
 $jsonExtraido = $pipeline->procesar($rutaPdf);
 
 if (!is_array($jsonExtraido)) {
-    die('El pipeline no devolvió un array válido.');
+    die('El pipeline no devolviÃƒÂ³ un array vÃƒÂ¡lido.');
 }
 
-$jsonPlano = json_encode($jsonExtraido, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+$jsonFlags = JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE;
+if (defined('JSON_INVALID_UTF8_SUBSTITUTE')) {
+    $jsonFlags |= JSON_INVALID_UTF8_SUBSTITUTE;
+}
+
+$jsonPlano = json_encode($jsonExtraido, $jsonFlags);
 
 if ($jsonPlano === false) {
-    die('No se pudo convertir el JSON extraído.');
+    die('No se pudo convertir el JSON extraÃƒÂ­do.');
 }
 
 tec_render_layout_start(
-    'Expediente extraído',
-    'Revisa el resumen de extracción y elige si quieres guardar la evaluación directamente o completar datos manuales antes de recalcular.',
+    'Expediente extraÃƒÂ­do',
+    'Revisa el resumen de extracciÃƒÂ³n y elige si quieres guardar la evaluaciÃƒÂ³n directamente o completar datos manuales antes de recalcular.',
     [
         ['label' => 'Portal ANECA', 'url' => tec_portal_url()],
-        ['label' => 'Técnicas', 'url' => tec_index_url()],
-        ['label' => 'Expediente extraído'],
+        ['label' => 'TÃƒÂ©cnicas', 'url' => tec_index_url()],
+        ['label' => 'Expediente extraÃƒÂ­do'],
     ],
     [
-        ['label' => 'Volver a Técnicas', 'url' => tec_index_url(), 'class' => 'light'],
+        ['label' => 'Volver a TÃƒÂ©cnicas', 'url' => tec_index_url(), 'class' => 'light'],
         ['label' => 'Portal principal', 'url' => tec_portal_url(), 'class' => 'light'],
     ]
 );
@@ -58,7 +63,7 @@ tec_render_layout_start(
     <div class="meta-grid">
         <div class="metric"><span class="label">Candidato</span><span class="value" style="font-size:20px"><?= tec_h($nombre_candidato) ?></span></div>
         <div class="metric"><span class="label">Archivo</span><span class="value" style="font-size:18px"><?= tec_h(basename($rutaPdf)) ?></span></div>
-        <div class="metric"><span class="label">Área</span><span class="value" style="font-size:20px">Técnicas</span></div>
+        <div class="metric"><span class="label">ÃƒÂrea</span><span class="value" style="font-size:20px">TÃƒÂ©cnicas</span></div>
     </div>
 
     <div class="stats-grid">
@@ -67,14 +72,14 @@ tec_render_layout_start(
         <div class="metric"><span class="label">1C Proyectos</span><span class="value"><?= tec_h((string)(count($jsonExtraido['bloque_1']['proyectos'] ?? []))) ?></span></div>
         <div class="metric"><span class="label">1D Transferencia</span><span class="value"><?= tec_h((string)(count($jsonExtraido['bloque_1']['transferencia'] ?? []))) ?></span></div>
         <div class="metric"><span class="label">2A Docencia</span><span class="value"><?= tec_h((string)(count($jsonExtraido['bloque_2']['docencia_universitaria'] ?? []))) ?></span></div>
-        <div class="metric"><span class="label">3A Formación</span><span class="value"><?= tec_h((string)(count($jsonExtraido['bloque_3']['formacion_academica'] ?? []))) ?></span></div>
+        <div class="metric"><span class="label">3A FormaciÃƒÂ³n</span><span class="value"><?= tec_h((string)(count($jsonExtraido['bloque_3']['formacion_academica'] ?? []))) ?></span></div>
     </div>
 </section>
 
 <section class="card stack">
     <div>
         <h2>Siguiente paso</h2>
-        <p class="muted">Para pruebas, el JSON técnico sigue disponible, pero ya queda apartado en un bloque plegable para no romper la pantalla.</p>
+        <p class="muted">Para pruebas, el JSON tÃƒÂ©cnico sigue disponible, pero ya queda apartado en un bloque plegable para no romper la pantalla.</p>
     </div>
 
     <div class="toolbar">
@@ -94,8 +99,9 @@ tec_render_layout_start(
 
 <section class="card">
     <details>
-        <summary>Ver JSON extraído</summary>
+        <summary>Ver JSON extraÃƒÂ­do</summary>
         <pre><?= tec_h($jsonPlano) ?></pre>
     </details>
 </section>
 <?php tec_render_layout_end(); ?>
+
