@@ -47,7 +47,7 @@ declare(strict_types=1);
     </div>
 </div>
 <script>
-const BASE_URL = '/evaluadorFinal/';
+const BASE_URL = '/evaluador/';
 function ir(area) { window.location.href = BASE_URL + 'evaluador_aneca_' + area + '/'; }
 </script>
 </body>
