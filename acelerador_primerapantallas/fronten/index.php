@@ -182,7 +182,7 @@ if (isset($_POST["guardar"])) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Acelerador</title>
 
-  <link rel="icon" type="image/x-icon" href="img/Image__4_-removebg-preview.png">
+  <link rel="icon" type="image/x-icon" src="https://uf3ceu.es/wp-content/uploads/logo-uf3-2k25.svg">
   <link rel="stylesheet" href="css/styles.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -402,7 +402,7 @@ if (isset($_POST["guardar"])) {
       </div>
     </div>
   </footer>
-  
+
 
   <!-- POPUP DE ERRORES -->
   <div id="popupEditar" style="
