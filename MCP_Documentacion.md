@@ -1,6 +1,6 @@
 # MCP, documentos fuente y contratos de datos en Acelerador
 
-Documento consolidado a partir de la documentacion previa existente en la raiz del proyecto, `mcp-server/`, `docs/`, `acelerador_panel/backend/` y `acelerador_evaluador_ANECA/`.
+Documento consolidado a partir de la documentacion previa existente en la raiz del proyecto, `mcp-server/`, `docs/`, `acelerador_panel/backend/` y `evaluador/`.
 
 Autor: Basilio Lagares
 
@@ -52,16 +52,16 @@ Objetivo editorial de esta version:
 - `mcp-server/resultados/jobs/...`
 
 ### Codigo relevante del flujo documental ANECA ya integrado en producto
-- `acelerador_evaluador_ANECA/src/Pipeline.php`
-- `acelerador_evaluador_ANECA/src/TextCleaner.php`
-- `acelerador_evaluador_ANECA/src/AnecaExtractor.php`
-- `acelerador_evaluador_ANECA/src/OcrProcessor.php`
-- `acelerador_evaluador_ANECA/tests/unit_src.php`
-- `acelerador_evaluador_ANECA/evaluador_aneca_*/procesar_pdf.php`
-- `acelerador_evaluador_ANECA/evaluador_aneca_*/guardar_evaluacion.php`
-- `acelerador_evaluador_ANECA/evaluador_aneca_*/guardar_complemento.php`
-- `acelerador_evaluador_ANECA/evaluador_aneca_*/schema.sql`
-- `acelerador_evaluador_ANECA/output/json/*.json`
+- `evaluador/src/Pipeline.php`
+- `evaluador/src/TextCleaner.php`
+- `evaluador/src/AnecaExtractor.php`
+- `evaluador/src/OcrProcessor.php`
+- `evaluador/evaluador_aneca_*/procesar_pdf.php`
+- `evaluador/evaluador_aneca_*/guardar_evaluacion.php`
+- `evaluador/evaluador_aneca_*/guardar_complemento.php`
+- `evaluador/evaluador_aneca_*/schema.sql`
+- `evaluador/output/json/*.json`
+- `acelerador_evaluador_ANECA/storage/` (ruta residual detectada en este estado local)
 
 ### Codigo relevante de pipelines paralelos o heredados
 - `meritos/scraping/src/Pipeline.php`
@@ -129,20 +129,24 @@ Son la fuente mejor soportada en el estado actual.
 
 Rutas reales detectadas:
 - `mcp-server/extract_pdf.php`
-- `acelerador_evaluador_ANECA/src/Pipeline.php`
+- `evaluador/src/Pipeline.php`
 
 Comportamiento actual:
 - en `mcp-server`, la extraccion nativa se hace con `smalot/pdfparser`;
-- en `acelerador_evaluador_ANECA`, la extraccion se hace con `pdftotext`.
+- en `evaluador`, la extraccion se hace con `pdftotext`.
 
 #### PDFs hibridos o escaneados
 
-Aplican de forma parcial, con diferencias importantes segun el modulo.
+Aplican en los modulos con OCR y, en `evaluador`, ya existe fallback OCR en el pipeline principal.
 
 Estado actual por modulo:
 - `mcp-server`: soportado mediante OCR con `pdftoppm` + `tesseract` cuando el texto nativo es insuficiente.
 - `meritos/scraping`: existe pipeline OCR basado en conversion a imagen + Tesseract.
-- `acelerador_evaluador_ANECA`: no hay fallback OCR conectado al pipeline principal actual; el `Pipeline` usa `pdftotext` y falla si no obtiene texto util.
+- `evaluador`: fallback OCR integrado en `evaluador/src/Pipeline.php` con `evaluador/src/OcrProcessor.php`; activacion cuando `pdftotext` devuelve texto vacio/insuficiente. Si OCR no esta disponible en entorno, el pipeline queda en modo degradado o falla segun el caso.
+
+Actualizacion de criterio MVP (jefatura de equipo):
+- el scraping documental completo del evaluador ANECA incluye soporte OCR/fallback en la ruta principal;
+- por tanto, la evidencia reproducible de OCR operativo en entorno real es bloqueo funcional de cierre en fase SIN MCP.
 
 #### Otros documentos fuente
 
@@ -212,7 +216,7 @@ Mas en detalle:
 
 `pdf -> imagenes -> OCR -> limpieza -> extraccion -> json`
 
-Existe, pero no es la ruta mejor alineada con el estado actual del producto y no comparte el mismo contrato que `acelerador_evaluador_ANECA`.
+Existe, pero no es la ruta mejor alineada con el estado actual del producto y no comparte el mismo contrato que `evaluador`.
 
 ### 2.6 Tratamiento especifico de PDFs / documentos fuente
 
@@ -237,11 +241,11 @@ Limitaciones:
 - el contrato de salida actual es generico y pequeno; sirve para documentos tipo factura/prueba, no para evaluacion academica rica;
 - el valor del modulo hoy esta mas en el desacoplamiento de fuentes y en la infraestructura de extraccion que en la riqueza semantica del JSON final.
 
-#### Tratamiento actual en `acelerador_evaluador_ANECA`
+#### Tratamiento actual en `evaluador`
 
 Archivos principales:
-- `acelerador_evaluador_ANECA/src/Pipeline.php`
-- `acelerador_evaluador_ANECA/src/AnecaExtractor.php`
+- `evaluador/src/Pipeline.php`
+- `evaluador/src/AnecaExtractor.php`
 
 Capacidades observadas:
 - extrae texto con `pdftotext`;
@@ -300,20 +304,20 @@ JSON ya se esta usando de dos maneras reales:
 
 #### Contrato entre productor y consumidor
 
-El concepto ya esta presente aunque todavia no exista un `JSON Schema` formal versionado:
+El concepto ya esta presente y ya existe una primera formalizacion en `docs/schemas/contrato-canonico-aneca-v1.schema.json`:
 - el productor es quien extrae y normaliza;
 - el consumidor es quien evalua, persiste, integra o presenta;
 - ambos deben acordar una estructura estable para evitar acoplamientos fragiles.
 
-Hoy hay dos contratos "de hecho":
-- contrato MCP simple y fijo;
-- contrato ANECA academico, mas rico y orientado a evaluacion.
+Decision de esta documentacion:
+- el contrato canonico de toda la app es la estructura JSON del bloque B (`evaluador`);
+- el contrato simple de `mcp-server` se mantiene como contrato tecnico de extraccion/ingesta y debe mapearse al contrato canonico cuando entre en flujos de negocio de app.
 
-Lo que falta es el cierre formal de esos contratos mediante versionado y schema compartido.
+Lo que sigue faltando es su adopcion transversal (todas las rutas de ingesta y consumo), versionado operativo y validacion automatica en integraciones.
 
 ### 2.8 Estructuras de salida detectadas
 
-#### A. Contrato detectado en `mcp-server`
+#### A. Contrato tecnico de extraccion en `mcp-server` (no canonico de app)
 
 Contrato fijo verificado en codigo y tests:
 
@@ -369,7 +373,7 @@ Cuando se consume por API, suele venir envuelto en una respuesta tipo:
 }
 ```
 
-#### B. Contrato detectado en `acelerador_evaluador_ANECA`
+#### B. Contrato canonico de la app en `evaluador`
 
 Estructura base observada:
 
@@ -410,7 +414,7 @@ Estructura base observada:
 ```
 
 Ejemplo real:
-- `acelerador_evaluador_ANECA/output/json/exp_69cd660f626b5.json`
+- `evaluador/output/json/exp_69cd660f626b5.json`
 
 Campos y comportamiento observados:
 - top-level:
@@ -432,6 +436,8 @@ En ANECA el JSON no termina en la extraccion:
 
 Esto confirma que JSON ya es, en la practica, el contrato entre productor documental y consumidor de negocio.
 
+En esta version de la documentacion, esta estructura queda establecida como contrato canonico de la app.
+
 ### 2.9 Estado actual de implementacion
 
 #### Implementado
@@ -442,7 +448,8 @@ Esto confirma que JSON ya es, en la practica, el contrato entre productor docume
   - fuente DB
   - API HTTP
   - cola async
-- Contrato JSON fijo del `mcp-server`
+- Contrato JSON tecnico de extraccion en `mcp-server` (no canonico de app)
+- Contrato canonico de app establecido en la estructura JSON ANECA del bloque B
 - Tests unitarios de `mcp-server` en PASS (`13/13`)
 - Pipeline ANECA de:
   - PDF con texto
@@ -456,7 +463,8 @@ Esto confirma que JSON ya es, en la practica, el contrato entre productor docume
 #### Parcial / en progreso
 
 - Soporte uniforme de OCR en todos los flujos documentales
-- Convergencia entre `mcp-server`, `acelerador_evaluador_ANECA` y `meritos/scraping`
+- Convergencia entre `mcp-server`, `evaluador` y `meritos/scraping`
+- Adaptacion completa de los flujos tecnicos al contrato canonico de app
 - Migracion del frontend del panel para consumir API en lugar de SQL directo
 - Formalizacion transversal de contratos entre modulos
 
@@ -470,7 +478,7 @@ Esto confirma que JSON ya es, en la practica, el contrato entre productor docume
 
 - Orquestacion por `ORCID`, `DOI` y `rama`
 - Conexion con fuentes externas tipo ANECA, Dialnet u otras
-- `JSON Schema` formal de entrada/salida
+- Ampliacion de `JSON Schema` a contratos de entrada/salida adicionales (y no solo al contrato canonico ANECA v1)
 - Expansión de MCP como capa intermedia comun para integraciones nuevas
 
 ### 2.10 Relacion entre MCP y la arquitectura actual
@@ -577,7 +585,7 @@ Acelerador ya dispone de una base real para tratar documentos fuente sin acoplar
 - y una integracion final aun progresiva entre fuente, backend y frontend.
 
 La prioridad tecnica no es "reinventar" lo ya hecho, sino converger:
-- sobre contratos mas claros,
+- sobre aplicacion consistente del contrato canonico ya definido,
 - sobre una ruta canonica de integracion,
 - y sobre esquemas versionados que permitan reutilizar este enfoque en otros desarrollos.
 
@@ -587,15 +595,15 @@ La prioridad tecnica no es "reinventar" lo ya hecho, sino converger:
 
 - `MCP_Documentacion.docx` no es un DOCX valido; hoy contiene texto plano con extension incorrecta.
 - `mcp-server/config.json` declara `"extractor": "pdfplumber"`, pero el codigo real usa PHP con `smalot/pdfparser`, `pdftoppm` y `tesseract`.
-- `meritos/scraping/src/AnecaExtractor.php` devuelve el contrato simple tipo factura, no el esquema academico rico de `acelerador_evaluador_ANECA`.
-- `acelerador_evaluador_ANECA/src/OcrProcessor.php` existe, pero `src/Pipeline.php` no lo usa en el flujo principal.
-- En salidas de `acelerador_evaluador_ANECA`, `metadatos_extraccion.comite` aparece fijado a `CSYJ` desde el extractor comun, incluso cuando existen modulos para otras areas.
+- `meritos/scraping/src/AnecaExtractor.php` devuelve el contrato simple tipo factura, no el esquema academico rico de `evaluador`.
+- `evaluador/src/OcrProcessor.php` existe, pero `src/Pipeline.php` no lo usa en el flujo principal.
+- En salidas de `evaluador`, `metadatos_extraccion.comite` aparece fijado a `CSYJ` desde el extractor comun, incluso cuando existen modulos para otras areas.
 - En esos mismos JSON, `metadatos_extraccion.archivo_pdf` va a `null`, mientras que `archivo_pdf` top-level si se rellena.
 
 ### Partes poco documentadas o que convendria ampliar
 
-- Cual debe ser la ruta canonica a medio plazo: `mcp-server`, `acelerador_evaluador_ANECA`, o una unificacion entre ambas.
-- Versionado oficial de contratos JSON y `JSON Schema`.
+- Cual debe ser la ruta canonica a medio plazo: `mcp-server`, `evaluador`, o una unificacion entre ambas.
+- Gobierno de versionado oficial de contratos JSON y `JSON Schema` (incluyendo cambios compatibles/incompatibles).
 - Reglas de matching futuras por `ORCID`, `DOI` y `rama`.
 - Politica de integracion de nuevas fuentes externas.
 - Criterios para saber cuando usar solo extraccion automatica y cuando exigir revision manual.
@@ -613,10 +621,8 @@ La prioridad tecnica no es "reinventar" lo ya hecho, sino converger:
 - Mantener `MCP_Documentacion.md` como documento base consolidado y no volver a fragmentar la narrativa.
 - Corregir o retirar `MCP_Documentacion.docx` si no va a mantenerse como DOCX real.
 - Alinear `mcp-server/config.json` con la implementacion real.
-- Declarar explicitamente cual es el contrato JSON canonico para cada flujo:
-  - extraccion generica MCP
-  - extraccion academica ANECA
-- Publicar un `JSON Schema` versionado al menos para los contratos ya usados en integracion.
+- Mantener explicitado que el contrato canonico de app es ANECA y mapear cualquier salida tecnica (como `mcp-server`) a ese contrato.
+- Integrar validacion automatica del `JSON Schema` canonico en pipelines y pruebas de integracion.
 - Parametrizar el extractor ANECA por area/comite y revisar los metadatos generados.
 - Decidir si `meritos/scraping` se conserva como pipeline legado, como laboratorio o como base de convergencia, y documentarlo.
 
@@ -624,13 +630,173 @@ La prioridad tecnica no es "reinventar" lo ya hecho, sino converger:
 
 Contraste manual realizado sobre documentacion y codigo en:
 - `mcp-server/`
-- `acelerador_evaluador_ANECA/`
+- `evaluador/`
+- `acelerador_evaluador_ANECA/storage/`
 - `acelerador_panel/backend/`
 - `docs/`
 - raiz del repositorio
 
 Pruebas ejecutadas durante esta revision:
 - `php mcp-server/tests/unit_extract_pdf.php` -> PASS (`13/13`)
-- `php acelerador_evaluador_ANECA/tests/unit_src.php` -> PASS (`6/6`)
+- No se detecta en este estado local un `tests/unit_src.php` operativo dentro de `evaluador/`; queda como pendiente de formalizacion automatica en fase posterior.
 
-Esto no demuestra integracion completa entre todos los modulos, pero si confirma que los dos contratos documentales principales revisados mantienen hoy su comportamiento interno esperado.
+Esto no demuestra integracion completa entre todos los modulos, pero si confirma que:
+- el contrato canonico documentado (ANECA) esta soportado por el pipeline operativo de `evaluador`;
+- y el contrato tecnico de `mcp-server` se mantiene estable para extraccion, pendiente de adaptacion integral al canonico en toda la app.
+
+## 5. Cierre operativo PASO 1 (contrato canonico SIN MCP)
+
+Este bloque cierra el PASO 1 de la hoja de trabajo por fases:
+- fase actual: consolidar ruta principal sin MCP;
+- fase posterior: integrar MCP sobre contrato ya estabilizado.
+
+### 5.1 Inventario de contratos y estructuras detectadas
+
+1. Contrato tecnico MCP (extraccion multi-fuente), en `mcp-server/extract_pdf.php`:
+   - `tipo_documento`, `numero`, `fecha`, `total_bi`, `iva`, `total_a_pagar`, `texto_preview`.
+   - objetivo: extraccion tecnica; no es el contrato de negocio de app.
+
+2. Contrato canonico de app (ANECA), en `evaluador/src/AnecaExtractor.php` + `evaluador/src/Pipeline.php`:
+   - estructura por bloques `bloque_1..bloque_4`;
+   - `metadatos_extraccion`;
+   - campos top-level `archivo_pdf`, `json_generado`, `texto_extraido`.
+   - muestras reales en `evaluador/output/json/*.json` (75 archivos revisados en este cierre).
+   - consistencia observada en muestras:
+     - 75/75 con mismo set de claves top-level;
+     - 75/75 con mismos contenedores en `bloque_1`, `bloque_2`, `bloque_3`;
+     - `metadatos_extraccion.version_esquema = "1.0"` en 75/75.
+
+3. Contrato REST backend panel (tutorias), en `acelerador_panel/backend/docs/02-api-rest-contratos.md`:
+   - envoltorio `{data, meta, error}` para API de tutorias;
+   - contrato distinto al canonico ANECA y fuera de la ruta documental principal.
+
+### 5.2 Propuesta de contrato canonico base (cerrado para fase SIN MCP)
+
+Se cierra como contrato canonico de app la estructura del bloque B (ANECA) ya usada por el flujo real en `evaluador`.
+
+Top-level canonico (salida del pipeline ANECA):
+- `bloque_1` (objeto)
+- `bloque_2` (objeto)
+- `bloque_3` (objeto)
+- `bloque_4` (array)
+- `metadatos_extraccion` (objeto)
+- `archivo_pdf` (string)
+- `json_generado` (string)
+- `texto_extraido` (string)
+
+Subestructura minima por bloque:
+- `bloque_1`: `publicaciones`, `libros`, `proyectos`, `transferencia`, `tesis_dirigidas`, `congresos`, `otros_meritos_investigacion` (arrays).
+- `bloque_2`: `docencia_universitaria`, `evaluacion_docente`, `formacion_docente`, `material_docente` (arrays).
+- `bloque_3`: `formacion_academica`, `experiencia_profesional` (arrays).
+- `bloque_4`: array de evidencias.
+
+Metadatos minimos:
+- `comite` (string)
+- `subcomite` (string|null)
+- `archivo_pdf` (string|null)
+- `fecha_extraccion` (date-time string)
+- `version_esquema` (string)
+- `requiere_revision_manual` (bool)
+
+### 5.3 Estrategia de versionado (cerrada para v1)
+
+Se cierra esta estrategia compatible con el estado real actual:
+- ID funcional de contrato: `contrato-canonico-aneca`.
+- Linea mayor activa: `v1`.
+- `JSON Schema` de referencia: `docs/schemas/contrato-canonico-aneca-v1.schema.json`.
+- version on-wire: `metadatos_extraccion.version_esquema` (valor actual observado: `1.0` en todos los JSON revisados).
+
+Reglas de cambio:
+- Cambios PATCH/MINOR compatibles: no romper claves top-level ni claves contenedoras de bloque.
+- Cambios MAJOR: solo con nueva linea (`v2`) y schema nuevo (`contrato-canonico-aneca-v2.schema.json`), manteniendo coexistencia temporal.
+- Cualquier salida tecnica (incluyendo MCP) que quiera entrar en negocio de app debe mapear a esta linea canonicamente versionada.
+
+### 5.4 Campos obligatorios, opcionales y dependientes del flujo
+
+Obligatorios en contrato canonico v1 (salida de pipeline ANECA):
+- todos los top-level descritos en 5.2;
+- todas las claves contenedoras de `bloque_1`, `bloque_2`, `bloque_3`;
+- metadatos minimos en `metadatos_extraccion`.
+
+Opcionales por tipo de evidencia:
+- los atributos internos de cada item (por ejemplo `cuartil`, `tipo_indice`, `citas`, `anios_duracion`, `horas`, `relacion`) pueden ir a `null` o no aplicar segun heuristica/fuente.
+- las listas pueden ir vacias sin romper contrato.
+
+Dependientes del flujo:
+- en `guardar_evaluacion.php` y `guardar_complemento.php` el consumidor asegura por codigo la existencia de bloques/arrays base aunque falten detalles internos.
+- en fusion manual, se admiten claves adicionales por evidencia (modelo flexible) sin romper el contenedor canonico.
+
+### 5.5 Observaciones de compatibilidad y deuda tecnica (PASO 1)
+
+- La ruta documental operativa es `evaluador/`; `acelerador_evaluador_ANECA/` aparece en este estado local como ruta residual de storage.
+- El extractor comun fija `metadatos_extraccion.comite = CSYJ` para todas las areas; es deuda de parametrizacion por rama/comite.
+- `metadatos_extraccion.archivo_pdf` se mantiene en `null` mientras `archivo_pdf` top-level si se rellena: coexistencia valida pero mejorable.
+- `bloque_2.docencia_universitaria` aparece vacio en todas las muestras revisadas (`0/75` con items), lo que sugiere deuda de cobertura heuristica para ese subbloque.
+- Existe validacion automatica del contrato canonico en `evaluador/tests/validate_canonical_schema.php` y en la validacion actual pasa `76/76` (incluye 1 JSON de sonda OCR).
+
+## 6. Cierre operativo PASO 3 (DONE SIN MCP)
+
+Este bloque define el `DONE sin MCP` de la fase actual, con criterios minimos verificables y estado real.
+
+Definicion formal:
+`DONE sin MCP` se considera alcanzado cuando los criterios minimos de contrato/datos, backend, frontend, flujo funcional, documentacion y pruebas de cierre estan en estado `ya cumplido`, sin depender de MCP como ruta principal.
+
+Regla de cierre MVP confirmada:
+- OCR/fallback del flujo documental ANECA es requisito minimo obligatorio;
+- la fase SIN MCP no puede declararse cerrada sin integracion y evidencia de validacion OCR en la ruta principal.
+
+### 6.1 Checklist de criterios minimos (estado actual)
+
+| Bloque | Criterio minimo de aceptacion | Estado | Evidencia real |
+|---|---|---|---|
+| Contrato y datos | Contrato canonico ANECA v1 definido, versionado y documentado | ya cumplido | `MCP_Documentacion.md` (seccion 5), `docs/schemas/contrato-canonico-aneca-v1.schema.json` |
+| Contrato y datos | Validacion automatica del schema canonico sobre salidas reales | ya cumplido | `evaluador/tests/validate_canonical_schema.php` |
+| Contrato y datos | Salidas reales cumplen schema canonico en lote actual | ya cumplido | ejecucion actual: `76/76` PASS en `evaluador/output/json/*.json` |
+| Contrato y datos | Version on-wire en metadatos (`version_esquema`) estable en la salida | ya cumplido | muestras revisadas: `metadatos_extraccion.version_esquema = "1.0"` |
+| Contrato y datos | Metadatos por area/comite parametrizados de forma coherente | pendiente | `evaluador/src/AnecaExtractor.php` fija `comite = CSYJ` |
+| Backend | Backend modular de tutorias operativo sin MCP | ya cumplido | `acelerador_panel/backend/tests/run_usecases_smoke.php` -> `OK` |
+| Backend | Contrato REST homogeneo (`data/meta/error`) vigente | ya cumplido | `acelerador_panel/backend/docs/02-api-rest-contratos.md` |
+| Backend | Ruta principal desacoplada de MCP (publisher nulo en produccion actual) | ya cumplido | `NullAssignmentEventPublisher` + docs backend |
+| Backend | Verificacion del esquema BD objetivo via `inspect_schema.php` en entorno final | pendiente con dependencia externa | requiere DB objetivo disponible y accesible |
+| Frontend | Flujo de sesion/perfiles base operativo (TUTOR/PROFESOR/ADMIN/ADMINISTRADOR) | ya cumplido | `docs/estado-tecnico-2026-04-06.md` (anexos A/B) |
+| Frontend | Rutas criticas del panel consumen API backend (sin SQL directo en UI) | pendiente | existen consultas SQL directas en `acelerador_panel/fronten/*.php` |
+| Frontend | Prueba e2e automatizada frontend->backend en entorno de navegador | pendiente con dependencia externa | requiere entorno web+datos+automatizacion e2e |
+| Flujo funcional | Flujo ANECA sin MCP operativo: subir -> extraer -> completar/evaluar -> persistir `json_entrada` | ya cumplido | `evaluador/evaluador_aneca_*/procesar_pdf.php`, `guardar_evaluacion.php`, `guardar_complemento.php` |
+| Flujo funcional | Cobertura multi-area ANECA sobre pipeline comun | ya cumplido | 5 modulos `evaluador_aneca_*` usan `../src/Pipeline.php` |
+| Flujo funcional | OCR/fallback integrado en pipeline principal ANECA (requisito minimo MVP) | ya cumplido | `evaluador/src/Pipeline.php` integra fallback con `evaluador/src/OcrProcessor.php` y metadatos (`modo_extraccion_texto`, `fallback_ocr_activado`) |
+| Documentacion | PASO 1 y PASO 2 consolidados y trazables en docs principales | ya cumplido | `MCP_Documentacion.md` + `docs/schemas/validacion-contrato-canonico-aneca-v1.md` |
+| Documentacion | Definicion explicita de `DONE sin MCP` publicada para el equipo | ya cumplido | esta seccion 6 |
+| Documentacion | Sincronizacion de artefactos derivados (`.docx`/`.pdf`) con el `.md` vigente | pendiente | cambios recientes en `.md` requieren resincronizacion |
+| Pruebas minimas de cierre | `php evaluador/tests/validate_canonical_schema.php` devuelve exit code 0 | ya cumplido | ejecucion actual: `passed=76 failed=0`, exit `0` |
+| Pruebas minimas de cierre | `php acelerador_panel/backend/tests/run_usecases_smoke.php` en verde | ya cumplido | ejecucion actual: `OK: usecases smoke tests passed.` |
+| Pruebas minimas de cierre | Lint basico de `evaluador/src/*.php` en verde | ya cumplido | `php -l` en `AnecaExtractor`, `Pipeline`, `TextCleaner`, `OcrProcessor` |
+| Pruebas minimas de cierre | Validacion OCR del pipeline principal ANECA con casos reales de PDF escaneado/hibrido (evidencia guardada) | pendiente con dependencia externa | `evaluador/tests/validate_ocr_fallback.php` disponible; en entorno actual `tesseract` no esta instalado (`blocked_dependency`) |
+| Pruebas minimas de cierre | Smoke funcional ANECA en entorno real con BD por area | pendiente con dependencia externa | requiere BD por area poblada y ejecucion manual/e2e |
+
+Comando reproducible de validacion OCR/fallback (ruta principal ANECA):
+- `C:\xampp\php\php.exe evaluador\tests\validate_ocr_fallback.php`
+
+Interpretacion rapida de salida:
+- `PASS`: caso validado y comportamiento esperado;
+- `BLOCKED_DEPENDENCY`: el flujo requiere OCR pero falta dependencia de entorno (tipicamente `tesseract`);
+- `FAIL`: error funcional del pipeline o del contrato/schema.
+
+### 6.2 Resultado de cierre PASO 3
+
+Estado global del `DONE sin MCP`:
+- **aun no cerrado**.
+
+Motivos de no-cierre de fase (pendientes que quedan):
+1. Validar OCR en la ruta principal con evidencia reproducible sobre PDFs escaneados/hibridos en entorno con `tesseract` operativo.
+2. Parametrizacion de metadatos de comite/subcomite por area en el extractor comun ANECA.
+3. Cierre de rutas criticas frontend sobre API (reduciendo SQL directo en panel).
+4. Validaciones dependientes de entorno externo (BD objetivo y smoke e2e real por area).
+
+Condicion explicita:
+- mientras el punto 1 no este resuelto con evidencia (OCR operativo en entorno real), la fase base SIN MCP se mantiene en estado **no cerrada**.
+
+### 6.3 Riesgo de intentar pasar a MCP antes de este DONE
+
+- Se trasladaria deuda funcional a la fase de integracion MCP (mezclando estabilizacion base con evolucion arquitectonica).
+- Aumentaria el coste de diagnostico al no tener congelada una base sin MCP totalmente verificada.
+- Se perderia trazabilidad clara de regresiones (si fallos vienen de base o de integracion MCP).
