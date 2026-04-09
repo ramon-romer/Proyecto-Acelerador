@@ -6,7 +6,7 @@ declare(strict_types=1);
  */
 
 $servidor = '127.0.0.1';
-$base_datos = 'evaluador_aneca_tecnicas_v2';
+$base_datos = 'evaluador_aneca_tecnicas';
 $usuario_bd = 'root';
 $contrasena_bd = '';
 $juego_caracteres = 'utf8mb4';
