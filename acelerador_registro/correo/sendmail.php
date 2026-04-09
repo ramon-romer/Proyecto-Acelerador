@@ -13,7 +13,11 @@ $BASE_PATH = dirname(__DIR__);
 $config = [
   'smtp_user' => 'ramonelhermano@gmail.com',     // <-- tu Gmail remitente
   'smtp_pass' => 'ussgxeldupnzhamn',        // <-- App Password (no tu clave normal)
+<<<<<<< Updated upstream
   'from_name' => 'ICorreo Verficación', // <-- nombre remitente (opcional)
+=======
+  'from_name' => 'Ignacio',
+>>>>>>> Stashed changes
 ];
 if (is_file($BASE_PATH . '/mail.config.php')) {
   $fileCfg = require $BASE_PATH . '/mail.config.php';
