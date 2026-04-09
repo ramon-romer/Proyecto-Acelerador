@@ -194,7 +194,7 @@ if ($query_perfil && mysqli_num_rows($query_perfil) > 0) {
           <i class="bi bi-arrow-clockwise"></i> Actualizar mis datos
         </a>
 
-        <button type="button"
+        <button type="button" id="subirdatos" data-rama="<?php echo htmlspecialchars($rama, ENT_QUOTES, 'UTF-8'); ?>"
           class="btn btn-outline-info px-4 py-2 rounded-pill fw-medium d-inline-flex align-items-center gap-2 text-white border-info">
           <i class="bi bi-file-earmark-plus"></i> Añadir trabajos/artículos
         </button>
@@ -289,6 +289,60 @@ if ($query_perfil && mysqli_num_rows($query_perfil) > 0) {
 
       });
     });
+
+
+    document.addEventListener("DOMContentLoaded", () => {
+
+      const btnValidar = document.getElementById("subirdatos");
+      if (!btnValidar) {
+        console.error("[VALIDAR] No encuentro el botón #subirdatos");
+        return;
+      }
+
+      btnValidar.addEventListener("click", (e) => {
+        e.preventDefault();
+
+        // 1) Rama desde data-rama
+        let perfilRaw = (btnValidar.dataset.rama || "")
+          .toUpperCase()
+          .trim()
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, ""); // quita tildes (TÉCNICAS -> TECNICAS)
+
+        // 2) Mapa de rutas (SIN prefijo del proyecto todavía)
+        const rutas = {
+          "CSYJ": "/evaluador/evaluador_aneca_csyj/index.php",
+          "EXPERIMENTALES": "/evaluador/evaluador_aneca_experimentales/index.php",
+          "HUMANIDADES": "/evaluador/evaluador_aneca_humanidades/index.php",
+          "SALUD": "/evaluador/evaluador_aneca_salud/index.php",
+          "TECNICA": "/evaluador/evaluador_aneca_tecnicas/index.php"
+        };
+
+        const rutaRelativa = rutas[perfilRaw];
+        if (!rutaRelativa) {
+          alert("Perfil/Rama no reconocida: " + perfilRaw);
+          console.warn("[VALIDAR] Rama desconocida:", btnValidar.dataset.rama, "->", perfilRaw);
+          return;
+        }
+
+        // 3) Detectar prefijo del proyecto automáticamente
+        // Si estás en /Proyecto-Acelerador/acelerador_panel/fronten/....
+        // esto devuelve "/Proyecto-Acelerador"
+        const path = window.location.pathname;
+        const base = path.split("/acelerador_panel/")[0] || "";
+        // Si algún día esta página no está en acelerador_panel, me lo dices y lo ajustamos.
+
+        const destino = base + rutaRelativa;
+
+        console.log("[VALIDAR] Rama:", perfilRaw);
+        console.log("[VALIDAR] Base:", base);
+        console.log("[VALIDAR] Destino:", destino);
+
+        window.location.href = destino;
+      });
+
+    });
+
   </script>
 </body>
 

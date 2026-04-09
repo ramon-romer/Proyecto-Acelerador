@@ -61,14 +61,13 @@ if (isset($_POST["guardar"])) {
     'SALUD' => 'SALUD',
     'TECNICAS' => 'TECNICA',
     'TECNICA' => 'TECNICA',
-    'SYJ' => 'S Y J',
-    'S Y J' => 'S Y J',
+    'CSYJ' => 'CSYJ',
     'HUMANIDADES' => 'HUMANIDADES',
     'EXPERIMENTALES' => 'EXPERIMENTALES',
   ];
   $rama = $mapRama[$ramaUp] ?? $ramaUp;
 
-  $ramasValidas = ["SALUD", "TECNICA", "S Y J", "HUMANIDADES", "EXPERIMENTALES"];
+  $ramasValidas = ["SALUD", "TECNICA", "CSYJ", "HUMANIDADES", "EXPERIMENTALES"];
   if (!in_array($rama, $ramasValidas, true)) {
     $errores[] = "La rama seleccionada no es válida.";
   }
@@ -319,7 +318,7 @@ if (isset($_POST["guardar"])) {
                   <select class="form-select" name="rama">
                     <option value="SALUD" <?= $fila['rama'] == "SALUD" ? "selected" : "" ?>>SALUD</option>
                     <option value="TECNICAS" <?= $fila['rama'] == "TECNICA" ? "selected" : "" ?>>Técnicas</option>
-                    <option value="SYJ" <?= $fila['rama'] == "S Y J" ? "selected" : "" ?>>S Y J</option>
+                    <option value="CSYJ" <?= $fila['rama'] == "CSYJ" ? "selected" : "" ?>>CSYJ</option>
                     <option value="HUMANIDADES" <?= $fila['rama'] == "HUMANIDADES" ? "selected" : "" ?>>HUMANIDADES
                     </option>
                     <option value="EXPERIMENTALES" <?= $fila['rama'] == "EXPERIMENTALES" ? "selected" : "" ?>>
@@ -333,6 +332,7 @@ if (isset($_POST["guardar"])) {
                   <ul id="requisitosEditar" style="
                     margin-top: 10px;
                     padding: 10px;
+                    color:black;
                     border-radius: 10px;
                     background: #f8f8f8;
                     border: 1px solid #ddd;

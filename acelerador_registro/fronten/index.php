@@ -473,7 +473,7 @@ IMPORTANTE: AÑADIMOS el <form method="post"> que faltaba.
                       <option value="" disabled selected hidden>Seleccione una rama</option>
                       <option value="SALUD">Salud</option>
                       <option value="TECNICA">Técnica</option>
-                      <option value="S Y J">S Y J</option>
+                      <option value="CSYJ">CSYJ</option>
                       <option value="HUMANIDADES">Humanidades</option>
                       <option value="EXPERIMENTALES">Experimentales</option>
                     </select>
