@@ -36,7 +36,8 @@ class OcrProcessor
         $this->tessdataPrefix = $this->resolveDirectoryPath(
             'TESSDATA_PREFIX',
             [
-                $repoRoot . DIRECTORY_SEPARATOR . 'mcp-server' . DIRECTORY_SEPARATOR . '.tools' . DIRECTORY_SEPARATOR . 'tesseract' . DIRECTORY_SEPARATOR . 'tessdata',
+                $repoRoot . DIRECTORY_SEPARATOR . 'evaluador' . DIRECTORY_SEPARATOR . '.tools' . DIRECTORY_SEPARATOR . 'tessdata',
+                $repoRoot . DIRECTORY_SEPARATOR . 'tools' . DIRECTORY_SEPARATOR . 'tessdata',
                 'C:\\Program Files\\Tesseract-OCR\\tessdata',
                 'C:\\Program Files (x86)\\Tesseract-OCR\\tessdata',
             ]
