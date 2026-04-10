@@ -19,7 +19,7 @@ declare(strict_types=1);
 $servidor = '127.0.0.1';
 
 // Nombre de la base de datos
-$base_datos = 'evaluador_aneca_csyj_v2';
+$base_datos = 'evaluador_aneca_csyj';
 
 // Usuario de MySQL
 $usuario_bd = 'root';

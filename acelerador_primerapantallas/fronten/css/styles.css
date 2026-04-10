@@ -1,7 +1,7 @@
 /* Contenedor principal del formulario */
 .formulario {
     width: 60%;
-    margin: 50px auto;
+    margin: 200px auto 210px auto;
     background-color: rgba(20, 88, 204, 0.4);
     border-radius: 20px;
     padding: 30px;
@@ -88,10 +88,13 @@ body {
 
 /* Imágenes dentro del footer */
 .mipie img {
-    width: 90px;
-    height: 90px;
+    width: 130px !important;
+    height: 130px !important;
+    margin-bottom: 10px;
     margin-top: 15px;
     margin-left: 15px;
+    object-fit: cover;
+    display: block;
 }
 
 /* Texto dentro de la dirección del footer */
@@ -132,4 +135,25 @@ body {
     width: 100%;
     align-items: center;
     justify-content: center;
+}
+
+.contenedorimg {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin: auto 0;
+    padding: 0 60px;
+}
+
+
+.imagen img {
+    max-height: 150px;
+    width: 150px;
+}
+
+
+
+header {
+    height: 20px;
 }

@@ -291,7 +291,7 @@ IMPORTANTE: AÑADIMOS el <form method="post"> que faltaba.
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Acelerador</title>
 
-  <link rel="icon" href="img/Image__4_-removebg-preview.png" type="image/x-icon" />
+  <link rel="icon" type="image/x-icon" href="https://uf3ceu.es/wp-content/uploads/logo-uf3-2k25.svg">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
@@ -300,9 +300,18 @@ IMPORTANTE: AÑADIMOS el <form method="post"> que faltaba.
 
 <body>
   <header>
-    <div class="imagen">
-      <img src="img/Image__4_-removebg-preview.png" id="acele" alt="Logo" />
+
+    <div class="contenedorimg">
+      <div class="imagen">
+        <img src="https://uf3ceu.es/wp-content/uploads/logo-uf3-2k25.svg" alt="CEU Universidad Fernando III"
+          style="height:50px; width:auto;" id="#acele" />
+      </div>
+
+      <div class="imagen">
+        <img src="img/AcademyAccelerator_def.png" id="academy" alt="academy" />
+      </div>
     </div>
+
   </header>
 
   <main>
@@ -464,7 +473,7 @@ IMPORTANTE: AÑADIMOS el <form method="post"> que faltaba.
                       <option value="" disabled selected hidden>Seleccione una rama</option>
                       <option value="SALUD">Salud</option>
                       <option value="TECNICA">Técnica</option>
-                      <option value="S Y J">S Y J</option>
+                      <option value="CSYJ">CSYJ</option>
                       <option value="HUMANIDADES">Humanidades</option>
                       <option value="EXPERIMENTALES">Experimentales</option>
                     </select>
@@ -487,7 +496,8 @@ IMPORTANTE: AÑADIMOS el <form method="post"> que faltaba.
   <footer>
     <div class="mipie" id="mipie">
       <div class="direccion">
-        <img src="img/Image__4_-removebg-preview.png" alt="Logo" />
+        <img src="https://uf3ceu.es/wp-content/uploads/logo-uf3-2k25.svg" alt="CEU Universidad Fernando III"
+          style="height:50px; width:auto;" id="#acele" />
         <p>
           Glorieta Ángel Herrera Oria, s/n,<br />
           41930 Bormujos,<br />
@@ -560,6 +570,7 @@ IMPORTANTE: AÑADIMOS el <form method="post"> que faltaba.
   position:fixed;
   top:0; left:0;
   width:100%; height:100%;
+  color:black;
   background:rgba(0,0,0,0.6);
   backdrop-filter: blur(2px);
   z-index:999999;

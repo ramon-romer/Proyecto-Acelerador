@@ -1,252 +1,190 @@
-# **Documentación del Proyecto: Integración del MCP con Procesamiento de PDFs**
+# MCP en Acelerador: documentacion operativa
 
-## **1. Introducción**
-El objetivo de este proyecto es procesar archivos PDF para extraer texto y almacenarlo en un archivo JSON. El sistema está diseñado para manejar PDFs de texto plano y, en el futuro, se integrará con un sistema de scraping para procesar PDFs que contengan imágenes o sean híbridos (combinación de texto e imágenes).
+Autor: Basilio Lagares  
+Fecha de reorganizacion: 2026-04-09
 
-El proyecto utiliza el **Model Context Protocol (MCP)** para estructurar y gestionar las tareas relacionadas con el procesamiento de los PDFs.
+## 1. Objetivo del documento
+Este documento describe solo el modulo MCP de Acelerador (`mcp-server/`): que hace hoy, como funciona internamente, que contrato tecnico entrega y como se relaciona con el resto del sistema.
 
----
+No cubre en detalle:
+- flujo funcional completo ANECA,
+- checklist de cierre de fase SIN MCP,
+- estado operativo detallado de backend/frontend fuera del papel de MCP.
 
-## **2. Requisitos del Proyecto**
-### **Software necesario**
-- **XAMPP**: Para ejecutar un servidor local con Apache y MySQL.
-- **Composer**: Herramienta de gestión de dependencias para PHP.
-- **PHP**: Versión compatible con las librerías utilizadas (recomendado PHP 7.4 o superior).
+Esos temas se mantienen en:
+- `MCP_Anexo_Contexto_Proyecto.md`
+- `MCP_Anexo_DONE_SIN_MCP.md`
 
-### **Librerías utilizadas**
-1. **setasign/fpdi**:
-   - Permite manejar y manipular archivos PDF.
-   - Se utiliza para procesar PDFs y preparar su contenido.
-2. **smalot/pdfparser**:
-   - Librería para extraer texto de PDFs de texto plano.
-   - Es la herramienta principal para la extracción de texto en este proyecto.
+## 2. Que es MCP en Acelerador
+En este repositorio, MCP es un modulo concreto en `mcp-server/` que actua como capa intermedia entre fuentes heterogeneas y consumidores internos.
 
-### **Estructura del proyecto**
-El proyecto tiene la siguiente estructura de carpetas y archivos:
-```
-Proyecto-Acelerador/
-├── mcp-server/
-│   ├── config.json
-│   ├── extract_pdf.php
-│   ├── pdf/
-│   │   └── prueba.pdf
-│   ├── resultados/
-│   │   └── resultados.json
-├── meritos/
-│   ├── config.php
-│   ├── ...
-├── vendor/
-│   ├── autoload.php
-│   ├── ...
-└── composer.json
-```
+Responsabilidad principal de MCP:
+- recibir una fuente (`pdf` o `db`),
+- extraer contenido util,
+- normalizarlo a un contrato JSON tecnico fijo,
+- exponer el resultado por CLI/HTTP,
+- y soportar ejecucion sincronica o asincronica.
 
----
+## 3. Papel real actual de MCP
+Estado `implementado`:
+- modulo autonomo en `mcp-server/` con endpoints HTTP y ejecucion CLI,
+- extraccion PDF nativa + OCR,
+- ingesta de fuente `db`,
+- cola de jobs asincronos con `worker_jobs.php`,
+- contrato tecnico de salida estable (7 claves).
 
-## **3. Descripción del Script: `extract_pdf.php`**
-El script `extract_pdf.php` es el componente principal para el procesamiento de PDFs. Su propósito es extraer texto de un archivo PDF y guardar el resultado en un archivo JSON.
+Estado `parcial / en progreso`:
+- MCP no es todavia la ruta unica de ingesta documental de toda la app,
+- no todas las rutas de negocio consumen directamente salida MCP,
+- mapeo transversal MCP -> contrato canonico de app aun no cerrado extremo a extremo.
 
-### **3.1. Funcionalidades**
-1. **Carga de dependencias**:
-   - Utiliza el archivo `vendor/autoload.php` generado por Composer para cargar las librerías necesarias.
-2. **Extracción de texto**:
-   - Usa la librería `Smalot\PdfParser` para extraer texto de PDFs de texto plano.
-3. **Creación de carpeta de resultados**:
-   - Si no existe, crea una carpeta llamada `resultados` en la misma ubicación del script.
-4. **Almacenamiento del resultado**:
-   - Guarda el texto extraído en un archivo JSON llamado `resultados.json` dentro de la carpeta `resultados`.
+Estado `previsto / futuro`:
+- usar MCP como frontera comun de integracion documental para mas fuentes y mas consumidores,
+- ampliar orquestacion multi-fuente con reglas de dominio.
 
-### **3.2. Código del Script**
-```php
-<?php
-require __DIR__ . '/../vendor/autoload.php'; // Carga las dependencias de Composer
-use Smalot\PdfParser\Parser;
+## 4. Fuentes de entrada
+### Implementado
+- `pdf`: via `POST /extract-pdf` y flujo interno de analisis/extraccion.
+- `db`: via `POST /extract-data` (lectura por PDO segun configuracion).
 
-function extractTextFromPDF($filePath) {
-    try {
-        $parser = new Parser();
-        $pdf = $parser->parseFile($filePath);
-        $text = $pdf->getText();
+### Parcial / en progreso
+- soporte y cobertura funcional dependen de dependencias de entorno OCR en cada despliegue.
 
-        return $text;
-    } catch (Exception $e) {
-        return "Error al procesar el PDF: " . $e->getMessage();
-    }
+### Previsto / futuro
+- fuentes externas tipo ANECA, Dialnet y otras, segun configuraciones y reglas de orquestacion documentadas en material tecnico del modulo.
+
+## 5. Flujo interno del MCP
+Flujo base:
+`fuente (pdf|db) -> extraccion -> normalizacion minima -> DocumentoExtractor -> contrato JSON tecnico`
+
+Secuencia operativa (PDF):
+1. Entrada por CLI o HTTP.
+2. Diagnostico de archivo (tamano, paginas, viabilidad sync/async).
+3. Extraccion de texto nativo.
+4. Fallback OCR si texto nativo es insuficiente.
+5. Extraccion de campos por `DocumentoExtractor`.
+6. Entrega de resultado directo o en job asincrono.
+
+Secuencia operativa (DB):
+1. Entrada por HTTP `POST /extract-data`.
+2. Lectura de origen configurado.
+3. Mapeo minimo a estructura de salida tecnica.
+
+## 6. Tratamiento de PDFs y OCR
+### Implementado
+- Extraccion nativa PDF con `smalot/pdfparser`.
+- OCR con `pdftoppm` + `tesseract` cuando el texto nativo no alcanza umbral util.
+- Parametros de control en entorno:
+- `MAX_OCR_PAGES`
+- `OCR_BATCH_SIZE`
+
+### Parcial / en progreso
+- robustez OCR dependiente de instalacion/disponibilidad de binarios en entorno.
+
+### Previsto / futuro
+- endurecer cobertura OCR en todos los entornos objetivo con evidencia recurrente en CI/validaciones de integracion.
+
+## 7. Modos de ejecucion y procesamiento sync/async
+### Modos de ejecucion implementados
+- HTTP:
+- `POST /extract-pdf`
+- `POST /extract-data`
+- consulta de jobs asincronos por `GET /jobs/{job_id}`
+- CLI/script:
+- procesamiento directo
+- worker de cola: `php mcp-server/worker_jobs.php --once|--loop`
+
+### Criterio sync/async implementado
+- Sync cuando el PDF cumple umbrales de tamano/paginas.
+- Async cuando supera umbrales operativos.
+
+Parametros relevantes (`implementado`):
+- `MAX_SYNC_PDF_BYTES`
+- `MAX_SYNC_PAGES`
+
+## 8. Contrato tecnico de salida MCP
+Contrato tecnico actual (`implementado`):
+
+```json
+{
+  "tipo_documento": "FACTURA | null",
+  "numero": "string | null",
+  "fecha": "string | null",
+  "total_bi": "string | null",
+  "iva": "string | null",
+  "total_a_pagar": "string | null",
+  "texto_preview": "string"
 }
-
-// Ejemplo de uso
-if (isset($argv[1])) {
-    $filePath = $argv[1];
-
-    if (!file_exists($filePath)) {
-        echo json_encode(["error" => "El archivo no existe"]);
-        exit;
-    }
-
-    $text = extractTextFromPDF($filePath);
-
-    // Crear la carpeta "resultados" si no existe
-    $resultadosDir = __DIR__ . '/resultados';
-    if (!is_dir($resultadosDir)) {
-        mkdir($resultadosDir, 0777, true);
-    }
-
-    // Guardar el resultado en un archivo JSON
-    $resultFilePath = $resultadosDir . '/resultados.json';
-    file_put_contents($resultFilePath, json_encode(["text" => $text], JSON_PRETTY_PRINT));
-
-    // Mostrar mensaje de éxito
-    echo json_encode(["message" => "Resultado guardado en 'resultados/resultados.json'"]);
-} else {
-    echo json_encode(["error" => "No se proporcionó la ruta del archivo"]);
-}
 ```
 
----
+Propiedades operativas:
+- las 7 claves se mantienen siempre,
+- `texto_preview` es obligatorio como `string`,
+- resto de claves puede venir en `null`,
+- existe deteccion de faltantes funcionales (`faltantes`) en respuesta de API.
 
-## **4. Ejecución del Script**
-### **4.1. Preparación**
-1. **Coloca el PDF de prueba**:
-   - Copia el archivo PDF que deseas procesar en la carpeta `mcp-server/pdf/`.
+## 9. Relacion entre contrato tecnico MCP y contrato canonico de la app
+Estado real:
+- MCP produce un contrato tecnico de extraccion, util para ingesta y desacoplamiento de fuente.
+- La app (flujo ANECA) usa como contrato canonico otro JSON mas rico por bloques.
 
-2. **Instala las dependencias**:
-   - Asegúrate de que las dependencias estén instaladas ejecutando:
-     ```bash
-     composer install
-     ```
+Decision vigente documentada:
+- mantener ambos contratos separados por responsabilidad,
+- mapear MCP -> contrato canonico cuando MCP entre en rutas de negocio de app.
 
-### **4.2. Ejecución**
-1. Abre una terminal y navega a la carpeta `mcp-server`:
-   ```bash
-   cd C:\Users\Basilio\Documents\GitHub\Proyecto-Acelerador\mcp-server
-   ```
-2. Ejecuta el script con el siguiente comando:
-   ```bash
-   php extract_pdf.php pdf/tu_archivo_prueba.pdf
-   ```
+Estado:
+- `implementado`: ambos contratos existen.
+- `parcial / en progreso`: mapeo transversal y adopcion completa en todos los consumidores.
 
-### **4.3. Resultado**
-- El texto extraído del PDF se guardará en el archivo:
-  ```
-  C:\Users\Basilio\Documents\GitHub\Proyecto-Acelerador\mcp-server\resultados\resultados.json
-  ```
-- El archivo tendrá un formato JSON similar al siguiente:
-  ```json
-  {
-      "text": "Texto extraído de la página 1\nTexto extraído de la página 2\n..."
-  }
-  ```
+## 10. Integracion actual con el resto del sistema
+Integracion actual, en terminos estrictos de MCP:
+- con backend: desacoplamiento intencional y punto de extension para integrar eventos/ingesta sin forzar dependencia prematura.
+- con frontend: no hay consumo generalizado directo de MCP como unica via de datos.
+- con evaluador ANECA: hoy existe coexistencia; el evaluador opera su pipeline principal y MCP sigue como modulo separado.
 
----
+Lectura correcta del estado:
+- `implementado`: MCP como pieza autonoma.
+- `parcial / en progreso`: convergencia de todas las rutas de ingesta sobre MCP.
 
-## **5. Limitaciones y Futuras Mejoras**
-### **5.1. Limitaciones actuales**
-- El script solo funciona con PDFs de texto plano.
-- No puede procesar PDFs que contengan imágenes o sean híbridos (combinación de texto e imágenes).
+## 11. Limitaciones y riesgos
+Limitaciones actuales:
+- contrato tecnico MCP deliberadamente pequeno para extraccion generica,
+- cobertura semantica insuficiente para negocio ANECA sin mapeo adicional,
+- dependencia de utilidades externas para OCR.
 
-### **5.2. Futuras mejoras**
-1. **Integración con un sistema de scraping**:
-   - Si el texto no puede ser extraído con `Smalot\PdfParser`, el script puede integrarse con un sistema de scraping desarrollado por otros miembros del equipo.
-   - Esto permitirá procesar PDFs de imágenes o híbridos.
+Riesgos de integracion:
+- mantener varios contratos sin frontera clara,
+- mezclar capa de extraccion tecnica con reglas de negocio,
+- forzar integracion MCP sin cerrar previamente criterios base de fase SIN MCP.
 
-2. **Detección automática del tipo de PDF**:
-   - Implementar una lógica para determinar si el PDF contiene texto plano o si necesita ser procesado con OCR.
+Incoherencia corregida en esta reorganizacion:
+- se unifica el criterio de OCR en evaluador: `Pipeline.php` si integra fallback con `OcrProcessor`; el bloqueo actual es de dependencia de entorno (por ejemplo `tesseract`), no de ausencia de codigo.
 
-3. **Soporte para OCR**:
-   - Usar herramientas como `Tesseract OCR` o servicios como `Google Vision API` para extraer texto de imágenes en PDFs.
+## 12. Decisiones abiertas
+1. Definir alcance exacto del mapeo MCP -> contrato canonico ANECA v1.
+2. Decidir estrategia de convivencia temporal de pipelines durante la transicion.
+3. Definir criterio operativo para declarar MCP como ruta preferente o unica por dominio.
+4. Cerrar politica de versionado de contratos cuando aparezca una linea `v2`.
 
----
+## 13. Roadmap de integracion MCP
+Fase 1 (`parcial / en progreso`):
+- mantener MCP estable como capa tecnica de extraccion,
+- congelar contrato tecnico MCP y reglas de faltantes,
+- consolidar validaciones reproducibles de OCR en entorno objetivo.
 
-## **6. Integración con el MCP**
-El script está diseñado para ser parte del flujo del MCP. Esto significa que:
-1. **Entrada**:
-   - El script recibe como entrada la ruta de un archivo PDF.
-2. **Procesamiento**:
-   - Extrae el texto del PDF utilizando `Smalot\PdfParser`.
-   - En el futuro, se integrará con un sistema de scraping para manejar PDFs de imágenes o híbridos.
-3. **Salida**:
-   - El texto extraído se guarda en un archivo JSON en la carpeta `resultados`.
+Fase 2 (`parcial / en progreso`):
+- implementar adaptador de mapeo MCP -> contrato canonico de app,
+- validar compatibilidad con schema canonico en pruebas de integracion.
 
----
+Fase 3 (`previsto / futuro`):
+- integrar consumidores clave para reducir rutas paralelas,
+- definir oficialmente la ruta canonica de ingesta documental.
 
-## **7. Recomendaciones**
-- **Pruebas**:
-  - Realiza pruebas con diferentes tipos de PDFs (texto plano, híbridos, imágenes) para identificar casos en los que el script actual no funcione.
-- **Colaboración**:
-  - Coordina con el equipo encargado del scraping para definir cómo se integrará su solución con este script.
-- **Documentación continua**:
-  - Actualiza esta documentación a medida que se implementen nuevas funcionalidades o se realicen cambios en el flujo.
----
+Fase 4 (`previsto / futuro`):
+- ampliar fuentes externas y orquestacion multi-fuente,
+- versionar contratos adicionales sin romper consumidores existentes.
 
-## ACTUALIZACION 2026-03-23 (ROBUSTEZ Y ESCALABILIDAD)
+## 14. Resumen ejecutivo final
+MCP en Acelerador ya esta implementado como modulo tecnico autonomo para extraccion y normalizacion minima de fuentes heterogeneas (`pdf` y `db`), con soporte sync/async y OCR.
 
-### Estado actual
-Se reforzo el flujo de extraccion para trabajar de forma estable con PDFs y bases de datos, incluyendo casos de alto volumen.
-
-### Mejoras implementadas
-1. Extraccion PDF robusta:
-- Fallback de binarios OCR en entorno local (`mcp-server/.tools`) y rutas globales.
-- Resolucion automatica de `TESSDATA_PREFIX`.
-- OCR por lotes de paginas para reducir picos de memoria y disco.
-- Limites configurables para OCR:
-  - `MAX_OCR_PAGES` (default 400)
-  - `OCR_BATCH_SIZE` (default 10)
-
-2. Estrategia sync/async para PDFs:
-- Diagnostico previo para decidir procesamiento sincrono o asincrono.
-- Umbrales configurables:
-  - `MAX_SYNC_PDF_BYTES` (default 15MB)
-  - `MAX_SYNC_PAGES` (default 80)
-- Si supera umbrales, se encola job y se devuelve `job_id`.
-
-3. API de procesamiento:
-- `POST /extract-pdf`: recibe PDF y procesa sync/async segun diagnostico.
-- `POST /extract-data`: entrada unificada por JSON para `fuente.tipo=pdf` o `fuente.tipo=db`.
-- `GET /jobs/{job_id}`: consulta estado y resultado/error de jobs.
-
-4. Worker asincrono:
-- Nuevo script `mcp-server/worker_jobs.php`.
-- Modos:
-  - `--once` para procesar una tanda.
-  - `--loop` para procesamiento continuo.
-
-5. Robustez en base de datos:
-- Lectura iterativa (`fetch`) en lugar de `fetchAll`.
-- Limites de seguridad:
-  - `max_rows` (maximo 10000)
-  - `max_text_chars` / `MAX_DB_TEXT_CHARS` (default 2000000)
-  - `query_timeout_seconds` / `MAX_DB_QUERY_SECONDS` (default 30)
-- Manejo de errores controlado cuando se exceden limites.
-
-6. Robustez de entrada JSON:
-- Tolerancia a BOM y a `Content-Type` imperfecto cuando el body es JSON valido.
-
-7. Configuracion multi-fuente:
-- Config activo con defaults seguros:
-  - `mcp-server/resultados/fuente_db_config.json`
-- Plantillas por fuente:
-  - `mcp-server/resultados/fuente_db_config_aneca.example.json`
-  - `mcp-server/resultados/fuente_db_config_dialnet.example.json`
-
-### Validacion realizada
-- Lint OK en scripts principales (`extract_pdf.php`, `server.php`, `worker_jobs.php`).
-- Unit tests OK (`passed=13 failed=0`).
-- Validado flujo async con PDF grande real (encolado, proceso de worker y consulta por `job_id`).
-- Validado endpoint unificado `extract-data` para `db` y `pdf`.
-
-### Pendiente (proxima fase)
-Se deja preparado para implementar cuando esten definidas las reglas de negocio y contratos:
-- Orquestacion por criterios (`ORCID`, `DOI`, `rama`).
-- Reglas por fuente (ANECA, Dialnet y PDFs origen X/Y).
-- Matching consolidado y salida JSON unificada por evidencia.
-- Contratos de entrada/salida y JSON Schema formal.
-
-### Referencia tecnica
-Para trazabilidad detallada de esta sesion:
-- `mcp-server/REGISTRO_TECNICO_2026-03-23.md`
-
-### Actualizacion de referencias (2026-03-24)
-Documentacion consolidada MVP disponible en:
-- `docs/2026-03-24-resumen-trabajo.md`
-- `docs/estado-tecnico-mvp.md`
-- `docs/estrategia-testing-mvp.md`
+Hoy su rol principal es desacoplar origen y consumo tecnico. Aun no es la unica ruta documental de toda la app, por lo que la prioridad no es reescribir su base, sino cerrar su integracion progresiva con el contrato canonico de negocio y con los consumidores finales.

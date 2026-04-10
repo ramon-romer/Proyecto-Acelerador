@@ -61,14 +61,13 @@ if (isset($_POST["guardar"])) {
     'SALUD' => 'SALUD',
     'TECNICAS' => 'TECNICA',
     'TECNICA' => 'TECNICA',
-    'SYJ' => 'S Y J',
-    'S Y J' => 'S Y J',
+    'CSYJ' => 'CSYJ',
     'HUMANIDADES' => 'HUMANIDADES',
     'EXPERIMENTALES' => 'EXPERIMENTALES',
   ];
   $rama = $mapRama[$ramaUp] ?? $ramaUp;
 
-  $ramasValidas = ["SALUD", "TECNICA", "S Y J", "HUMANIDADES", "EXPERIMENTALES"];
+  $ramasValidas = ["SALUD", "TECNICA", "CSYJ", "HUMANIDADES", "EXPERIMENTALES"];
   if (!in_array($rama, $ramasValidas, true)) {
     $errores[] = "La rama seleccionada no es válida.";
   }
@@ -182,7 +181,7 @@ if (isset($_POST["guardar"])) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Acelerador</title>
 
-  <link rel="icon" type="image/x-icon" href="img/Image__4_-removebg-preview.png">
+  <link rel="icon" type="image/x-icon" src="https://uf3ceu.es/wp-content/uploads/logo-uf3-2k25.svg">
   <link rel="stylesheet" href="css/styles.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -196,9 +195,18 @@ if (isset($_POST["guardar"])) {
 <body>
 
   <header>
-    <div class="imagen">
-      <img src="img/Image__4_-removebg-preview.png" id="acele" alt="Acelerador">
+
+    <div class="contenedorimg">
+      <div class="imagen">
+        <img src="https://uf3ceu.es/wp-content/uploads/logo-uf3-2k25.svg" alt="CEU Universidad Fernando III"
+          style="height:50px; width:auto;" id="#acele" />
+      </div>
+
+      <div class="imagen">
+        <img src="img/AcademyAccelerator_def.png" id="academy" alt="academy" />
+      </div>
     </div>
+
   </header>
 
   <main>
@@ -310,7 +318,7 @@ if (isset($_POST["guardar"])) {
                   <select class="form-select" name="rama">
                     <option value="SALUD" <?= $fila['rama'] == "SALUD" ? "selected" : "" ?>>SALUD</option>
                     <option value="TECNICAS" <?= $fila['rama'] == "TECNICA" ? "selected" : "" ?>>Técnicas</option>
-                    <option value="SYJ" <?= $fila['rama'] == "S Y J" ? "selected" : "" ?>>S Y J</option>
+                    <option value="CSYJ" <?= $fila['rama'] == "CSYJ" ? "selected" : "" ?>>CSYJ</option>
                     <option value="HUMANIDADES" <?= $fila['rama'] == "HUMANIDADES" ? "selected" : "" ?>>HUMANIDADES
                     </option>
                     <option value="EXPERIMENTALES" <?= $fila['rama'] == "EXPERIMENTALES" ? "selected" : "" ?>>
@@ -324,6 +332,7 @@ if (isset($_POST["guardar"])) {
                   <ul id="requisitosEditar" style="
                     margin-top: 10px;
                     padding: 10px;
+                    color:black;
                     border-radius: 10px;
                     background: #f8f8f8;
                     border: 1px solid #ddd;
@@ -350,6 +359,50 @@ if (isset($_POST["guardar"])) {
 
     </div>
   </main>
+  <footer>
+    <div class="mipie" id="mipie">
+      <div class="direccion">
+        <img src="https://uf3ceu.es/wp-content/uploads/logo-uf3-2k25.svg" alt="CEU Universidad Fernando III" />
+        <p>
+          Glorieta Ángel Herrera Oria, s/n,<br />
+          41930 Bormujos,<br />
+          Sevilla
+        </p>
+      </div>
+
+      <div class="requerimientolegal">
+        <div class="columna">
+          <h4>La Empresa</h4>
+          <ul>
+            <li>Contacto</li>
+            <li>Preguntas Frecuentes (FAQ)</li>
+            <li>Centro de Ayuda</li>
+            <li>Soporte</li>
+          </ul>
+        </div>
+        <div class="columna">
+          <h4>Ayuda</h4>
+          <ul>
+            <li>Términos y Condiciones</li>
+            <li>Política de Cookies</li>
+          </ul>
+        </div>
+        <div class="columna">
+          <h4>Legal</h4>
+          <ul>
+            <li>Sobre nosotros</li>
+            <li>Política de Cookies</li>
+            <li>Blog</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="piepag">
+        <p>&copy; UF3. Todos los derechos reservados.</p>
+      </div>
+    </div>
+  </footer>
+
 
   <!-- POPUP DE ERRORES -->
   <div id="popupEditar" style="
@@ -382,6 +435,8 @@ if (isset($_POST["guardar"])) {
       </p>
     </div>
   </div>
+
+
 
   <script>
     /* ========================================================

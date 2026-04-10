@@ -2,6 +2,10 @@
 
 declare(strict_types=1);
 
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
+
 require_once __DIR__ . '/../src/Pipeline.php';
 require __DIR__ . '/ui.php';
 
@@ -21,8 +25,26 @@ if (!is_dir($dirPdfs) && !mkdir($dirPdfs, 0777, true) && !is_dir($dirPdfs)) {
     die('No se pudo crear la carpeta storage/pdfs.');
 }
 
-$token = uniqid('exp_', false);
-$rutaPdf = $dirPdfs . $token . '.pdf';
+$orcidSesion = trim((string)($_SESSION['orcid_usuario'] ?? ''));
+$ramaSesion  = trim((string)($_SESSION['rama_usuario'] ?? ''));
+
+if ($orcidSesion === '' || $ramaSesion === '') {
+    die('Faltan ORCID o rama en la sesión del usuario.');
+}
+
+/* Limpiamos el ORCID para nombre de archivo */
+$orcidLimpio = preg_replace('/[^0-9Xx-]/', '', $orcidSesion);
+
+/* Limpiamos la rama y la dejamos en mayúsculas */
+$ramaLimpia = preg_replace('/[^A-Za-z0-9_-]/', '_', strtoupper($ramaSesion));
+
+/* Fecha y hora para evitar nombres repetidos */
+$fecha = date('Y-m-d_His');
+
+/* Nombre final del PDF */
+$nombrePdf = $orcidLimpio . '_' . $ramaLimpia . '_' . $fecha . '.pdf';
+
+$rutaPdf = $dirPdfs . $nombrePdf;
 
 if (!move_uploaded_file($_FILES['pdf_cv']['tmp_name'], $rutaPdf)) {
     die('No se pudo guardar el PDF.');
