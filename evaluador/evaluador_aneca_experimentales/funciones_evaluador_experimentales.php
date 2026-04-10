@@ -2,33 +2,19 @@
 declare(strict_types=1);
 
 /**
- * EVALUADOR ANECA - EXPERIMENTALES (PCD/PUP)
+ * Evaluador ANECA - Experimentales
+ * Versión conservadora ajustada a PEP
  *
- * Distribución orientativa aplicada:
- * 1A = 35
- * 1B = 7
- * 1C = 7
- * 1D = 4
- * 1E = 4
- * 1F = 2
- * 1G = 1
- * B1 = 60
- *
- * 2A = 17
- * 2B = 3
- * 2C = 3
- * 2D = 7
- * B2 = 30
- *
- * 3A = 6
- * 3B = 2
- * B3 = 8
- *
- * 4 = 2
- *
- * Regla positiva:
- * B1 + B2 >= 50
- * B1 + B2 + B3 + B4 >= 55
+ * Cambios clave:
+ * - 1A endurecido: bases menores, más castigo por coautoría y posición intermedia.
+ * - 1C endurecido: distingue mejor IP real vs. IP nominal en el certificado;
+ *   excluye contratos laborales con cargo a proyecto y baja mucho "equipo de trabajo".
+ * - 2A por horas acumuladas (máximo 450h).
+ * - 2B exige cobertura amplia.
+ * - 2C solo formación docente universitaria real.
+ * - 2D solo material/innovación docente explícitos.
+ * - 3B muy restrictivo.
+ * - 4 prudente.
  */
 
 /* =========================================================
@@ -65,7 +51,7 @@ function exp_bool(mixed $value, bool $default = false): bool
     if ($value === null || $value === '') {
         return $default;
     }
-    return in_array((string)$value, ['1', 'true', 'on', 'si', 'sí'], true);
+    return in_array(mb_strtolower((string)$value, 'UTF-8'), ['1', 'true', 'on', 'si', 'sí', 'yes'], true);
 }
 
 function exp_round(float $value): float
@@ -75,13 +61,7 @@ function exp_round(float $value): float
 
 function exp_clamp(float $value, float $min, float $max): float
 {
-    if ($value < $min) {
-        return $min;
-    }
-    if ($value > $max) {
-        return $max;
-    }
-    return $value;
+    return max($min, min($max, $value));
 }
 
 function exp_list(array $data, string $key): array
@@ -90,14 +70,29 @@ function exp_list(array $data, string $key): array
     return is_array($value) ? $value : [];
 }
 
-function exp_count_valid(array $items, string $field = 'es_valido'): int
+function exp_text(array $item): string
+{
+    return mb_strtolower(trim((string)($item['fuente_texto'] ?? '')), 'UTF-8');
+}
+
+function exp_contains_any(string $text, array $terms): bool
+{
+    foreach ($terms as $term) {
+        if (mb_stripos($text, $term, 0, 'UTF-8') !== false) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function exp_count_valid(array $items): int
 {
     $n = 0;
     foreach ($items as $item) {
         if (!is_array($item)) {
             continue;
         }
-        $isValid = $item[$field] ?? ($item['es_valida'] ?? 1);
+        $isValid = $item['es_valido'] ?? $item['es_valida'] ?? 1;
         if ((string)$isValid !== '0') {
             $n++;
         }
@@ -106,73 +101,90 @@ function exp_count_valid(array $items, string $field = 'es_valido'): int
 }
 
 /* =========================================================
- * FACTORES PUBLICACIONES
+ * 1A PUBLICACIONES
+ * Versión más dura
  * ========================================================= */
 
-function exp_factor_posicion_autor(string $posicion, bool $ordenAlfabetico = false): float
+function exp_factor_posicion_autor_1a(string $posicion, bool $ordenAlfabetico = false): float
 {
     if ($ordenAlfabetico) {
         return 1.00;
     }
 
-    return match (mb_strtolower(trim($posicion))) {
-        'autor_unico' => 1.20,
-        'primero' => 1.15,
-        'ultimo' => 1.10,
-        'correspondencia' => 1.10,
-        'intermedio' => 1.00,
-        'secundario' => 0.85,
-        default => 1.00,
+    return match (mb_strtolower(trim($posicion), 'UTF-8')) {
+        'autor_unico', 'unico' => 1.08,
+        'primero' => 1.03,
+        'ultimo' => 1.03,
+        'correspondencia' => 1.03,
+        'intermedio' => 0.85,
+        'secundario' => 0.72,
+        default => 0.85,
     };
 }
 
-function exp_factor_coautoria(int $numeroAutores): float
+function exp_factor_coautoria_1a(int $numeroAutores): float
 {
     $n = max(1, $numeroAutores);
 
     return match (true) {
-        $n <= 2 => 1.10,
-        $n <= 4 => 1.00,
-        $n <= 6 => 0.92,
-        $n <= 10 => 0.82,
-        $n <= 20 => 0.70,
-        default => 0.55,
+        $n <= 2 => 1.03,
+        $n <= 4 => 0.95,
+        $n <= 6 => 0.85,
+        $n <= 10 => 0.72,
+        $n <= 20 => 0.58,
+        default => 0.45,
     };
 }
 
-function exp_factor_citas(int $citas, int $anios): float
+function exp_factor_citas_1a(int $citas, int $anios): float
 {
     $c = max(0, $citas);
     $a = max(0, $anios);
 
-    if ($a < 2 && $c < 5) {
+    if ($a <= 2 && $c <= 3) {
         return 1.00;
     }
 
     return match (true) {
-        $c <= 1 => 0.90,
-        $c <= 5 => 0.97,
-        $c <= 15 => 1.00,
+        $c <= 1 => 0.95,
+        $c <= 5 => 1.00,
+        $c <= 15 => 1.03,
         $c <= 40 => 1.08,
-        default => 1.15,
+        default => 1.12,
     };
 }
 
 function exp_base_publicacion_1a(array $pub): float
 {
-    $tipoIndice = strtoupper(exp_str($pub['tipo_indice'] ?? 'JCR'));
     $tercil = strtoupper(exp_str($pub['tercil'] ?? ''));
+    $cuartil = strtoupper(exp_str($pub['cuartil'] ?? ''));
+    $tipoIndice = strtoupper(exp_str($pub['tipo_indice'] ?? ''));
 
-    if ($tercil === 'EXCELENTE' || $tipoIndice === 'MULTIDISCIPLINAR') {
-        return 9.0;
+    if ($tercil === 'T1') {
+        return 3.60;
+    }
+    if ($tercil === 'T2') {
+        return 2.00;
+    }
+    if ($tercil === 'T3') {
+        return 0.90;
     }
 
-    return match ($tercil) {
-        'T1' => 7.0,
-        'T2' => 4.5,
-        'T3' => 2.7,
-        default => 1.0,
-    };
+    if ($cuartil === 'Q1') {
+        return 3.40;
+    }
+    if ($cuartil === 'Q2') {
+        return 1.90;
+    }
+    if ($cuartil === 'Q3' || $cuartil === 'Q4') {
+        return 0.80;
+    }
+
+    if ($tipoIndice === 'JCR' || $tipoIndice === 'SCOPUS' || $tipoIndice === 'SJR') {
+        return 0.70;
+    }
+
+    return 0.0;
 }
 
 function exp_puntuar_item_1a(array $pub): float
@@ -186,6 +198,15 @@ function exp_puntuar_item_1a(array $pub): float
         return 0.0;
     }
 
+    if (
+        exp_bool($pub['es_divulgacion'] ?? false)
+        || exp_bool($pub['es_docencia'] ?? false)
+        || exp_bool($pub['es_acta_congreso'] ?? false)
+        || exp_bool($pub['es_informe_proyecto'] ?? false)
+    ) {
+        return 0.0;
+    }
+
     $base = exp_base_publicacion_1a($pub);
     if ($base <= 0.0) {
         return 0.0;
@@ -193,9 +214,9 @@ function exp_puntuar_item_1a(array $pub): float
 
     $ordenAlfabetico = exp_bool($pub['orden_alfabetico'] ?? false);
     $p = $base
-        * exp_factor_posicion_autor(exp_str($pub['posicion_autor'] ?? 'intermedio'), $ordenAlfabetico)
-        * exp_factor_coautoria(exp_to_int($pub['numero_autores'] ?? 1, 1))
-        * exp_factor_citas(
+        * exp_factor_posicion_autor_1a(exp_str($pub['posicion_autor'] ?? 'intermedio'), $ordenAlfabetico)
+        * exp_factor_coautoria_1a(exp_to_int($pub['numero_autores'] ?? 1, 1))
+        * exp_factor_citas_1a(
             exp_to_int($pub['citas'] ?? 0, 0),
             exp_to_int($pub['anios_desde_publicacion'] ?? 3, 3)
         );
@@ -210,27 +231,15 @@ function exp_puntuar_item_1a(array $pub): float
 function calcular_1a_experimentales(array $publicaciones): float
 {
     $total = 0.0;
-
     foreach ($publicaciones as $pub) {
         $total += exp_puntuar_item_1a($pub);
     }
-
     return exp_round(exp_clamp($total, 0.0, 35.0));
 }
 
 /* =========================================================
  * 1B LIBROS Y CAPÍTULOS
  * ========================================================= */
-
-function exp_base_editorial_1b(string $nivel): float
-{
-    return match (mb_strtolower(trim($nivel))) {
-        'internacional' => 3.0,
-        'nacional' => 1.9,
-        'menor' => 0.9,
-        default => 0.7,
-    };
-}
 
 function exp_puntuar_item_1b(array $item): float
 {
@@ -241,28 +250,30 @@ function exp_puntuar_item_1b(array $item): float
         return 0.0;
     }
 
-    $tipo = mb_strtolower(exp_str($item['tipo'] ?? 'libro'));
-    $nivel = exp_str($item['nivel_editorial'] ?? 'nacional');
-    $base = exp_base_editorial_1b($nivel);
+    $texto = exp_text($item);
+    $tipo = mb_strtolower(exp_str($item['tipo'] ?? 'libro'), 'UTF-8');
+    $nivel = mb_strtolower(exp_str($item['nivel_editorial'] ?? 'nacional'), 'UTF-8');
 
-    $p = match ($tipo) {
-        'libro' => $base * 1.20,
-        'capitulo' => $base * 0.85,
-        'resumen_extendido' => 0.70,
-        'edicion_colectiva' => 0.90,
-        'cartografia_tematica' => 1.60,
-        default => 0.50,
+    $pareceLibroReal = exp_contains_any($texto, ['isbn', 'libro', 'capítulo', 'capitulo', 'editorial', 'springer', 'elsevier', 'wiley', 'cambridge', 'oxford']);
+    if (!$pareceLibroReal) {
+        return 0.0;
+    }
+
+    $base = match ($nivel) {
+        'internacional' => ($tipo === 'libro' ? 2.0 : 1.0),
+        'nacional' => ($tipo === 'libro' ? 1.2 : 0.6),
+        default => ($tipo === 'libro' ? 0.5 : 0.25),
     };
 
-    $especialidad = mb_strtolower(exp_str($item['especialidad'] ?? ''));
-    if (in_array($especialidad, ['botanica', 'zoologia'], true) && exp_bool($item['complejidad_alta'] ?? false)) {
-        $p = max($p, 3.5);
-    }
-    if ($especialidad === 'tierra' && $tipo === 'cartografia_tematica') {
-        $p = min(max($p, 1.8), 2.7);
+    if (exp_bool($item['es_autoedicion'] ?? false) || exp_bool($item['es_acta_congreso'] ?? false)) {
+        $base *= 0.25;
     }
 
-    return exp_round($p);
+    if (exp_bool($item['es_labor_edicion'] ?? false)) {
+        $base *= 0.60;
+    }
+
+    return exp_round($base);
 }
 
 function calcular_1b_experimentales(array $items): float
@@ -275,39 +286,74 @@ function calcular_1b_experimentales(array $items): float
 }
 
 /* =========================================================
- * 1C PROYECTOS Y CONTRATOS
+ * 1C PROYECTOS
+ * Versión más dura
  * ========================================================= */
 
-function exp_base_proyecto_1c(string $tipo): float
+function exp_inferir_rol_real_proyecto_1c(array $item): string
 {
-    return match (mb_strtolower(trim($tipo))) {
-        'europeo' => 4.0,
-        'nacional' => 3.2,
-        'autonomico' => 2.0,
-        'otro_competitivo' => 1.4,
-        'art83_conocimiento' => 1.2,
-        default => 0.0,
-    };
+    $rolExtraido = mb_strtolower(exp_str($item['rol'] ?? 'investigador'), 'UTF-8');
+    $texto = exp_text($item);
+
+    if (exp_contains_any($texto, [
+        'grado tipo 10001',
+        'investigador principal y',
+        'soy investigador principal',
+    ])) {
+        return 'ip';
+    }
+
+    if (exp_contains_any($texto, [
+        'coip',
+        'co-ip',
+        'co ip',
+    ])) {
+        return 'coip';
+    }
+
+    if (exp_contains_any($texto, [
+        'equipo de trabajo',
+        'colaborador',
+        'investigador colaborador',
+        'miembro del equipo de trabajo',
+    ])) {
+        return 'investigador';
+    }
+
+    if (exp_contains_any($texto, [
+        'contrato laboral',
+        'investigador doctor contratado',
+        'contratado por',
+        'vinculado al proyecto a través de un contrato laboral',
+    ])) {
+        return 'contrato_laboral';
+    }
+
+    if ($rolExtraido === 'ip' || $rolExtraido === 'coip') {
+        return $rolExtraido;
+    }
+
+    return 'investigador';
 }
 
-function exp_factor_rol_proyecto_1c(string $rol): float
+function exp_es_proyecto_elegible_1c(array $item): bool
 {
-    return match (mb_strtolower(trim($rol))) {
-        'ip' => 1.50,
-        'coip' => 1.30,
-        'investigador' => 1.00,
-        default => 1.00,
-    };
-}
+    $texto = exp_text($item);
 
-function exp_factor_duracion_1c(float $anios): float
-{
-    return match (true) {
-        $anios >= 4.0 => 1.20,
-        $anios >= 2.0 => 1.00,
-        $anios > 0.0 => 0.80,
-        default => 0.0,
-    };
+    if (!exp_bool($item['esta_certificado'] ?? true, true)) {
+        return false;
+    }
+
+    if (exp_contains_any($texto, [
+        'contrato laboral',
+        'investigador doctor contratado',
+        'contratado por la upct',
+        'vinculado al proyecto a través de un contrato laboral',
+    ])) {
+        return false;
+    }
+
+    return true;
 }
 
 function exp_puntuar_item_1c(array $item): float
@@ -318,18 +364,57 @@ function exp_puntuar_item_1c(array $item): float
     if ((string)($item['es_valido'] ?? 1) === '0') {
         return 0.0;
     }
-    if (!exp_bool($item['esta_certificado'] ?? true, true)) {
+    if (!exp_es_proyecto_elegible_1c($item)) {
         return 0.0;
     }
 
-    $base = exp_base_proyecto_1c(exp_str($item['tipo_proyecto'] ?? 'otro_competitivo'));
-    if ($base <= 0.0) {
+    $tipo = mb_strtolower(exp_str($item['tipo_proyecto'] ?? 'otro_competitivo'), 'UTF-8');
+    $rol  = exp_inferir_rol_real_proyecto_1c($item);
+    $anios = exp_to_float($item['anios_duracion'] ?? 0, 0);
+
+    if ($rol === 'contrato_laboral') {
         return 0.0;
     }
 
-    $p = $base
-        * exp_factor_rol_proyecto_1c(exp_str($item['rol'] ?? 'investigador'))
-        * exp_factor_duracion_1c(exp_to_float($item['anios_duracion'] ?? 0, 0));
+    $p = 0.0;
+
+    if ($tipo === 'europeo') {
+        $p = match ($rol) {
+            'ip' => 4.80,
+            'coip' => 4.00,
+            default => 1.00,
+        };
+    } elseif ($tipo === 'nacional') {
+        $p = match ($rol) {
+            'ip' => 4.20,
+            'coip' => 3.50,
+            default => 0.80,
+        };
+    } elseif ($tipo === 'autonomico') {
+        $p = match ($rol) {
+            'ip' => 2.20,
+            'coip' => 1.80,
+            default => 0.60,
+        };
+    } elseif ($tipo === 'otro_competitivo') {
+        $p = match ($rol) {
+            'ip' => 1.20,
+            'coip' => 1.00,
+            default => 0.40,
+        };
+    } elseif ($tipo === 'art83_conocimiento') {
+        $p = match ($rol) {
+            'ip' => 1.00,
+            'coip' => 0.80,
+            default => 0.40,
+        };
+    }
+
+    if ($anios >= 3.0) {
+        $p *= 1.05;
+    } elseif ($anios > 0 && $anios < 1.0) {
+        $p *= 0.75;
+    }
 
     return exp_round($p);
 }
@@ -356,14 +441,32 @@ function exp_puntuar_item_1d(array $item): float
         return 0.0;
     }
 
-    return match (mb_strtolower(exp_str($item['tipo'] ?? 'propiedad_intelectual'))) {
+    $tipo = mb_strtolower(exp_str($item['tipo'] ?? ''), 'UTF-8');
+    $texto = exp_text($item);
+
+    if (
+        !in_array($tipo, [
+            'patente_obtenida_internacional',
+            'patente_solicitada_internacional',
+            'patente_obtenida_nacional',
+            'patente_solicitada_nacional',
+            'propiedad_intelectual',
+            'art83_sin_conocimiento'
+        ], true)
+        &&
+        !exp_contains_any($texto, ['patente', 'propiedad intelectual', 'art. 83', 'art83'])
+    ) {
+        return 0.0;
+    }
+
+    return match ($tipo) {
         'patente_obtenida_internacional' => 3.5,
-        'patente_solicitada_internacional' => 2.7,
-        'patente_obtenida_nacional' => 2.3,
-        'patente_solicitada_nacional' => 1.7,
-        'propiedad_intelectual' => 1.2,
-        'art83_sin_conocimiento' => 1.0,
-        default => 0.4,
+        'patente_solicitada_internacional' => 2.5,
+        'patente_obtenida_nacional' => 2.0,
+        'patente_solicitada_nacional' => 1.4,
+        'propiedad_intelectual' => 1.0,
+        'art83_sin_conocimiento' => 0.8,
+        default => 0.0,
     };
 }
 
@@ -389,7 +492,7 @@ function exp_puntuar_item_1e(array $item): float
         return 0.0;
     }
 
-    $tipo = mb_strtolower(exp_str($item['tipo'] ?? 'dirigida'));
+    $tipo = mb_strtolower(exp_str($item['tipo'] ?? 'dirigida'), 'UTF-8');
     $aprobada = exp_bool($item['proyecto_aprobado'] ?? true, true);
 
     if ($tipo === 'en_direccion' && !$aprobada) {
@@ -397,21 +500,21 @@ function exp_puntuar_item_1e(array $item): float
     }
 
     $base = match ($tipo) {
-        'dirigida' => 2.0,
-        'en_direccion' => 1.2,
+        'dirigida' => 1.7,
+        'en_direccion' => 1.0,
         default => 0.0,
     };
 
     if (exp_bool($item['doctorado_europeo'] ?? false)) {
-        $base += 0.6;
+        $base += 0.5;
     }
     if (exp_bool($item['mencion_calidad'] ?? false)) {
-        $base += 0.4;
+        $base += 0.3;
     }
 
     $codirectores = max(0, exp_to_int($item['numero_codirectores'] ?? 0, 0));
     if ($codirectores > 0) {
-        $base *= max(0.45, 1 - (0.15 * $codirectores));
+        $base *= max(0.40, 1 - (0.18 * $codirectores));
     }
 
     return exp_round($base);
@@ -442,20 +545,20 @@ function exp_puntuar_item_1f(array $item): float
         return 0.0;
     }
 
-    $ambito = mb_strtolower(exp_str($item['ambito'] ?? 'nacional'));
-    $tipo = mb_strtolower(exp_str($item['tipo'] ?? 'comunicacion_oral'));
+    $ambito = mb_strtolower(exp_str($item['ambito'] ?? 'nacional'), 'UTF-8');
+    $tipo = mb_strtolower(exp_str($item['tipo'] ?? 'comunicacion_oral'), 'UTF-8');
 
     $base = match ($ambito) {
-        'internacional' => 0.90,
-        'nacional' => 0.55,
-        default => 0.20,
+        'internacional' => 0.35,
+        'nacional' => 0.22,
+        default => 0.10,
     };
 
     $factor = match ($tipo) {
-        'ponencia_invitada' => 1.25,
+        'ponencia_invitada' => 1.20,
         'comunicacion_oral' => 1.00,
         'poster' => 0.70,
-        default => 0.70,
+        default => 0.80,
     };
 
     return exp_round($base * $factor);
@@ -475,12 +578,13 @@ function calcular_1f_experimentales(array $items): float
         }
 
         $idEvento = exp_str($item['id_evento'] ?? '');
+        $p = exp_puntuar_item_1f($item);
+
         if ($idEvento === '') {
-            $total += exp_puntuar_item_1f($item);
+            $total += $p;
             continue;
         }
 
-        $p = exp_puntuar_item_1f($item);
         if (!isset($mejorPorEvento[$idEvento]) || $p > $mejorPorEvento[$idEvento]) {
             $mejorPorEvento[$idEvento] = $p;
         }
@@ -494,7 +598,7 @@ function calcular_1f_experimentales(array $items): float
 }
 
 /* =========================================================
- * 1G OTROS MÉRITOS INVESTIGACIÓN
+ * 1G OTROS MÉRITOS DE INVESTIGACIÓN
  * ========================================================= */
 
 function exp_puntuar_item_1g(array $item): float
@@ -506,11 +610,13 @@ function exp_puntuar_item_1g(array $item): float
         return 0.0;
     }
 
-    return match (mb_strtolower(exp_str($item['tipo'] ?? 'otro'))) {
-        'revision_jcr' => 0.30,
-        'evaluacion_proyectos' => 0.40,
-        'otro' => 0.20,
-        default => 0.10,
+    return match (mb_strtolower(exp_str($item['tipo'] ?? 'otro'), 'UTF-8')) {
+        'revision_jcr' => 0.25,
+        'evaluacion_proyectos' => 0.35,
+        'premio' => 0.10,
+        'estancia' => 0.00,
+        'otro' => 0.05,
+        default => 0.00,
     };
 }
 
@@ -524,128 +630,191 @@ function calcular_1g_experimentales(array $items): float
 }
 
 /* =========================================================
- * BLOQUE 2 DOCENCIA
+ * 2A DOCENCIA UNIVERSITARIA
  * ========================================================= */
-
-function exp_puntuar_item_2a(array $item): float
-{
-    if (!is_array($item)) {
-        return 0.0;
-    }
-    if ((string)($item['es_valido'] ?? 1) === '0') {
-        return 0.0;
-    }
-
-    $horas = exp_to_float($item['horas'] ?? 0, 0);
-    $tfg = exp_to_int($item['tfg'] ?? 0, 0);
-    $tfm = exp_to_int($item['tfm'] ?? 0, 0);
-
-    $baseHoras = match (true) {
-        $horas >= 450 => 14.0,
-        $horas >= 320 => 11.0,
-        $horas >= 220 => 8.0,
-        $horas >= 120 => 5.0,
-        $horas >= 40 => 2.5,
-        default => 0.0,
-    };
-
-    $tipo = mb_strtolower(exp_str($item['tipo'] ?? 'grado'));
-    if ($tipo === 'master') {
-        $baseHoras *= 1.05;
-    } elseif ($tipo === 'titulo_propio') {
-        $baseHoras *= 0.80;
-    }
-
-    $etapa = mb_strtolower(exp_str($item['etapa'] ?? 'estable'));
-    if ($etapa === 'predoctoral') {
-        $baseHoras *= 0.95;
-    } elseif ($etapa === 'posdoctoral') {
-        $baseHoras *= 1.00;
-    }
-
-    $extras = min(3.0, ($tfg * 0.20) + ($tfm * 0.35));
-
-    return exp_round($baseHoras + $extras);
-}
 
 function calcular_2a_experimentales(array $items): float
 {
-    $total = 0.0;
+    $horasTotal = 0.0;
+    $tfg = 0;
+    $tfm = 0;
+
     foreach ($items as $item) {
-        $total += exp_puntuar_item_2a($item);
+        if (!is_array($item)) {
+            continue;
+        }
+        if ((string)($item['es_valido'] ?? 1) === '0') {
+            continue;
+        }
+
+        $horas = exp_to_float($item['horas'] ?? 0, 0);
+        $tipo = mb_strtolower(exp_str($item['tipo'] ?? 'grado'), 'UTF-8');
+
+        $factorTipo = match ($tipo) {
+            'master' => 1.00,
+            'grado' => 1.00,
+            'titulo_propio' => 0.70,
+            default => 0.90,
+        };
+
+        $horasTotal += ($horas * $factorTipo);
+        $tfg += exp_to_int($item['tfg'] ?? 0, 0);
+        $tfm += exp_to_int($item['tfm'] ?? 0, 0);
     }
-    return exp_round(exp_clamp($total, 0.0, 17.0));
+
+    $pHoras = 17.0 * min(1.0, $horasTotal / 450.0);
+    $pTF = min(1.5, ($tfg * 0.15) + ($tfm * 0.30));
+
+    return exp_round(exp_clamp($pHoras + $pTF, 0.0, 17.0));
 }
 
-function exp_puntuar_item_2b(array $item): float
+/* =========================================================
+ * 2B EVALUACIÓN DOCENTE
+ * ========================================================= */
+
+function calcular_2b_experimentales(array $evaluaciones, array $docencia): float
 {
-    if (!is_array($item)) {
-        return 0.0;
+    $horasDocencia = 0.0;
+    foreach ($docencia as $item) {
+        if (!is_array($item)) {
+            continue;
+        }
+        if ((string)($item['es_valido'] ?? 1) === '0') {
+            continue;
+        }
+        $horasDocencia += exp_to_float($item['horas'] ?? 0, 0);
     }
-    if ((string)($item['es_valido'] ?? 1) === '0') {
+
+    $horasEvaluadas = 0.0;
+    $sumaNotas = 0.0;
+    $n = 0;
+
+    foreach ($evaluaciones as $item) {
+        if (!is_array($item)) {
+            continue;
+        }
+        if ((string)($item['es_valido'] ?? 1) === '0') {
+            continue;
+        }
+
+        $resultado = mb_strtolower(exp_str($item['resultado'] ?? 'aceptable'), 'UTF-8');
+        $p = match ($resultado) {
+            'excelente' => 9.7,
+            'muy_favorable' => 9.0,
+            'favorable' => 7.8,
+            default => 6.5,
+        };
+
+        $sumaNotas += $p;
+        $n++;
+
+        $texto = exp_text($item);
+        if (preg_match('/horas?\s+(\d+(?:[.,]\d+)?)/iu', $texto, $m)) {
+            $horasEvaluadas += (float)str_replace(',', '.', $m[1]);
+        } else {
+            $horasEvaluadas += 22.0;
+        }
+    }
+
+    if ($n === 0) {
         return 0.0;
     }
 
-    $base = match (mb_strtolower(exp_str($item['resultado'] ?? 'aceptable'))) {
-        'excelente' => 1.8,
-        'muy_favorable' => 1.4,
-        'favorable' => 1.0,
-        'aceptable' => 0.5,
-        default => 0.0,
+    $media = $sumaNotas / $n;
+    $cobertura = $horasDocencia > 0 ? min(1.0, $horasEvaluadas / $horasDocencia) : 0.50;
+
+    $pCalidad = match (true) {
+        $media >= 9.5 => 2.7,
+        $media >= 8.8 => 2.2,
+        $media >= 8.0 => 1.7,
+        default => 1.0,
     };
 
-    if (!exp_bool($item['cobertura_amplia'] ?? false, false)) {
-        $base *= 0.75;
-    }
-
-    return exp_round($base);
-}
-
-function calcular_2b_experimentales(array $items): float
-{
-    $total = 0.0;
-    foreach ($items as $item) {
-        $total += exp_puntuar_item_2b($item);
-    }
-    return exp_round(exp_clamp($total, 0.0, 3.0));
-}
-
-function exp_puntuar_item_2c(array $item): float
-{
-    if (!is_array($item)) {
-        return 0.0;
-    }
-    if ((string)($item['es_valido'] ?? 1) === '0') {
-        return 0.0;
-    }
-    if (!exp_bool($item['relacion_docente'] ?? false, false)) {
-        return 0.0;
-    }
-
-    $horas = exp_to_float($item['horas'] ?? 0, 0);
-
-    $base = match (true) {
-        $horas >= 40 => 1.2,
-        $horas >= 20 => 0.8,
-        $horas > 0 => 0.4,
-        default => 0.0,
+    $factorCobertura = match (true) {
+        $cobertura >= 0.75 => 1.00,
+        $cobertura >= 0.50 => 0.80,
+        $cobertura >= 0.30 => 0.60,
+        default => 0.40,
     };
 
-    if (mb_strtolower(exp_str($item['rol'] ?? 'asistente')) === 'ponente') {
-        $base *= 1.25;
+    return exp_round(exp_clamp($pCalidad * $factorCobertura, 0.0, 3.0));
+}
+
+/* =========================================================
+ * 2C FORMACIÓN DOCENTE UNIVERSITARIA
+ * ========================================================= */
+
+function exp_es_formacion_docente_valida(array $item): bool
+{
+    $texto = exp_text($item);
+
+    if (exp_contains_any($texto, [
+        'hackathon',
+        'design thinking',
+        'ia aplicada a la investigación',
+        'ia aplicada a la investigacion',
+        'emergencia',
+        'divulgación científica',
+        'divulgacion cientifica',
+    ])) {
+        return false;
     }
 
-    return exp_round($base);
+    return exp_contains_any($texto, [
+        'docencia',
+        'docente',
+        'campus docente',
+        'iniciación a la docencia',
+        'iniciacion a la docencia',
+        'innovación docente',
+        'innovacion docente',
+        'uso profesional de la voz',
+        'profesorado',
+        'personal docente',
+        'actas',
+    ]);
 }
 
 function calcular_2c_experimentales(array $items): float
 {
-    $total = 0.0;
+    $horas = 0.0;
+    $bonusPonente = 0.0;
+
     foreach ($items as $item) {
-        $total += exp_puntuar_item_2c($item);
+        if (!is_array($item)) {
+            continue;
+        }
+        if ((string)($item['es_valido'] ?? 1) === '0') {
+            continue;
+        }
+        if (!exp_es_formacion_docente_valida($item)) {
+            continue;
+        }
+
+        $horas += exp_to_float($item['horas'] ?? 0, 0);
+
+        if (mb_strtolower(exp_str($item['rol'] ?? 'asistente'), 'UTF-8') === 'ponente') {
+            $bonusPonente += 0.25;
+        }
     }
-    return exp_round(exp_clamp($total, 0.0, 3.0));
+
+    $p = match (true) {
+        $horas >= 80 => 3.0,
+        $horas >= 50 => 2.3,
+        $horas >= 25 => 1.6,
+        $horas >= 10 => 0.9,
+        $horas > 0 => 0.4,
+        default => 0.0,
+    };
+
+    $p += min(0.5, $bonusPonente);
+
+    return exp_round(exp_clamp($p, 0.0, 3.0));
 }
+
+/* =========================================================
+ * 2D MATERIAL DOCENTE / INNOVACIÓN DOCENTE
+ * ========================================================= */
 
 function exp_puntuar_item_2d(array $item): float
 {
@@ -656,23 +825,37 @@ function exp_puntuar_item_2d(array $item): float
         return 0.0;
     }
 
-    $tipo = mb_strtolower(exp_str($item['tipo'] ?? 'material_original'));
-    $nivel = mb_strtolower(exp_str($item['nivel_editorial'] ?? 'nacional'));
+    $texto = exp_text($item);
+    $tipo = mb_strtolower(exp_str($item['tipo'] ?? 'material_original'), 'UTF-8');
 
-    $baseEditorial = match ($nivel) {
-        'internacional' => 1.5,
-        'nacional' => 1.1,
-        'menor' => 0.7,
-        default => 0.6,
+    $esValido = exp_contains_any($texto, [
+        'libro docente',
+        'capítulo docente',
+        'capitulo docente',
+        'manual docente',
+        'material docente',
+        'innovación docente',
+        'innovacion docente',
+        'proyecto de innovación docente',
+        'proyecto de innovacion docente',
+        'isbn',
+    ]);
+
+    if (!$esValido) {
+        return 0.0;
+    }
+
+    $nivel = mb_strtolower(exp_str($item['nivel_editorial'] ?? 'nacional'), 'UTF-8');
+
+    $base = match ($tipo) {
+        'libro_docente' => ($nivel === 'internacional' ? 2.2 : 1.4),
+        'capitulo_docente' => ($nivel === 'internacional' ? 1.2 : 0.7),
+        'innovacion_docente' => 1.4,
+        'material_original' => 0.7,
+        default => 0.0,
     };
 
-    return exp_round(match ($tipo) {
-        'libro_docente' => $baseEditorial * 1.4,
-        'capitulo_docente' => $baseEditorial * 1.0,
-        'innovacion_docente' => 1.5,
-        'material_original' => 1.1,
-        default => 0.4,
-    });
+    return exp_round($base);
 }
 
 function calcular_2d_experimentales(array $items): float
@@ -685,7 +868,7 @@ function calcular_2d_experimentales(array $items): float
 }
 
 /* =========================================================
- * BLOQUE 3
+ * 3A FORMACIÓN ACADÉMICA
  * ========================================================= */
 
 function exp_puntuar_item_3a(array $item): float
@@ -697,21 +880,21 @@ function exp_puntuar_item_3a(array $item): float
         return 0.0;
     }
 
-    $tipo = mb_strtolower(exp_str($item['tipo'] ?? 'curso_especializacion'));
+    $tipo = mb_strtolower(exp_str($item['tipo'] ?? 'curso_especializacion'), 'UTF-8');
     $alta = exp_bool($item['alta_competitividad'] ?? false);
 
     return match ($tipo) {
-        'doctorado_internacional' => 2.0,
-        'mencion_calidad' => 1.2,
+        'doctorado_internacional' => 1.6,
+        'mencion_calidad' => 0.6,
         'beca_predoc_fpu' => 1.8,
         'beca_predoc_fpi' => 1.7,
-        'beca_predoc_autonomica' => 1.2,
-        'beca_predoc_universidad' => 0.9,
-        'premio_extra_doctorado' => 1.5,
-        'beca_posdoc' => $alta ? 1.8 : 1.2,
-        'estancia' => 1.0,
-        'curso_especializacion' => 0.4,
-        default => 0.2,
+        'beca_predoc_autonomica' => 1.1,
+        'beca_predoc_universidad' => 0.8,
+        'premio_extra_doctorado' => 1.0,
+        'beca_posdoc' => $alta ? 1.4 : 1.0,
+        'estancia' => 0.9,
+        'curso_especializacion' => 0.25,
+        default => 0.0,
     };
 }
 
@@ -724,6 +907,10 @@ function calcular_3a_experimentales(array $items): float
     return exp_round(exp_clamp($total, 0.0, 6.0));
 }
 
+/* =========================================================
+ * 3B EXPERIENCIA PROFESIONAL
+ * ========================================================= */
+
 function exp_puntuar_item_3b(array $item): float
 {
     if (!is_array($item)) {
@@ -732,28 +919,48 @@ function exp_puntuar_item_3b(array $item): float
     if ((string)($item['es_valido'] ?? 1) === '0') {
         return 0.0;
     }
+
+    $texto = exp_text($item);
+
     if (!exp_bool($item['justificada'] ?? false, false)) {
         return 0.0;
     }
-    if (exp_bool($item['no_valorable'] ?? false, false)) {
+
+    if (exp_contains_any($texto, [
+        'proyecto',
+        'investigador doctor',
+        'predoctoral',
+        'fpu',
+        'fpi',
+        'universidad de granada',
+        'organizador del seminario',
+        'asesor científico de equipos instrumentales',
+        'asesor cientifico de equipos instrumentales',
+        'unidad de calidad',
+        'beca de colaboración',
+        'beca de colaboracion',
+        'divulgación científica',
+        'divulgacion cientifica',
+    ])) {
         return 0.0;
     }
 
     $anios = exp_to_float($item['anios'] ?? 0, 0);
+    $relacion = mb_strtolower(exp_str($item['relacion'] ?? 'media'), 'UTF-8');
 
     $base = match (true) {
         $anios >= 5 => 1.5,
-        $anios >= 3 => 1.1,
-        $anios >= 1 => 0.7,
-        $anios > 0 => 0.3,
+        $anios >= 3 => 1.0,
+        $anios >= 1 => 0.6,
+        $anios > 0 => 0.25,
         default => 0.0,
     };
 
-    $factor = match (mb_strtolower(exp_str($item['relacion'] ?? 'media'))) {
-        'alta' => 1.20,
-        'media' => 1.00,
-        'baja' => 0.70,
-        default => 1.00,
+    $factor = match ($relacion) {
+        'alta' => 1.0,
+        'media' => 0.75,
+        'baja' => 0.40,
+        default => 0.60,
     };
 
     return exp_round($base * $factor);
@@ -769,7 +976,7 @@ function calcular_3b_experimentales(array $items): float
 }
 
 /* =========================================================
- * BLOQUE 4
+ * 4 OTROS MÉRITOS
  * ========================================================= */
 
 function exp_puntuar_item_4(array $item): float
@@ -781,14 +988,14 @@ function exp_puntuar_item_4(array $item): float
         return 0.0;
     }
 
-    return match (mb_strtolower(exp_str($item['tipo'] ?? 'otro'))) {
-        'gestion' => 0.8,
-        'divulgacion' => 0.6,
-        'asesor_equipos' => 0.7,
-        'beca_colaboracion' => 0.8,
-        'premio_extra_grado' => 1.0,
-        'otro' => 0.3,
-        default => 0.2,
+    return match (mb_strtolower(exp_str($item['tipo'] ?? 'otro'), 'UTF-8')) {
+        'gestion' => 0.50,
+        'divulgacion' => 0.30,
+        'asesor_equipos' => 0.70,
+        'beca_colaboracion' => 0.25,
+        'premio_extra_grado' => 0.60,
+        'otro' => 0.15,
+        default => 0.0,
     };
 }
 
@@ -802,316 +1009,7 @@ function calcular_4_experimentales(array $items): float
 }
 
 /* =========================================================
- * DIAGNÓSTICO / ASESOR
- * ========================================================= */
-
-function exp_objetivos_orientativos(): array
-{
-    return [
-        'B1' => 35.0,
-        'B2' => 15.0,
-        'B3' => 3.0,
-        'B4' => 1.0,
-
-        '1A' => 18.0,
-        '1B' => 2.0,
-        '1C' => 3.0,
-        '1D' => 1.0,
-        '1E' => 1.0,
-        '1F' => 0.6,
-        '1G' => 0.2,
-
-        '2A' => 12.0,
-        '2B' => 1.2,
-        '2C' => 0.8,
-        '2D' => 1.6,
-
-        '3A' => 2.0,
-        '3B' => 0.8,
-
-        'TOTAL_B1_B2' => 50.0,
-        'TOTAL_FINAL' => 55.0,
-    ];
-}
-
-function exp_clasificar_nivel(float $actual, float $objetivo): string
-{
-    if ($objetivo <= 0) {
-        return 'sin referencia';
-    }
-
-    $ratio = $actual / $objetivo;
-
-    return match (true) {
-        $ratio >= 1.20 => 'muy fuerte',
-        $ratio >= 1.00 => 'fuerte',
-        $ratio >= 0.70 => 'aceptable',
-        $ratio >= 0.40 => 'débil',
-        default => 'muy débil',
-    };
-}
-
-function exp_detectar_perfil(array $resultado): string
-{
-    $b1 = (float)$resultado['bloque_1']['B1'];
-    $b2 = (float)$resultado['bloque_2']['B2'];
-    $total12 = (float)$resultado['totales']['total_b1_b2'];
-    $total = (float)$resultado['totales']['total_final'];
-
-    if ($b1 >= 35 && $b2 < 10) {
-        return 'Perfil investigador fuerte con docencia insuficiente';
-    }
-    if ($b2 >= 15 && $b1 < 25) {
-        return 'Perfil docente razonable con investigación insuficiente';
-    }
-    if ($b1 >= 30 && $b2 >= 12 && $total12 >= 50 && $total >= 55) {
-        return 'Perfil equilibrado y competitivo para acreditación en Experimentales';
-    }
-    if ($b1 < 20 && $b2 < 10) {
-        return 'Perfil todavía inmaduro para acreditación en Experimentales';
-    }
-
-    return 'Perfil mixto con fortalezas parciales y necesidad de refuerzo estratégico';
-}
-
-function exp_contar_publicaciones(array $publicaciones): array
-{
-    $out = [
-        'EXCELENTE' => 0,
-        'T1' => 0,
-        'T2' => 0,
-        'T3' => 0,
-        'MATEMATICAS' => 0,
-        'OTRAS' => 0,
-    ];
-
-    foreach ($publicaciones as $pub) {
-        if (!is_array($pub)) {
-            continue;
-        }
-        $esValida = $pub['es_valida'] ?? $pub['es_valido'] ?? 1;
-        if ((string)$esValida === '0') {
-            continue;
-        }
-
-        $tercil = strtoupper(exp_str($pub['tercil'] ?? ''));
-        if (isset($out[$tercil])) {
-            $out[$tercil]++;
-        } else {
-            $out['OTRAS']++;
-        }
-
-        if (exp_bool($pub['es_area_matematicas'] ?? false)) {
-            $out['MATEMATICAS']++;
-        }
-    }
-
-    return $out;
-}
-
-function exp_generar_diagnostico(array $datos, array $resultado): array
-{
-    $obj = exp_objetivos_orientativos();
-
-    $b1 = (float)$resultado['bloque_1']['B1'];
-    $b2 = (float)$resultado['bloque_2']['B2'];
-    $b3 = (float)$resultado['bloque_3']['B3'];
-    $b4 = (float)$resultado['bloque_4']['B4'];
-    $total12 = (float)$resultado['totales']['total_b1_b2'];
-    $total = (float)$resultado['totales']['total_final'];
-
-    $deficit1 = max(0.0, 50.0 - $total12);
-    $deficit2 = max(0.0, 55.0 - $total);
-
-    $fortalezas = [];
-    $debilidades = [];
-    $alertas = [];
-
-    if ((float)$resultado['bloque_1']['1A'] >= $obj['1A']) {
-        $fortalezas[] = 'La producción científica principal tiene un nivel razonable o fuerte.';
-    } else {
-        $debilidades[] = 'La producción científica principal (1A) necesita refuerzo.';
-    }
-
-    if ((float)$resultado['bloque_2']['2A'] >= $obj['2A']) {
-        $fortalezas[] = 'La docencia universitaria tiene volumen suficiente o próximo al esperado.';
-    } else {
-        $debilidades[] = 'La docencia universitaria acreditable (2A) es escasa.';
-    }
-
-    if ((float)$resultado['bloque_1']['1C'] < $obj['1C']) {
-        $debilidades[] = 'Conviene reforzar proyectos competitivos relevantes.';
-    }
-
-    if ((float)$resultado['bloque_1']['1D'] < $obj['1D']) {
-        $alertas[] = 'La transferencia tecnológica es baja o inexistente.';
-    }
-
-    if ((float)$resultado['bloque_2']['2B'] <= 0.0) {
-        $alertas[] = 'No consta evaluación docente relevante.';
-    }
-
-    if ($deficit1 > 0) {
-        $alertas[] = 'No se cumple la regla principal B1 + B2 ≥ 50.';
-    }
-    if ($deficit2 > 0) {
-        $alertas[] = 'No se cumple la regla total ≥ 55.';
-    }
-
-    return [
-        'perfil_detectado' => exp_detectar_perfil($resultado),
-        'reglas' => [
-            [
-                'nombre' => 'Regla principal B1 + B2 ≥ 50',
-                'valor_actual' => exp_round($total12),
-                'objetivo' => 50.0,
-                'deficit' => exp_round($deficit1),
-                'cumple' => $resultado['decision']['cumple_regla_1'],
-            ],
-            [
-                'nombre' => 'Regla total final ≥ 55',
-                'valor_actual' => exp_round($total),
-                'objetivo' => 55.0,
-                'deficit' => exp_round($deficit2),
-                'cumple' => $resultado['decision']['cumple_regla_2'],
-            ],
-        ],
-        'bloques' => [
-            'B1' => [
-                'actual' => exp_round($b1),
-                'objetivo_orientativo' => $obj['B1'],
-                'deficit' => exp_round(max(0.0, $obj['B1'] - $b1)),
-                'nivel' => exp_clasificar_nivel($b1, $obj['B1']),
-            ],
-            'B2' => [
-                'actual' => exp_round($b2),
-                'objetivo_orientativo' => $obj['B2'],
-                'deficit' => exp_round(max(0.0, $obj['B2'] - $b2)),
-                'nivel' => exp_clasificar_nivel($b2, $obj['B2']),
-            ],
-            'B3' => [
-                'actual' => exp_round($b3),
-                'objetivo_orientativo' => $obj['B3'],
-                'deficit' => exp_round(max(0.0, $obj['B3'] - $b3)),
-                'nivel' => exp_clasificar_nivel($b3, $obj['B3']),
-            ],
-            'B4' => [
-                'actual' => exp_round($b4),
-                'objetivo_orientativo' => $obj['B4'],
-                'deficit' => exp_round(max(0.0, $obj['B4'] - $b4)),
-                'nivel' => exp_clasificar_nivel($b4, $obj['B4']),
-            ],
-        ],
-        'conteos' => [
-            'publicaciones' => exp_contar_publicaciones(exp_list(exp_list($datos, 'bloque_1'), 'publicaciones')),
-            'num_proyectos_validos' => exp_count_valid(exp_list(exp_list($datos, 'bloque_1'), 'proyectos')),
-            'num_transferencia_valida' => exp_count_valid(exp_list(exp_list($datos, 'bloque_1'), 'transferencia')),
-            'num_tesis' => exp_count_valid(exp_list(exp_list($datos, 'bloque_1'), 'tesis_dirigidas')),
-            'num_docencia_items' => exp_count_valid(exp_list(exp_list($datos, 'bloque_2'), 'docencia_universitaria')),
-        ],
-        'fortalezas' => $fortalezas,
-        'debilidades' => $debilidades,
-        'alertas' => $alertas,
-    ];
-}
-
-function exp_generar_asesor(array $resultado): array
-{
-    $acciones = [];
-
-    $total12 = (float)$resultado['totales']['total_b1_b2'];
-    $total = (float)$resultado['totales']['total_final'];
-
-    $p1a = (float)$resultado['bloque_1']['1A'];
-    $p1c = (float)$resultado['bloque_1']['1C'];
-    $p2a = (float)$resultado['bloque_2']['2A'];
-    $p2b = (float)$resultado['bloque_2']['2B'];
-    $p2d = (float)$resultado['bloque_2']['2D'];
-
-    if ($total12 < 50.0 && $p1a < 18.0) {
-        $acciones[] = [
-            'prioridad' => 1,
-            'titulo' => 'Reforzar publicaciones principales',
-            'detalle' => 'En Experimentales, el retorno más claro suele venir de publicaciones excelentes o T1/T2 bien posicionadas.',
-            'impacto_estimado' => '≈ 3 a 8 puntos por publicación fuerte.',
-        ];
-    }
-
-    if ($total12 < 50.0 && $p2a < 12.0) {
-        $acciones[] = [
-            'prioridad' => 2,
-            'titulo' => 'Consolidar docencia universitaria',
-            'detalle' => 'Aumentar horas acreditables, TFG/TFM y estabilidad docente mejora mucho 2A.',
-            'impacto_estimado' => '≈ 2 a 5 puntos por tramo docente sólido.',
-        ];
-    }
-
-    if ($p1c < 3.0) {
-        $acciones[] = [
-            'prioridad' => 3,
-            'titulo' => 'Aumentar peso en proyectos competitivos',
-            'detalle' => 'UE, Plan Nacional e IP/coIP son especialmente rentables para el expediente.',
-            'impacto_estimado' => '≈ 2 a 4 puntos por mérito fuerte.',
-        ];
-    }
-
-    if ($p2b <= 0.0) {
-        $acciones[] = [
-            'prioridad' => 4,
-            'titulo' => 'Aportar evaluación docente formal',
-            'detalle' => 'La evaluación de calidad docente ayuda a cerrar carencias del bloque 2.',
-            'impacto_estimado' => '≈ 1 a 1.5 puntos.',
-        ];
-    }
-
-    if ($p2d < 1.5) {
-        $acciones[] = [
-            'prioridad' => 5,
-            'titulo' => 'Añadir material o innovación docente',
-            'detalle' => 'Libros/capítulos docentes, materiales originales o innovación docente ayudan a redondear 2D.',
-            'impacto_estimado' => '≈ 1 a 2 puntos.',
-        ];
-    }
-
-    usort($acciones, static fn(array $a, array $b): int => ($a['prioridad'] <=> $b['prioridad']));
-
-    if ($acciones === []) {
-        $acciones[] = [
-            'prioridad' => 1,
-            'titulo' => 'Expediente equilibrado',
-            'detalle' => 'No se aprecian debilidades severas. Conviene seguir consolidando publicaciones y estabilidad docente.',
-            'impacto_estimado' => 'Impacto incremental.',
-        ];
-    }
-
-    return [
-        'resumen' => 'Asesor orientativo para identificar qué palancas pueden mejorar antes el expediente de Experimentales.',
-        'acciones' => array_values($acciones),
-        'simulaciones' => [
-            [
-                'escenario' => 'Añadir una publicación principal fuerte',
-                'efecto_estimado' => '+5 puntos aprox.',
-                'nuevo_b1_b2_aprox' => exp_round(min(90.0, $total12 + 5.0)),
-                'nuevo_total_aprox' => exp_round(min(100.0, $total + 5.0)),
-            ],
-            [
-                'escenario' => 'Añadir un proyecto competitivo relevante',
-                'efecto_estimado' => '+3 puntos aprox.',
-                'nuevo_b1_b2_aprox' => exp_round(min(90.0, $total12 + 3.0)),
-                'nuevo_total_aprox' => exp_round(min(100.0, $total + 3.0)),
-            ],
-            [
-                'escenario' => 'Mejorar docencia + evaluación docente',
-                'efecto_estimado' => '+4 puntos aprox.',
-                'nuevo_b1_b2_aprox' => exp_round(min(90.0, $total12 + 4.0)),
-                'nuevo_total_aprox' => exp_round(min(100.0, $total + 4.0)),
-            ],
-        ],
-    ];
-}
-
-/* =========================================================
- * FUNCIÓN PRINCIPAL
+ * EVALUACIÓN PRINCIPAL
  * ========================================================= */
 
 function evaluar_expediente(array $datos): array
@@ -1121,26 +1019,42 @@ function evaluar_expediente(array $datos): array
     $bloque3 = exp_list($datos, 'bloque_3');
     $bloque4 = exp_list($datos, 'bloque_4');
 
-    $p1a = calcular_1a_experimentales(exp_list($bloque1, 'publicaciones'));
-    $p1b = calcular_1b_experimentales(exp_list($bloque1, 'libros'));
-    $p1c = calcular_1c_experimentales(exp_list($bloque1, 'proyectos'));
-    $p1d = calcular_1d_experimentales(exp_list($bloque1, 'transferencia'));
-    $p1e = calcular_1e_experimentales(exp_list($bloque1, 'tesis_dirigidas'));
-    $p1f = calcular_1f_experimentales(exp_list($bloque1, 'congresos'));
-    $p1g = calcular_1g_experimentales(exp_list($bloque1, 'otros_meritos_investigacion'));
+    $publicaciones = exp_list($bloque1, 'publicaciones');
+    $libros = exp_list($bloque1, 'libros');
+    $proyectos = exp_list($bloque1, 'proyectos');
+    $transferencia = exp_list($bloque1, 'transferencia');
+    $tesis = exp_list($bloque1, 'tesis_dirigidas');
+    $congresos = exp_list($bloque1, 'congresos');
+    $otrosInv = exp_list($bloque1, 'otros_meritos_investigacion');
+
+    $docencia = exp_list($bloque2, 'docencia_universitaria');
+    $evaluacion = exp_list($bloque2, 'evaluacion_docente');
+    $formacionDoc = exp_list($bloque2, 'formacion_docente');
+    $materialDoc = exp_list($bloque2, 'material_docente');
+
+    $formacion = exp_list($bloque3, 'formacion_academica');
+    $expProfesional = exp_list($bloque3, 'experiencia_profesional');
+
+    $p1a = calcular_1a_experimentales($publicaciones);
+    $p1b = calcular_1b_experimentales($libros);
+    $p1c = calcular_1c_experimentales($proyectos);
+    $p1d = calcular_1d_experimentales($transferencia);
+    $p1e = calcular_1e_experimentales($tesis);
+    $p1f = calcular_1f_experimentales($congresos);
+    $p1g = calcular_1g_experimentales($otrosInv);
     $B1 = exp_round(exp_clamp($p1a + $p1b + $p1c + $p1d + $p1e + $p1f + $p1g, 0.0, 60.0));
 
-    $p2a = calcular_2a_experimentales(exp_list($bloque2, 'docencia_universitaria'));
-    $p2b = calcular_2b_experimentales(exp_list($bloque2, 'evaluacion_docente'));
-    $p2c = calcular_2c_experimentales(exp_list($bloque2, 'formacion_docente'));
-    $p2d = calcular_2d_experimentales(exp_list($bloque2, 'material_docente'));
+    $p2a = calcular_2a_experimentales($docencia);
+    $p2b = calcular_2b_experimentales($evaluacion, $docencia);
+    $p2c = calcular_2c_experimentales($formacionDoc);
+    $p2d = calcular_2d_experimentales($materialDoc);
     $B2 = exp_round(exp_clamp($p2a + $p2b + $p2c + $p2d, 0.0, 30.0));
 
-    $p3a = calcular_3a_experimentales(exp_list($bloque3, 'formacion_academica'));
-    $p3b = calcular_3b_experimentales(exp_list($bloque3, 'experiencia_profesional'));
+    $p3a = calcular_3a_experimentales($formacion);
+    $p3b = calcular_3b_experimentales($expProfesional);
     $B3 = exp_round(exp_clamp($p3a + $p3b, 0.0, 8.0));
 
-    $p4 = calcular_4_experimentales($bloque4);
+    $p4 = calcular_4_experimentales(is_array($bloque4) ? $bloque4 : []);
     $B4 = $p4;
 
     $totalB1B2 = exp_round($B1 + $B2);
@@ -1151,7 +1065,7 @@ function evaluar_expediente(array $datos): array
     $evaluacionPositiva = $cumpleRegla1 && $cumpleRegla2;
     $resultadoTexto = $evaluacionPositiva ? 'POSITIVA' : 'NEGATIVA';
 
-    $resultado = [
+    return [
         'puntuaciones' => [
             '1A' => $p1a,
             '1B' => $p1b,
@@ -1168,7 +1082,6 @@ function evaluar_expediente(array $datos): array
             '3B' => $p3b,
             '4'  => $p4,
         ],
-
         'bloque_1' => [
             '1A' => $p1a,
             '1B' => $p1b,
@@ -1179,7 +1092,6 @@ function evaluar_expediente(array $datos): array
             '1G' => $p1g,
             'B1' => $B1,
         ],
-
         'bloque_2' => [
             '2A' => $p2a,
             '2B' => $p2b,
@@ -1187,18 +1099,15 @@ function evaluar_expediente(array $datos): array
             '2D' => $p2d,
             'B2' => $B2,
         ],
-
         'bloque_3' => [
             '3A' => $p3a,
             '3B' => $p3b,
             'B3' => $B3,
         ],
-
         'bloque_4' => [
             '4' => $p4,
             'B4' => $B4,
         ],
-
         'totales' => [
             'bloque_1' => $B1,
             'bloque_2' => $B2,
@@ -1208,25 +1117,31 @@ function evaluar_expediente(array $datos): array
             'total_final' => $totalFinal,
             'global' => $totalFinal,
         ],
-
         'cumplimientos' => [
             'cumple_bloques_1_2' => $cumpleRegla1,
             'cumple_total' => $cumpleRegla2,
         ],
-
         'decision' => [
             'cumple_regla_1' => $cumpleRegla1,
             'cumple_regla_2' => $cumpleRegla2,
             'evaluacion_positiva' => $evaluacionPositiva,
             'resultado' => $resultadoTexto,
         ],
-
         'evaluacion_positiva' => $evaluacionPositiva,
         'resultado' => $resultadoTexto,
+        'diagnostico' => [
+            'version' => 'conservadora_pep_experimentales_v3_1a_1c_duros',
+            'conteos' => [
+                'publicaciones' => exp_count_valid($publicaciones),
+                'proyectos' => exp_count_valid($proyectos),
+                'congresos' => exp_count_valid($congresos),
+                'docencia_items' => exp_count_valid($docencia),
+                'evaluaciones_docentes' => exp_count_valid($evaluacion),
+                'formacion_docente' => exp_count_valid($formacionDoc),
+                'material_docente' => exp_count_valid($materialDoc),
+                'exp_profesional' => exp_count_valid($expProfesional),
+                'otros_meritos' => exp_count_valid(is_array($bloque4) ? $bloque4 : []),
+            ],
+        ],
     ];
-
-    $resultado['diagnostico'] = exp_generar_diagnostico($datos, $resultado);
-    $resultado['asesor'] = exp_generar_asesor($resultado);
-
-    return $resultado;
 }
