@@ -110,45 +110,61 @@ class AnecaExtractor
     private function extraerLibros(string $texto): array
     {
         $items = [];
-        $bloques = $this->extraerBloquesEtiquetados($texto, 'Libros');
 
-        if ($bloques !== []) {
-            foreach ($bloques as $bloque) {
-                $items[] = [
-                    'id' => 'lib_' . str_pad((string)(count($items) + 1), 3, '0', STR_PAD_LEFT),
-                    'tipo' => 'libro',
-                    'es_valido' => true,
-                    'es_libro_investigacion' => true,
-                    'es_autoedicion' => false,
-                    'es_acta_congreso' => false,
-                    'es_labor_edicion' => false,
-                    'nivel_editorial' => $this->detectarNivelEditorial($bloque),
-                    'nivel_coleccion' => $this->detectarNivelColeccion($bloque),
-                    'afinidad' => $this->detectarAfinidad($bloque),
-                    'numero_autores' => $this->detectarNumeroAutores($bloque),
-                    'posicion_autor' => $this->detectarPosicionAutor($bloque),
-                    'nivel_resenas' => $this->detectarNivelResenas($bloque),
-                    'fuente_texto' => trim($bloque),
-                    'confianza_extraccion' => 0.55,
-                    'requiere_revision' => true,
-                ];
-            }
+        $seccion = $this->extraerPrimeraSeccionDisponible($texto, [
+            ['LIBROS Y CAPÍTULOS DE LIBRO', 'PROYECTOS Y/O CONTRATOS DE INVESTIGACION'],
+            ['LIBROS Y CAPITULOS DE LIBRO', 'PROYECTOS Y/O CONTRATOS DE INVESTIGACION'],
+            ['LIBROS Y CAPÍTULOS', 'PROYECTOS Y/O CONTRATOS DE INVESTIGACION'],
+            ['LIBROS Y CAPITULOS', 'PROYECTOS Y/O CONTRATOS DE INVESTIGACION'],
+            ['LIBROS Y CAPÍTULOS DE LIBRO', 'CONGRESOS Y CONFERENCIAS CIENTIFICAS'],
+            ['LIBROS Y CAPITULOS DE LIBRO', 'CONGRESOS Y CONFERENCIAS CIENTIFICAS'],
+        ]);
+
+        $universo = $seccion !== '' ? $seccion : '';
+        $bloques = $universo !== '' ? $this->extraerBloquesEtiquetados($universo, 'Libros') : [];
+
+        foreach ($bloques as $bloque) {
+            $items[] = [
+                'id' => 'lib_' . str_pad((string)(count($items) + 1), 3, '0', STR_PAD_LEFT),
+                'tipo' => $this->contieneAlgunTermino($bloque, ['capítulo', 'capitulo']) ? 'capitulo' : 'libro',
+                'es_valido' => true,
+                'es_libro_investigacion' => true,
+                'es_autoedicion' => false,
+                'es_acta_congreso' => false,
+                'es_labor_edicion' => false,
+                'nivel_editorial' => $this->detectarNivelEditorial($bloque),
+                'nivel_coleccion' => $this->detectarNivelColeccion($bloque),
+                'afinidad' => $this->detectarAfinidad($bloque),
+                'numero_autores' => $this->detectarNumeroAutores($bloque),
+                'posicion_autor' => $this->detectarPosicionAutor($bloque),
+                'nivel_resenas' => $this->detectarNivelResenas($bloque),
+                'fuente_texto' => trim($bloque),
+                'confianza_extraccion' => 0.80,
+                'requiere_revision' => true,
+            ];
+        }
+
+        if ($items !== [] || $universo === '') {
             return $items;
         }
 
-        $lineas = preg_split('/\n+/u', $texto) ?: [];
+        $lineas = preg_split('/
++/u', $universo) ?: [];
         foreach ($lineas as $linea) {
             $l = trim($linea);
             if ($l === '') {
                 continue;
             }
             $ll = mb_strtolower($l, 'UTF-8');
-            if (!str_contains($ll, 'isbn') && !str_contains($ll, 'libro') && !str_contains($ll, 'capítulo') && !str_contains($ll, 'capitulo')) {
+            $pareceLibro = $this->contieneAlgunTermino($ll, ['libro', 'capítulo', 'capitulo'])
+                && $this->contieneAlgunTermino($ll, ['isbn', 'editorial', 'springer', 'elsevier', 'wiley', 'cambridge', 'oxford']);
+            if (!$pareceLibro) {
                 continue;
             }
+
             $items[] = [
                 'id' => 'lib_' . str_pad((string)(count($items) + 1), 3, '0', STR_PAD_LEFT),
-                'tipo' => str_contains($ll, 'capítulo') || str_contains($ll, 'capitulo') ? 'capitulo' : 'libro',
+                'tipo' => $this->contieneAlgunTermino($ll, ['capítulo', 'capitulo']) ? 'capitulo' : 'libro',
                 'es_valido' => true,
                 'es_libro_investigacion' => true,
                 'es_autoedicion' => false,
@@ -161,13 +177,14 @@ class AnecaExtractor
                 'posicion_autor' => $this->detectarPosicionAutor($l),
                 'nivel_resenas' => $this->detectarNivelResenas($l),
                 'fuente_texto' => $l,
-                'confianza_extraccion' => 0.50,
+                'confianza_extraccion' => 0.60,
                 'requiere_revision' => true,
             ];
         }
 
         return $items;
     }
+
 
     private function extraerProyectos(string $texto): array
     {
@@ -222,17 +239,38 @@ class AnecaExtractor
     private function extraerTransferencia(string $texto): array
     {
         $items = [];
-        $lineas = preg_split('/\n+/u', $texto) ?: [];
+        $seccion = $this->extraerPrimeraSeccionDisponible($texto, [
+            ['TRANSFERENCIA TECNOLÓGICA', 'CONGRESOS Y CONFERENCIAS CIENTIFICAS'],
+            ['TRANSFERENCIA TECNOLOGICA', 'CONGRESOS Y CONFERENCIAS CIENTIFICAS'],
+            ['PATENTES', 'CONGRESOS Y CONFERENCIAS CIENTIFICAS'],
+            ['PROPIEDAD INTELECTUAL', 'CONGRESOS Y CONFERENCIAS CIENTIFICAS'],
+        ]);
 
+        if ($seccion === '') {
+            return [];
+        }
+
+        $lineas = preg_split('/
++/u', $seccion) ?: [];
         foreach ($lineas as $linea) {
             $l = trim($linea);
             if ($l === '') {
                 continue;
             }
             $ll = mb_strtolower($l, 'UTF-8');
-            if (!str_contains($ll, 'patente') && !str_contains($ll, 'transferencia') && !str_contains($ll, 'contrato') && !str_contains($ll, 'software')) {
+            $pareceTransferencia = $this->contieneAlgunTermino($ll, [
+                'patente',
+                'propiedad intelectual',
+                'registro de software',
+                'transferencia tecnológica',
+                'transferencia tecnologica',
+                'art. 83',
+                'art83',
+            ]);
+            if (!$pareceTransferencia) {
                 continue;
             }
+
             $items[] = [
                 'id' => 'trans_' . str_pad((string)(count($items) + 1), 3, '0', STR_PAD_LEFT),
                 'es_valido' => true,
@@ -241,13 +279,14 @@ class AnecaExtractor
                 'liderazgo' => $this->detectarLiderazgo($l),
                 'participacion_menor' => false,
                 'fuente_texto' => $l,
-                'confianza_extraccion' => 0.55,
+                'confianza_extraccion' => 0.80,
                 'requiere_revision' => true,
             ];
         }
 
         return $items;
     }
+
 
     private function extraerTesisDirigidas(string $texto): array
     {
@@ -499,15 +538,40 @@ class AnecaExtractor
     private function extraerMaterialDocente(string $texto): array
     {
         $items = [];
-        $lineas = preg_split('/\n+/u', $texto) ?: [];
 
+        $secciones = [
+            $this->extraerSeccion($texto, 'OTROS MERITOS DOCENTES', 'FORMACION ACADEMICA'),
+            $this->extraerSeccion($texto, 'OTROS MÉRITOS DOCENTES', 'FORMACION ACADEMICA'),
+            $this->extraerSeccion($texto, 'MATERIAL DOCENTE', 'FORMACION ACADEMICA'),
+            $this->extraerSeccion($texto, 'MATERIAL DOCENTE', 'FORMACIÓN ACADÉMICA'),
+        ];
+
+        $universo = trim(implode("
+", array_filter($secciones, static fn($s) => trim((string)$s) !== '')));
+        if ($universo === '') {
+            return [];
+        }
+
+        $lineas = preg_split('/
++/u', $universo) ?: [];
         foreach ($lineas as $linea) {
             $l = trim($linea);
             if ($l === '') {
                 continue;
             }
             $ll = mb_strtolower($l, 'UTF-8');
-            $parece = str_contains($ll, 'manual docente') || str_contains($ll, 'material docente') || str_contains($ll, 'innovación docente') || str_contains($ll, 'innovacion docente') || str_contains($ll, 'isbn');
+            $parece = $this->contieneAlgunTermino($ll, [
+                'material docente original',
+                'material docente',
+                'manual docente',
+                'libro docente',
+                'capítulo docente',
+                'capitulo docente',
+                'publicación docente',
+                'publicacion docente',
+                'proyecto de innovación docente',
+                'proyecto de innovacion docente',
+            ]);
             if (!$parece) {
                 continue;
             }
@@ -517,7 +581,7 @@ class AnecaExtractor
                 $tipo = 'libro_docente';
             } elseif ($this->contieneAlgunTermino($ll, ['capítulo docente', 'capitulo docente'])) {
                 $tipo = 'capitulo_docente';
-            } elseif ($this->contieneAlgunTermino($ll, ['innovación docente', 'innovacion docente'])) {
+            } elseif ($this->contieneAlgunTermino($ll, ['proyecto de innovación docente', 'proyecto de innovacion docente'])) {
                 $tipo = 'innovacion_docente';
             }
 
@@ -527,13 +591,14 @@ class AnecaExtractor
                 'tipo' => $tipo,
                 'nivel_editorial' => $this->detectarNivelEditorial($l) ?? 'nacional',
                 'fuente_texto' => $l,
-                'confianza_extraccion' => 0.45,
+                'confianza_extraccion' => 0.70,
                 'requiere_revision' => true,
             ];
         }
 
         return $items;
     }
+
 
     private function extraerFormacionAcademica(string $texto): array
     {
@@ -679,6 +744,23 @@ class AnecaExtractor
     /* =========================================================
      * HELPERS CVN / BLOQUES
      * ========================================================= */
+
+    private function extraerPrimeraSeccionDisponible(string $texto, array $pares): string
+    {
+        foreach ($pares as $par) {
+            $inicio = (string)($par[0] ?? '');
+            $fin = (string)($par[1] ?? '');
+            if ($inicio === '') {
+                continue;
+            }
+            $seccion = $this->extraerSeccion($texto, $inicio, $fin);
+            if (trim($seccion) !== '') {
+                return $seccion;
+            }
+        }
+
+        return '';
+    }
 
     private function extraerSeccion(string $texto, string $inicio, string $fin = ''): string
     {
@@ -1168,13 +1250,16 @@ class AnecaExtractor
     private function detectarTipoTransferencia(string $texto): ?string
     {
         $textoLower = mb_strtolower($texto, 'UTF-8');
+        if (str_contains($textoLower, 'patente') && str_contains($textoLower, 'internacional')) {
+            return 'patente_obtenida_internacional';
+        }
         if (str_contains($textoLower, 'patente')) {
             return 'patente_obtenida_nacional';
         }
-        if (str_contains($textoLower, 'software')) {
+        if (str_contains($textoLower, 'propiedad intelectual') || str_contains($textoLower, 'registro de software')) {
             return 'propiedad_intelectual';
         }
-        if (str_contains($textoLower, 'contrato')) {
+        if (str_contains($textoLower, 'art. 83') || str_contains($textoLower, 'art83')) {
             return 'art83_sin_conocimiento';
         }
         return null;

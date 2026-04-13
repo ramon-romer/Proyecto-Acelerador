@@ -29,6 +29,13 @@ declare(strict_types=1);
  * Regla positiva:
  * B1 + B2 >= 50
  * B1 + B2 + B3 + B4 >= 55
+ *
+ * Versión conservadora:
+ * - Se endurece 1A para evitar inflación por coautoría/posición.
+ * - 1C se acerca a la lógica de Experimentales: el peso fuerte está en IP real
+ *   y en proyectos competitivos; se excluyen contratos laborales y redes temáticas.
+ * - 2A, 2B, 2C y 2D se calculan de forma global y prudente.
+ * - 3B y 4 son restrictivos.
  */
 
 /* =========================================================
@@ -40,9 +47,11 @@ function tec_to_float(mixed $value, float $default = 0.0): float
     if ($value === null || $value === '') {
         return $default;
     }
+
     if (is_numeric($value)) {
         return (float)$value;
     }
+
     return (float)str_replace(',', '.', (string)$value);
 }
 
@@ -51,6 +60,7 @@ function tec_to_int(mixed $value, int $default = 0): int
     if ($value === null || $value === '') {
         return $default;
     }
+
     return (int)$value;
 }
 
@@ -65,7 +75,21 @@ function tec_bool(mixed $value, bool $default = false): bool
     if ($value === null || $value === '') {
         return $default;
     }
-    return in_array((string)$value, ['1', 'true', 'on', 'si', 'sí'], true);
+
+    return in_array((string)$value, ['1', 'true', 'on', 'si', 'sí', 'yes'], true);
+}
+
+function tec_lower(string $value): string
+{
+    $value = trim($value);
+
+    if ($value === '') {
+        return '';
+    }
+
+    return function_exists('mb_strtolower')
+        ? mb_strtolower($value, 'UTF-8')
+        : strtolower($value);
 }
 
 function tec_round(float $value): float
@@ -75,13 +99,7 @@ function tec_round(float $value): float
 
 function tec_clamp(float $value, float $min, float $max): float
 {
-    if ($value < $min) {
-        return $min;
-    }
-    if ($value > $max) {
-        return $max;
-    }
-    return $value;
+    return max($min, min($max, $value));
 }
 
 function tec_list(array $data, string $key): array
@@ -90,18 +108,43 @@ function tec_list(array $data, string $key): array
     return is_array($value) ? $value : [];
 }
 
+function tec_text(array $item): string
+{
+    return tec_lower((string)($item['fuente_texto'] ?? ''));
+}
+
+function tec_contains_any(string $text, array $terms): bool
+{
+    foreach ($terms as $term) {
+        if (function_exists('mb_stripos')) {
+            if (mb_stripos($text, $term, 0, 'UTF-8') !== false) {
+                return true;
+            }
+        } else {
+            if (stripos($text, $term) !== false) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
 function tec_count_valid(array $items, string $field = 'es_valido'): int
 {
     $n = 0;
+
     foreach ($items as $item) {
         if (!is_array($item)) {
             continue;
         }
+
         $isValid = $item[$field] ?? ($item['es_valida'] ?? 1);
         if ((string)$isValid !== '0') {
             $n++;
         }
     }
+
     return $n;
 }
 
@@ -111,25 +154,25 @@ function tec_count_valid(array $items, string $field = 'es_valido'): int
 
 function tec_factor_afinidad(string $afinidad): float
 {
-    return match (mb_strtolower(trim($afinidad))) {
-        'total' => 1.20,
+    return match (tec_lower($afinidad)) {
+        'total' => 1.05,
         'relacionada' => 1.00,
-        'periferica' => 0.75,
-        'ajena' => 0.40,
+        'periferica' => 0.85,
+        'ajena' => 0.50,
         default => 1.00,
     };
 }
 
 function tec_factor_posicion_autor(string $posicion): float
 {
-    return match (mb_strtolower(trim($posicion))) {
-        'autor_unico' => 1.25,
-        'primero' => 1.20,
-        'ultimo' => 1.10,
-        'correspondencia' => 1.10,
-        'intermedio' => 1.00,
-        'secundario' => 0.85,
-        default => 1.00,
+    return match (tec_lower($posicion)) {
+        'autor_unico', 'unico' => 1.08,
+        'primero' => 1.03,
+        'ultimo' => 1.03,
+        'correspondencia' => 1.03,
+        'intermedio' => 0.85,
+        'secundario' => 0.72,
+        default => 0.85,
     };
 }
 
@@ -138,12 +181,12 @@ function tec_factor_coautoria(int $numeroAutores): float
     $n = max(1, $numeroAutores);
 
     return match (true) {
-        $n <= 1 => 1.20,
-        $n <= 3 => 1.10,
-        $n <= 5 => 1.00,
-        $n <= 8 => 0.90,
-        $n <= 12 => 0.75,
-        default => 0.60,
+        $n <= 2 => 1.03,
+        $n <= 4 => 0.95,
+        $n <= 6 => 0.85,
+        $n <= 10 => 0.72,
+        $n <= 20 => 0.58,
+        default => 0.45,
     };
 }
 
@@ -152,16 +195,16 @@ function tec_factor_citas(int $citas, int $anios): float
     $c = max(0, $citas);
     $a = max(0, $anios);
 
-    if ($a < 2 && $c < 6) {
+    if ($a <= 2 && $c <= 3) {
         return 1.00;
     }
 
     return match (true) {
-        $c <= 1 => 0.85,
-        $c <= 5 => 0.95,
-        $c <= 15 => 1.00,
-        $c <= 40 => 1.10,
-        default => 1.20,
+        $c <= 1 => 0.95,
+        $c <= 5 => 1.00,
+        $c <= 15 => 1.03,
+        $c <= 40 => 1.08,
+        default => 1.12,
     };
 }
 
@@ -171,49 +214,69 @@ function tec_factor_citas(int $citas, int $anios): float
 
 function tec_base_publicacion_1a(array $pub): float
 {
-    $tipo = mb_strtolower(tec_str($pub['tipo'] ?? 'articulo'));
-    $tipoIndice = strtoupper(tec_str($pub['tipo_indice'] ?? 'OTRO'));
+    $tipo = tec_lower(tec_str($pub['tipo'] ?? 'articulo'));
+    $tipoIndice = strtoupper(tec_str($pub['tipo_indice'] ?? ''));
     $tercil = strtoupper(tec_str($pub['tercil'] ?? ''));
+    $cuartil = strtoupper(tec_str($pub['cuartil'] ?? ''));
     $subtipo = strtoupper(tec_str($pub['subtipo_indice'] ?? ''));
 
     if ($tipo === 'patente') {
         return match ($subtipo) {
-            'B1' => 8.0,
-            'B2' => 6.0,
-            default => 4.0,
-        };
-    }
-
-    if ($tipoIndice === 'JCR') {
-        return match ($tercil) {
-            'T1' => 10.0,
-            'T2' => 7.0,
-            'T3' => 4.0,
+            'B1' => 3.0,
+            'B2' => 2.3,
             default => 1.5,
         };
     }
 
+    if ($tipo === 'software') {
+        return 1.2;
+    }
+
+    if ($tercil === 'T1') {
+        return 4.5;
+    }
+    if ($tercil === 'T2') {
+        return 3.0;
+    }
+    if ($tercil === 'T3') {
+        return 1.4;
+    }
+
+    if ($cuartil === 'Q1') {
+        return 4.2;
+    }
+    if ($cuartil === 'Q2') {
+        return 2.8;
+    }
+    if ($cuartil === 'Q3' || $cuartil === 'Q4') {
+        return 1.2;
+    }
+
     if ($tipoIndice === 'CORE' && in_array($subtipo, ['A', 'A+'], true)) {
-        return 4.0;
+        return 1.4;
     }
 
     if ($tipoIndice === 'CSIE' && $subtipo === 'CLASE_1') {
-        return 4.0;
+        return 1.4;
     }
 
     if (in_array($tipoIndice, ['RESH', 'AVERY', 'RIBA', 'ARTS_HUMANITIES'], true)) {
-        return 3.0;
+        return 1.4;
+    }
+
+    if (in_array($tipoIndice, ['JCR', 'SCOPUS', 'SJR'], true)) {
+        return 0.7;
     }
 
     if ($tipoIndice === 'PATENTE') {
         return match ($subtipo) {
-            'B1' => 8.0,
-            'B2' => 6.0,
-            default => 4.0,
+            'B1' => 3.0,
+            'B2' => 2.3,
+            default => 1.5,
         };
     }
 
-    return 0.75;
+    return 0.0;
 }
 
 function tec_puntuar_item_1a(array $pub): float
@@ -227,38 +290,48 @@ function tec_puntuar_item_1a(array $pub): float
         return 0.0;
     }
 
-    $tipo = mb_strtolower(tec_str($pub['tipo'] ?? 'articulo'));
+    if (
+        tec_bool($pub['es_divulgacion'] ?? false)
+        || tec_bool($pub['es_docencia'] ?? false)
+        || tec_bool($pub['es_acta_congreso'] ?? false)
+        || tec_bool($pub['es_informe_proyecto'] ?? false)
+    ) {
+        return 0.0;
+    }
+
+    $tipo = tec_lower(tec_str($pub['tipo'] ?? 'articulo'));
 
     if (!in_array($tipo, ['articulo', 'patente', 'software'], true)) {
         return 0.0;
     }
 
     $base = tec_base_publicacion_1a($pub);
+    if ($base <= 0.0) {
+        return 0.0;
+    }
 
-    if ($tipo === 'patente') {
-        $factor = 1.0;
-        if (tec_bool($pub['liderazgo'] ?? false)) {
-            $factor *= 1.15;
-        }
+    if ($tipo === 'patente' || $tipo === 'software') {
+        $factor = tec_bool($pub['liderazgo'] ?? false) ? 1.05 : 1.00;
         return tec_round($base * $factor);
     }
 
-    if ($tipo === 'software') {
-        $factor = 1.0;
-        if (tec_bool($pub['liderazgo'] ?? false)) {
-            $factor *= 1.10;
-        }
-        return tec_round(max(1.0, $base) * $factor);
-    }
+    $ordenAlfabetico = tec_bool($pub['orden_alfabetico'] ?? false);
+    $factorPosicion = $ordenAlfabetico
+        ? 1.00
+        : tec_factor_posicion_autor(tec_str($pub['posicion_autor'] ?? 'intermedio'));
 
     $p = $base
         * tec_factor_afinidad(tec_str($pub['afinidad'] ?? 'relacionada'))
-        * tec_factor_posicion_autor(tec_str($pub['posicion_autor'] ?? 'intermedio'))
+        * $factorPosicion
         * tec_factor_coautoria(tec_to_int($pub['numero_autores'] ?? 1, 1))
         * tec_factor_citas(
             tec_to_int($pub['citas'] ?? 0, 0),
             tec_to_int($pub['anios_desde_publicacion'] ?? 3, 3)
         );
+
+    if (tec_bool($pub['liderazgo'] ?? false)) {
+        $p *= 1.03;
+    }
 
     return tec_round($p);
 }
@@ -278,21 +351,6 @@ function calcular_1a_tecnicas(array $publicaciones): float
  * 1B - LIBROS Y CAPÍTULOS
  * ========================================================= */
 
-function tec_base_editorial_1b(string $nivel): float
-{
-    return match (mb_strtolower(trim($nivel))) {
-        'prestigiosa' => 3.0,
-        'secundaria' => 1.5,
-        'baja' => 0.5,
-        default => 0.5,
-    };
-}
-
-function tec_factor_tipo_libro_1b(string $tipo): float
-{
-    return mb_strtolower(trim($tipo)) === 'libro' ? 1.10 : 0.70;
-}
-
 function tec_puntuar_item_1b(array $item): float
 {
     if (!is_array($item)) {
@@ -303,26 +361,40 @@ function tec_puntuar_item_1b(array $item): float
         return 0.0;
     }
 
-    if (!tec_bool($item['es_libro_investigacion'] ?? true, true)) {
+    $texto = tec_text($item);
+    $tipo = tec_lower(tec_str($item['tipo'] ?? 'libro'));
+    $nivel = tec_lower(tec_str($item['nivel_editorial'] ?? 'nacional'));
+
+    $pareceLibroReal = tec_contains_any($texto, [
+        'isbn',
+        'libro',
+        'capítulo',
+        'capitulo',
+        'editorial',
+        'springer',
+        'elsevier',
+        'wiley',
+        'cambridge',
+        'oxford'
+    ]);
+
+    if (!$pareceLibroReal && !tec_bool($item['es_libro_investigacion'] ?? true, true)) {
         return 0.0;
     }
 
-    if (tec_bool($item['es_autoedicion'] ?? false)) {
-        return 0.0;
-    }
+    $base = match ($nivel) {
+        'internacional', 'prestigiosa' => ($tipo === 'libro' ? 1.6 : 0.8),
+        'nacional', 'secundaria' => ($tipo === 'libro' ? 1.0 : 0.5),
+        default => ($tipo === 'libro' ? 0.4 : 0.2),
+    };
 
-    if (tec_bool($item['es_acta_congreso'] ?? false)) {
-        return 0.0;
+    if (tec_bool($item['es_autoedicion'] ?? false) || tec_bool($item['es_acta_congreso'] ?? false)) {
+        $base *= 0.25;
     }
 
     if (tec_bool($item['es_labor_edicion'] ?? false)) {
-        return 0.0;
+        $base *= 0.60;
     }
-
-    $base = tec_base_editorial_1b(tec_str($item['nivel_editorial'] ?? 'secundaria'))
-        * tec_factor_tipo_libro_1b(tec_str($item['tipo'] ?? 'capitulo'))
-        * tec_factor_afinidad(tec_str($item['afinidad'] ?? 'relacionada'))
-        * tec_factor_posicion_autor(tec_str($item['posicion_autor'] ?? 'intermedio'));
 
     return tec_round($base);
 }
@@ -330,9 +402,11 @@ function tec_puntuar_item_1b(array $item): float
 function calcular_1b_tecnicas(array $items): float
 {
     $total = 0.0;
+
     foreach ($items as $item) {
         $total += tec_puntuar_item_1b($item);
     }
+
     return tec_round(tec_clamp($total, 0.0, 3.0));
 }
 
@@ -340,50 +414,76 @@ function calcular_1b_tecnicas(array $items): float
  * 1C - PROYECTOS Y CONTRATOS DE INVESTIGACIÓN
  * ========================================================= */
 
-function tec_base_proyecto_1c(string $tipo): float
+function tec_inferir_rol_real_proyecto_1c(array $item): string
 {
-    return match (mb_strtolower(trim($tipo))) {
-        'internacional' => 5.0,
-        'nacional' => 4.0,
-        'autonomico' => 2.5,
-        'universidad' => 1.5,
-        'empresa' => 1.7,
-        'desarrollo_industrial' => 1.8,
-        'infraestructura' => 1.2,
-        'red_tematica' => 0.0,
-        default => 0.0,
-    };
+    $rolExtraido = tec_lower(tec_str($item['rol'] ?? 'investigador'));
+    $texto = tec_text($item);
+
+    if (tec_contains_any($texto, [
+        'investigador principal y',
+        'soy investigador principal',
+        'investigador principal'
+    ])) {
+        return 'ip';
+    }
+
+    if (tec_contains_any($texto, [
+        'coip',
+        'co-ip',
+        'co ip'
+    ])) {
+        return 'coip';
+    }
+
+    if (tec_contains_any($texto, [
+        'equipo de trabajo',
+        'colaborador',
+        'investigador colaborador',
+        'miembro del equipo de trabajo'
+    ])) {
+        return 'investigador';
+    }
+
+    if (tec_contains_any($texto, [
+        'contrato laboral',
+        'investigador doctor contratado',
+        'contratado por',
+        'vinculado al proyecto a través de un contrato laboral'
+    ])) {
+        return 'contrato_laboral';
+    }
+
+    if ($rolExtraido === 'ip' || $rolExtraido === 'coip') {
+        return $rolExtraido;
+    }
+
+    return 'investigador';
 }
 
-function tec_factor_rol_proyecto_1c(string $rol): float
+function tec_es_proyecto_elegible_1c(array $item): bool
 {
-    return match (mb_strtolower(trim($rol))) {
-        'ip' => 1.50,
-        'coip' => 1.30,
-        'investigador' => 1.00,
-        'participacion_menor' => 0.70,
-        default => 1.00,
-    };
-}
+    $texto = tec_text($item);
 
-function tec_factor_dedicacion_1c(string $dedicacion): float
-{
-    return match (mb_strtolower(trim($dedicacion))) {
-        'completa' => 1.20,
-        'parcial' => 1.00,
-        'residual' => 0.80,
-        default => 1.00,
-    };
-}
+    if (!tec_bool($item['esta_certificado'] ?? true, true)) {
+        return false;
+    }
 
-function tec_factor_duracion_1c(float $anios): float
-{
-    return match (true) {
-        $anios >= 4.0 => 1.20,
-        $anios >= 2.0 => 1.00,
-        $anios > 0.0 => 0.80,
-        default => 0.0,
-    };
+    if (tec_contains_any($texto, [
+        'contrato laboral',
+        'investigador doctor contratado',
+        'contratado por la universidad',
+        'vinculado al proyecto a través de un contrato laboral',
+        'ayuda a grupos de i+d',
+        'ayudas a grupos de i+d',
+        'red temática',
+        'red tematica',
+        'redes temáticas',
+        'redes tematicas'
+    ])) {
+        return false;
+    }
+
+    return true;
 }
 
 function tec_puntuar_item_1c(array $item): float
@@ -396,20 +496,63 @@ function tec_puntuar_item_1c(array $item): float
         return 0.0;
     }
 
-    if (!tec_bool($item['esta_certificado'] ?? true, true)) {
+    if (!tec_es_proyecto_elegible_1c($item)) {
         return 0.0;
     }
 
-    $base = tec_base_proyecto_1c(tec_str($item['tipo_proyecto'] ?? 'universidad'));
+    $tipo = tec_lower(tec_str($item['tipo_proyecto'] ?? 'universidad'));
+    $rol = tec_inferir_rol_real_proyecto_1c($item);
+    $anios = tec_to_float($item['anios_duracion'] ?? 0, 0);
 
-    if ($base <= 0.0) {
+    if ($rol === 'contrato_laboral') {
         return 0.0;
     }
 
-    $p = $base
-        * tec_factor_rol_proyecto_1c(tec_str($item['rol'] ?? 'investigador'))
-        * tec_factor_dedicacion_1c(tec_str($item['dedicacion'] ?? 'parcial'))
-        * tec_factor_duracion_1c(tec_to_float($item['anios_duracion'] ?? 0, 0));
+    $p = 0.0;
+
+    if (in_array($tipo, ['internacional', 'europeo'], true)) {
+        $p = match ($rol) {
+            'ip' => 3.8,
+            'coip' => 3.0,
+            default => 0.9,
+        };
+    } elseif ($tipo === 'nacional') {
+        $p = match ($rol) {
+            'ip' => 3.2,
+            'coip' => 2.6,
+            default => 0.75,
+        };
+    } elseif ($tipo === 'autonomico') {
+        $p = match ($rol) {
+            'ip' => 1.8,
+            'coip' => 1.4,
+            default => 0.5,
+        };
+    } elseif ($tipo === 'universidad') {
+        $p = match ($rol) {
+            'ip' => 0.9,
+            'coip' => 0.7,
+            default => 0.3,
+        };
+    } elseif (in_array($tipo, ['empresa', 'desarrollo_industrial'], true)) {
+        $p = match ($rol) {
+            'ip' => 1.0,
+            'coip' => 0.8,
+            default => 0.4,
+        };
+    } elseif ($tipo === 'infraestructura') {
+        $p = match ($rol) {
+            'ip' => 0.5,
+            'coip' => 0.4,
+            default => 0.2,
+        };
+    }
+
+    if ($anios >= 3.0) {
+        $p *= 1.05;
+    } elseif ($anios > 0.0 && $anios < 1.0) {
+        $p *= 0.75;
+    }
 
     return tec_round($p);
 }
@@ -417,27 +560,17 @@ function tec_puntuar_item_1c(array $item): float
 function calcular_1c_tecnicas(array $items): float
 {
     $total = 0.0;
+
     foreach ($items as $item) {
         $total += tec_puntuar_item_1c($item);
     }
+
     return tec_round(tec_clamp($total, 0.0, 12.0));
 }
 
 /* =========================================================
  * 1D - TRANSFERENCIA DE TECNOLOGÍA
  * ========================================================= */
-
-function tec_base_transferencia_1d(string $tipo): float
-{
-    return match (mb_strtolower(trim($tipo))) {
-        'patente_nacional' => 3.0,
-        'contrato_empresa' => 2.0,
-        'software_explotacion' => 2.0,
-        'ebt' => 2.2,
-        'otro' => 0.5,
-        default => 0.0,
-    };
-}
 
 function tec_puntuar_item_1d(array $item): float
 {
@@ -449,7 +582,41 @@ function tec_puntuar_item_1d(array $item): float
         return 0.0;
     }
 
-    $base = tec_base_transferencia_1d(tec_str($item['tipo'] ?? 'otro'));
+    $tipo = tec_lower(tec_str($item['tipo'] ?? 'otro'));
+    $texto = tec_text($item);
+
+    if (
+        !in_array($tipo, [
+            'patente_nacional',
+            'contrato_empresa',
+            'software_explotacion',
+            'ebt',
+            'otro'
+        ], true)
+        && !tec_contains_any($texto, [
+            'patente',
+            'contrato con empresa',
+            'contrato empresa',
+            'software',
+            'explotación',
+            'explotacion',
+            'empresa de base tecnológica',
+            'empresa de base tecnologica',
+            'ebt'
+        ])
+    ) {
+        return 0.0;
+    }
+
+    $base = match ($tipo) {
+        'patente_nacional' => 2.0,
+        'contrato_empresa' => 1.4,
+        'software_explotacion' => 1.5,
+        'ebt' => 1.6,
+        'otro' => 0.4,
+        default => 0.0,
+    };
+
     if ($base <= 0.0) {
         return 0.0;
     }
@@ -457,7 +624,7 @@ function tec_puntuar_item_1d(array $item): float
     $factor = 1.0;
 
     if (tec_bool($item['impacto_externo'] ?? false)) {
-        $factor *= 1.20;
+        $factor *= 1.10;
     }
     if (tec_bool($item['liderazgo'] ?? false)) {
         $factor *= 1.10;
@@ -472,9 +639,11 @@ function tec_puntuar_item_1d(array $item): float
 function calcular_1d_tecnicas(array $items): float
 {
     $total = 0.0;
+
     foreach ($items as $item) {
         $total += tec_puntuar_item_1d($item);
     }
+
     return tec_round(tec_clamp($total, 0.0, 6.0));
 }
 
@@ -492,16 +661,16 @@ function tec_puntuar_item_1e(array $item): float
         return 0.0;
     }
 
-    $tipo = mb_strtolower(tec_str($item['tipo'] ?? 'codireccion'));
+    $tipo = tec_lower(tec_str($item['tipo'] ?? 'codireccion'));
 
     $base = match ($tipo) {
-        'direccion_principal', 'direccion_unica' => 2.0,
-        'codireccion' => 1.2,
+        'direccion_principal', 'direccion_unica' => 1.7,
+        'codireccion' => 1.0,
         default => 0.0,
     };
 
     if (tec_bool($item['calidad_especial'] ?? false)) {
-        $base += 0.5;
+        $base += 0.3;
     }
 
     return tec_round($base);
@@ -510,9 +679,11 @@ function tec_puntuar_item_1e(array $item): float
 function calcular_1e_tecnicas(array $items): float
 {
     $total = 0.0;
+
     foreach ($items as $item) {
         $total += tec_puntuar_item_1e($item);
     }
+
     return tec_round(tec_clamp($total, 0.0, 4.0));
 }
 
@@ -530,22 +701,25 @@ function tec_puntuar_item_1f(array $item): float
         return 0.0;
     }
 
-    $ambito = mb_strtolower(tec_str($item['ambito'] ?? 'local'));
-    $tipo = mb_strtolower(tec_str($item['tipo'] ?? 'poster'));
+    if (!tec_bool($item['proceso_selectivo'] ?? false, false)) {
+        return 0.0;
+    }
+
+    $ambito = tec_lower(tec_str($item['ambito'] ?? 'nacional'));
+    $tipo = tec_lower(tec_str($item['tipo'] ?? 'comunicacion_oral'));
 
     $base = match ($ambito) {
-        'internacional' => 1.0,
-        'nacional' => 0.7,
-        'autonomico', 'regional' => 0.4,
-        'local' => 0.2,
-        default => 0.2,
+        'internacional' => 0.35,
+        'nacional' => 0.22,
+        'autonomico', 'regional' => 0.12,
+        default => 0.06,
     };
 
     $factor = match ($tipo) {
-        'ponencia_invitada' => 1.30,
-        'comunicacion_oral' => 1.10,
-        'poster' => 0.80,
-        'organizacion' => 0.90,
+        'ponencia_invitada' => 1.20,
+        'comunicacion_oral' => 1.00,
+        'poster' => 0.70,
+        'organizacion' => 0.60,
         default => 0.80,
     };
 
@@ -555,7 +729,7 @@ function tec_puntuar_item_1f(array $item): float
 function calcular_1f_tecnicas(array $items): float
 {
     $total = 0.0;
-    $conteoEvento = [];
+    $mejorPorEvento = [];
 
     foreach ($items as $item) {
         if (!is_array($item)) {
@@ -567,18 +741,20 @@ function calcular_1f_tecnicas(array $items): float
         }
 
         $idEvento = tec_str($item['id_evento'] ?? '');
+        $p = tec_puntuar_item_1f($item);
+
         if ($idEvento === '') {
-            $idEvento = uniqid('evento_', true);
-        }
-
-        $conteoEvento[$idEvento] = $conteoEvento[$idEvento] ?? 0;
-
-        if ($conteoEvento[$idEvento] >= 2) {
+            $total += $p;
             continue;
         }
 
-        $total += tec_puntuar_item_1f($item);
-        $conteoEvento[$idEvento]++;
+        if (!isset($mejorPorEvento[$idEvento]) || $p > $mejorPorEvento[$idEvento]) {
+            $mejorPorEvento[$idEvento] = $p;
+        }
+    }
+
+    foreach ($mejorPorEvento as $p) {
+        $total += $p;
     }
 
     return tec_round(tec_clamp($total, 0.0, 2.0));
@@ -598,12 +774,12 @@ function tec_puntuar_item_1g(array $item): float
         return 0.0;
     }
 
-    return match (mb_strtolower(tec_str($item['tipo'] ?? 'otro'))) {
-        'grupo_investigacion' => 0.20,
-        'comite_cientifico' => 0.40,
-        'revision_revistas' => 0.30,
-        'premio_investigacion' => 0.80,
-        'otro' => 0.20,
+    return match (tec_lower(tec_str($item['tipo'] ?? 'otro'))) {
+        'grupo_investigacion' => 0.15,
+        'comite_cientifico' => 0.25,
+        'revision_revistas' => 0.20,
+        'premio_investigacion' => 0.50,
+        'otro' => 0.10,
         default => 0.0,
     };
 }
@@ -611,9 +787,11 @@ function tec_puntuar_item_1g(array $item): float
 function calcular_1g_tecnicas(array $items): float
 {
     $total = 0.0;
+
     foreach ($items as $item) {
         $total += tec_puntuar_item_1g($item);
     }
+
     return tec_round(tec_clamp($total, 0.0, 1.0));
 }
 
@@ -621,127 +799,182 @@ function calcular_1g_tecnicas(array $items): float
  * BLOQUE 2 - EXPERIENCIA DOCENTE
  * ========================================================= */
 
-function tec_puntuar_item_2a(array $item): float
-{
-    if (!is_array($item)) {
-        return 0.0;
-    }
-
-    if ((string)($item['es_valido'] ?? 1) === '0') {
-        return 0.0;
-    }
-
-    $horas = tec_to_float($item['horas'] ?? 0, 0);
-
-    $base = match (true) {
-        $horas >= 240 => 4.0,
-        $horas >= 180 => 3.0,
-        $horas >= 120 => 2.0,
-        $horas >= 60 => 1.0,
-        $horas > 0 => 0.5,
-        default => 0.0,
-    };
-
-    $factorNivel = match (mb_strtolower(tec_str($item['nivel'] ?? 'grado'))) {
-        'doctorado' => 1.15,
-        'master' => 1.10,
-        'grado' => 1.00,
-        default => 1.00,
-    };
-
-    $factorResp = match (mb_strtolower(tec_str($item['responsabilidad'] ?? 'media'))) {
-        'alta' => 1.20,
-        'media' => 1.00,
-        'baja' => 0.85,
-        default => 1.00,
-    };
-
-    return tec_round($base * $factorNivel * $factorResp);
-}
-
 function calcular_2a_tecnicas(array $items): float
 {
-    $total = 0.0;
+    $horasTotal = 0.0;
+    $tfg = 0;
+    $tfm = 0;
+
     foreach ($items as $item) {
-        $total += tec_puntuar_item_2a($item);
+        if (!is_array($item)) {
+            continue;
+        }
+
+        if ((string)($item['es_valido'] ?? 1) === '0') {
+            continue;
+        }
+
+        $horas = tec_to_float($item['horas'] ?? 0, 0);
+        $tipo = tec_lower(tec_str($item['tipo'] ?? 'grado'));
+
+        $factorTipo = match ($tipo) {
+            'master' => 1.00,
+            'grado' => 1.00,
+            'titulo_propio' => 0.70,
+            default => 0.90,
+        };
+
+        $horasTotal += ($horas * $factorTipo);
+        $tfg += tec_to_int($item['tfg'] ?? 0, 0);
+        $tfm += tec_to_int($item['tfm'] ?? 0, 0);
     }
-    return tec_round(tec_clamp($total, 0.0, 17.0));
+
+    $pHoras = 17.0 * min(1.0, $horasTotal / 450.0);
+    $pTF = min(1.5, ($tfg * 0.15) + ($tfm * 0.30));
+
+    return tec_round(tec_clamp($pHoras + $pTF, 0.0, 17.0));
 }
 
-function tec_puntuar_item_2b(array $item): float
+function calcular_2b_tecnicas(array $evaluaciones, array $docencia = []): float
 {
-    if (!is_array($item)) {
+    $horasDocencia = 0.0;
+
+    foreach ($docencia as $item) {
+        if (!is_array($item)) {
+            continue;
+        }
+
+        if ((string)($item['es_valido'] ?? 1) === '0') {
+            continue;
+        }
+
+        $horasDocencia += tec_to_float($item['horas'] ?? 0, 0);
+    }
+
+    $horasEvaluadas = 0.0;
+    $sumaNotas = 0.0;
+    $n = 0;
+
+    foreach ($evaluaciones as $item) {
+        if (!is_array($item)) {
+            continue;
+        }
+
+        if ((string)($item['es_valido'] ?? 1) === '0') {
+            continue;
+        }
+
+        $resultado = tec_lower(tec_str($item['resultado'] ?? 'aceptable'));
+        $p = match ($resultado) {
+            'excelente' => 9.7,
+            'muy_favorable' => 9.0,
+            'favorable', 'positiva' => 7.8,
+            default => 6.5,
+        };
+
+        $sumaNotas += $p;
+        $n++;
+
+        $texto = tec_text($item);
+        if (preg_match('/horas?\s+(\d+(?:[.,]\d+)?)/iu', $texto, $m)) {
+            $horasEvaluadas += (float)str_replace(',', '.', $m[1]);
+        } else {
+            $horasEvaluadas += 22.0;
+        }
+    }
+
+    if ($n === 0) {
         return 0.0;
     }
 
-    if ((string)($item['es_valido'] ?? 1) === '0') {
-        return 0.0;
-    }
+    $media = $sumaNotas / $n;
+    $cobertura = $horasDocencia > 0 ? min(1.0, $horasEvaluadas / $horasDocencia) : 0.50;
 
-    $resultado = mb_strtolower(tec_str($item['resultado'] ?? 'aceptable'));
-    $tipo = mb_strtolower(tec_str($item['tipo'] ?? 'encuestas'));
-
-    $base = match ($resultado) {
-        'excelente' => 1.5,
-        'muy_favorable' => 1.2,
-        'favorable', 'positiva' => 1.0,
-        'aceptable' => 0.5,
-        default => 0.0,
+    $pCalidad = match (true) {
+        $media >= 9.5 => 2.7,
+        $media >= 8.8 => 2.2,
+        $media >= 8.0 => 1.7,
+        default => 1.0,
     };
 
-    if ($tipo === 'docentia') {
-        $base *= 1.10;
-    }
+    $factorCobertura = match (true) {
+        $cobertura >= 0.75 => 1.00,
+        $cobertura >= 0.50 => 0.80,
+        $cobertura >= 0.30 => 0.60,
+        default => 0.40,
+    };
 
-    return tec_round($base);
+    return tec_round(tec_clamp($pCalidad * $factorCobertura, 0.0, 3.0));
 }
 
-function calcular_2b_tecnicas(array $items): float
+function tec_es_formacion_docente_valida(array $item): bool
 {
-    $total = 0.0;
-    foreach ($items as $item) {
-        $total += tec_puntuar_item_2b($item);
-    }
-    return tec_round(tec_clamp($total, 0.0, 3.0));
-}
+    $texto = tec_text($item);
 
-function tec_puntuar_item_2c(array $item): float
-{
-    if (!is_array($item)) {
-        return 0.0;
-    }
-
-    if ((string)($item['es_valido'] ?? 1) === '0') {
-        return 0.0;
+    if (tec_contains_any($texto, [
+        'hackathon',
+        'design thinking',
+        'ia aplicada a la investigación',
+        'ia aplicada a la investigacion',
+        'emergencia',
+        'divulgación científica',
+        'divulgacion cientifica',
+    ])) {
+        return false;
     }
 
-    $horas = tec_to_float($item['horas'] ?? 0, 0);
-
-    $base = match (true) {
-        $horas >= 100 => 1.5,
-        $horas >= 50 => 1.0,
-        $horas >= 20 => 0.6,
-        $horas > 0 => 0.3,
-        default => 0.0,
-    };
-
-    $factorRol = match (mb_strtolower(tec_str($item['rol'] ?? 'asistente'))) {
-        'director' => 1.25,
-        'ponente', 'docente' => 1.20,
-        'asistente' => 1.00,
-        default => 1.00,
-    };
-
-    return tec_round($base * $factorRol);
+    return tec_contains_any($texto, [
+        'docencia',
+        'docente',
+        'campus docente',
+        'iniciación a la docencia',
+        'iniciacion a la docencia',
+        'innovación docente',
+        'innovacion docente',
+        'uso profesional de la voz',
+        'profesorado',
+        'personal docente',
+        'actas',
+    ]);
 }
 
 function calcular_2c_tecnicas(array $items): float
 {
-    $total = 0.0;
+    $horas = 0.0;
+    $bonusPonente = 0.0;
+
     foreach ($items as $item) {
-        $total += tec_puntuar_item_2c($item);
+        if (!is_array($item)) {
+            continue;
+        }
+
+        if ((string)($item['es_valido'] ?? 1) === '0') {
+            continue;
+        }
+
+        if (!tec_es_formacion_docente_valida($item)) {
+            continue;
+        }
+
+        $horas += tec_to_float($item['horas'] ?? 0, 0);
+
+        if (tec_lower(tec_str($item['rol'] ?? 'asistente')) === 'ponente') {
+            $bonusPonente += 0.25;
+        }
     }
-    return tec_round(tec_clamp($total, 0.0, 3.0));
+
+    $p = match (true) {
+        $horas >= 80 => 3.0,
+        $horas >= 50 => 2.3,
+        $horas >= 25 => 1.6,
+        $horas >= 10 => 0.9,
+        $horas > 0 => 0.4,
+        default => 0.0,
+    };
+
+    $p += min(0.5, $bonusPonente);
+
+    return tec_round(tec_clamp($p, 0.0, 3.0));
 }
 
 function tec_puntuar_item_2d(array $item): float
@@ -754,21 +987,47 @@ function tec_puntuar_item_2d(array $item): float
         return 0.0;
     }
 
-    return match (mb_strtolower(tec_str($item['tipo'] ?? 'otro'))) {
-        'material_publicado' => 2.0,
-        'proyecto_innovacion' => 1.5,
-        'recurso_digital' => 1.2,
-        'contribucion_eees' => 1.4,
-        default => 0.4,
+    $texto = tec_text($item);
+    $tipo = tec_lower(tec_str($item['tipo'] ?? 'material_original'));
+
+    $esValido = tec_contains_any($texto, [
+        'libro docente',
+        'capítulo docente',
+        'capitulo docente',
+        'manual docente',
+        'material docente',
+        'innovación docente',
+        'innovacion docente',
+        'proyecto de innovación docente',
+        'proyecto de innovacion docente',
+        'isbn',
+    ]);
+
+    if (!$esValido) {
+        return 0.0;
+    }
+
+    $nivel = tec_lower(tec_str($item['nivel_editorial'] ?? 'nacional'));
+
+    $base = match ($tipo) {
+        'libro_docente' => ($nivel === 'internacional' ? 2.2 : 1.4),
+        'capitulo_docente' => ($nivel === 'internacional' ? 1.2 : 0.7),
+        'innovacion_docente' => 1.4,
+        'material_original' => 0.7,
+        default => 0.0,
     };
+
+    return tec_round($base);
 }
 
 function calcular_2d_tecnicas(array $items): float
 {
     $total = 0.0;
+
     foreach ($items as $item) {
         $total += tec_puntuar_item_2d($item);
     }
+
     return tec_round(tec_clamp($total, 0.0, 7.0));
 }
 
@@ -786,22 +1045,24 @@ function tec_puntuar_item_3a(array $item): float
         return 0.0;
     }
 
-    return match (mb_strtolower(tec_str($item['tipo'] ?? 'otro'))) {
-        'tesis_doctoral' => 2.0,
-        'premio_doctorado' => 1.6,
-        'beca' => 1.5,
-        'estancia' => 1.2,
-        'master' => 0.8,
-        default => 0.3,
+    return match (tec_lower(tec_str($item['tipo'] ?? 'otro'))) {
+        'tesis_doctoral' => 1.6,
+        'premio_doctorado' => 1.0,
+        'beca' => 1.2,
+        'estancia' => 0.9,
+        'master' => 0.4,
+        default => 0.1,
     };
 }
 
 function calcular_3a_tecnicas(array $items): float
 {
     $total = 0.0;
+
     foreach ($items as $item) {
         $total += tec_puntuar_item_3a($item);
     }
+
     return tec_round(tec_clamp($total, 0.0, 6.0));
 }
 
@@ -815,32 +1076,56 @@ function tec_puntuar_item_3b(array $item): float
         return 0.0;
     }
 
+    $texto = tec_text($item);
+
+    if (!tec_bool($item['justificada'] ?? false, false)) {
+        return 0.0;
+    }
+
+    if (tec_contains_any($texto, [
+        'proyecto',
+        'investigador doctor',
+        'predoctoral',
+        'fpu',
+        'fpi',
+        'beca de colaboración',
+        'beca de colaboracion',
+        'divulgación científica',
+        'divulgacion cientifica',
+        'organizador del seminario',
+    ])) {
+        return 0.0;
+    }
+
     $anios = tec_to_float($item['anios'] ?? 0, 0);
+    $relacion = tec_lower(tec_str($item['relacion'] ?? 'media'));
 
     $base = match (true) {
         $anios >= 5 => 1.5,
         $anios >= 3 => 1.0,
         $anios >= 1 => 0.6,
-        $anios > 0 => 0.3,
+        $anios > 0 => 0.25,
         default => 0.0,
     };
 
-    $factorRelacion = match (mb_strtolower(tec_str($item['relacion'] ?? 'media'))) {
-        'alta' => 1.20,
-        'media' => 1.00,
-        'baja' => 0.70,
-        default => 1.00,
+    $factor = match ($relacion) {
+        'alta' => 1.00,
+        'media' => 0.75,
+        'baja' => 0.40,
+        default => 0.60,
     };
 
-    return tec_round($base * $factorRelacion);
+    return tec_round($base * $factor);
 }
 
 function calcular_3b_tecnicas(array $items): float
 {
     $total = 0.0;
+
     foreach ($items as $item) {
         $total += tec_puntuar_item_3b($item);
     }
+
     return tec_round(tec_clamp($total, 0.0, 2.0));
 }
 
@@ -858,21 +1143,24 @@ function tec_puntuar_item_4(array $item): float
         return 0.0;
     }
 
-    return match (mb_strtolower(tec_str($item['tipo'] ?? 'otro'))) {
-        'gestion' => 0.8,
-        'servicio_academico' => 0.5,
-        'distincion' => 0.7,
-        'sociedad_cientifica' => 0.6,
-        default => 0.3,
+    return match (tec_lower(tec_str($item['tipo'] ?? 'otro'))) {
+        'gestion' => 0.50,
+        'servicio_academico' => 0.30,
+        'distincion' => 0.60,
+        'sociedad_cientifica' => 0.40,
+        'otro' => 0.15,
+        default => 0.0,
     };
 }
 
 function calcular_4_tecnicas(array $items): float
 {
     $total = 0.0;
+
     foreach ($items as $item) {
         $total += tec_puntuar_item_4($item);
     }
+
     return tec_round(tec_clamp($total, 0.0, 2.0));
 }
 
@@ -983,7 +1271,7 @@ function tec_contar_publicaciones_impacto(array $publicaciones): array
             continue;
         }
 
-        $tipo = mb_strtolower(tec_str($pub['tipo'] ?? 'articulo'));
+        $tipo = tec_lower(tec_str($pub['tipo'] ?? 'articulo'));
         $tipoIndice = strtoupper(tec_str($pub['tipo_indice'] ?? 'OTRO'));
         $tercil = strtoupper(tec_str($pub['tercil'] ?? ''));
         $subtipo = strtoupper(tec_str($pub['subtipo_indice'] ?? ''));
@@ -1000,6 +1288,16 @@ function tec_contar_publicaciones_impacto(array $publicaciones): array
 
         if ($tipoIndice === 'CORE' && in_array($subtipo, ['A', 'A+'], true)) {
             $out['CORE_A']++;
+            continue;
+        }
+
+        if ($tipoIndice === 'CSIE' && $subtipo === 'CLASE_1') {
+            $out['T3']++;
+            continue;
+        }
+
+        if (in_array($tipoIndice, ['RESH', 'AVERY', 'RIBA', 'ARTS_HUMANITIES'], true)) {
+            $out['T3']++;
             continue;
         }
 
@@ -1062,6 +1360,7 @@ function tec_generar_diagnostico(array $datos, array $resultado): array
     }
 
     return [
+        'version' => 'conservadora_tecnicas_v2_estilo_experimentales',
         'perfil_detectado' => tec_detectar_perfil($resultado),
         'reglas' => [
             [
@@ -1112,6 +1411,10 @@ function tec_generar_diagnostico(array $datos, array $resultado): array
             'num_tesis' => tec_count_valid(tec_list(tec_list($datos, 'bloque_1'), 'tesis_dirigidas')),
             'num_docencia_items' => tec_count_valid(tec_list(tec_list($datos, 'bloque_2'), 'docencia_universitaria')),
             'num_eval_docente' => tec_count_valid(tec_list(tec_list($datos, 'bloque_2'), 'evaluacion_docente')),
+            'num_formacion_docente' => tec_count_valid(tec_list(tec_list($datos, 'bloque_2'), 'formacion_docente')),
+            'num_material_docente' => tec_count_valid(tec_list(tec_list($datos, 'bloque_2'), 'material_docente')),
+            'num_exp_profesional' => tec_count_valid(tec_list(tec_list($datos, 'bloque_3'), 'experiencia_profesional')),
+            'num_otros_b4' => tec_count_valid(is_array(tec_list($datos, 'bloque_4')) ? tec_list($datos, 'bloque_4') : []),
         ],
         'fortalezas' => $fortalezas,
         'debilidades' => $debilidades,
@@ -1137,8 +1440,8 @@ function tec_generar_asesor(array $resultado): array
         $acciones[] = [
             'prioridad' => 1,
             'titulo' => 'Reforzar docencia universitaria acreditable',
-            'detalle' => 'El cuello de botella parece estar en 2A. Conviene consolidar docencia reglada con responsabilidad media/alta.',
-            'impacto_estimado' => '≈ 3 a 5 puntos por un curso docente sólido.',
+            'detalle' => 'El cuello de botella parece estar en 2A. Conviene consolidar docencia reglada con volumen real y TFG/TFM dirigidos.',
+            'impacto_estimado' => '≈ 2 a 4 puntos por docencia adicional bien acreditada.',
         ];
     }
 
@@ -1146,8 +1449,8 @@ function tec_generar_asesor(array $resultado): array
         $acciones[] = [
             'prioridad' => 2,
             'titulo' => 'Subir el peso de publicaciones principales',
-            'detalle' => 'El núcleo 1A sigue corto. En Técnicas, el mejor retorno suele venir de publicaciones JCR T1/T2 bien posicionadas.',
-            'impacto_estimado' => '≈ 4 a 10 puntos por aportación fuerte, según tercil y autoría.',
+            'detalle' => 'El núcleo 1A sigue corto. En Técnicas conviene priorizar JCR T1/T2 con buena posición de autoría y coautoría no masiva.',
+            'impacto_estimado' => '≈ 2 a 4.5 puntos por aportación fuerte.',
         ];
     }
 
@@ -1155,8 +1458,8 @@ function tec_generar_asesor(array $resultado): array
         $acciones[] = [
             'prioridad' => 3,
             'titulo' => 'Aumentar proyectos competitivos certificados',
-            'detalle' => 'Los proyectos IP/nacionales/internacionales mejoran mucho la consistencia del expediente.',
-            'impacto_estimado' => '≈ 2 a 6 puntos por proyecto relevante.',
+            'detalle' => 'Los proyectos nacionales o internacionales como IP o co-IP mejoran mucho la consistencia del expediente.',
+            'impacto_estimado' => '≈ 1 a 4 puntos por proyecto relevante.',
         ];
     }
 
@@ -1164,8 +1467,8 @@ function tec_generar_asesor(array $resultado): array
         $acciones[] = [
             'prioridad' => 4,
             'titulo' => 'Reforzar transferencia',
-            'detalle' => 'En Técnicas ayuda bastante aportar software en explotación, contratos empresa o patente nacional bien justificada.',
-            'impacto_estimado' => '≈ 1.5 a 3 puntos por mérito claro de transferencia.',
+            'detalle' => 'En Técnicas suma aportar software en explotación, contratos empresa o patente nacional bien justificada.',
+            'impacto_estimado' => '≈ 1 a 2 puntos por mérito claro.',
         ];
     }
 
@@ -1174,16 +1477,16 @@ function tec_generar_asesor(array $resultado): array
             'prioridad' => 5,
             'titulo' => 'Aportar evaluación docente formal',
             'detalle' => 'DOCENTIA o informes institucionales favorables ayudan a cerrar debilidades del bloque 2.',
-            'impacto_estimado' => '≈ 1 a 1.5 puntos.',
+            'impacto_estimado' => '≈ 0.8 a 1.8 puntos.',
         ];
     }
 
     if ($p2d < 1.5) {
         $acciones[] = [
             'prioridad' => 6,
-            'titulo' => 'Añadir innovación/material docente',
-            'detalle' => 'Material docente publicado, innovación o contribuciones al EEES pueden redondear el bloque 2.',
-            'impacto_estimado' => '≈ 1 a 2 puntos.',
+            'titulo' => 'Añadir innovación o material docente',
+            'detalle' => 'Material docente con ISBN, manuales o proyectos de innovación docente redondean el bloque 2.',
+            'impacto_estimado' => '≈ 0.7 a 2 puntos.',
         ];
     }
 
@@ -1199,24 +1502,24 @@ function tec_generar_asesor(array $resultado): array
     }
 
     $sim1 = [
-        'escenario' => 'Añadir una publicación potente en 1A',
-        'efecto_estimado' => '+6 puntos aprox.',
-        'nuevo_b1_b2_aprox' => tec_round(min(90.0, $total12 + 6.0)),
-        'nuevo_total_aprox' => tec_round(min(100.0, $total + 6.0)),
+        'escenario' => 'Añadir una publicación fuerte en 1A',
+        'efecto_estimado' => '+3.5 puntos aprox.',
+        'nuevo_b1_b2_aprox' => tec_round(min(90.0, $total12 + 3.5)),
+        'nuevo_total_aprox' => tec_round(min(100.0, $total + 3.5)),
     ];
 
     $sim2 = [
         'escenario' => 'Añadir un proyecto competitivo relevante',
-        'efecto_estimado' => '+3 puntos aprox.',
-        'nuevo_b1_b2_aprox' => tec_round(min(90.0, $total12 + 3.0)),
-        'nuevo_total_aprox' => tec_round(min(100.0, $total + 3.0)),
+        'efecto_estimado' => '+2.5 puntos aprox.',
+        'nuevo_b1_b2_aprox' => tec_round(min(90.0, $total12 + 2.5)),
+        'nuevo_total_aprox' => tec_round(min(100.0, $total + 2.5)),
     ];
 
     $sim3 = [
-        'escenario' => 'Consolidar docencia + evaluación docente',
-        'efecto_estimado' => '+4 puntos aprox.',
-        'nuevo_b1_b2_aprox' => tec_round(min(90.0, $total12 + 4.0)),
-        'nuevo_total_aprox' => tec_round(min(100.0, $total + 4.0)),
+        'escenario' => 'Consolidar docencia y evaluación docente',
+        'efecto_estimado' => '+3 puntos aprox.',
+        'nuevo_b1_b2_aprox' => tec_round(min(90.0, $total12 + 3.0)),
+        'nuevo_total_aprox' => tec_round(min(100.0, $total + 3.0)),
     ];
 
     return [
@@ -1237,26 +1540,42 @@ function evaluar_expediente(array $datos): array
     $bloque3 = tec_list($datos, 'bloque_3');
     $bloque4 = tec_list($datos, 'bloque_4');
 
-    $p1a = calcular_1a_tecnicas(tec_list($bloque1, 'publicaciones'));
-    $p1b = calcular_1b_tecnicas(tec_list($bloque1, 'libros'));
-    $p1c = calcular_1c_tecnicas(tec_list($bloque1, 'proyectos'));
-    $p1d = calcular_1d_tecnicas(tec_list($bloque1, 'transferencia'));
-    $p1e = calcular_1e_tecnicas(tec_list($bloque1, 'tesis_dirigidas'));
-    $p1f = calcular_1f_tecnicas(tec_list($bloque1, 'congresos'));
-    $p1g = calcular_1g_tecnicas(tec_list($bloque1, 'otros_meritos_investigacion'));
+    $publicaciones = tec_list($bloque1, 'publicaciones');
+    $libros = tec_list($bloque1, 'libros');
+    $proyectos = tec_list($bloque1, 'proyectos');
+    $transferencia = tec_list($bloque1, 'transferencia');
+    $tesis = tec_list($bloque1, 'tesis_dirigidas');
+    $congresos = tec_list($bloque1, 'congresos');
+    $otrosInv = tec_list($bloque1, 'otros_meritos_investigacion');
+
+    $docencia = tec_list($bloque2, 'docencia_universitaria');
+    $evaluacion = tec_list($bloque2, 'evaluacion_docente');
+    $formacionDoc = tec_list($bloque2, 'formacion_docente');
+    $materialDoc = tec_list($bloque2, 'material_docente');
+
+    $formacion = tec_list($bloque3, 'formacion_academica');
+    $expProfesional = tec_list($bloque3, 'experiencia_profesional');
+
+    $p1a = calcular_1a_tecnicas($publicaciones);
+    $p1b = calcular_1b_tecnicas($libros);
+    $p1c = calcular_1c_tecnicas($proyectos);
+    $p1d = calcular_1d_tecnicas($transferencia);
+    $p1e = calcular_1e_tecnicas($tesis);
+    $p1f = calcular_1f_tecnicas($congresos);
+    $p1g = calcular_1g_tecnicas($otrosInv);
     $B1 = tec_round(tec_clamp($p1a + $p1b + $p1c + $p1d + $p1e + $p1f + $p1g, 0.0, 60.0));
 
-    $p2a = calcular_2a_tecnicas(tec_list($bloque2, 'docencia_universitaria'));
-    $p2b = calcular_2b_tecnicas(tec_list($bloque2, 'evaluacion_docente'));
-    $p2c = calcular_2c_tecnicas(tec_list($bloque2, 'formacion_docente'));
-    $p2d = calcular_2d_tecnicas(tec_list($bloque2, 'material_docente'));
+    $p2a = calcular_2a_tecnicas($docencia);
+    $p2b = calcular_2b_tecnicas($evaluacion, $docencia);
+    $p2c = calcular_2c_tecnicas($formacionDoc);
+    $p2d = calcular_2d_tecnicas($materialDoc);
     $B2 = tec_round(tec_clamp($p2a + $p2b + $p2c + $p2d, 0.0, 30.0));
 
-    $p3a = calcular_3a_tecnicas(tec_list($bloque3, 'formacion_academica'));
-    $p3b = calcular_3b_tecnicas(tec_list($bloque3, 'experiencia_profesional'));
+    $p3a = calcular_3a_tecnicas($formacion);
+    $p3b = calcular_3b_tecnicas($expProfesional);
     $B3 = tec_round(tec_clamp($p3a + $p3b, 0.0, 8.0));
 
-    $p4 = calcular_4_tecnicas($bloque4);
+    $p4 = calcular_4_tecnicas(is_array($bloque4) ? $bloque4 : []);
     $B4 = $p4;
 
     $totalB1B2 = tec_round($B1 + $B2);

@@ -102,7 +102,10 @@ function exp_count_valid(array $items): int
 
 /* =========================================================
  * 1A PUBLICACIONES
- * Versión más dura
+ * Regla de tres basada en la rúbrica PEP de Experimentales:
+ * - estándar: 12 publicaciones SCI/JCR para el máximo.
+ * - si son de alta calidad, el equivalente puede alcanzar el máximo con 8-9.
+ * - si son excelentes, puede alcanzarse con 5-6.
  * ========================================================= */
 
 function exp_factor_posicion_autor_1a(string $posicion, bool $ordenAlfabetico = false): float
@@ -113,12 +116,12 @@ function exp_factor_posicion_autor_1a(string $posicion, bool $ordenAlfabetico = 
 
     return match (mb_strtolower(trim($posicion), 'UTF-8')) {
         'autor_unico', 'unico' => 1.08,
-        'primero' => 1.03,
-        'ultimo' => 1.03,
-        'correspondencia' => 1.03,
-        'intermedio' => 0.85,
-        'secundario' => 0.72,
-        default => 0.85,
+        'primero' => 1.05,
+        'ultimo' => 1.05,
+        'correspondencia' => 1.05,
+        'intermedio' => 0.95,
+        'secundario' => 0.88,
+        default => 0.95,
     };
 }
 
@@ -127,12 +130,12 @@ function exp_factor_coautoria_1a(int $numeroAutores): float
     $n = max(1, $numeroAutores);
 
     return match (true) {
-        $n <= 2 => 1.03,
-        $n <= 4 => 0.95,
-        $n <= 6 => 0.85,
-        $n <= 10 => 0.72,
-        $n <= 20 => 0.58,
-        default => 0.45,
+        $n <= 2 => 1.05,
+        $n <= 4 => 1.00,
+        $n <= 6 => 0.95,
+        $n <= 10 => 0.90,
+        $n <= 20 => 0.82,
+        default => 0.72,
     };
 }
 
@@ -146,45 +149,65 @@ function exp_factor_citas_1a(int $citas, int $anios): float
     }
 
     return match (true) {
-        $c <= 1 => 0.95,
+        $c <= 1 => 0.97,
         $c <= 5 => 1.00,
         $c <= 15 => 1.03,
-        $c <= 40 => 1.08,
-        default => 1.12,
+        $c <= 40 => 1.06,
+        default => 1.10,
     };
 }
 
-function exp_base_publicacion_1a(array $pub): float
+function exp_es_publicacion_excelente_1a(array $pub): bool
+{
+    $tercil = strtoupper(exp_str($pub['tercil'] ?? ''));
+    $cuartil = strtoupper(exp_str($pub['cuartil'] ?? ''));
+    $numAutores = exp_to_int($pub['numero_autores'] ?? 1, 1);
+    $citas = exp_to_int($pub['citas'] ?? 0, 0);
+    $posicion = mb_strtolower(exp_str($pub['posicion_autor'] ?? ''), 'UTF-8');
+
+    $esTop = ($tercil === 'T1' || $cuartil === 'Q1');
+    $posicionRelevante = in_array($posicion, ['autor_unico', 'unico', 'primero', 'ultimo', 'correspondencia'], true);
+
+    return $esTop && $numAutores <= 5 && ($posicionRelevante || $citas >= 10);
+}
+
+function exp_unidades_publicacion_1a(array $pub): float
 {
     $tercil = strtoupper(exp_str($pub['tercil'] ?? ''));
     $cuartil = strtoupper(exp_str($pub['cuartil'] ?? ''));
     $tipoIndice = strtoupper(exp_str($pub['tipo_indice'] ?? ''));
 
-    if ($tercil === 'T1') {
-        return 3.60;
-    }
-    if ($tercil === 'T2') {
-        return 2.00;
-    }
-    if ($tercil === 'T3') {
-        return 0.90;
-    }
-
-    if ($cuartil === 'Q1') {
-        return 3.40;
-    }
-    if ($cuartil === 'Q2') {
-        return 1.90;
-    }
-    if ($cuartil === 'Q3' || $cuartil === 'Q4') {
-        return 0.80;
+    $base = 0.0;
+    if (exp_es_publicacion_excelente_1a($pub)) {
+        $base = 2.20;
+    } elseif ($tercil === 'T1' || $cuartil === 'Q1') {
+        $base = 1.40;
+    } elseif ($tercil === 'T2' || $cuartil === 'Q2') {
+        $base = 1.00;
+    } elseif ($tercil === 'T3' || $cuartil === 'Q3' || $cuartil === 'Q4') {
+        $base = 0.75;
+    } elseif ($tipoIndice === 'JCR' || $tipoIndice === 'SCOPUS' || $tipoIndice === 'SJR') {
+        $base = 0.60;
     }
 
-    if ($tipoIndice === 'JCR' || $tipoIndice === 'SCOPUS' || $tipoIndice === 'SJR') {
-        return 0.70;
+    if ($base <= 0.0) {
+        return 0.0;
     }
 
-    return 0.0;
+    $ordenAlfabetico = exp_bool($pub['orden_alfabetico'] ?? false);
+    $unidades = $base
+        * exp_factor_posicion_autor_1a(exp_str($pub['posicion_autor'] ?? 'intermedio'), $ordenAlfabetico)
+        * exp_factor_coautoria_1a(exp_to_int($pub['numero_autores'] ?? 1, 1))
+        * exp_factor_citas_1a(
+            exp_to_int($pub['citas'] ?? 0, 0),
+            exp_to_int($pub['anios_desde_publicacion'] ?? 3, 3)
+        );
+
+    if (exp_bool($pub['es_area_matematicas'] ?? false)) {
+        $unidades *= 1.20;
+    }
+
+    return exp_round(min(2.40, $unidades));
 }
 
 function exp_puntuar_item_1a(array $pub): float
@@ -207,34 +230,20 @@ function exp_puntuar_item_1a(array $pub): float
         return 0.0;
     }
 
-    $base = exp_base_publicacion_1a($pub);
-    if ($base <= 0.0) {
-        return 0.0;
-    }
-
-    $ordenAlfabetico = exp_bool($pub['orden_alfabetico'] ?? false);
-    $p = $base
-        * exp_factor_posicion_autor_1a(exp_str($pub['posicion_autor'] ?? 'intermedio'), $ordenAlfabetico)
-        * exp_factor_coautoria_1a(exp_to_int($pub['numero_autores'] ?? 1, 1))
-        * exp_factor_citas_1a(
-            exp_to_int($pub['citas'] ?? 0, 0),
-            exp_to_int($pub['anios_desde_publicacion'] ?? 3, 3)
-        );
-
-    if (exp_bool($pub['es_area_matematicas'] ?? false)) {
-        $p *= 1.20;
-    }
-
-    return exp_round($p);
+    return exp_unidades_publicacion_1a($pub);
 }
 
 function calcular_1a_experimentales(array $publicaciones): float
 {
-    $total = 0.0;
+    $equivalentes = 0.0;
     foreach ($publicaciones as $pub) {
-        $total += exp_puntuar_item_1a($pub);
+        $equivalentes += exp_puntuar_item_1a($pub);
     }
-    return exp_round(exp_clamp($total, 0.0, 35.0));
+
+    // Regla de tres sobre el estándar PCD: 12 publicaciones equivalentes = 35 puntos.
+    $puntuacion = 35.0 * min(1.0, $equivalentes / 12.0);
+
+    return exp_round(exp_clamp($puntuacion, 0.0, 35.0));
 }
 
 /* =========================================================
@@ -292,7 +301,7 @@ function calcular_1b_experimentales(array $items): float
 
 function exp_inferir_rol_real_proyecto_1c(array $item): string
 {
-    $rolExtraido = mb_strtolower(exp_str($item['rol'] ?? 'investigador'), 'UTF-8');
+    $rolExtraido = mb_strtolower(exp_str($item['rol'] ?? 'participante'), 'UTF-8');
     $texto = exp_text($item);
 
     if (exp_contains_any($texto, [
@@ -303,57 +312,25 @@ function exp_inferir_rol_real_proyecto_1c(array $item): string
         return 'ip';
     }
 
-    if (exp_contains_any($texto, [
-        'coip',
-        'co-ip',
-        'co ip',
-    ])) {
+    if (exp_contains_any($texto, ['coip', 'co-ip', 'co ip'])) {
         return 'coip';
     }
 
-    if (exp_contains_any($texto, [
-        'equipo de trabajo',
-        'colaborador',
-        'investigador colaborador',
-        'miembro del equipo de trabajo',
-    ])) {
-        return 'investigador';
-    }
-
-    if (exp_contains_any($texto, [
-        'contrato laboral',
-        'investigador doctor contratado',
-        'contratado por',
-        'vinculado al proyecto a través de un contrato laboral',
-    ])) {
-        return 'contrato_laboral';
-    }
-
-    if ($rolExtraido === 'ip' || $rolExtraido === 'coip') {
+    if (in_array($rolExtraido, ['ip', 'coip'], true)) {
         return $rolExtraido;
     }
 
-    return 'investigador';
+    return 'participante';
 }
 
 function exp_es_proyecto_elegible_1c(array $item): bool
 {
-    $texto = exp_text($item);
-
     if (!exp_bool($item['esta_certificado'] ?? true, true)) {
         return false;
     }
 
-    if (exp_contains_any($texto, [
-        'contrato laboral',
-        'investigador doctor contratado',
-        'contratado por la upct',
-        'vinculado al proyecto a través de un contrato laboral',
-    ])) {
-        return false;
-    }
-
-    return true;
+    $tipo = mb_strtolower(exp_str($item['tipo_proyecto'] ?? ''), 'UTF-8');
+    return in_array($tipo, ['europeo', 'nacional', 'autonomico', 'otro_competitivo', 'art83_conocimiento'], true);
 }
 
 function exp_puntuar_item_1c(array $item): float
@@ -372,48 +349,38 @@ function exp_puntuar_item_1c(array $item): float
     $rol  = exp_inferir_rol_real_proyecto_1c($item);
     $anios = exp_to_float($item['anios_duracion'] ?? 0, 0);
 
-    if ($rol === 'contrato_laboral') {
-        return 0.0;
-    }
-
-    $p = 0.0;
-
-    if ($tipo === 'europeo') {
-        $p = match ($rol) {
+    $p = match ($tipo) {
+        'europeo' => match ($rol) {
             'ip' => 4.80,
-            'coip' => 4.00,
-            default => 1.00,
-        };
-    } elseif ($tipo === 'nacional') {
-        $p = match ($rol) {
+            'coip' => 4.10,
+            default => 0.90,
+        },
+        'nacional' => match ($rol) {
             'ip' => 4.20,
-            'coip' => 3.50,
-            default => 0.80,
-        };
-    } elseif ($tipo === 'autonomico') {
-        $p = match ($rol) {
+            'coip' => 3.60,
+            default => 0.60,
+        },
+        'autonomico' => match ($rol) {
             'ip' => 2.20,
             'coip' => 1.80,
-            default => 0.60,
-        };
-    } elseif ($tipo === 'otro_competitivo') {
-        $p = match ($rol) {
-            'ip' => 1.20,
-            'coip' => 1.00,
             default => 0.40,
-        };
-    } elseif ($tipo === 'art83_conocimiento') {
-        $p = match ($rol) {
+        },
+        'art83_conocimiento' => match ($rol) {
             'ip' => 1.00,
             'coip' => 0.80,
-            default => 0.40,
-        };
-    }
+            default => 0.35,
+        },
+        default => match ($rol) {
+            'ip' => 1.20,
+            'coip' => 1.00,
+            default => 0.25,
+        },
+    };
 
     if ($anios >= 3.0) {
         $p *= 1.05;
     } elseif ($anios > 0 && $anios < 1.0) {
-        $p *= 0.75;
+        $p *= 0.85;
     }
 
     return exp_round($p);
