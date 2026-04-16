@@ -1,7 +1,7 @@
 /* Contenedor principal del formulario */
 .formulario {
     width: 40%;
-    margin: 100px auto 0 auto;
+    margin: 150px auto 0 auto;
     background-color: rgba(20, 88, 204, 0.4);
     border-radius: 20px;
     display: flex;
@@ -10,6 +10,26 @@
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
+}
+
+
+.container{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+
+.dashboard {
+    display: flex;
+    flex-direction: column;
+    width: 60%;
+    height: 100vh;
+    
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: fixed;
 }
 
 
