@@ -767,6 +767,313 @@ function calcular_4_csyj(array $otros): float
 }
 
 /* =========================================================
+ * DIAGNÓSTICO Y ASESOR ORIENTATIVO
+ * ========================================================= */
+function csyj_round(float $value): float
+{
+    return round($value, 2);
+}
+
+function csyj_count_valid(array $items): int
+{
+    $count = 0;
+    foreach ($items as $item) {
+        if (!is_array($item)) {
+            continue;
+        }
+        $esValida = $item['es_valida'] ?? $item['es_valido'] ?? 1;
+        if ((string)$esValida === '0') {
+            continue;
+        }
+        $count++;
+    }
+    return $count;
+}
+
+function csyj_objetivos_orientativos(): array
+{
+    return [
+        'B1' => 32.0,
+        'B2' => 15.0,
+        'B3' => 3.0,
+        'B4' => 1.0,
+
+        '1A' => 20.0,
+        '1B' => 4.0,
+        '1C' => 2.5,
+        '1D' => 1.0,
+        '1E' => 1.5,
+        '1F' => 2.0,
+        '1G' => 0.8,
+
+        '2A' => 12.0,
+        '2B' => 1.0,
+        '2C' => 0.8,
+        '2D' => 1.5,
+
+        '3A' => 2.0,
+        '3B' => 1.0,
+
+        'TOTAL_B1_B2' => 50.0,
+        'TOTAL_FINAL' => 55.0,
+    ];
+}
+
+function csyj_clasificar_nivel(float $actual, float $objetivo): string
+{
+    if ($objetivo <= 0.0) {
+        return 'sin referencia';
+    }
+
+    $ratio = $actual / $objetivo;
+
+    return match (true) {
+        $ratio >= 1.20 => 'muy fuerte',
+        $ratio >= 1.00 => 'fuerte',
+        $ratio >= 0.70 => 'aceptable',
+        $ratio >= 0.40 => 'débil',
+        default => 'muy débil',
+    };
+}
+
+function csyj_detectar_perfil(array $resultado): string
+{
+    $b1 = (float)($resultado['bloque_1'] ?? 0.0);
+    $b2 = (float)($resultado['bloque_2'] ?? 0.0);
+    $b3 = (float)($resultado['bloque_3'] ?? 0.0);
+    $b4 = (float)($resultado['bloque_4'] ?? 0.0);
+    $total12 = (float)($resultado['total_b1_b2'] ?? 0.0);
+    $total = (float)($resultado['total_final'] ?? 0.0);
+
+    if ($b1 >= 35.0 && $b2 < 10.0) {
+        return 'Perfil investigador fuerte con docencia insuficiente';
+    }
+
+    if ($b2 >= 15.0 && $b1 < 28.0) {
+        return 'Perfil docente razonable con investigación insuficiente';
+    }
+
+    if ($b1 >= 30.0 && $b2 >= 12.0 && $total12 >= 50.0 && $total >= 55.0) {
+        return 'Perfil equilibrado y competitivo para acreditación en CSYJ';
+    }
+
+    if ($b1 >= 24.0 && (float)($resultado['puntuacion_1c'] ?? 0.0) < 2.0) {
+        return 'Perfil investigador con proyectos competitivos todavía escasos';
+    }
+
+    if ($b1 < 20.0 && $b2 < 10.0) {
+        return 'Perfil aún inmaduro para acreditación en Ciencias Sociales y Jurídicas';
+    }
+
+    if (($b3 + $b4) >= 4.0 && $total12 < 50.0) {
+        return 'Perfil con méritos complementarios aceptables, pero núcleo B1+B2 insuficiente';
+    }
+
+    return 'Perfil mixto con fortalezas parciales y necesidad de refuerzo estratégico';
+}
+
+function csyj_generar_diagnostico(array $datos, array $resultado): array
+{
+    $obj = csyj_objetivos_orientativos();
+
+    $b1 = (float)($resultado['bloque_1'] ?? 0.0);
+    $b2 = (float)($resultado['bloque_2'] ?? 0.0);
+    $b3 = (float)($resultado['bloque_3'] ?? 0.0);
+    $b4 = (float)($resultado['bloque_4'] ?? 0.0);
+    $total12 = (float)($resultado['total_b1_b2'] ?? 0.0);
+    $total = (float)($resultado['total_final'] ?? 0.0);
+
+    $deficit1 = max(0.0, 50.0 - $total12);
+    $deficit2 = max(0.0, 55.0 - $total);
+
+    $fortalezas = [];
+    $debilidades = [];
+    $alertas = [];
+
+    if ((float)($resultado['puntuacion_1a'] ?? 0.0) >= $obj['1A']) {
+        $fortalezas[] = 'La producción científica principal (1A) presenta un peso competitivo.';
+    } else {
+        $debilidades[] = 'La producción científica principal (1A) aún necesita refuerzo.';
+    }
+
+    if ((float)($resultado['puntuacion_2a'] ?? 0.0) >= $obj['2A']) {
+        $fortalezas[] = 'La docencia universitaria acreditable alcanza un nivel razonable.';
+    } else {
+        $debilidades[] = 'La docencia universitaria acreditable (2A) es insuficiente para consolidar el bloque docente.';
+    }
+
+    if ((float)($resultado['puntuacion_1c'] ?? 0.0) >= $obj['1C']) {
+        $fortalezas[] = 'Existe respaldo aceptable en proyectos competitivos.';
+    } else {
+        $debilidades[] = 'Conviene reforzar proyectos competitivos y participación certificada.';
+    }
+
+    if ((float)($resultado['puntuacion_2b'] ?? 0.0) <= 0.0) {
+        $alertas[] = 'No consta evaluación docente formal relevante.';
+    }
+
+    if ((float)($resultado['puntuacion_2d'] ?? 0.0) < $obj['2D']) {
+        $alertas[] = 'La innovación o el material docente aportan poco al bloque 2.';
+    }
+
+    if ((float)($resultado['puntuacion_1f'] ?? 0.0) < 1.0) {
+        $alertas[] = 'La visibilidad en congresos, seminarios o foros científicos aún es reducida.';
+    }
+
+    if ($deficit1 > 0.0) {
+        $alertas[] = 'No se cumple la regla principal B1 + B2 ≥ 50.';
+    }
+
+    if ($deficit2 > 0.0) {
+        $alertas[] = 'No se cumple la regla total ≥ 55.';
+    }
+
+    return [
+        'version' => 'conservadora_csyj_v2_diagnostico_asesor',
+        'perfil_detectado' => csyj_detectar_perfil($resultado),
+        'reglas' => [
+            [
+                'nombre' => 'Regla principal B1 + B2 ≥ 50',
+                'valor_actual' => csyj_round($total12),
+                'objetivo' => 50.0,
+                'deficit' => csyj_round($deficit1),
+                'cumple' => (bool)($resultado['cumple_regla_1'] ?? false),
+            ],
+            [
+                'nombre' => 'Regla total final ≥ 55',
+                'valor_actual' => csyj_round($total),
+                'objetivo' => 55.0,
+                'deficit' => csyj_round($deficit2),
+                'cumple' => (bool)($resultado['cumple_regla_2'] ?? false),
+            ],
+        ],
+        'bloques' => [
+            'B1' => [
+                'actual' => csyj_round($b1),
+                'objetivo_orientativo' => $obj['B1'],
+                'deficit' => csyj_round(max(0.0, $obj['B1'] - $b1)),
+                'nivel' => csyj_clasificar_nivel($b1, $obj['B1']),
+            ],
+            'B2' => [
+                'actual' => csyj_round($b2),
+                'objetivo_orientativo' => $obj['B2'],
+                'deficit' => csyj_round(max(0.0, $obj['B2'] - $b2)),
+                'nivel' => csyj_clasificar_nivel($b2, $obj['B2']),
+            ],
+            'B3' => [
+                'actual' => csyj_round($b3),
+                'objetivo_orientativo' => $obj['B3'],
+                'deficit' => csyj_round(max(0.0, $obj['B3'] - $b3)),
+                'nivel' => csyj_clasificar_nivel($b3, $obj['B3']),
+            ],
+            'B4' => [
+                'actual' => csyj_round($b4),
+                'objetivo_orientativo' => $obj['B4'],
+                'deficit' => csyj_round(max(0.0, $obj['B4'] - $b4)),
+                'nivel' => csyj_clasificar_nivel($b4, $obj['B4']),
+            ],
+        ],
+        'conteos' => [
+            'publicaciones' => csyj_count_valid(csyj_get_lista(csyj_get_bloque($datos, 'bloque_1'), 'publicaciones')),
+            'libros' => csyj_count_valid(csyj_get_lista(csyj_get_bloque($datos, 'bloque_1'), 'libros')),
+            'proyectos' => csyj_count_valid(csyj_get_lista(csyj_get_bloque($datos, 'bloque_1'), 'proyectos')),
+            'transferencia' => csyj_count_valid(csyj_get_lista(csyj_get_bloque($datos, 'bloque_1'), 'transferencia')),
+            'tesis' => csyj_count_valid(csyj_get_lista(csyj_get_bloque($datos, 'bloque_1'), 'tesis_dirigidas')),
+            'congresos' => csyj_count_valid(csyj_get_lista(csyj_get_bloque($datos, 'bloque_1'), 'congresos')),
+            'docencia' => csyj_count_valid(csyj_get_lista(csyj_get_bloque($datos, 'bloque_2'), 'docencia_universitaria')),
+            'evaluacion_docente' => csyj_count_valid(csyj_get_lista(csyj_get_bloque($datos, 'bloque_2'), 'evaluacion_docente')),
+            'formacion_docente' => csyj_count_valid(csyj_get_lista(csyj_get_bloque($datos, 'bloque_2'), 'formacion_docente')),
+        ],
+        'fortalezas' => array_values(array_unique($fortalezas)),
+        'debilidades' => array_values(array_unique($debilidades)),
+        'alertas' => array_values(array_unique($alertas)),
+    ];
+}
+
+function csyj_generar_asesor(array $resultado): array
+{
+    $acciones = [];
+
+    $p1a = (float)($resultado['puntuacion_1a'] ?? 0.0);
+    $p1c = (float)($resultado['puntuacion_1c'] ?? 0.0);
+    $p2a = (float)($resultado['puntuacion_2a'] ?? 0.0);
+    $p2b = (float)($resultado['puntuacion_2b'] ?? 0.0);
+    $p2d = (float)($resultado['puntuacion_2d'] ?? 0.0);
+    $total12 = (float)($resultado['total_b1_b2'] ?? 0.0);
+    $total = (float)($resultado['total_final'] ?? 0.0);
+
+    if ($p1a < 20.0) {
+        $acciones[] = [
+            'titulo' => 'Reforzar publicaciones indexadas de impacto',
+            'detalle' => 'Prioriza artículos alineados con el área, mejor posicionados por índice y cuartil, y con autoría relevante.',
+            'impacto_estimado' => '+2 a +6 puntos en 1A a medio plazo',
+        ];
+    }
+
+    if ($p1c < 2.5) {
+        $acciones[] = [
+            'titulo' => 'Aumentar participación en proyectos competitivos',
+            'detalle' => 'Intenta consolidar participación documentada en proyectos nacionales o internacionales y reflejar rol y duración.',
+            'impacto_estimado' => '+1 a +3 puntos en 1C',
+        ];
+    }
+
+    if ($p2a < 12.0) {
+        $acciones[] = [
+            'titulo' => 'Elevar el volumen de docencia universitaria acreditable',
+            'detalle' => 'Conviene incrementar horas, cursos o diversidad de asignaturas con certificación oficial.',
+            'impacto_estimado' => '+2 a +5 puntos en 2A',
+        ];
+    }
+
+    if ($p2b <= 0.0) {
+        $acciones[] = [
+            'titulo' => 'Incorporar evaluaciones docentes positivas',
+            'detalle' => 'Aporta encuestas, DOCENTIA u otros indicadores institucionales de calidad docente siempre que estén certificados.',
+            'impacto_estimado' => '+0,5 a +2 puntos en 2B',
+        ];
+    }
+
+    if ($p2d < 1.5) {
+        $acciones[] = [
+            'titulo' => 'Mejorar material docente e innovación educativa',
+            'detalle' => 'Refuerza publicaciones docentes, manuales, coordinación de innovación o aportaciones al EEES.',
+            'impacto_estimado' => '+1 a +3 puntos en 2D',
+        ];
+    }
+
+    if ($acciones === []) {
+        $acciones[] = [
+            'titulo' => 'Mantener consolidación del perfil',
+            'detalle' => 'El expediente ya muestra una base competitiva; conviene sostener producción y estabilidad docente.',
+            'impacto_estimado' => 'Mejora incremental y consolidación del perfil',
+        ];
+    }
+
+    $simulaciones = [
+        [
+            'escenario' => 'Añadir una mejora docente moderada',
+            'efecto_estimado' => 'Suponiendo un refuerzo de +2 en docencia universitaria y +1 en evaluación/material docente.',
+            'nuevo_b1_b2_aprox' => csyj_round($total12 + 3.0),
+            'nuevo_total_aprox' => csyj_round($total + 3.0),
+        ],
+        [
+            'escenario' => 'Añadir una mejora investigadora moderada',
+            'efecto_estimado' => 'Suponiendo +3 en publicaciones/proyectos del bloque investigador.',
+            'nuevo_b1_b2_aprox' => csyj_round($total12 + 3.0),
+            'nuevo_total_aprox' => csyj_round($total + 3.0),
+        ],
+    ];
+
+    return [
+        'version' => 'asesor_orientativo_csyj_v2',
+        'resumen' => 'El asesor orientativo propone refuerzos priorizando el cierre de déficits en publicaciones, proyectos y docencia acreditable para acercar el expediente a los umbrales de 50 y 55 puntos.',
+        'acciones' => $acciones,
+        'simulaciones' => $simulaciones,
+    ];
+}
+
+/* =========================================================
  * FUNCIÓN PRINCIPAL
  * ========================================================= */
 function evaluar_expediente_csyj(array $json): array
@@ -776,67 +1083,102 @@ function evaluar_expediente_csyj(array $json): array
     $bloque3 = csyj_get_bloque($json, 'bloque_3');
     $bloque4 = $json['bloque_4'] ?? [];
 
-    $p1a = calcular_1a_csyj(csyj_get_lista($bloque1, 'publicaciones'));
-    $p1b = calcular_1b_csyj(csyj_get_lista($bloque1, 'libros'));
-    $p1c = calcular_1c_csyj(csyj_get_lista($bloque1, 'proyectos'));
-    $p1d = calcular_1d_csyj(csyj_get_lista($bloque1, 'transferencia'));
-    $p1e = calcular_1e_csyj(csyj_get_lista($bloque1, 'tesis_dirigidas'));
-    $p1f = calcular_1f_csyj(csyj_get_lista($bloque1, 'congresos'));
-    $p1g = calcular_1g_csyj(csyj_get_lista($bloque1, 'otros_meritos_investigacion'));
-    $b1 = round($p1a + $p1b + $p1c + $p1d + $p1e + $p1f + $p1g, 2);
-    $b1 = csyj_clamp($b1, 0.0, 60.0);
+    $p1a = csyj_round(calcular_1a_csyj(csyj_get_lista($bloque1, 'publicaciones')));
+    $p1b = csyj_round(calcular_1b_csyj(csyj_get_lista($bloque1, 'libros')));
+    $p1c = csyj_round(calcular_1c_csyj(csyj_get_lista($bloque1, 'proyectos')));
+    $p1d = csyj_round(calcular_1d_csyj(csyj_get_lista($bloque1, 'transferencia')));
+    $p1e = csyj_round(calcular_1e_csyj(csyj_get_lista($bloque1, 'tesis_dirigidas')));
+    $p1f = csyj_round(calcular_1f_csyj(csyj_get_lista($bloque1, 'congresos')));
+    $p1g = csyj_round(calcular_1g_csyj(csyj_get_lista($bloque1, 'otros_meritos_investigacion')));
+    $b1 = csyj_round(csyj_clamp($p1a + $p1b + $p1c + $p1d + $p1e + $p1f + $p1g, 0.0, 60.0));
 
-    $p2a = calcular_2a_csyj(csyj_get_lista($bloque2, 'docencia_universitaria'));
-    $p2b = calcular_2b_csyj(csyj_get_lista($bloque2, 'evaluacion_docente'));
-    $p2c = calcular_2c_csyj(csyj_get_lista($bloque2, 'formacion_docente'));
-    $p2d = calcular_2d_csyj(csyj_get_lista($bloque2, 'material_docente'));
-    $b2 = round($p2a + $p2b + $p2c + $p2d, 2);
-    $b2 = csyj_clamp($b2, 0.0, 30.0);
+    $p2a = csyj_round(calcular_2a_csyj(csyj_get_lista($bloque2, 'docencia_universitaria')));
+    $p2b = csyj_round(calcular_2b_csyj(csyj_get_lista($bloque2, 'evaluacion_docente')));
+    $p2c = csyj_round(calcular_2c_csyj(csyj_get_lista($bloque2, 'formacion_docente')));
+    $p2d = csyj_round(calcular_2d_csyj(csyj_get_lista($bloque2, 'material_docente')));
+    $b2 = csyj_round(csyj_clamp($p2a + $p2b + $p2c + $p2d, 0.0, 30.0));
 
-    $p3a = calcular_3a_csyj(csyj_get_lista($bloque3, 'formacion_academica'));
-    $p3b = calcular_3b_csyj(csyj_get_lista($bloque3, 'experiencia_profesional'));
-    $b3 = round($p3a + $p3b, 2);
-    $b3 = csyj_clamp($b3, 0.0, 8.0);
+    $p3a = csyj_round(calcular_3a_csyj(csyj_get_lista($bloque3, 'formacion_academica')));
+    $p3b = csyj_round(calcular_3b_csyj(csyj_get_lista($bloque3, 'experiencia_profesional')));
+    $b3 = csyj_round(csyj_clamp($p3a + $p3b, 0.0, 8.0));
 
-    $p4 = calcular_4_csyj(is_array($bloque4) ? $bloque4 : []);
-    $b4 = csyj_clamp($p4, 0.0, 2.0);
+    $p4 = csyj_round(calcular_4_csyj(is_array($bloque4) ? $bloque4 : []));
+    $b4 = csyj_round(csyj_clamp($p4, 0.0, 2.0));
 
-    $totalB1B2 = round($b1 + $b2, 2);
-    $totalFinal = round($b1 + $b2 + $b3 + $b4, 2);
+    $totalB1B2 = csyj_round($b1 + $b2);
+    $totalFinal = csyj_round($b1 + $b2 + $b3 + $b4);
 
     $cumple1 = $totalB1B2 >= 50.0;
     $cumple2 = $totalFinal >= 55.0;
-    $resultado = ($cumple1 && $cumple2) ? 'POSITIVA' : 'NEGATIVA';
+    $resultadoTexto = ($cumple1 && $cumple2) ? 'POSITIVA' : 'NEGATIVA';
 
-    return [
-        'puntuacion_1a' => round($p1a, 2),
-        'puntuacion_1b' => round($p1b, 2),
-        'puntuacion_1c' => round($p1c, 2),
-        'puntuacion_1d' => round($p1d, 2),
-        'puntuacion_1e' => round($p1e, 2),
-        'puntuacion_1f' => round($p1f, 2),
-        'puntuacion_1g' => round($p1g, 2),
-        'bloque_1' => round($b1, 2),
+    $resultado = [
+        'puntuacion_1a' => $p1a,
+        'puntuacion_1b' => $p1b,
+        'puntuacion_1c' => $p1c,
+        'puntuacion_1d' => $p1d,
+        'puntuacion_1e' => $p1e,
+        'puntuacion_1f' => $p1f,
+        'puntuacion_1g' => $p1g,
+        'bloque_1' => $b1,
 
-        'puntuacion_2a' => round($p2a, 2),
-        'puntuacion_2b' => round($p2b, 2),
-        'puntuacion_2c' => round($p2c, 2),
-        'puntuacion_2d' => round($p2d, 2),
-        'bloque_2' => round($b2, 2),
+        'puntuacion_2a' => $p2a,
+        'puntuacion_2b' => $p2b,
+        'puntuacion_2c' => $p2c,
+        'puntuacion_2d' => $p2d,
+        'bloque_2' => $b2,
 
-        'puntuacion_3a' => round($p3a, 2),
-        'puntuacion_3b' => round($p3b, 2),
-        'bloque_3' => round($b3, 2),
+        'puntuacion_3a' => $p3a,
+        'puntuacion_3b' => $p3b,
+        'bloque_3' => $b3,
 
-        'bloque_4' => round($b4, 2),
+        'puntuacion_4' => $p4,
+        'bloque_4' => $b4,
 
-        'total_b1_b2' => round($totalB1B2, 2),
-        'total_final' => round($totalFinal, 2),
+        'total_b1_b2' => $totalB1B2,
+        'total_final' => $totalFinal,
 
         'cumple_regla_1' => $cumple1 ? 1 : 0,
         'cumple_regla_2' => $cumple2 ? 1 : 0,
-        'resultado' => $resultado,
+        'resultado' => $resultadoTexto,
+
+        'puntuaciones' => [
+            '1A' => $p1a,
+            '1B' => $p1b,
+            '1C' => $p1c,
+            '1D' => $p1d,
+            '1E' => $p1e,
+            '1F' => $p1f,
+            '1G' => $p1g,
+            '2A' => $p2a,
+            '2B' => $p2b,
+            '2C' => $p2c,
+            '2D' => $p2d,
+            '3A' => $p3a,
+            '3B' => $p3b,
+            '4' => $p4,
+        ],
+        'totales' => [
+            'bloque_1' => $b1,
+            'bloque_2' => $b2,
+            'bloque_3' => $b3,
+            'bloque_4' => $b4,
+            'total_b1_b2' => $totalB1B2,
+            'total_final' => $totalFinal,
+            'global' => $totalFinal,
+        ],
+        'decision' => [
+            'cumple_regla_1' => $cumple1,
+            'cumple_regla_2' => $cumple2,
+            'evaluacion_positiva' => $cumple1 && $cumple2,
+            'resultado' => $resultadoTexto,
+        ],
     ];
+
+    $resultado['diagnostico'] = csyj_generar_diagnostico($json, $resultado);
+    $resultado['asesor'] = csyj_generar_asesor($resultado);
+
+    return $resultado;
 }
 
 /**
