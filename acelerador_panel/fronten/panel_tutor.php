@@ -45,6 +45,11 @@ if ($query_perfil && mysqli_num_rows($query_perfil) > 0) {
   $telefono = htmlspecialchars($datos_perfil['telefono'] ?? '');
   $facultad = htmlspecialchars($datos_perfil['facultad'] ?? '');
   $rama = htmlspecialchars($datos_perfil['rama'] ?? '');
+
+  // ── Propagar a sesión para que los evaluadores conozcan ORCID y rama ──
+  $_SESSION['orcid_usuario'] = $datos_perfil['orcid'] ?? '';
+  $_SESSION['rama_usuario']  = $datos_perfil['rama']  ?? '';
+
 } else {
   $nombre = 'No registrado';
   $apellidos = 'No registrado';
@@ -56,6 +61,32 @@ if ($query_perfil && mysqli_num_rows($query_perfil) > 0) {
   $facultad = 'No registrado';
   $rama = 'No registrado';
 }
+
+// ── Dashboard: id del tutor desde su correo de sesión ──────────────────
+$correoRaw = $_SESSION['nombredelusuario'];
+
+$resId = mysqli_query($conn, "SELECT id_profesor FROM tbl_profesor WHERE correo = '" . mysqli_real_escape_string($conn, $correoRaw) . "' AND perfil = 'TUTOR' LIMIT 1");
+$rowId  = $resId ? mysqli_fetch_assoc($resId) : null;
+$idTutor = $rowId ? (int)$rowId['id_profesor'] : 0;
+
+// Grupos del tutor
+$resGrupos = mysqli_query($conn, "SELECT id_grupo, nombre FROM tbl_grupo WHERE id_tutor = $idTutor ORDER BY nombre");
+$grupos = [];
+if ($resGrupos) { while ($g = mysqli_fetch_assoc($resGrupos)) $grupos[] = $g; }
+$totalGrupos = count($grupos);
+
+// Profesores asignados al tutor a través de sus grupos
+$resProfesores = mysqli_query($conn,
+  "SELECT DISTINCT p.id_profesor, p.nombre, p.apellidos, p.correo, p.departamento, p.facultad, p.rama, g.nombre AS grupo
+   FROM tbl_grupo g
+   INNER JOIN tbl_grupo_profesor gp ON gp.id_grupo = g.id_grupo
+   INNER JOIN tbl_profesor p ON p.id_profesor = gp.id_profesor
+   WHERE g.id_tutor = $idTutor AND p.perfil = 'PROFESOR'
+   ORDER BY p.apellidos, p.nombre"
+);
+$profesores = [];
+if ($resProfesores) { while ($p = mysqli_fetch_assoc($resProfesores)) $profesores[] = $p; }
+$totalProfesores = count($profesores);
 ?>
 
 <!doctype html>
@@ -228,8 +259,105 @@ if ($query_perfil && mysqli_num_rows($query_perfil) > 0) {
 
       </div>
 
-      <div class="dashboard">
-        <?php include '../../proyecto_tutor_experimentales/tutor.php'; ?>
+      <!-- ════════════════════════════════════════════════════════
+           DASHBOARD TUTOR — Grupos y profesores asignados
+      ════════════════════════════════════════════════════════ -->
+      <div class="dashboard mt-5">
+
+        <!-- Tarjetas de estadísticas -->
+        <div class="row g-3 mb-4">
+          <div class="col-md-4">
+            <div class="dashboard-stat-card">
+              <div class="stat-label"><i class="bi bi-collection me-1"></i> Grupos asignados</div>
+              <div class="stat-value"><?= $totalGrupos ?></div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="dashboard-stat-card">
+              <div class="stat-label"><i class="bi bi-person-workspace me-1"></i> Profesores tutorizados</div>
+              <div class="stat-value"><?= $totalProfesores ?></div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="dashboard-stat-card">
+              <div class="stat-label"><i class="bi bi-envelope me-1"></i> Correo del tutor</div>
+              <div class="stat-value stat-email"><?= htmlspecialchars($correo) ?></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Resumen del tutor -->
+        <div class="dashboard-info-card mb-4">
+          <h2 class="dashboard-section-title"><i class="bi bi-info-circle me-2"></i>Resumen del tutor</h2>
+          <div class="row g-3">
+            <div class="col-sm-4">
+              <div class="mini-info-box">
+                <div class="mini-info-label">Facultad</div>
+                <div class="mini-info-value"><?= htmlspecialchars($facultad) ?></div>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="mini-info-box">
+                <div class="mini-info-label">Departamento</div>
+                <div class="mini-info-value"><?= htmlspecialchars($departamento) ?></div>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="mini-info-box">
+                <div class="mini-info-label">Rama</div>
+                <div class="mini-info-value"><?= htmlspecialchars($rama) ?></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tarjetas de profesores -->
+        <?php if ($totalProfesores > 0): ?>
+        <h2 class="dashboard-section-title mb-3"><i class="bi bi-people-fill me-2"></i>Mis profesores</h2>
+        <div class="row g-3">
+          <?php foreach ($profesores as $prof): ?>
+            <div class="col-md-6 col-xl-4">
+              <div class="prof-panel-card">
+                <div class="prof-panel-name">
+                  <?= htmlspecialchars($prof['nombre'] . ' ' . $prof['apellidos']) ?>
+                </div>
+                <div class="prof-panel-grupo">
+                  <i class="bi bi-collection me-1"></i>Grupo: <strong><?= htmlspecialchars($prof['grupo']) ?></strong>
+                </div>
+                <div class="row g-2 mb-3">
+                  <div class="col-6">
+                    <div class="mini-prof-box">
+                      <div class="mini-prof-label">Departamento</div>
+                      <div class="mini-prof-value"><?= htmlspecialchars($prof['departamento']) ?></div>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="mini-prof-box">
+                      <div class="mini-prof-label">Rama</div>
+                      <div class="mini-prof-value"><?= htmlspecialchars($prof['rama']) ?></div>
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <div class="mini-prof-box">
+                      <div class="mini-prof-label"><i class="bi bi-envelope me-1"></i>Correo</div>
+                      <div class="mini-prof-value"><?= htmlspecialchars($prof['correo']) ?></div>
+                    </div>
+                  </div>
+                </div>
+                <a href="../../dashboard_profesor.php?nombre=<?= urlencode($prof['nombre']) ?>"
+                   class="btn btn-sm btn-primary w-100 rounded-pill">
+                  <i class="bi bi-bar-chart-line me-1"></i> Ver dashboard del profesor
+                </a>
+              </div>
+            </div>
+          <?php endforeach; ?>
+        </div>
+        <?php else: ?>
+        <div class="alert alert-info rounded-4">
+          <i class="bi bi-info-circle me-2"></i>No hay profesores asignados a tus grupos todavía.
+        </div>
+        <?php endif; ?>
+
       </div>
 
     </div>

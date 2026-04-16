@@ -45,6 +45,11 @@ if ($query_perfil && mysqli_num_rows($query_perfil) > 0) {
   $telefono = htmlspecialchars($datos_perfil['telefono'] ?? '');
   $facultad = htmlspecialchars($datos_perfil['facultad'] ?? '');
   $rama = htmlspecialchars($datos_perfil['rama'] ?? '');
+
+  // ── Propagar a sesión para que los evaluadores conozcan ORCID y rama ──
+  $_SESSION['orcid_usuario'] = $datos_perfil['orcid'] ?? '';
+  $_SESSION['rama_usuario']  = $datos_perfil['rama']  ?? '';
+
 } else {
   $nombre = 'No registrado';
   $apellidos = 'No registrado';
