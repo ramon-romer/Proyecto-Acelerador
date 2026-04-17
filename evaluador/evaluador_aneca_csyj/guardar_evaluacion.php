@@ -8,33 +8,33 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     die('Acceso no permitido.');
 }
 
-$nombre = trim($_POST['nombre_candidato'] ?? '');
+$nombreCandidato = trim($_POST['nombre_candidato'] ?? '');
 $jsonEntradaTexto = trim($_POST['json_entrada'] ?? '');
 
-if ($nombre === '') {
-    die('Falta el nombre del candidato.');
+if ($nombreCandidato === '' || $jsonEntradaTexto === '') {
+    die('Faltan datos obligatorios.');
 }
 
-if ($jsonEntradaTexto === '') {
-    die('Falta el JSON de entrada.');
-}
-
-$jsonEntrada = json_decode($jsonEntradaTexto, true);
-if (!is_array($jsonEntrada)) {
+$datosExtraidos = json_decode($jsonEntradaTexto, true);
+if (!is_array($datosExtraidos)) {
     die('El JSON de entrada no es válido.');
 }
 
-if (!isset($jsonEntrada['bloque_1']) || !is_array($jsonEntrada['bloque_1'])) {
-    $jsonEntrada['bloque_1'] = [];
+$datosExtraidos['nombre_candidato'] = $nombreCandidato;
+$datosExtraidos['area'] = 'Ciencias Sociales y Jurídicas';
+$datosExtraidos['categoria'] = 'PCD/PUP';
+
+if (!isset($datosExtraidos['bloque_1']) || !is_array($datosExtraidos['bloque_1'])) {
+    $datosExtraidos['bloque_1'] = [];
 }
-if (!isset($jsonEntrada['bloque_2']) || !is_array($jsonEntrada['bloque_2'])) {
-    $jsonEntrada['bloque_2'] = [];
+if (!isset($datosExtraidos['bloque_2']) || !is_array($datosExtraidos['bloque_2'])) {
+    $datosExtraidos['bloque_2'] = [];
 }
-if (!isset($jsonEntrada['bloque_3']) || !is_array($jsonEntrada['bloque_3'])) {
-    $jsonEntrada['bloque_3'] = [];
+if (!isset($datosExtraidos['bloque_3']) || !is_array($datosExtraidos['bloque_3'])) {
+    $datosExtraidos['bloque_3'] = [];
 }
-if (!isset($jsonEntrada['bloque_4']) || !is_array($jsonEntrada['bloque_4'])) {
-    $jsonEntrada['bloque_4'] = [];
+if (!isset($datosExtraidos['bloque_4']) || !is_array($datosExtraidos['bloque_4'])) {
+    $datosExtraidos['bloque_4'] = [];
 }
 
 $defaultsBloque1 = [
@@ -46,39 +46,41 @@ $defaultsBloque1 = [
     'congresos',
     'otros_meritos_investigacion',
 ];
-
 $defaultsBloque2 = [
     'docencia_universitaria',
     'evaluacion_docente',
     'formacion_docente',
     'material_docente',
 ];
-
 $defaultsBloque3 = [
     'formacion_academica',
     'experiencia_profesional',
 ];
 
 foreach ($defaultsBloque1 as $key) {
-    if (!isset($jsonEntrada['bloque_1'][$key]) || !is_array($jsonEntrada['bloque_1'][$key])) {
-        $jsonEntrada['bloque_1'][$key] = [];
-    }
+    $datosExtraidos['bloque_1'][$key] = is_array($datosExtraidos['bloque_1'][$key] ?? null) ? $datosExtraidos['bloque_1'][$key] : [];
 }
 foreach ($defaultsBloque2 as $key) {
-    if (!isset($jsonEntrada['bloque_2'][$key]) || !is_array($jsonEntrada['bloque_2'][$key])) {
-        $jsonEntrada['bloque_2'][$key] = [];
-    }
+    $datosExtraidos['bloque_2'][$key] = is_array($datosExtraidos['bloque_2'][$key] ?? null) ? $datosExtraidos['bloque_2'][$key] : [];
 }
 foreach ($defaultsBloque3 as $key) {
-    if (!isset($jsonEntrada['bloque_3'][$key]) || !is_array($jsonEntrada['bloque_3'][$key])) {
-        $jsonEntrada['bloque_3'][$key] = [];
-    }
+    $datosExtraidos['bloque_3'][$key] = is_array($datosExtraidos['bloque_3'][$key] ?? null) ? $datosExtraidos['bloque_3'][$key] : [];
 }
+$datosExtraidos['bloque_4'] = is_array($datosExtraidos['bloque_4']) ? $datosExtraidos['bloque_4'] : [];
 
-$resultado = evaluar_expediente($jsonEntrada);
+$resultado = evaluar_expediente($datosExtraidos);
 
-$jsonNormalizado = json_encode($jsonEntrada, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
-if ($jsonNormalizado === false) {
+$datosExtraidos['resultado_calculo'] = [
+    'puntuaciones' => $resultado['puntuaciones'] ?? [],
+    'totales' => $resultado['totales'] ?? [],
+    'decision' => $resultado['decision'] ?? [],
+    'diagnostico' => $resultado['diagnostico'] ?? [],
+    'asesor' => $resultado['asesor'] ?? [],
+    'puntuacion_4' => $resultado['puntuacion_4'] ?? ($resultado['bloque_4'] ?? 0),
+];
+
+$jsonFinal = json_encode($datosExtraidos, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+if ($jsonFinal === false) {
     die('No se pudo codificar el JSON de entrada.');
 }
 
@@ -139,12 +141,11 @@ $sql = "INSERT INTO evaluaciones (
 )";
 
 $stmt = $pdo->prepare($sql);
-
 $stmt->execute([
-    ':nombre_candidato' => $nombre,
+    ':nombre_candidato' => $nombreCandidato,
     ':area' => 'Ciencias Sociales y Jurídicas',
     ':categoria' => 'PCD/PUP',
-    ':json_entrada' => $jsonNormalizado,
+    ':json_entrada' => $jsonFinal,
 
     ':puntuacion_1a' => $resultado['puntuacion_1a'],
     ':puntuacion_1b' => $resultado['puntuacion_1b'],
@@ -175,6 +176,5 @@ $stmt->execute([
 ]);
 
 $id = (int)$pdo->lastInsertId();
-
 header('Location: ver_evaluacion.php?id=' . $id);
 exit;

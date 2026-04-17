@@ -7,6 +7,8 @@ class OcrProcessor
     private ?string $tessdataPrefix;
     private int $maxOcrPages;
     private int $ocrDpi;
+    private string $ocrLanguage;
+    private string $cacheDir;
 
     public function __construct()
     {
@@ -43,8 +45,16 @@ class OcrProcessor
             ]
         );
 
-        $this->maxOcrPages = $this->readEnvInt('OCR_MAX_PAGES', 120, 1, 2000);
-        $this->ocrDpi = $this->readEnvInt('OCR_DPI', 300, 72, 600);
+        $this->maxOcrPages = $this->readEnvInt('OCR_MAX_PAGES', 25, 1, 2000);
+        $this->ocrDpi = $this->readEnvInt('OCR_DPI', 140, 72, 600);
+
+        $lang = getenv('OCR_LANG');
+        $this->ocrLanguage = (is_string($lang) && trim($lang) !== '') ? trim($lang) : 'spa';
+
+        $cacheFromEnv = getenv('OCR_CACHE_DIR');
+        $this->cacheDir = (is_string($cacheFromEnv) && trim($cacheFromEnv) !== '')
+            ? trim($cacheFromEnv)
+            : sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'aneca_ocr_cache';
     }
 
     public function estaDisponible(): bool
@@ -62,6 +72,8 @@ class OcrProcessor
             'tessdata_prefix' => $this->tessdataPrefix,
             'ocr_max_pages' => $this->maxOcrPages,
             'ocr_dpi' => $this->ocrDpi,
+            'ocr_language' => $this->ocrLanguage,
+            'ocr_cache_dir' => $this->cacheDir,
         ];
     }
 
@@ -84,6 +96,12 @@ class OcrProcessor
             putenv('TESSDATA_PREFIX=' . $this->tessdataPrefix);
         }
 
+        $cacheFile = $this->getCacheFilePath($pdfPath);
+        $cachedText = $this->readCache($cacheFile);
+        if ($cachedText !== null) {
+            return $cachedText;
+        }
+
         $tempDir = $this->createTempDir();
 
         try {
@@ -91,22 +109,28 @@ class OcrProcessor
             $images = $this->convertirPdfAImagenes($pdfPath, $prefix);
 
             if ($images === []) {
-                throw new Exception("No se generaron imagenes para OCR.");
+                throw new Exception("No se generaron imágenes para OCR.");
             }
 
             $textoCompleto = '';
-            $procesadas = 0;
 
             foreach ($images as $img) {
-                if ($procesadas >= $this->maxOcrPages) {
-                    break;
-                }
+                $fragmento = $this->ocrImagen($img);
 
-                $textoCompleto .= $this->ocrImagen($img) . "\n\n";
-                $procesadas++;
+                if (trim($fragmento) !== '') {
+                    $textoCompleto .= $fragmento . "\n\n";
+                }
             }
 
-            return $this->normalizarTexto($textoCompleto);
+            $textoCompleto = $this->normalizarTexto($textoCompleto);
+
+            if ($textoCompleto === '') {
+                throw new Exception("El OCR no devolvió texto útil.");
+            }
+
+            $this->writeCache($cacheFile, $textoCompleto);
+
+            return $textoCompleto;
         } finally {
             $this->deleteDirectoryRecursive($tempDir);
         }
@@ -114,9 +138,16 @@ class OcrProcessor
 
     private function convertirPdfAImagenes(string $pdfPath, string $prefix): array
     {
+        $paginaInicial = 1;
+        $paginaFinal = $this->maxOcrPages;
+
         $cmd = $this->buildExecutableCommand((string)$this->pdftoppmPath)
+            . ' -f ' . (int)$paginaInicial
+            . ' -l ' . (int)$paginaFinal
             . ' -r ' . (int)$this->ocrDpi
-            . ' -png '
+            . ' -gray -jpeg'
+            . ' -jpegopt quality=60,progressive=n,optimize=n'
+            . ' '
             . escapeshellarg($pdfPath)
             . ' '
             . escapeshellarg($prefix)
@@ -132,10 +163,10 @@ class OcrProcessor
             );
         }
 
-        $images = glob($prefix . '-*.png') ?: [];
-        sort($images);
+        $images = glob($prefix . '-*.jpg') ?: [];
+        natsort($images);
 
-        return $images;
+        return array_values($images);
     }
 
     private function ocrImagen(string $imgPath): string
@@ -143,7 +174,8 @@ class OcrProcessor
         $cmd = $this->buildExecutableCommand((string)$this->tesseractPath)
             . ' '
             . escapeshellarg($imgPath)
-            . ' stdout -l spa 2>&1';
+            . ' stdout -l ' . escapeshellarg($this->ocrLanguage)
+            . ' --oem 1 --psm 6 quiet 2>&1';
 
         $output = [];
         $status = 0;
@@ -226,6 +258,7 @@ class OcrProcessor
         }
 
         $value = (int)trim($raw);
+
         if ($value < $min) {
             return $min;
         }
@@ -239,9 +272,11 @@ class OcrProcessor
     private function createTempDir(): string
     {
         $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'aneca_ocr_' . uniqid('', true);
+
         if (!mkdir($path, 0700, true) && !is_dir($path)) {
             throw new Exception("No se pudo crear directorio temporal para OCR.");
         }
+
         return $path;
     }
 
@@ -262,10 +297,12 @@ class OcrProcessor
             }
 
             $path = $dir . DIRECTORY_SEPARATOR . $item;
+
             if (is_dir($path)) {
                 $this->deleteDirectoryRecursive($path);
                 continue;
             }
+
             if (is_file($path)) {
                 @unlink($path);
             }
@@ -280,5 +317,58 @@ class OcrProcessor
         $text = preg_replace('/[ \t]+/u', ' ', $text) ?? $text;
         $text = preg_replace('/\n{3,}/u', "\n\n", $text) ?? $text;
         return trim($text);
+    }
+
+    private function ensureDirectoryExists(string $dir): void
+    {
+        if (is_dir($dir)) {
+            return;
+        }
+
+        @mkdir($dir, 0777, true);
+    }
+
+    private function getCacheFilePath(string $pdfPath): string
+    {
+        $this->ensureDirectoryExists($this->cacheDir);
+
+        $realPath = realpath($pdfPath);
+        $base = ($realPath !== false ? $realPath : $pdfPath)
+            . '|'
+            . (string)@filesize($pdfPath)
+            . '|'
+            . (string)@filemtime($pdfPath)
+            . '|'
+            . $this->ocrDpi
+            . '|'
+            . $this->maxOcrPages
+            . '|'
+            . $this->ocrLanguage;
+
+        $hash = sha1($base);
+
+        return $this->cacheDir . DIRECTORY_SEPARATOR . $hash . '.txt';
+    }
+
+    private function readCache(string $cacheFile): ?string
+    {
+        if (!is_file($cacheFile)) {
+            return null;
+        }
+
+        $content = @file_get_contents($cacheFile);
+        if (!is_string($content)) {
+            return null;
+        }
+
+        $content = $this->normalizarTexto($content);
+
+        return $content !== '' ? $content : null;
+    }
+
+    private function writeCache(string $cacheFile, string $content): void
+    {
+        $this->ensureDirectoryExists(dirname($cacheFile));
+        @file_put_contents($cacheFile, $content);
     }
 }

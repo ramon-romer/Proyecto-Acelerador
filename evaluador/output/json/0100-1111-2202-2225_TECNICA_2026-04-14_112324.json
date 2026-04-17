@@ -1,0 +1,107 @@
+{
+    "bloque_1": {
+        "publicaciones": [],
+        "libros": [],
+        "proyectos": [],
+        "transferencia": [],
+        "tesis_dirigidas": [
+            {
+                "id": "tesis_001",
+                "es_valido": true,
+                "tipo": "dirigida",
+                "proyecto_aprobado": null,
+                "doctorado_europeo": false,
+                "mencion_calidad": false,
+                "numero_codirectores": 0,
+                "fuente_texto": "de la Literatura): tesis doctoral, Comprensión lectora en primeras edades: una propuesta de",
+                "confianza_extraccion": 0.6,
+                "requiere_revision": true
+            }
+        ],
+        "congresos": [
+            {
+                "id": "cong_001",
+                "es_valido": true,
+                "ambito": "nacional",
+                "tipo": "comunicacion_oral",
+                "proceso_selectivo": true,
+                "id_evento": "comunicaci_on_y_de_la_educaci_on",
+                "fuente_texto": "COMUNICACIÓN Y DE LA EDUCACIÓN",
+                "confianza_extraccion": 0.55,
+                "requiere_revision": true
+            },
+            {
+                "id": "cong_002",
+                "es_valido": true,
+                "ambito": "nacional",
+                "tipo": "comunicacion_oral",
+                "proceso_selectivo": true,
+                "id_evento": "stos_proyectos_se_han_publicado_art_iculos_y_cap_itulos_de_libros_y_se_han_realizado_comunicaciones",
+                "fuente_texto": "stos proyectos se han publicado artículos y capítulos de libros y se han realizado comunicaciones",
+                "confianza_extraccion": 0.55,
+                "requiere_revision": true
+            },
+            {
+                "id": "cong_003",
+                "es_valido": true,
+                "ambito": "nacional",
+                "tipo": "comunicacion_oral",
+                "proceso_selectivo": true,
+                "id_evento": "en_congresos_que_se_muestran_m_as_adelante_es_consciente_de_la_relevancia_que_la_investigaci_on",
+                "fuente_texto": "«en congresos que se muestran más adelante. Es consciente de la relevancia que la investigación",
+                "confianza_extraccion": 0.55,
+                "requiere_revision": true
+            },
+            {
+                "id": "cong_004",
+                "es_valido": true,
+                "ambito": "nacional",
+                "tipo": "comunicacion_oral",
+                "proceso_selectivo": true,
+                "id_evento": "cursos_seminarios_y_talleres_que_realiza_habitualmente_la_participaci_on_en_jornadas_cursos",
+                "fuente_texto": "cursos, seminarios y talleres que realiza habitualmente. La participación en jornadas, cursos,",
+                "confianza_extraccion": 0.55,
+                "requiere_revision": true
+            },
+            {
+                "id": "cong_005",
+                "es_valido": true,
+                "ambito": "nacional",
+                "tipo": "comunicacion_oral",
+                "proceso_selectivo": true,
+                "id_evento": "seminarios_y_formaciones_ha_sido_constante_especialmente_centrada_en_dos_l_ineas_de_trabajo_una",
+                "fuente_texto": "seminarios y formaciones ha sido constante, especialmente centrada en dos líneas de trabajo: una,",
+                "confianza_extraccion": 0.55,
+                "requiere_revision": true
+            }
+        ],
+        "otros_meritos_investigacion": []
+    },
+    "bloque_2": {
+        "docencia_universitaria": [],
+        "evaluacion_docente": [],
+        "formacion_docente": [],
+        "material_docente": []
+    },
+    "bloque_3": {
+        "formacion_academica": [],
+        "experiencia_profesional": []
+    },
+    "bloque_4": [],
+    "metadatos_extraccion": {
+        "comite": "EXPERIMENTALES",
+        "subcomite": null,
+        "archivo_pdf": "0100-1111-2202-2225_TECNICA_2026-04-14_112324.pdf",
+        "fecha_extraccion": "2026-04-14T11:23:28+02:00",
+        "version_esquema": "2.1-cvn-proyectos-duros",
+        "requiere_revision_manual": true,
+        "fallback_ocr_activado": true,
+        "ocr_disponible": true,
+        "modo_extraccion_texto": "ocr_fallback",
+        "detalle_extraccion_texto": "pdftotext devolvió 0 caracteres. Se activó OCR porque el PDF no tenía texto nativo utilizable.",
+        "caracteres_texto_extraido": 7374
+    },
+    "archivo_pdf": "0100-1111-2202-2225_TECNICA_2026-04-14_112324.pdf",
+    "json_generado": "0100-1111-2202-2225_TECNICA_2026-04-14_112324.json",
+    "texto_extraido": "Consejería de Transformación Económica\nindustria, Conocimiento y Universidad\nAgencia Andaluza del Conocimiento\nJunta de Andalucía\nANEXO 2\nMODELO NORMALIZADO DE CURRÍCULUM VITAE\nPROFESOR CONTRATADO DOCTOR Y PROFESOR DE\nUNIVERSIDAD PRIVADA\nDNI\/NIE\/PASAPORTE: 77591409N\nNOMBRE Y APELLIDOS: MARÍA INMACULADA MENA-BERNAL ROSALES\nÁrea de conocimiento (consultar anexo 3): _\n[ Código Descripción >]\n195 | DIDÁCTICA DE LA LENGUA Y LA LITERATURA |\nCampo científico (consultar anexo 3):\ncódigo — _ Descripción 1]\nA CIENCIAS SOCIALES, POLÍTICAS, DE LA\nCOMUNICACIÓN Y DE LA EDUCACIÓN\nÁmbito de conocimiento (consultar anexo 3):\nCódigo . Descripción\n5 CIENCIAS SOCIALES ]\nAl firmar la presente solicitud, el solicitante deciara que son ciertos los datos que figuran en este modelo\nnormalizado de currículum vitae, asumiendo en caso contrario las responsabilidades que pudieran\nderivarse de las ¡inexactitudes que consten en el mismo.\nFecha: 14 de mayo de 2025\nAM\nFirma del currículo (adicionalmente, firme al margen cada una de las hojas):\nNOTA: Consulte las recomendaciones que sobre los distintos apartados se le facilitan en el manual de\nprincipios y orientaciones.\nread_params_file: Can't open quiet\n\nAUTODEFENSA DE SU CURRÍCULUM VITAE;\nDestaque en este apartado los méritos más relevantes de su Currículum vitae en relación a los criterios\ngenerales y específicos de su ámbito de conocimiento. Ocupe para este apartado una extensión máxima\nde2 páginas.\nIntroduzca la información que desee en el siguiente cuadro.\nLa solicitante es Licenciada en Filología Hispánica por la Universidad de Sevilla (2003) y Doctora en\nEstudios Filológicos por la Universidad de Sevilla (Dpto, de Lengua Española, Lingústica y Teoría\nde la Literatura): tesis doctoral, Comprensión lectora en primeras edades: una propuesta de\nintervención en torno al álbum ilustrado, defendida en septiembre de 2019 y calificada con\nSobresaliente Cum Laudem.\nSu labor docente comienza en 2012 en el Centro de Estudios Universitarios Cardenal Spínola CEU\n(adscrito a la Universidad de Sevilla) del que hasta la fecha es profesora titular, Ha impartido\ndocencia en diferentes asignaturas del Grado en Educación Primaria y del Grado en Educación\nInfantil y en el Máster Universitario en Profesorado en Enseñanza Secundaria Obligatoria y\nBachillerato Formación Profesional y Enseñanzas de Idiomas (MAES). Esta labor docente se\nencuentra vinculada a asignaturas relacionadas con la formación del futuro profesorado en los\nprocesos de adquisición de la comprensión lectora en las aulas y el gusto por leer, la motivación\nlectora y la didáctica de la Lengua y la Literatura en diferentes etapas educativas, así como en la |\ninnovación docente y el conocimiento metodológico, Además, ha sido profesora invitada en >\nestudios de posgrados en otros centros diferentes. En 2022 fue premiada porla mejorlabor docente || 3\n«en estudios de Posgrado, dada la alta puntuación que habitualmente obtiene en sus encuestas de f\nevaluación de la calidad docente. UN\nNs\nRespecto a su actividad investigadora, se centra actualmente en el Proyecto de 1+D*i Enseñanza y\naprendizaje dela Historia en Educación Primaria: multiperspectiva y análisis de iconos culturales para\nla construcción de una ciudadanía crítica (EduHiCon), financiado por el Ministerio de Ciencia e\nInnovación (PID2020-114434R8-100), y en el proyecto precompetitivo Análisis de factores\ncontextuales en el trabajo de la comprensión lectora en Educación primaria y formación de lectores\ncríticos (ACOLEC), evaluado por la Agencia Estatal de Investigación y financiado por el Centro de\nEstudios Universitarios Cardenal Spínola CEU, del que es coinvestigadora principal (IP). Fruto de\nstos proyectos se han publicado artículos y capítulos de libros y se han realizado comunicaciones\n«en congresos que se muestran más adelante. Es consciente de la relevancia que la investigación\ntiene en la universidad y por esta razón por la que se encuentra en un proceso de formación\ncontinua para avanzar y potenciar esta faceta que considera fundamental, lo que se observa en los\ncursos, seminarios y talleres que realiza habitualmente. La participación en jornadas, cursos,\nseminarios y formaciones ha sido constante, especialmente centrada en dos líneas de trabajo: una,\nla formación continua en los aspectos docentes, tanto didácticos como de relación con el\nalumnado; y otra, el desarrollo y la adquisición de destrezas y conocimientos en los aspectos\nrelacionados con la investigación.\nConsidera, además, que el fruto de la investigación debe de estar sometido a un proceso de\ntransferencia continua, en su caso a las aulas de las diferentes etapas educativas, incluida la\nuniversitaria, Es por esto por lo que forma parte de dos grupos de trabajo, Embajadores didácticos\nEmbojadores digitales, que se encargan de asesorar y formar al profesorado de diferentes etapas\nHoja 2de 6s\nread_params_file: Can't open quiet\n\n1.1. EXPERIENCIA INVESTIGADORA Y DE TRANSFERENCIA DEL CONOCIMIENTO\n1.LA. Publicaciones en revistas científicas con proceso anónimo de revisión anónimo por pares.\nLLA1 — Publicaciones en revistas científicas con proceso anónimo de revisión por pares,\nAportación 001:\n- Autorles: Mena-Bernal, Inmaculada £ Hoster, Beatriz\n- — Titulo: Identificación de oportunidades de mejora de los niveles de comprensión lectora: factores y\npropuestas didáctica\n- — Nombre dela revista: OCNOS. Revista de Estudios sobre lectura\n- Volumen: 24 (2)\n- País de publicación: España\n- Año de publicación: 2025\n- DOI: httos\/!doi org\/10-18239\/0cnos_2025.24,1.486\n- Calidad;\nÁmbito: EDUCACIÓN; FILOLOGÍA\nCampo académico: DIDÁCTICA DE LA LENGUA Y LA LITERATURA; TEORÍA DE LA\nLITERATURA Y LITERATURA COMPARADA\nEntidad académica: Universidad de Castila:La Mancha\nIndizada en: Emerging Sources Citation Index (Clarvate), Scopus (ELSEVIER), Academic Search\nUlimate (EBSCO), Fuente Academica Plus (EBSCO), DIALNET (Unwersidad de la Rioja), DOAJ,\nPsicodoo (Coleglo Oficial dela Psicología de Macri) [EBSCO]\nEvaluada en: LATIND EX. Catélogo v2.0 (2018 -) (Universidad Nacional Autónoma de Méxioo)\nSello de calidad FECYT\nDirectory of Open Acoess Joumals\nERIHPlus (Norwegian Directorate for Higher Education and Skills) Mm\nMétricas en: SIR, SClmago Joumal 8 Country Rark, Scopus Sources ÍN\n- Evidencia aportada: 11A1 001A Identicación de oportunidades ACEPTACIÓN ( Ñ\n- Evidencia aportada: 11A1 0018 Indexación OCNOS 5)\n- Evidencia aportada, Dirección web de la revista: 1141 001C web OCNOS O\nAportación 002: y,\n- — Autorles; Mena-Bemal, Inmaculada, Hoster-Cabo, Beatriz 8 Jiménez-Jarabe, MY.\n- — Título: Uso de fuentes literarias por docentes en formación para el acercamiento al ser humano de\ndistintas épocas.\n- Nombre de la revista: Revista Electrónica nteruiversitaria de Formación del Profesorado (Rei)\n- Volumen: 28(1)\n- — Página Inicial y final del artículo: 183-196\n- País de publicación: España\n- Año de publicación: 2024\n- ISNN: 1575-0965\n- DOI: https: \/doLora\/10.6018\/reifop\n- Calidad:\nCampo académico: EDUCACIÓN EN GENERAL\nIndizada en: Emerging Sources Citation Index (Clarivate), Scopus (ELSEVIER), Fuente Academica\nPlus (EBSCO), DOAJ, Psicodoc (Coleglo Oficial de la Psicología de Madrid) [EBSCO]\nEvaluada en: LATINDEX. Catálogo v2.0 (2018 -) (Universidad Nacional Autónoma de México), Sello\nde calidad FECYT, Directory of Open Access Joumals\nHoja 4 de 83\nread_params_file: Can't open quiet"
+}
