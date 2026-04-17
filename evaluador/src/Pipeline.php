@@ -139,11 +139,9 @@ class Pipeline
 
     private function extraerTextoPDF(string $pdfPath): string
     {
-        if (!$this->rutaEjecutableValida($this->pdftotext)) {
-            throw new Exception('No se encontró pdftotext.exe en la ruta configurada: ' . $this->pdftotext);
-        }
+        $comando = "pdftotext";
 
-        $cmd = $this->construirComandoEjecutable($this->pdftotext)
+        $cmd = $comando
             . ' '
             . escapeshellarg($pdfPath)
             . ' - 2>&1';
