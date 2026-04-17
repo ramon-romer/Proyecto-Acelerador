@@ -1,39 +1,23 @@
-/*Qué muestra bien este dashboard
 
-Esto sí sale directamente del esquema actual:
-
-tutor
-departamento
-rama
-grupos
-profesores asignados
-correo y datos básicos del profesor.
-Qué no puede mostrar bien todavía
-
-No puede mostrar con fiabilidad:
-
-porcentaje global del profesor
-bloques 1–4
-resultado
-prioridades de evaluación
-
-porque eso está en evaluaciones, y esa tabla no enlaza de forma sólida con tbl_profesor.*/
-
-
-
-
-
+<?php
 $idTutor = isset($_GET['id_tutor']) ? (int)$_GET['id_tutor'] : 48;
 
+// Conexión usando el host del contenedor Docker (o variable de entorno)
+$dbHost = getenv('ACELERADOR_DB_HOST') ?: (getenv('DB_HOST') ?: 'base-de-datos');
+$dbUser = getenv('ACELERADOR_DB_USER') ?: (getenv('DB_USER') ?: 'usuario_web');
+$dbPass = getenv('ACELERADOR_DB_PASS') ?: (getenv('DB_PASS') ?: 'password_segura');
+$dbPort = (int)(getenv('ACELERADOR_DB_PORT') ?: getenv('DB_PORT') ?: 3306);
+
 $pdo = new PDO(
-    "mysql:host=localhost;dbname=acelerador;charset=utf8mb4",
-    "root",
-    "",
+    "mysql:host={$dbHost};port={$dbPort};dbname=acelerador;charset=utf8mb4",
+    $dbUser,
+    $dbPass,
     [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
     ]
 );
+
 
 /**
  * Tutor
@@ -251,7 +235,7 @@ $totalGrupos = count($grupos);
               </div>
             </div>
 
-            <a href="dashboard_profesor.php?nombre=<?= urlencode($prof['nombre']) ?>"
+            <a href="dashboard_profesor.php?nombre=<?= urlencode($prof['nombre']) ?>&rama=<?= urlencode($prof['rama']) ?>"
                class="btn btn-primary">
               Ver dashboard profesor
             </a>

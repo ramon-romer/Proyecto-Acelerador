@@ -1,30 +1,42 @@
-/* Contenedor principal del formulario */
+/* ── Tarjeta glassmorphism sólo para el formulario ── */
 .formulario {
-    width: 40%;
-    margin: 100px auto 0 auto;
     background-color: rgba(20, 88, 204, 0.4);
-    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 24px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
     display: flex;
     flex-direction: column;
     align-items: center;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    padding: 40px 24px 36px;
+    width: 420px;
+    flex-shrink: 0;
 }
 
-
-.container {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-}
-
-
+/* Columna derecha: dashboard (estructural, sin fondo propio) */
 .dashboard {
+    flex: 1;
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    align-items: flex-start;
+    min-width: 0;
 }
+
+/* Contenedor de fila: panel-wrapper sólo gestiona el layout */
+.panel-wrapper {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 32px;
+    width: 90%;
+    max-width: 1140px;
+    margin: 120px auto 40px;
+    padding: 0;
+}
+
 
 
 
@@ -332,14 +344,6 @@ header {
    DASHBOARD TUTOR — Estilos integrados
 ══════════════════════════════════════════════════════════════ */
 
-/* fix: el dashboard ya no necesita altura fija */
-.dashboard {
-    height: auto !important;
-    flex-direction: column;
-    width: 100%;
-    padding: 60px 16px 40px;
-}
-
 /* Título de sección del dashboard */
 .dashboard-section-title {
     font-size: 1.15rem;
@@ -479,10 +483,16 @@ header {
 
 /* Responsive: apilar formulario + dashboard en móvil */
 @media (max-width: 991.98px) {
-    .container {
-        flex-direction: column !important;
+    .panel-wrapper {
+        flex-direction: column;
+        width: 96%;
+        margin: 20px auto 40px;
+        gap: 20px;
     }
     .formulario {
-        width: 90% !important;
+        width: 100%;
+    }
+    .dashboard {
+        width: 100%;
     }
 }

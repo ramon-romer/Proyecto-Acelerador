@@ -80,7 +80,7 @@ if (!function_exists('acelerador_frontend_db_connect')) {
 
         $lastError = '';
         foreach ($cfg['name_candidates'] as $databaseName) {
-            $conn = @mysqli_connect($cfg['host'], $cfg['user'], $cfg['pass'], $databaseName, $cfg['port']);
+            $conn = @mysqli_connect('base-de-datos', 'usuario_web', 'password_segura', 'acelerador', 3306);
             if ($conn) {
                 mysqli_set_charset($conn, $cfg['charset']);
                 return $conn;

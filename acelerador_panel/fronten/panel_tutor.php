@@ -100,7 +100,7 @@ $totalProfesores = count($profesores);
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/styles.css?v=<?= time() ?>">
 </head>
 
 <body>
@@ -119,7 +119,7 @@ $totalProfesores = count($profesores);
 
   </header>
   <main>
-    <div class="container">
+    <div class="panel-wrapper">
       <div class="formulario">
         <div class="text-center mb-4 w-100">
           <i class="bi bi-person-vcard text-white mb-2"
@@ -129,11 +129,11 @@ $totalProfesores = count($profesores);
         </div>
 
         <div class="lista-perfil w-100 px-lg-4">
-          <ul class="list-unstyled d-flex flex-column gap-4 mb-0 text-start w-100 mx-auto">
+          <ul class="list-unstyled d-flex flex-column gap-2 mb-0 text-start w-100 mx-auto">
 
             <!-- ✅ Datos visibles siempre -->
             <li
-              class="d-flex flex-column bg-light bg-opacity-10 p-3 rounded-4 border border-light border-opacity-25 shadow-sm">
+              class="d-flex flex-column bg-light bg-opacity-10 py-2 px-3 rounded-4 border border-light border-opacity-25 shadow-sm">
               <span class="text-white-50 small mb-1 fw-bold text-uppercase">
                 <i class="bi bi-person me-1"></i> Nombre
               </span>
@@ -143,7 +143,7 @@ $totalProfesores = count($profesores);
             </li>
 
             <li
-              class="d-flex flex-column bg-light bg-opacity-10 p-3 rounded-4 border border-light border-opacity-25 shadow-sm">
+              class="d-flex flex-column bg-light bg-opacity-10 py-2 px-3 rounded-4 border border-light border-opacity-25 shadow-sm">
               <span class="text-white-50 small mb-1 fw-bold text-uppercase">
                 <i class="bi bi-people me-1"></i> Apellidos
               </span>
@@ -153,7 +153,7 @@ $totalProfesores = count($profesores);
             </li>
 
             <li
-              class="d-flex flex-column bg-light bg-opacity-10 p-3 rounded-4 border border-light border-opacity-25 shadow-sm">
+              class="d-flex flex-column bg-light bg-opacity-10 py-2 px-3 rounded-4 border border-light border-opacity-25 shadow-sm">
               <span class="text-white-50 small mb-1 fw-bold text-uppercase">
                 <i class="bi bi-card-heading me-1"></i> DNI
               </span>
@@ -163,7 +163,7 @@ $totalProfesores = count($profesores);
             </li>
 
             <li
-              class="d-flex flex-column bg-light bg-opacity-10 p-3 rounded-4 border border-light border-opacity-25 shadow-sm">
+              class="d-flex flex-column bg-light bg-opacity-10 py-2 px-3 rounded-4 border border-light border-opacity-25 shadow-sm">
               <span class="text-white-50 small mb-1 fw-bold text-uppercase">
                 <i class="bi bi-globe me-1"></i> ORCID
               </span>
@@ -174,7 +174,7 @@ $totalProfesores = count($profesores);
 
             <!-- ✅ Datos ocultos por defecto → se mostrarán al pulsar el botón -->
             <li
-              class="extraDato d-none d-flex flex-column bg-light bg-opacity-10 p-3 rounded-4 border border-light border-opacity-25 shadow-sm">
+              class="extraDato d-none d-flex flex-column bg-light bg-opacity-10 py-2 px-3 rounded-4 border border-light border-opacity-25 shadow-sm">
               <span class="text-white-50 small mb-1 fw-bold text-uppercase">
                 <i class="bi bi-envelope me-1"></i> Correo
               </span>
@@ -184,7 +184,7 @@ $totalProfesores = count($profesores);
             </li>
 
             <li
-              class="extraDato d-none d-flex flex-column bg-light bg-opacity-10 p-3 rounded-4 border border-light border-opacity-25 shadow-sm">
+              class="extraDato d-none d-flex flex-column bg-light bg-opacity-10 py-2 px-3 rounded-4 border border-light border-opacity-25 shadow-sm">
               <span class="text-white-50 small mb-1 fw-bold text-uppercase">
                 <i class="bi bi-building me-1"></i> Departamento
               </span>
@@ -194,7 +194,7 @@ $totalProfesores = count($profesores);
             </li>
 
             <li
-              class="extraDato d-none d-flex flex-column bg-light bg-opacity-10 p-3 rounded-4 border border-light border-opacity-25 shadow-sm">
+              class="extraDato d-none d-flex flex-column bg-light bg-opacity-10 py-2 px-3 rounded-4 border border-light border-opacity-25 shadow-sm">
               <span class="text-white-50 small mb-1 fw-bold text-uppercase">
                 <i class="bi bi-telephone me-1"></i> Teléfono
               </span>
@@ -204,7 +204,7 @@ $totalProfesores = count($profesores);
             </li>
 
             <li
-              class="extraDato d-none d-flex flex-column bg-light bg-opacity-10 p-3 rounded-4 border border-light border-opacity-25 shadow-sm">
+              class="extraDato d-none d-flex flex-column bg-light bg-opacity-10 py-2 px-3 rounded-4 border border-light border-opacity-25 shadow-sm">
               <span class="text-white-50 small mb-1 fw-bold text-uppercase">
                 <i class="bi bi-mortarboard me-1"></i> Facultad
               </span>
@@ -262,7 +262,7 @@ $totalProfesores = count($profesores);
       <!-- ════════════════════════════════════════════════════════
            DASHBOARD TUTOR — Grupos y profesores asignados
       ════════════════════════════════════════════════════════ -->
-      <div class="dashboard mt-5">
+      <div class="dashboard">
 
         <!-- Tarjetas de estadísticas -->
         <div class="row g-3 mb-4">
@@ -287,25 +287,29 @@ $totalProfesores = count($profesores);
         </div>
 
         <!-- Resumen del tutor -->
-        <div class="dashboard-info-card mb-4">
-          <h2 class="dashboard-section-title"><i class="bi bi-info-circle me-2"></i>Resumen del tutor</h2>
-          <div class="row g-3">
-            <div class="col-sm-4">
-              <div class="mini-info-box">
-                <div class="mini-info-label">Facultad</div>
-                <div class="mini-info-value"><?= htmlspecialchars($facultad) ?></div>
-              </div>
-            </div>
-            <div class="col-sm-4">
-              <div class="mini-info-box">
-                <div class="mini-info-label">Departamento</div>
-                <div class="mini-info-value"><?= htmlspecialchars($departamento) ?></div>
-              </div>
-            </div>
-            <div class="col-sm-4">
-              <div class="mini-info-box">
-                <div class="mini-info-label">Rama</div>
-                <div class="mini-info-value"><?= htmlspecialchars($rama) ?></div>
+        <div class="row g-3 mb-4 w-100">
+          <div class="col-12">
+            <div class="dashboard-info-card">
+              <h2 class="dashboard-section-title"><i class="bi bi-info-circle me-2"></i>Resumen del tutor</h2>
+              <div class="row g-3">
+                <div class="col-sm-4">
+                  <div class="mini-info-box">
+                    <div class="mini-info-label">Facultad</div>
+                    <div class="mini-info-value"><?= htmlspecialchars($facultad) ?></div>
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="mini-info-box">
+                    <div class="mini-info-label">Departamento</div>
+                    <div class="mini-info-value"><?= htmlspecialchars($departamento) ?></div>
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="mini-info-box">
+                    <div class="mini-info-label">Rama</div>
+                    <div class="mini-info-value"><?= htmlspecialchars($rama) ?></div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -314,40 +318,28 @@ $totalProfesores = count($profesores);
         <!-- Tarjetas de profesores -->
         <?php if ($totalProfesores > 0): ?>
         <h2 class="dashboard-section-title mb-3"><i class="bi bi-people-fill me-2"></i>Mis profesores</h2>
-        <div class="row g-3">
+        <div class="row g-3 w-100">
           <?php foreach ($profesores as $prof): ?>
-            <div class="col-md-6 col-xl-4">
-              <div class="prof-panel-card">
-                <div class="prof-panel-name">
-                  <?= htmlspecialchars($prof['nombre'] . ' ' . $prof['apellidos']) ?>
-                </div>
-                <div class="prof-panel-grupo">
-                  <i class="bi bi-collection me-1"></i>Grupo: <strong><?= htmlspecialchars($prof['grupo']) ?></strong>
-                </div>
-                <div class="row g-2 mb-3">
-                  <div class="col-6">
-                    <div class="mini-prof-box">
-                      <div class="mini-prof-label">Departamento</div>
-                      <div class="mini-prof-value"><?= htmlspecialchars($prof['departamento']) ?></div>
+            <div class="col-12">
+              <div class="prof-panel-card p-3">
+                <div class="d-flex flex-column flex-lg-row align-items-lg-center gap-3">
+                  <div class="flex-grow-1">
+                    <div class="prof-panel-name mb-1">
+                      <?= htmlspecialchars($prof['nombre'] . ' ' . $prof['apellidos']) ?>
+                    </div>
+                    <div class="prof-panel-grupo text-white-50 small mb-0">
+                      <i class="bi bi-collection me-1"></i>Grupo: <strong><?= htmlspecialchars($prof['grupo']) ?></strong> | 
+                      Rama: <?= htmlspecialchars($prof['rama']) ?> |
+                      <a href="mailto:<?= htmlspecialchars($prof['correo']) ?>" class="text-white-50 text-decoration-none ms-1"><i class="bi bi-envelope"></i> <?= htmlspecialchars($prof['correo']) ?></a>
                     </div>
                   </div>
-                  <div class="col-6">
-                    <div class="mini-prof-box">
-                      <div class="mini-prof-label">Rama</div>
-                      <div class="mini-prof-value"><?= htmlspecialchars($prof['rama']) ?></div>
-                    </div>
-                  </div>
-                  <div class="col-12">
-                    <div class="mini-prof-box">
-                      <div class="mini-prof-label"><i class="bi bi-envelope me-1"></i>Correo</div>
-                      <div class="mini-prof-value"><?= htmlspecialchars($prof['correo']) ?></div>
-                    </div>
+                  
+                  <div class="ms-lg-3 text-lg-end">
+                    <a href="../../dashboard_profesor.php?nombre=<?= urlencode($prof['nombre']) ?>&rama=<?= urlencode($prof['rama']) ?>" class="btn btn-sm btn-primary w-100 rounded-pill">
+                      <i class="bi bi-diagram-3 me-1"></i> Ver dashboard
+                    </a>
                   </div>
                 </div>
-                <a href="../../dashboard_profesor.php?nombre=<?= urlencode($prof['nombre']) ?>"
-                   class="btn btn-sm btn-primary w-100 rounded-pill">
-                  <i class="bi bi-bar-chart-line me-1"></i> Ver dashboard del profesor
-                </a>
               </div>
             </div>
           <?php endforeach; ?>
@@ -360,7 +352,7 @@ $totalProfesores = count($profesores);
 
       </div>
 
-    </div>
+    </div><!-- /.panel-wrapper -->
 
   </main>
   <footer>
