@@ -1,0 +1,11 @@
+RewriteEngine On
+
+# Mantener comportamiento normal para archivos y directorios existentes.
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# API cola de procesamiento CV
+RewriteRule ^api/cv/procesar/?$ api_cv_procesar.php [QSA,L]
+RewriteRule ^api/cv/procesar/([A-Za-z0-9._-]+)/estado/?$ api_cv_procesar.php?accion=estado&job_id=$1 [QSA,L]
+RewriteRule ^api/cv/procesar/([A-Za-z0-9._-]+)/resultado/?$ api_cv_procesar.php?accion=resultado&job_id=$1 [QSA,L]

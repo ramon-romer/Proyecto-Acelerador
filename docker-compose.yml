@@ -1,0 +1,9 @@
+services:
+  acelerador-php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    working_dir: /app
+    volumes:
+      - ./:/app
+

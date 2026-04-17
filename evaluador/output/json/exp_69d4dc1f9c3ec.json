@@ -1016,13 +1016,13 @@
         "comite": "CSYJ",
         "subcomite": null,
         "archivo_pdf": null,
-        "fecha_extraccion": "2026-04-09T13:07:48+02:00",
+        "fecha_extraccion": "2026-04-10T12:07:07+02:00",
         "version_esquema": "1.0",
         "requiere_revision_manual": true,
         "modo_extraccion_texto": "pdftotext",
         "fallback_ocr_activado": false,
         "detalle_extraccion_texto": "texto_nativo_suficiente",
-        "ocr_disponible": false
+        "ocr_disponible": true
     },
     "archivo_pdf": "exp_69d4dc1f9c3ec.pdf",
     "json_generado": "exp_69d4dc1f9c3ec.json",
