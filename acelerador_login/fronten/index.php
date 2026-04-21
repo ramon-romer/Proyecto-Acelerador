@@ -1,7 +1,8 @@
 <?php
 include('login.php');
 require_once __DIR__ . '/lib/auth_password.php';
-error_reporting(0);
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
 $correo = trim((string) ($_POST["usuario"] ?? ''));
 $pass = (string) ($_POST["pwd"] ?? '');
@@ -36,11 +37,9 @@ if (isset($_POST["btn"])) {
 
   session_regenerate_id(true);
 
-  /* Guardamos los datos básicos ya existentes */
   $_SESSION['nombredelusuario'] = $correo;
   $_SESSION['perfil_usuario'] = $perfil;
 
-  /* Buscamos ORCID y rama del profesor para reutilizarlos luego */
   $stmtDatos = mysqli_prepare($conn, "SELECT ORCID, rama FROM tbl_profesor WHERE correo = ? LIMIT 1");
 
   if ($stmtDatos) {
@@ -58,17 +57,17 @@ if (isset($_POST["btn"])) {
   }
 
   if ($perfil === "TUTOR") {
-    header("Location: ../../acelerador_panel/fronten/panel_tutor.php");
+    header("Location: /Proyecto-Acelerador/Proyecto-Acelerador/acelerador_panel/fronten/panel_tutor.php");
     exit();
   }
 
   if ($perfil === "PROFESOR") {
-    header("Location: ../../acelerador_panel/fronten/panel_profesor.php");
+    header("Location: /Proyecto-Acelerador/Proyecto-Acelerador/acelerador_panel/fronten/panel_profesor.php");
     exit();
   }
 
   if ($perfil === "ADMIN" || $perfil === "ADMINISTRADOR") {
-    header("Location: ../../acelerador_panel/fronten/panel_admin.php");
+    header("Location: /Proyecto-Acelerador/Proyecto-Acelerador/acelerador_panel/fronten/panel_admin.php");
     exit();
   }
 
@@ -145,7 +144,8 @@ if (isset($_POST["btn"])) {
           <div class="textoenlace"
             style="display: flex; justify-content: center; align-items: center; color: lightgray;">
             <small>
-              <a href="../../acelerador_registro/fronten/index.php" sstyle="color:lightgray">
+              <a href="/Proyecto-Acelerador/Proyecto-Acelerador/acelerador_registro/fronten/index.php"
+                style="color:lightgray">
                 <p>¿No tienes perfil? ¡Regístrate!</p>
               </a>
             </small>
@@ -199,7 +199,6 @@ if (isset($_POST["btn"])) {
     </div>
   </footer>
 
-  <!-- ============== AVISO DE COOKIES ============== -->
   <div id="cookie-banner" style="
     display:none;
     position:fixed;
@@ -235,7 +234,6 @@ if (isset($_POST["btn"])) {
   <script src="js/script.js"></script>
 
   <script>
-    // ============== SISTEMA DE COOKIES ==============
     document.addEventListener("DOMContentLoaded", function () {
       const banner = document.getElementById("cookie-banner");
       const accept = document.getElementById("cookie-accept");

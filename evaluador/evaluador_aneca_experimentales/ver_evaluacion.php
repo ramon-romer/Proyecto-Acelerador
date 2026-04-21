@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/config.php';
 require __DIR__ . '/ui.php';
+require __DIR__ . '/funciones_evaluador_experimentales.php';
 
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
@@ -32,6 +33,12 @@ if (isset($jsonEntrada['resultado_calculo']) && is_array($jsonEntrada['resultado
 } else {
     $diagnostico = $jsonEntrada['diagnostico'] ?? [];
     $asesor = $jsonEntrada['asesor'] ?? [];
+}
+
+if (empty($diagnostico) || empty($asesor)) {
+    $resultadoCalculado = evaluar_expediente($jsonEntrada);
+    $diagnostico = $resultadoCalculado['diagnostico'] ?? $diagnostico;
+    $asesor = $resultadoCalculado['asesor'] ?? $asesor;
 }
 
 function exp_v(mixed $value, string $default = '0'): string

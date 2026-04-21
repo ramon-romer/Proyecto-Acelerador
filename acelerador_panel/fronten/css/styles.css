@@ -1,16 +1,42 @@
-/* Contenedor principal del formulario */
+/* ── Tarjeta glassmorphism sólo para el formulario ── */
 .formulario {
-    width: 40%;
-    margin: 100px auto 0 auto;
     background-color: rgba(20, 88, 204, 0.4);
-    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 24px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
     display: flex;
     flex-direction: column;
     align-items: center;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    padding: 40px 24px 36px;
+    width: 420px;
+    flex-shrink: 0;
 }
+
+/* Columna derecha: dashboard (estructural, sin fondo propio) */
+.dashboard {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 0;
+}
+
+/* Contenedor de fila: panel-wrapper sólo gestiona el layout */
+.panel-wrapper {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 32px;
+    width: 90%;
+    max-width: 1140px;
+    margin: 120px auto 40px;
+    padding: 0;
+}
+
 
 
 
@@ -312,4 +338,161 @@ form {
 
 header {
     height: 20px;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   DASHBOARD TUTOR — Estilos integrados
+══════════════════════════════════════════════════════════════ */
+
+/* Título de sección del dashboard */
+.dashboard-section-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: .03em;
+    text-shadow: 0 1px 6px rgba(0,0,0,0.35);
+}
+
+/* Tarjeta de estadística (grupos, profesores, correo) */
+.dashboard-stat-card {
+    background: rgba(20, 88, 204, 0.4);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 16px;
+    padding: 20px 18px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dashboard-stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 28px rgba(0,0,0,0.25);
+}
+
+.dashboard-stat-card .stat-label {
+    font-size: .82rem;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: rgba(255,255,255,0.65);
+    margin-bottom: 6px;
+}
+
+.dashboard-stat-card .stat-value {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.1;
+}
+
+.dashboard-stat-card .stat-email {
+    font-size: 1rem;
+    word-break: break-all;
+}
+
+/* Tarjeta de resumen del tutor */
+.dashboard-info-card {
+    background: rgba(20, 88, 204, 0.4);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 18px;
+    padding: 24px 20px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+}
+
+/* Mini-boxes dentro del resumen del tutor */
+.mini-info-box {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 12px;
+    padding: 12px 14px;
+}
+
+.mini-info-label {
+    font-size: .75rem;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: rgba(255,255,255,0.55);
+    margin-bottom: 4px;
+}
+
+.mini-info-value {
+    font-size: .95rem;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.2;
+}
+
+/* Tarjeta de cada profesor */
+.prof-panel-card {
+    background: rgba(20, 88, 204, 0.4);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 18px;
+    padding: 20px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.prof-panel-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.28);
+}
+
+.prof-panel-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 4px;
+}
+
+.prof-panel-grupo {
+    font-size: .85rem;
+    color: rgba(255,255,255,0.60);
+    margin-bottom: 14px;
+}
+
+/* Mini-boxes dentro de las tarjetas de profesor */
+.mini-prof-box {
+    background: rgba(0,0,0,0.18);
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 10px;
+    padding: 10px 12px;
+}
+
+.mini-prof-label {
+    font-size: .70rem;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: rgba(255,255,255,0.50);
+    margin-bottom: 3px;
+}
+
+.mini-prof-value {
+    font-size: .88rem;
+    font-weight: 600;
+    color: #e2e8f0;
+    line-height: 1.25;
+    word-break: break-word;
+}
+
+/* Responsive: apilar formulario + dashboard en móvil */
+@media (max-width: 991.98px) {
+    .panel-wrapper {
+        flex-direction: column;
+        width: 96%;
+        margin: 20px auto 40px;
+        gap: 20px;
+    }
+    .formulario {
+        width: 100%;
+    }
+    .dashboard {
+        width: 100%;
+    }
 }
