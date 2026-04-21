@@ -1,0 +1,62 @@
+{
+    "pipeline": "hibrido_por_pagina_v1",
+    "run_id": "20260417_110306",
+    "archivo_pdf": "smoke_20260417_110306_80a6c4_ok.pdf",
+    "paginas_detectadas": 1,
+    "paginas_candidatas_ocr": [],
+    "fallback_legacy_activado": false,
+    "ocr_environment": {
+        "pdf_tools": {
+            "pdftoppm": {
+                "available": false,
+                "path": null,
+                "version": null
+            }
+        },
+        "ocr_tools": {
+            "tesseract": {
+                "available": false,
+                "path": null,
+                "version": null
+            }
+        },
+        "ocr_ready": false,
+        "mode": "ocr_unavailable",
+        "warnings": [
+            "No se detecto pdftoppm en PATH ni via PDFTOPPM_PATH.",
+            "No se detecto tesseract en PATH ni via TESSERACT_PATH."
+        ]
+    },
+    "timings_ms": {
+        "total_ms": 471.5,
+        "extraccion_nativa_ms": 230.92,
+        "ocr_ms": 0,
+        "limpieza_ms": 0.08,
+        "extraccion_semantica_ms": 0.24
+    },
+    "cache": {
+        "pdf_hash_sha256": "b079ab2201c676e7f2866470293da3dd42f3b6ee9966d77057ab4bbc378e60cc",
+        "cache_ready": true,
+        "cache_result_file": "b079ab2201c676e7f2866470293da3dd42f3b6ee9966d77057ab4bbc378e60cc.result.json",
+        "cache_trace_file": "b079ab2201c676e7f2866470293da3dd42f3b6ee9966d77057ab4bbc378e60cc.trace.json",
+        "cache_meta_file": "b079ab2201c676e7f2866470293da3dd42f3b6ee9966d77057ab4bbc378e60cc.meta.json"
+    },
+    "trazabilidad_paginas": [
+        {
+            "numero_pagina": 1,
+            "metodo": "texto_nativo",
+            "tiempo_procesamiento_ms": 214.25,
+            "error_parcial": false
+        }
+    ],
+    "eventos": [
+        "ocr_env_mode:ocr_unavailable",
+        "ocr_env_warning:No se detecto pdftoppm en PATH ni via PDFTOPPM_PATH.",
+        "ocr_env_warning:No se detecto tesseract en PATH ni via TESSERACT_PATH.",
+        "extraccion_nativa_ok"
+    ],
+    "artefactos": {
+        "txt_generado": "smoke_20260417_110306_80a6c4_ok.txt",
+        "json_generado": "smoke_20260417_110306_80a6c4_ok.json"
+    }
+}

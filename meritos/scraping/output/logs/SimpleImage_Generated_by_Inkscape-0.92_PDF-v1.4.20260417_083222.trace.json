@@ -1,0 +1,41 @@
+{
+    "pipeline": "hibrido_por_pagina_v1",
+    "run_id": "20260417_083222",
+    "archivo_pdf": "SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.pdf",
+    "paginas_detectadas": 1,
+    "paginas_candidatas_ocr": [
+        1
+    ],
+    "fallback_legacy_activado": false,
+    "timings_ms": {
+        "total_ms": 94.16,
+        "extraccion_nativa_ms": 13.44,
+        "ocr_ms": 0,
+        "limpieza_ms": 0.03,
+        "extraccion_semantica_ms": 0.16
+    },
+    "cache": {
+        "pdf_hash_sha256": "cb2ded2c569e113d8ffdabc1ebc2fbdcc9a16ac4720f13d17a6ae4c1b227a65b",
+        "cache_ready": true,
+        "cache_result_file": "cb2ded2c569e113d8ffdabc1ebc2fbdcc9a16ac4720f13d17a6ae4c1b227a65b.result.json",
+        "cache_trace_file": "cb2ded2c569e113d8ffdabc1ebc2fbdcc9a16ac4720f13d17a6ae4c1b227a65b.trace.json",
+        "cache_meta_file": "cb2ded2c569e113d8ffdabc1ebc2fbdcc9a16ac4720f13d17a6ae4c1b227a65b.meta.json"
+    },
+    "trazabilidad_paginas": [
+        {
+            "numero_pagina": 1,
+            "metodo": "texto_nativo",
+            "tiempo_procesamiento_ms": 1.12,
+            "error_parcial": true
+        }
+    ],
+    "eventos": [
+        "extraccion_nativa_ok",
+        "pagina_1_candidata_ocr:pocos_caracteres",
+        "ocr_selectivo_no_disponible"
+    ],
+    "artefactos": {
+        "txt_generado": "SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.txt",
+        "json_generado": "SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.json"
+    }
+}

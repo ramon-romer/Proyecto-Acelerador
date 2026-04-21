@@ -1,0 +1,9 @@
+{
+    "pdf_hash_sha256": "b079ab2201c676e7f2866470293da3dd42f3b6ee9966d77057ab4bbc378e60cc",
+    "archivo_pdf": "api_smoke_5f9a90.pdf",
+    "cache_ready": true,
+    "status": "base_preparada",
+    "created_at_utc": "2026-04-17T11:29:40+00:00",
+    "result_target": "b079ab2201c676e7f2866470293da3dd42f3b6ee9966d77057ab4bbc378e60cc.result.json",
+    "trace_target": "b079ab2201c676e7f2866470293da3dd42f3b6ee9966d77057ab4bbc378e60cc.trace.json"
+}

@@ -1,0 +1,13 @@
+{
+    "tipo_documento": null,
+    "numero": null,
+    "fecha": null,
+    "total_bi": null,
+    "iva": null,
+    "total_a_pagar": null,
+    "texto_preview": "TEST",
+    "archivo_pdf": "SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.pdf",
+    "paginas_detectadas": 1,
+    "txt_generado": "SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.txt",
+    "json_generado": "SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.json"
+}
