@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/ProcessingJobQueue.php';
 require_once __DIR__ . '/ProcessingCache.php';
+require_once __DIR__ . '/PipelineResultValidator.php';
 
 class CvProcessingJobService
 {
@@ -9,6 +10,7 @@ class CvProcessingJobService
     private $cache;
     private $pdfDir;
     private $heavyThresholdBytes;
+    private $resultValidator;
 
     public function __construct(
         ?ProcessingJobQueue $queue = null,
@@ -20,6 +22,7 @@ class CvProcessingJobService
         $this->cache = $cache ?? new ProcessingCache();
         $this->pdfDir = $pdfDir ?? (__DIR__ . '/../pdfs');
         $this->heavyThresholdBytes = $this->readEnvInt('SCRAPING_HEAVY_PDF_BYTES', 3 * 1024 * 1024, 128 * 1024, 500 * 1024 * 1024);
+        $this->resultValidator = new PipelineResultValidator();
 
         if (!is_dir($this->pdfDir) && !mkdir($this->pdfDir, 0777, true) && !is_dir($this->pdfDir)) {
             throw new Exception('No se pudo crear el directorio de PDFs: ' . $this->pdfDir);
@@ -28,6 +31,7 @@ class CvProcessingJobService
 
     public function enqueueFromUpload(array $uploadedFile, bool $alwaysQueue = false): array
     {
+        $requestStartedAt = microtime(true);
         $this->validateUploadArray($uploadedFile);
 
         $tmpPath = (string)$uploadedFile['tmp_name'];
@@ -44,21 +48,35 @@ class CvProcessingJobService
         $cacheLookup = $this->cache->resolveByHash($hashPdf, $originalName);
 
         if (!empty($cacheLookup['cache_hit']) && is_array($cacheLookup['resultado_json'] ?? null)) {
-            error_log(
-                '[meritos-scraping] cache_hit_subida hash=' . $hashPdf
-                . ' cache_key=' . (string)($cacheLookup['cache_key'] ?? '')
+            $validation = $this->resultValidator->normalizeValidation(
+                $this->resultValidator->validate((array)$cacheLookup['resultado_json'])
             );
+            $cacheLookup['validation_status'] = $validation['validation_status'] ?? null;
+            $cacheLookup['validation_errors'] = $validation['validation_errors'] ?? [];
+            $cacheLookup['validation_warnings'] = $validation['validation_warnings'] ?? [];
 
-            return [
-                'job' => null,
-                'queued_only' => false,
-                'is_heavy' => $isHeavy,
-                'heavy_threshold_bytes' => $this->heavyThresholdBytes,
-                'stored_pdf_path' => null,
-                'cache_hit' => true,
-                'cache' => $cacheLookup,
-                'cached_result' => $cacheLookup['resultado_json'],
-            ];
+            if (!$this->resultValidator->isCacheable($validation)) {
+                $cacheLookup['cache_hit'] = false;
+                $cacheLookup['cache_estado'] = 'no_valida';
+                $cacheLookup['motivo_invalidation'] = 'validation_status_' . (string)($validation['validation_status'] ?? 'desconocido');
+
+                error_log(
+                    '[meritos-scraping] cache_hit_descartado_subida hash=' . $hashPdf
+                    . ' motivo=' . $this->resultValidator->summarize($validation)
+                );
+            } else {
+                return $this->createCompletedJobFromCache(
+                    $tmpPath,
+                    $originalName,
+                    $sizeBytes,
+                    $mimeType,
+                    $isHeavy,
+                    $hashPdf,
+                    $cacheLookup,
+                    $requestStartedAt,
+                    $validation
+                );
+            }
         }
 
         $safeName = $this->buildStoredFileName($originalName);
@@ -84,6 +102,12 @@ class CvProcessingJobService
                 'version_pipeline' => $this->cache->getVersions()['version_pipeline'] ?? null,
                 'version_baremo' => $this->cache->getVersions()['version_baremo'] ?? null,
                 'version_schema' => $this->cache->getVersions()['version_schema'] ?? null,
+                'validation_status' => $cacheLookup['validation_status'] ?? null,
+                'validation_errors' => is_array($cacheLookup['validation_errors'] ?? null) ? $cacheLookup['validation_errors'] : [],
+                'validation_warnings' => is_array($cacheLookup['validation_warnings'] ?? null) ? $cacheLookup['validation_warnings'] : [],
+                'aneca_canonical_path' => $cacheLookup['aneca_canonical_path'] ?? null,
+                'aneca_canonical_ready' => !empty($cacheLookup['aneca_canonical_ready']),
+                'aneca_canonical_validation_status' => $cacheLookup['aneca_canonical_validation_status'] ?? null,
             ]
         );
 
@@ -99,6 +123,8 @@ class CvProcessingJobService
             . ' queued_only=' . ($queuedOnly ? 'true' : 'false')
             . ' cache_hit=false'
             . ' cache_estado=' . $cacheEstado
+            . ' aneca_canonical_ready=' . (!empty($cacheLookup['aneca_canonical_ready']) ? 'true' : 'false')
+            . ' aneca_canonical_validation_status=' . (string)($cacheLookup['aneca_canonical_validation_status'] ?? '')
             . ($cacheMotivo !== '' ? ' motivo_invalidation=' . $cacheMotivo : '')
         );
 
@@ -123,6 +149,136 @@ class CvProcessingJobService
             'cache_hit' => false,
             'cache' => $cacheLookup,
             'cached_result' => null,
+        ];
+    }
+
+    private function createCompletedJobFromCache(
+        string $tmpPath,
+        string $originalName,
+        int $sizeBytes,
+        string $mimeType,
+        bool $isHeavy,
+        string $hashPdf,
+        array $cacheLookup,
+        float $requestStartedAt,
+        array $validation
+    ): array {
+        $safeName = $this->buildStoredFileName($originalName);
+        $targetPath = $this->pdfDir . DIRECTORY_SEPARATOR . $safeName;
+
+        if (!$this->moveUploadedFile($tmpPath, $targetPath)) {
+            throw new Exception('No se pudo mover el archivo subido al destino final (cache hit).');
+        }
+
+        $versions = $this->cache->getVersions();
+        $validation = $this->resultValidator->normalizeValidation($validation);
+
+        $job = $this->queue->createJobForPdfPath(
+            $targetPath,
+            [
+                'archivo_original' => $originalName,
+                'tamano_bytes' => $sizeBytes,
+                'mime_type' => $mimeType,
+                'es_pesado' => $isHeavy,
+                'umbral_pesado_bytes' => $this->heavyThresholdBytes,
+                'hash_pdf' => $hashPdf,
+                'cache_hit' => true,
+                'cache_key' => $cacheLookup['cache_key'] ?? null,
+                'cache_estado' => $cacheLookup['cache_estado'] ?? 'hit',
+                'motivo_invalidation' => null,
+                'version_pipeline' => $versions['version_pipeline'] ?? null,
+                'version_baremo' => $versions['version_baremo'] ?? null,
+                'version_schema' => $versions['version_schema'] ?? null,
+                'cache_meta_path' => $cacheLookup['meta_path'] ?? null,
+                'cache_result_path' => $cacheLookup['resultado_json_path'] ?? null,
+                'cache_text_path' => $cacheLookup['texto_extraido_path'] ?? null,
+                'cache_guardada' => true,
+                'validation_status' => $validation['validation_status'] ?? null,
+                'validation_errors' => $validation['validation_errors'] ?? [],
+                'validation_warnings' => $validation['validation_warnings'] ?? [],
+                'aneca_canonical_path' => $cacheLookup['aneca_canonical_path'] ?? null,
+                'aneca_canonical_ready' => !empty($cacheLookup['aneca_canonical_ready']),
+                'aneca_canonical_validation_status' => $cacheLookup['aneca_canonical_validation_status'] ?? null,
+            ]
+        );
+
+        $cacheMeta = is_array($cacheLookup['metadata'] ?? null) ? $cacheLookup['metadata'] : [];
+        $tracePath = $this->safeString($cacheMeta['trace_path'] ?? null);
+        $pipelineLogPath = $this->safeString($cacheMeta['pipeline_log_path'] ?? $cacheMeta['log_path'] ?? null);
+        $errorParcial = !empty($cacheMeta['error_parcial']) || !$this->resultValidator->isClean($validation);
+        $elapsedMs = round((microtime(true) - $requestStartedAt) * 1000, 2);
+        $completionMessage = $errorParcial
+            ? $this->buildValidationMessageForCompletion($validation, 'Resultado servido desde cache')
+            : null;
+
+        $job = $this->queue->markCompleted(
+            (string)$job['id'],
+            (array)$cacheLookup['resultado_json'],
+            $tracePath,
+            $pipelineLogPath,
+            $elapsedMs,
+            $errorParcial,
+            $completionMessage
+        );
+
+        $job = $this->queue->updateJob(
+            (string)$job['id'],
+            function (array $current) use ($hashPdf, $cacheLookup, $versions, $validation): array {
+                $current['hash_pdf'] = $hashPdf;
+                $current['cache_hit'] = true;
+                $current['cache_key'] = $cacheLookup['cache_key'] ?? ($current['cache_key'] ?? null);
+                $current['cache_estado'] = $cacheLookup['cache_estado'] ?? 'hit';
+                $current['motivo_invalidation'] = null;
+                $current['cache_guardada'] = true;
+                $current['version_pipeline'] = $versions['version_pipeline'] ?? ($current['version_pipeline'] ?? null);
+                $current['version_baremo'] = $versions['version_baremo'] ?? ($current['version_baremo'] ?? null);
+                $current['version_schema'] = $versions['version_schema'] ?? ($current['version_schema'] ?? null);
+                $current['cache_meta_path'] = $cacheLookup['meta_path'] ?? ($current['cache_meta_path'] ?? null);
+                $current['cache_result_path'] = $cacheLookup['resultado_json_path'] ?? ($current['cache_result_path'] ?? null);
+                $current['cache_text_path'] = $cacheLookup['texto_extraido_path'] ?? ($current['cache_text_path'] ?? null);
+                $current['aneca_canonical_path'] = $cacheLookup['aneca_canonical_path'] ?? ($current['aneca_canonical_path'] ?? null);
+                $current['aneca_canonical_ready'] = !empty($cacheLookup['aneca_canonical_ready']);
+                $current['aneca_canonical_validation_status'] = $cacheLookup['aneca_canonical_validation_status']
+                    ?? ($current['aneca_canonical_validation_status'] ?? null);
+                $current['validation_status'] = $validation['validation_status'] ?? ($current['validation_status'] ?? null);
+                $current['validation_errors'] = is_array($validation['validation_errors'] ?? null) ? $validation['validation_errors'] : [];
+                $current['validation_warnings'] = is_array($validation['validation_warnings'] ?? null) ? $validation['validation_warnings'] : [];
+                return $current;
+            }
+        );
+
+        $this->queue->appendLog(
+            (string)$job['id'],
+            'cache_hit_subida cache_key=' . (string)($cacheLookup['cache_key'] ?? '')
+            . ' cache_estado=' . (string)($cacheLookup['cache_estado'] ?? 'hit')
+            . ' validation_status=' . (string)($validation['validation_status'] ?? '')
+            . ' aneca_canonical_ready=' . (!empty($cacheLookup['aneca_canonical_ready']) ? 'true' : 'false')
+            . ' aneca_canonical_validation_status=' . (string)($cacheLookup['aneca_canonical_validation_status'] ?? '')
+            . ' sin_reprocesar=true'
+        );
+        $this->queue->appendLog(
+            (string)$job['id'],
+            'job_finalizado_desde_cache tiempo_total_ms=' . $elapsedMs
+        );
+
+        error_log(
+            '[meritos-scraping] cache_hit_subida hash=' . $hashPdf
+            . ' cache_key=' . (string)($cacheLookup['cache_key'] ?? '')
+            . ' validation_status=' . (string)($validation['validation_status'] ?? '')
+            . ' aneca_canonical_ready=' . (!empty($cacheLookup['aneca_canonical_ready']) ? 'true' : 'false')
+            . ' aneca_canonical_validation_status=' . (string)($cacheLookup['aneca_canonical_validation_status'] ?? '')
+            . ' sin_reprocesar=true'
+        );
+
+        return [
+            'job' => $job,
+            'queued_only' => false,
+            'is_heavy' => $isHeavy,
+            'heavy_threshold_bytes' => $this->heavyThresholdBytes,
+            'stored_pdf_path' => $targetPath,
+            'cache_hit' => true,
+            'cache' => $cacheLookup,
+            'cached_result' => $cacheLookup['resultado_json'],
         ];
     }
 
@@ -206,5 +362,33 @@ class CvProcessingJobService
         }
 
         return $value;
+    }
+
+    private function buildValidationMessageForCompletion(array $validation, string $prefix): string
+    {
+        $validation = $this->resultValidator->normalizeValidation($validation);
+        $status = (string)($validation['validation_status'] ?? '');
+        $warnings = is_array($validation['validation_warnings'] ?? null) ? $validation['validation_warnings'] : [];
+        $errors = is_array($validation['validation_errors'] ?? null) ? $validation['validation_errors'] : [];
+
+        $parts = [$prefix, 'status=' . $status];
+        if (!empty($warnings)) {
+            $parts[] = 'warnings=' . implode(',', array_slice($warnings, 0, 3));
+        }
+        if (!empty($errors)) {
+            $parts[] = 'errors=' . implode(',', array_slice($errors, 0, 3));
+        }
+
+        return implode(' ', $parts) . '.';
+    }
+
+    private function safeString($value): ?string
+    {
+        if (!is_string($value)) {
+            return null;
+        }
+
+        $trimmed = trim($value);
+        return $trimmed === '' ? null : $trimmed;
     }
 }

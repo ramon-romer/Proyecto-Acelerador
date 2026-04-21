@@ -83,6 +83,15 @@ class ProcessingCache
             'texto_extraido_path' => $paths['text_path'],
             'trace_path' => null,
             'log_path' => null,
+            'aneca_canonical_path' => null,
+            'aneca_canonical_ready' => false,
+            'aneca_canonical_validation_status' => null,
+            'aneca_canonical_validation_errors' => [],
+            'aneca_canonical_validation_warnings' => [],
+            'aneca_canonical_json' => null,
+            'validation_status' => null,
+            'validation_errors' => [],
+            'validation_warnings' => [],
         ];
 
         $meta = $this->safeReadJsonFile($paths['meta_path']);
@@ -102,6 +111,33 @@ class ProcessingCache
                     $response['texto_extraido'] = $this->safeReadTextFile($validation['text_path']);
                     $response['trace_path'] = $this->safeString($meta['trace_path'] ?? null);
                     $response['log_path'] = $this->safeString($meta['log_path'] ?? null);
+                    $canonicalPath = $this->resolvePathFromMeta($meta['aneca_canonical_path'] ?? null, null);
+                    $canonicalValidationStatus = $this->safeString($meta['aneca_canonical_validation_status'] ?? null);
+                    $canonicalValidationErrors = $this->safeStringList($meta['aneca_canonical_validation_errors'] ?? []);
+                    $canonicalValidationWarnings = $this->safeStringList($meta['aneca_canonical_validation_warnings'] ?? []);
+                    $canonicalReady = !empty($meta['aneca_canonical_ready']);
+
+                    if ($canonicalPath === null || !is_file($canonicalPath)) {
+                        $canonicalReady = false;
+                        if ($canonicalValidationStatus === null && !empty($meta['aneca_canonical_ready'])) {
+                            $canonicalValidationStatus = 'invalido';
+                        }
+                        if (empty($canonicalValidationErrors) && !empty($meta['aneca_canonical_ready'])) {
+                            $canonicalValidationErrors[] = 'aneca_canonical_path_inexistente';
+                        }
+                    }
+
+                    $response['aneca_canonical_path'] = $canonicalPath;
+                    $response['aneca_canonical_ready'] = $canonicalReady;
+                    $response['aneca_canonical_validation_status'] = $canonicalValidationStatus;
+                    $response['aneca_canonical_validation_errors'] = $canonicalValidationErrors;
+                    $response['aneca_canonical_validation_warnings'] = $canonicalValidationWarnings;
+                    $response['aneca_canonical_json'] = $canonicalPath !== null && is_file($canonicalPath)
+                        ? $this->safeReadJsonFile($canonicalPath)
+                        : null;
+                    $response['validation_status'] = $this->safeString($meta['validation_status'] ?? null);
+                    $response['validation_errors'] = $this->safeStringList($meta['validation_errors'] ?? []);
+                    $response['validation_warnings'] = $this->safeStringList($meta['validation_warnings'] ?? []);
 
                     return $response;
                 }
@@ -194,11 +230,19 @@ class ProcessingCache
             'texto_extraido_path' => $textoPath,
             'trace_path' => $this->safeString($metadata['trace_path'] ?? null),
             'log_path' => $this->safeString($metadata['log_path'] ?? null),
+            'aneca_canonical_path' => $this->safeString($metadata['aneca_canonical_path'] ?? null),
+            'aneca_canonical_ready' => !empty($metadata['aneca_canonical_ready']),
+            'aneca_canonical_validation_status' => $this->safeString($metadata['aneca_canonical_validation_status'] ?? null),
+            'aneca_canonical_validation_errors' => $this->safeStringList($metadata['aneca_canonical_validation_errors'] ?? []),
+            'aneca_canonical_validation_warnings' => $this->safeStringList($metadata['aneca_canonical_validation_warnings'] ?? []),
             'tiempo_total_ms' => isset($metadata['tiempo_total_ms']) ? round((float)$metadata['tiempo_total_ms'], 2) : null,
             'estado_cache' => $estadoCache,
             'error_parcial' => !empty($metadata['error_parcial']),
             'pipeline_log_path' => $this->safeString($metadata['pipeline_log_path'] ?? null),
             'motivo_invalidation' => $this->safeString($metadata['motivo_invalidation'] ?? null),
+            'validation_status' => $this->safeString($metadata['validation_status'] ?? null),
+            'validation_errors' => $this->safeStringList($metadata['validation_errors'] ?? []),
+            'validation_warnings' => $this->safeStringList($metadata['validation_warnings'] ?? []),
         ];
 
         $metaJson = json_encode($meta, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
@@ -214,6 +258,14 @@ class ProcessingCache
             'meta_path' => $paths['meta_path'],
             'result_path' => $paths['result_path'],
             'text_path' => $textoPath,
+            'aneca_canonical_path' => $meta['aneca_canonical_path'],
+            'aneca_canonical_ready' => $meta['aneca_canonical_ready'],
+            'aneca_canonical_validation_status' => $meta['aneca_canonical_validation_status'],
+            'aneca_canonical_validation_errors' => $meta['aneca_canonical_validation_errors'],
+            'aneca_canonical_validation_warnings' => $meta['aneca_canonical_validation_warnings'],
+            'validation_status' => $meta['validation_status'],
+            'validation_errors' => $meta['validation_errors'],
+            'validation_warnings' => $meta['validation_warnings'],
             'metadata' => $meta,
         ];
     }
@@ -238,6 +290,11 @@ class ProcessingCache
         $estadoCache = strtolower(trim((string)($meta['estado_cache'] ?? '')));
         if ($estadoCache !== 'valida') {
             return ['valid' => false, 'state' => 'no_valida', 'reason' => 'estado_cache_' . ($estadoCache === '' ? 'desconocido' : $estadoCache)];
+        }
+
+        $validationStatus = strtolower(trim((string)($meta['validation_status'] ?? '')));
+        if ($validationStatus !== '' && !in_array($validationStatus, ['valido', 'valido_con_advertencias'], true)) {
+            return ['valid' => false, 'state' => 'no_valida', 'reason' => 'validation_status_' . $validationStatus];
         }
 
         $resultPath = $this->resolvePathFromMeta($meta['resultado_json_path'] ?? null, $paths['result_path']);
@@ -469,7 +526,12 @@ class ProcessingCache
             return false;
         }
 
-        if (preg_match('/^[A-Za-z]:[\\\/]/', $path) === 1) {
+        if (
+            strlen($path) >= 3
+            && ctype_alpha($path[0])
+            && $path[1] === ':'
+            && ($path[2] === '\\' || $path[2] === '/')
+        ) {
             return true;
         }
 
@@ -488,6 +550,29 @@ class ProcessingCache
         }
 
         return $trimmed;
+    }
+
+    private function safeStringList($value): array
+    {
+        if (!is_array($value)) {
+            return [];
+        }
+
+        $out = [];
+        foreach ($value as $item) {
+            if (!is_string($item)) {
+                continue;
+            }
+
+            $trimmed = trim($item);
+            if ($trimmed === '') {
+                continue;
+            }
+
+            $out[] = $trimmed;
+        }
+
+        return array_values(array_unique($out));
     }
 
     private function atomicWriteFile(string $path, string $content): void

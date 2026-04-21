@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://acelerador.local/schemas/pipeline-result-legacy.v1.schema.json",
+  "title": "Acelerador Pipeline Result Legacy v1",
+  "description": "Contrato tecnico legacy/transitorio de la salida actual del pipeline de meritos/scraping. NO es el contrato canonico oficial ANECA.",
+  "type": "object",
+  "required": [
+    "tipo_documento",
+    "numero",
+    "fecha",
+    "total_bi",
+    "iva",
+    "total_a_pagar",
+    "texto_preview",
+    "archivo_pdf",
+    "paginas_detectadas",
+    "txt_generado",
+    "json_generado"
+  ],
+  "properties": {
+    "tipo_documento": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "numero": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "fecha": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "total_bi": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "iva": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "total_a_pagar": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "texto_preview": {
+      "type": "string",
+      "minLength": 1
+    },
+    "archivo_pdf": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\.pdf$"
+    },
+    "paginas_detectadas": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "txt_generado": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\.txt$"
+    },
+    "json_generado": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\.json$"
+    }
+  },
+  "additionalProperties": false
+}

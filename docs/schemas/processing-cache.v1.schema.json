@@ -1,0 +1,187 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://acelerador.local/schemas/processing-cache.v1.schema.json",
+  "title": "Acelerador Processing Cache Technical v1",
+  "description": "Contrato tecnico interno de metadatos de cache en output/cache/<cache_key>.meta.json. NO es contrato canonico de dominio.",
+  "type": "object",
+  "required": [
+    "hash_pdf",
+    "cache_key",
+    "archivo_original",
+    "fecha_procesamiento",
+    "version_pipeline",
+    "version_baremo",
+    "version_schema",
+    "resultado_json_path",
+    "texto_extraido_path",
+    "trace_path",
+    "log_path",
+    "aneca_canonical_path",
+    "aneca_canonical_ready",
+    "aneca_canonical_validation_status",
+    "aneca_canonical_validation_errors",
+    "aneca_canonical_validation_warnings",
+    "tiempo_total_ms",
+    "estado_cache",
+    "error_parcial",
+    "pipeline_log_path",
+    "motivo_invalidation",
+    "validation_status",
+    "validation_errors",
+    "validation_warnings"
+  ],
+  "properties": {
+    "hash_pdf": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "cache_key": {
+      "type": "string",
+      "pattern": "^cache_[a-f0-9]{16}_[a-f0-9]{16}$"
+    },
+    "archivo_original": {
+      "type": "string",
+      "minLength": 1
+    },
+    "fecha_procesamiento": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "version_pipeline": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version_baremo": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version_schema": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "resultado_json_path": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\.result\\.json$"
+    },
+    "texto_extraido_path": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "trace_path": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "log_path": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "aneca_canonical_path": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "aneca_canonical_ready": {
+      "type": "boolean"
+    },
+    "aneca_canonical_validation_status": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        null,
+        "valido",
+        "valido_con_advertencias",
+        "incompleto",
+        "invalido"
+      ]
+    },
+    "aneca_canonical_validation_errors": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "aneca_canonical_validation_warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "tiempo_total_ms": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "estado_cache": {
+      "type": "string",
+      "enum": [
+        "valida",
+        "no_valida",
+        "obsoleta",
+        "corrupta",
+        "error"
+      ]
+    },
+    "error_parcial": {
+      "type": "boolean"
+    },
+    "pipeline_log_path": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "motivo_invalidation": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "validation_status": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        null,
+        "valido",
+        "valido_con_advertencias",
+        "incompleto",
+        "invalido"
+      ]
+    },
+    "validation_errors": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "validation_warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "fecha_invalidacion": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false
+}

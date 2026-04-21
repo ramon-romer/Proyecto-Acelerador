@@ -1,10 +1,15 @@
 <?php
 
+// Contrato de este endpoint: tecnico local del modulo meritos/scraping.
+// No define el contrato canonico oficial de dominio (ANECA).
+
 require_once __DIR__ . '/../src/CvProcessingJobService.php';
 require_once __DIR__ . '/../src/ProcessingJobQueue.php';
 
 $method = strtoupper((string)($_SERVER['REQUEST_METHOD'] ?? 'GET'));
 $route = resolveRoute();
+$includeAnecaPayload = shouldIncludeAnecaCanonicalPayload();
+$preferAnecaCanonical = shouldPreferAnecaCanonical();
 
 try {
     $queue = new ProcessingJobQueue();
@@ -27,6 +32,9 @@ try {
                 'progreso_porcentaje' => $job['progreso_porcentaje'],
                 'fase_actual' => $job['fase_actual'],
                 'es_pesado' => $enqueued['is_heavy'],
+                'aneca_canonical_path' => $job['aneca_canonical_path'] ?? null,
+                'aneca_canonical_ready' => (bool)($job['aneca_canonical_ready'] ?? false),
+                'aneca_canonical_validation_status' => $job['aneca_canonical_validation_status'] ?? null,
                 'endpoints' => [
                     'estado' => '/api/cv/procesar/' . $job['id'] . '/estado',
                     'resultado' => '/api/cv/procesar/' . $job['id'] . '/resultado',
@@ -55,6 +63,9 @@ try {
                 'trace_path' => $job['trace_path'],
                 'log_path' => $job['log_path'],
                 'pipeline_log_path' => $job['pipeline_log_path'] ?? null,
+                'aneca_canonical_path' => $job['aneca_canonical_path'] ?? null,
+                'aneca_canonical_ready' => (bool)($job['aneca_canonical_ready'] ?? false),
+                'aneca_canonical_validation_status' => $job['aneca_canonical_validation_status'] ?? null,
             ],
             200
         );
@@ -90,21 +101,44 @@ try {
             );
         }
 
-        respondJson(
-            [
-                'ok' => true,
-                'job_id' => $job['id'],
-                'estado' => $estado,
-                'error_parcial' => (bool)($job['error_parcial'] ?? false),
-                'error_mensaje' => $job['error_mensaje'],
-                'resultado' => $job['resultado_json'],
-                'trace_path' => $job['trace_path'],
-                'log_path' => $job['log_path'],
-                'pipeline_log_path' => $job['pipeline_log_path'] ?? null,
-                'tiempo_total_ms' => $job['tiempo_total_ms'],
-            ],
-            200
-        );
+        $anecaPayload = $includeAnecaPayload ? loadAnecaCanonicalPayloadFromJob($job) : null;
+        $preferedPayload = $job['resultado_json'];
+        $preferedFormat = 'legacy';
+        if (
+            $preferAnecaCanonical
+            && !empty($job['aneca_canonical_ready'])
+            && is_array($anecaPayload)
+        ) {
+            $preferedPayload = $anecaPayload;
+            $preferedFormat = 'aneca_canonico';
+        }
+
+        $response = [
+            'ok' => true,
+            'job_id' => $job['id'],
+            'estado' => $estado,
+            'error_parcial' => (bool)($job['error_parcial'] ?? false),
+            'error_mensaje' => $job['error_mensaje'],
+            'resultado' => $job['resultado_json'],
+            'trace_path' => $job['trace_path'],
+            'log_path' => $job['log_path'],
+            'pipeline_log_path' => $job['pipeline_log_path'] ?? null,
+            'aneca_canonical_path' => $job['aneca_canonical_path'] ?? null,
+            'aneca_canonical_ready' => (bool)($job['aneca_canonical_ready'] ?? false),
+            'aneca_canonical_validation_status' => $job['aneca_canonical_validation_status'] ?? null,
+            'tiempo_total_ms' => $job['tiempo_total_ms'],
+        ];
+
+        if ($includeAnecaPayload) {
+            $response['resultado_aneca_canonico'] = $anecaPayload;
+        }
+
+        if ($preferAnecaCanonical) {
+            $response['resultado_preferente_formato'] = $preferedFormat;
+            $response['resultado_preferente'] = $preferedPayload;
+        }
+
+        respondJson($response, 200);
     }
 
     respondJson(
@@ -186,4 +220,37 @@ function respondJson(array $payload, int $statusCode): void
 
     echo $json;
     exit;
+}
+
+function shouldIncludeAnecaCanonicalPayload(): bool
+{
+    $include = (string)($_GET['include_aneca'] ?? '');
+    if ($include === '1') {
+        return true;
+    }
+
+    return shouldPreferAnecaCanonical();
+}
+
+function shouldPreferAnecaCanonical(): bool
+{
+    return (string)($_GET['prefer_aneca'] ?? '') === '1';
+}
+
+function loadAnecaCanonicalPayloadFromJob(array $job): ?array
+{
+    $path = isset($job['aneca_canonical_path']) && is_string($job['aneca_canonical_path'])
+        ? trim((string)$job['aneca_canonical_path'])
+        : '';
+    if ($path === '' || !is_file($path)) {
+        return null;
+    }
+
+    $raw = @file_get_contents($path);
+    if (!is_string($raw) || trim($raw) === '') {
+        return null;
+    }
+
+    $decoded = json_decode($raw, true);
+    return is_array($decoded) ? $decoded : null;
 }

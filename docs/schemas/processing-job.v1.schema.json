@@ -1,0 +1,266 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://acelerador.local/schemas/processing-job.v1.schema.json",
+  "title": "Acelerador Processing Job Technical v1",
+  "description": "Contrato tecnico interno del archivo JSON de job generado por ProcessingJobQueue y actualizado por ProcessingJobWorker. NO es contrato canonico de dominio.",
+  "type": "object",
+  "required": [
+    "id",
+    "archivo_pdf",
+    "pdf_path",
+    "hash_pdf",
+    "estado",
+    "progreso_porcentaje",
+    "fase_actual",
+    "resultado_json",
+    "error_mensaje",
+    "cache_hit",
+    "cache_key",
+    "cache_estado",
+    "motivo_invalidation",
+    "cache_guardada",
+    "aneca_canonical_path",
+    "aneca_canonical_ready",
+    "aneca_canonical_validation_status",
+    "validation_status",
+    "validation_errors",
+    "validation_warnings",
+    "fecha_creacion",
+    "fecha_inicio",
+    "fecha_fin",
+    "tiempo_total_ms",
+    "trace_path",
+    "log_path",
+    "error_parcial",
+    "fecha_actualizacion"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "archivo_pdf": {
+      "type": "string",
+      "minLength": 1
+    },
+    "pdf_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "hash_pdf": {
+      "type": "string",
+      "pattern": "^([a-f0-9]{64})?$"
+    },
+    "estado": {
+      "type": "string",
+      "enum": [
+        "pendiente",
+        "procesando_pdf",
+        "procesando_ocr",
+        "extrayendo_meritos",
+        "calculando_puntuacion",
+        "validando_resultado",
+        "completado",
+        "error_parcial",
+        "error"
+      ]
+    },
+    "progreso_porcentaje": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "fase_actual": {
+      "type": "string",
+      "minLength": 1
+    },
+    "resultado_json": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "error_mensaje": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "cache_hit": {
+      "type": "boolean"
+    },
+    "cache_key": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "cache_estado": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        null,
+        "miss",
+        "hit",
+        "valida",
+        "no_valida",
+        "obsoleta",
+        "corrupta",
+        "error"
+      ]
+    },
+    "motivo_invalidation": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "cache_guardada": {
+      "type": "boolean"
+    },
+    "aneca_canonical_path": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "aneca_canonical_ready": {
+      "type": "boolean"
+    },
+    "aneca_canonical_validation_status": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        null,
+        "valido",
+        "valido_con_advertencias",
+        "incompleto",
+        "invalido"
+      ]
+    },
+    "validation_status": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        null,
+        "valido",
+        "valido_con_advertencias",
+        "incompleto",
+        "invalido"
+      ]
+    },
+    "validation_errors": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "validation_warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "fecha_creacion": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "fecha_inicio": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "fecha_fin": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "tiempo_total_ms": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "trace_path": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "log_path": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "pipeline_log_path": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "error_parcial": {
+      "type": "boolean"
+    },
+    "fecha_actualizacion": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "archivo_original": {
+      "type": "string"
+    },
+    "tamano_bytes": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "mime_type": {
+      "type": "string"
+    },
+    "es_pesado": {
+      "type": "boolean"
+    },
+    "umbral_pesado_bytes": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "version_pipeline": {
+      "type": "string"
+    },
+    "version_baremo": {
+      "type": "string"
+    },
+    "version_schema": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "cache_meta_path": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "cache_result_path": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "cache_text_path": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "additionalProperties": true
+}

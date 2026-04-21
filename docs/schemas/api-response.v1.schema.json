@@ -1,0 +1,640 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://acelerador.local/schemas/api-response.v1.schema.json",
+  "title": "Acelerador Scraping API Response Technical v1",
+  "description": "Contrato tecnico local de respuestas JSON publicadas por api_cv_procesar.php y subir.php. NO es contrato canonico de dominio.",
+  "type": "object",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/api_job_created_response"
+    },
+    {
+      "$ref": "#/$defs/subir_job_queued_response"
+    },
+    {
+      "$ref": "#/$defs/api_estado_response"
+    },
+    {
+      "$ref": "#/$defs/api_resultado_ready_response"
+    },
+    {
+      "$ref": "#/$defs/subir_resultado_ready_response"
+    },
+    {
+      "$ref": "#/$defs/api_resultado_pending_response"
+    },
+    {
+      "$ref": "#/$defs/api_resultado_error_response"
+    },
+    {
+      "$ref": "#/$defs/subir_validation_error_response"
+    },
+    {
+      "$ref": "#/$defs/generic_error_response"
+    }
+  ],
+  "$defs": {
+    "job_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._-]+$"
+    },
+    "job_state": {
+      "type": "string",
+      "enum": [
+        "pendiente",
+        "procesando_pdf",
+        "procesando_ocr",
+        "extrayendo_meritos",
+        "calculando_puntuacion",
+        "validando_resultado",
+        "completado",
+        "error_parcial",
+        "error"
+      ]
+    },
+    "nullable_string": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "nullable_number": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "aneca_canonical_validation_status": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        null,
+        "valido",
+        "valido_con_advertencias",
+        "incompleto",
+        "invalido"
+      ]
+    },
+    "aneca_canonical_payload": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Payload ANECA canonico opcional para consumidores que migren desde legado."
+    },
+    "nullable_datetime": {
+      "anyOf": [
+        {
+          "type": "string",
+          "format": "date-time"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "endpoints": {
+      "type": "object",
+      "required": [
+        "estado",
+        "resultado"
+      ],
+      "properties": {
+        "estado": {
+          "type": "string",
+          "minLength": 1
+        },
+        "resultado": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "pipeline_result": {
+      "type": "object",
+      "description": "Resultado legacy/transitorio del pipeline local. NO equivale al contrato canonico ANECA.",
+      "required": [
+        "tipo_documento",
+        "numero",
+        "fecha",
+        "total_bi",
+        "iva",
+        "total_a_pagar",
+        "texto_preview",
+        "archivo_pdf",
+        "paginas_detectadas",
+        "txt_generado",
+        "json_generado"
+      ],
+      "properties": {
+        "tipo_documento": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "numero": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "fecha": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "total_bi": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "iva": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "total_a_pagar": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "texto_preview": {
+          "type": "string",
+          "minLength": 1
+        },
+        "archivo_pdf": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\.pdf$"
+        },
+        "paginas_detectadas": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "txt_generado": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\.txt$"
+        },
+        "json_generado": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\.json$"
+        }
+      },
+      "additionalProperties": false
+    },
+    "api_job_created_response": {
+      "type": "object",
+      "required": [
+        "ok",
+        "message",
+        "job_id",
+        "estado",
+        "progreso_porcentaje",
+        "fase_actual",
+        "es_pesado",
+        "endpoints"
+      ],
+      "properties": {
+        "ok": {
+          "const": true
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1
+        },
+        "job_id": {
+          "$ref": "#/$defs/job_id"
+        },
+        "estado": {
+          "$ref": "#/$defs/job_state"
+        },
+        "progreso_porcentaje": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "fase_actual": {
+          "type": "string",
+          "minLength": 1
+        },
+        "es_pesado": {
+          "type": "boolean"
+        },
+        "aneca_canonical_path": {
+          "$ref": "#/$defs/nullable_string"
+        },
+        "aneca_canonical_ready": {
+          "type": "boolean"
+        },
+        "aneca_canonical_validation_status": {
+          "$ref": "#/$defs/aneca_canonical_validation_status"
+        },
+        "endpoints": {
+          "$ref": "#/$defs/endpoints"
+        }
+      },
+      "additionalProperties": false
+    },
+    "subir_job_queued_response": {
+      "type": "object",
+      "required": [
+        "ok",
+        "message",
+        "job_id",
+        "estado",
+        "progreso_porcentaje",
+        "fase_actual",
+        "es_pesado",
+        "umbral_pesado_bytes",
+        "endpoints"
+      ],
+      "properties": {
+        "ok": {
+          "const": true
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1
+        },
+        "job_id": {
+          "$ref": "#/$defs/job_id"
+        },
+        "estado": {
+          "$ref": "#/$defs/job_state"
+        },
+        "progreso_porcentaje": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "fase_actual": {
+          "type": "string",
+          "minLength": 1
+        },
+        "es_pesado": {
+          "type": "boolean"
+        },
+        "umbral_pesado_bytes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "aneca_canonical_path": {
+          "$ref": "#/$defs/nullable_string"
+        },
+        "aneca_canonical_ready": {
+          "type": "boolean"
+        },
+        "aneca_canonical_validation_status": {
+          "$ref": "#/$defs/aneca_canonical_validation_status"
+        },
+        "endpoints": {
+          "$ref": "#/$defs/endpoints"
+        }
+      },
+      "additionalProperties": false
+    },
+    "api_estado_response": {
+      "type": "object",
+      "required": [
+        "ok",
+        "job_id",
+        "estado",
+        "progreso_porcentaje",
+        "fase_actual",
+        "error_parcial",
+        "error_mensaje",
+        "fecha_creacion",
+        "fecha_inicio",
+        "fecha_fin",
+        "tiempo_total_ms",
+        "trace_path",
+        "log_path",
+        "pipeline_log_path"
+      ],
+      "properties": {
+        "ok": {
+          "const": true
+        },
+        "job_id": {
+          "$ref": "#/$defs/job_id"
+        },
+        "estado": {
+          "$ref": "#/$defs/job_state"
+        },
+        "progreso_porcentaje": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "fase_actual": {
+          "type": "string",
+          "minLength": 1
+        },
+        "error_parcial": {
+          "type": "boolean"
+        },
+        "error_mensaje": {
+          "$ref": "#/$defs/nullable_string"
+        },
+        "fecha_creacion": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "fecha_inicio": {
+          "$ref": "#/$defs/nullable_datetime"
+        },
+        "fecha_fin": {
+          "$ref": "#/$defs/nullable_datetime"
+        },
+        "tiempo_total_ms": {
+          "$ref": "#/$defs/nullable_number"
+        },
+        "trace_path": {
+          "$ref": "#/$defs/nullable_string"
+        },
+        "log_path": {
+          "$ref": "#/$defs/nullable_string"
+        },
+        "pipeline_log_path": {
+          "$ref": "#/$defs/nullable_string"
+        },
+        "aneca_canonical_path": {
+          "$ref": "#/$defs/nullable_string"
+        },
+        "aneca_canonical_ready": {
+          "type": "boolean"
+        },
+        "aneca_canonical_validation_status": {
+          "$ref": "#/$defs/aneca_canonical_validation_status"
+        }
+      },
+      "additionalProperties": false
+    },
+    "api_resultado_ready_response": {
+      "type": "object",
+      "required": [
+        "ok",
+        "job_id",
+        "estado",
+        "error_parcial",
+        "error_mensaje",
+        "resultado",
+        "trace_path",
+        "log_path",
+        "pipeline_log_path",
+        "tiempo_total_ms"
+      ],
+      "properties": {
+        "ok": {
+          "const": true
+        },
+        "job_id": {
+          "$ref": "#/$defs/job_id"
+        },
+        "estado": {
+          "$ref": "#/$defs/job_state"
+        },
+        "error_parcial": {
+          "type": "boolean"
+        },
+        "error_mensaje": {
+          "$ref": "#/$defs/nullable_string"
+        },
+        "resultado": {
+          "$ref": "#/$defs/pipeline_result"
+        },
+        "trace_path": {
+          "$ref": "#/$defs/nullable_string"
+        },
+        "log_path": {
+          "$ref": "#/$defs/nullable_string"
+        },
+        "pipeline_log_path": {
+          "$ref": "#/$defs/nullable_string"
+        },
+        "aneca_canonical_path": {
+          "$ref": "#/$defs/nullable_string"
+        },
+        "aneca_canonical_ready": {
+          "type": "boolean"
+        },
+        "aneca_canonical_validation_status": {
+          "$ref": "#/$defs/aneca_canonical_validation_status"
+        },
+        "resultado_aneca_canonico": {
+          "$ref": "#/$defs/aneca_canonical_payload"
+        },
+        "resultado_preferente_formato": {
+          "type": "string",
+          "enum": [
+            "legacy",
+            "aneca_canonico"
+          ]
+        },
+        "resultado_preferente": {
+          "type": "object"
+        },
+        "tiempo_total_ms": {
+          "$ref": "#/$defs/nullable_number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "subir_resultado_ready_response": {
+      "type": "object",
+      "required": [
+        "ok",
+        "message",
+        "job_id",
+        "estado",
+        "progreso_porcentaje",
+        "fase_actual",
+        "resultado",
+        "trace_path",
+        "log_path",
+        "pipeline_log_path",
+        "tiempo_total_ms",
+        "endpoints"
+      ],
+      "properties": {
+        "ok": {
+          "const": true
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1
+        },
+        "job_id": {
+          "$ref": "#/$defs/job_id"
+        },
+        "estado": {
+          "$ref": "#/$defs/job_state"
+        },
+        "progreso_porcentaje": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "fase_actual": {
+          "type": "string",
+          "minLength": 1
+        },
+        "resultado": {
+          "$ref": "#/$defs/pipeline_result"
+        },
+        "trace_path": {
+          "$ref": "#/$defs/nullable_string"
+        },
+        "log_path": {
+          "$ref": "#/$defs/nullable_string"
+        },
+        "pipeline_log_path": {
+          "$ref": "#/$defs/nullable_string"
+        },
+        "aneca_canonical_path": {
+          "$ref": "#/$defs/nullable_string"
+        },
+        "aneca_canonical_ready": {
+          "type": "boolean"
+        },
+        "aneca_canonical_validation_status": {
+          "$ref": "#/$defs/aneca_canonical_validation_status"
+        },
+        "resultado_aneca_canonico": {
+          "$ref": "#/$defs/aneca_canonical_payload"
+        },
+        "resultado_preferente_formato": {
+          "type": "string",
+          "enum": [
+            "legacy",
+            "aneca_canonico"
+          ]
+        },
+        "resultado_preferente": {
+          "type": "object"
+        },
+        "tiempo_total_ms": {
+          "$ref": "#/$defs/nullable_number"
+        },
+        "endpoints": {
+          "$ref": "#/$defs/endpoints"
+        }
+      },
+      "additionalProperties": false
+    },
+    "api_resultado_pending_response": {
+      "type": "object",
+      "required": [
+        "ok",
+        "job_id",
+        "estado",
+        "message"
+      ],
+      "properties": {
+        "ok": {
+          "const": false
+        },
+        "job_id": {
+          "$ref": "#/$defs/job_id"
+        },
+        "estado": {
+          "$ref": "#/$defs/job_state"
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "api_resultado_error_response": {
+      "type": "object",
+      "required": [
+        "ok",
+        "job_id",
+        "estado",
+        "message",
+        "error_mensaje"
+      ],
+      "properties": {
+        "ok": {
+          "const": false
+        },
+        "job_id": {
+          "$ref": "#/$defs/job_id"
+        },
+        "estado": {
+          "$ref": "#/$defs/job_state"
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1
+        },
+        "error_mensaje": {
+          "$ref": "#/$defs/nullable_string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "subir_validation_error_response": {
+      "type": "object",
+      "required": [
+        "ok",
+        "message",
+        "job_id",
+        "estado",
+        "error_mensaje",
+        "endpoints"
+      ],
+      "properties": {
+        "ok": {
+          "const": false
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1
+        },
+        "job_id": {
+          "$ref": "#/$defs/job_id"
+        },
+        "estado": {
+          "$ref": "#/$defs/job_state"
+        },
+        "error_mensaje": {
+          "$ref": "#/$defs/nullable_string"
+        },
+        "endpoints": {
+          "$ref": "#/$defs/endpoints"
+        }
+      },
+      "additionalProperties": false
+    },
+    "generic_error_response": {
+      "type": "object",
+      "required": [
+        "ok",
+        "message"
+      ],
+      "properties": {
+        "ok": {
+          "const": false
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

@@ -6,6 +6,10 @@ require_once __DIR__ . '/OcrProcessor.php';
 require_once __DIR__ . '/OcrEnvironmentChecker.php';
 require_once __DIR__ . '/TextCleaner.php';
 require_once __DIR__ . '/AnecaExtractor.php';
+require_once __DIR__ . '/AnecaCanonicalAdapter.php';
+require_once __DIR__ . '/AnecaCanonicalResultValidator.php';
+require_once __DIR__ . '/ProcessingCache.php';
+require_once __DIR__ . '/PipelineResultValidator.php';
 
 class Pipeline
 {
@@ -60,7 +64,8 @@ class Pipeline
             }
         }
 
-        $cacheContext = $this->prepararBaseCache($pdfPath, $cacheDir);
+        $cache = new ProcessingCache($cacheDir);
+        $cacheContext = $this->prepararBaseCache($pdfPath, $cache);
         $pdfToImage = new PdfToImage();
         $ocr = new OcrProcessor();
 
@@ -266,6 +271,14 @@ class Pipeline
         $datos['txt_generado'] = basename($textFile);
         $datos['json_generado'] = basename($jsonFile);
 
+        $resultValidator = new PipelineResultValidator();
+        $validation = $resultValidator->validate($datos);
+        if ((string)($validation['validation_status'] ?? '') === PipelineResultValidator::STATUS_INVALIDO) {
+            throw new Exception(
+                'Resultado del pipeline invalido: ' . $resultValidator->summarize($validation)
+            );
+        }
+
         $json = json_encode($datos, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
         if ($json === false) {
             throw new Exception('No se pudo serializar el JSON final.');
@@ -273,6 +286,73 @@ class Pipeline
 
         if (file_put_contents($jsonFile, $json) === false) {
             throw new Exception('No se pudo guardar JSON: ' . $jsonFile);
+        }
+
+        $canonicalNormalization = [
+            'enabled' => true,
+            'schema' => 'contrato-canonico-aneca-v1.schema.json',
+            'status' => 'no_generado',
+            'archivo_json_canonico' => null,
+            'ready' => false,
+            'validation_status' => null,
+            'validation_errors' => [],
+            'validation_warnings' => [],
+            'validation_metrics' => [],
+            'error' => null,
+        ];
+
+        try {
+            $canonicalAdapter = new AnecaCanonicalAdapter();
+            $canonicalValidator = new AnecaCanonicalResultValidator();
+            $canonicalPayload = $canonicalAdapter->adaptFromLegacyPipelineResult(
+                $datos,
+                [
+                    'archivo_pdf' => basename($pdfPath),
+                    'json_generado' => basename($jsonFile),
+                    'texto_extraido' => $textoConsolidado,
+                    'fecha_extraccion' => gmdate('c'),
+                    'version_esquema' => '1.0',
+                    'requiere_revision_manual' => true,
+                ]
+            );
+
+            $canonicalJsonFile = $jsonDir . $baseName . '.aneca.canonico.json';
+            $canonicalJson = json_encode($canonicalPayload, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+            if ($canonicalJson === false) {
+                throw new Exception('No se pudo serializar JSON canonico ANECA.');
+            }
+
+            if (file_put_contents($canonicalJsonFile, $canonicalJson) === false) {
+                throw new Exception('No se pudo guardar JSON canonico ANECA: ' . $canonicalJsonFile);
+            }
+
+            $canonicalValidation = $canonicalValidator->validate($canonicalPayload);
+            $canonicalReady = !empty($canonicalValidation['aneca_canonical_ready']);
+            $canonicalStatus = (string)($canonicalValidation['aneca_canonical_validation_status'] ?? '');
+
+            $canonicalNormalization['status'] = $canonicalReady ? 'ok' : 'generado_no_listo';
+            $canonicalNormalization['archivo_json_canonico'] = basename($canonicalJsonFile);
+            $canonicalNormalization['ready'] = $canonicalReady;
+            $canonicalNormalization['validation_status'] = $canonicalStatus !== '' ? $canonicalStatus : null;
+            $canonicalNormalization['validation_errors'] = is_array($canonicalValidation['aneca_canonical_validation_errors'] ?? null)
+                ? $canonicalValidation['aneca_canonical_validation_errors']
+                : [];
+            $canonicalNormalization['validation_warnings'] = is_array($canonicalValidation['aneca_canonical_validation_warnings'] ?? null)
+                ? $canonicalValidation['aneca_canonical_validation_warnings']
+                : [];
+            $canonicalNormalization['validation_metrics'] = is_array($canonicalValidation['aneca_canonical_metrics'] ?? null)
+                ? $canonicalValidation['aneca_canonical_metrics']
+                : [];
+
+            if ($canonicalReady) {
+                $eventos[] = 'normalizacion_aneca_ok';
+            } else {
+                $eventos[] = 'normalizacion_aneca_no_lista:' . ($canonicalStatus !== '' ? $canonicalStatus : 'desconocido');
+            }
+        } catch (Throwable $e) {
+            $canonicalNormalization['status'] = 'error';
+            $canonicalNormalization['error'] = $e->getMessage();
+            $eventos[] = 'normalizacion_aneca_error:' . $e->getMessage();
         }
 
         $timings['total_ms'] = $this->elapsedMs($inicioTotal);
@@ -290,11 +370,16 @@ class Pipeline
             'ocr_environment' => $environmentCheck,
             'timings_ms' => $this->roundTimingArray($timings),
             'cache' => $cacheContext,
+            'validation_status' => $validation['validation_status'] ?? null,
+            'validation_errors' => $validation['validation_errors'] ?? [],
+            'validation_warnings' => $validation['validation_warnings'] ?? [],
+            'normalizacion_contrato_canonico_aneca' => $canonicalNormalization,
             'trazabilidad_paginas' => $trazabilidadPaginas,
             'eventos' => $eventos,
             'artefactos' => [
                 'txt_generado' => basename($textFile),
                 'json_generado' => basename($jsonFile),
+                'json_canonico_aneca' => $canonicalNormalization['archivo_json_canonico'],
             ],
         ];
 
@@ -364,41 +449,50 @@ class Pipeline
         return max(1, $fallback);
     }
 
-    private function prepararBaseCache(string $pdfPath, string $cacheDir): array
+    private function prepararBaseCache(string $pdfPath, ProcessingCache $cache): array
     {
-        $hash = hash_file('sha256', $pdfPath);
-        if (!is_string($hash) || $hash === '') {
-            $hash = '';
-        }
+        try {
+            $hashPdf = $cache->calculatePdfHash($pdfPath);
+            $cacheKey = $cache->buildCacheKeyFromHash($hashPdf);
+            $versions = $cache->getVersions();
 
-        $cacheBase = $hash !== '' ? $cacheDir . $hash : null;
-
-        $cacheInfo = [
-            'pdf_hash_sha256' => $hash,
-            'cache_ready' => $cacheBase !== null,
-            'cache_result_file' => $cacheBase !== null ? basename($cacheBase . '.result.json') : null,
-            'cache_trace_file' => $cacheBase !== null ? basename($cacheBase . '.trace.json') : null,
-            'cache_meta_file' => $cacheBase !== null ? basename($cacheBase . '.meta.json') : null,
-        ];
-
-        if ($cacheBase !== null) {
-            $meta = [
-                'pdf_hash_sha256' => $hash,
-                'archivo_pdf' => basename($pdfPath),
+            return [
+                // Campos legacy conservados para compatibilidad en trazas historicas.
+                'pdf_hash_sha256' => $hashPdf,
                 'cache_ready' => true,
-                'status' => 'base_preparada',
-                'created_at_utc' => gmdate('c'),
-                'result_target' => basename($cacheBase . '.result.json'),
-                'trace_target' => basename($cacheBase . '.trace.json'),
+                'cache_result_file' => $cacheKey . '.result.json',
+                'cache_trace_file' => null,
+                'cache_meta_file' => $cacheKey . '.meta.json',
+                // Campos nuevos de trazabilidad de cache.
+                'hash_pdf' => $hashPdf,
+                'cache_key' => $cacheKey,
+                'cache_hit' => false,
+                'cache_estado' => 'miss',
+                'motivo_invalidation' => null,
+                'version_pipeline' => $versions['version_pipeline'] ?? null,
+                'version_baremo' => $versions['version_baremo'] ?? null,
+                'version_schema' => $versions['version_schema'] ?? null,
+                'cache_text_file' => $cacheKey . '.text.txt',
             ];
-
-            $metaJson = json_encode($meta, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-            if ($metaJson !== false) {
-                @file_put_contents($cacheBase . '.meta.json', $metaJson);
-            }
+        } catch (Throwable $e) {
+            return [
+                'pdf_hash_sha256' => null,
+                'cache_ready' => false,
+                'cache_result_file' => null,
+                'cache_trace_file' => null,
+                'cache_meta_file' => null,
+                'hash_pdf' => null,
+                'cache_key' => null,
+                'cache_hit' => false,
+                'cache_estado' => 'error',
+                'motivo_invalidation' => 'cache_context_error',
+                'version_pipeline' => null,
+                'version_baremo' => null,
+                'version_schema' => null,
+                'cache_text_file' => null,
+                'error' => $e->getMessage(),
+            ];
         }
-
-        return $cacheInfo;
     }
 
     private function ensureDirectories(array $directories): void
@@ -503,6 +597,21 @@ class Pipeline
         $ocrEnvironment = is_array($trace['ocr_environment'] ?? null)
             ? $trace['ocr_environment']
             : [];
+        $validationStatus = (string)($trace['validation_status'] ?? '');
+        $validationErrors = is_array($trace['validation_errors'] ?? null) ? $trace['validation_errors'] : [];
+        $validationWarnings = is_array($trace['validation_warnings'] ?? null) ? $trace['validation_warnings'] : [];
+        $canonicalNormalization = is_array($trace['normalizacion_contrato_canonico_aneca'] ?? null)
+            ? $trace['normalizacion_contrato_canonico_aneca']
+            : [];
+        $canonicalReady = !empty($canonicalNormalization['ready']);
+        $canonicalValidationStatus = (string)($canonicalNormalization['validation_status'] ?? '');
+        $canonicalValidationErrors = is_array($canonicalNormalization['validation_errors'] ?? null)
+            ? $canonicalNormalization['validation_errors']
+            : [];
+        $canonicalValidationWarnings = is_array($canonicalNormalization['validation_warnings'] ?? null)
+            ? $canonicalNormalization['validation_warnings']
+            : [];
+        $canonicalFile = (string)($canonicalNormalization['archivo_json_canonico'] ?? '');
         $pdftoppmInfo = is_array($ocrEnvironment['pdf_tools']['pdftoppm'] ?? null)
             ? $ocrEnvironment['pdf_tools']['pdftoppm']
             : [];
@@ -531,6 +640,14 @@ class Pipeline
             'timing_ocr_ms=' . (float)($timings['ocr_ms'] ?? 0.0),
             'timing_limpieza_ms=' . (float)($timings['limpieza_ms'] ?? 0.0),
             'timing_extraccion_semantica_ms=' . (float)($timings['extraccion_semantica_ms'] ?? 0.0),
+            'validation_status=' . $validationStatus,
+            'validation_errors=' . implode(' || ', $validationErrors),
+            'validation_warnings=' . implode(' || ', $validationWarnings),
+            'aneca_canonical_file=' . $canonicalFile,
+            'aneca_canonical_ready=' . ($canonicalReady ? 'true' : 'false'),
+            'aneca_canonical_validation_status=' . $canonicalValidationStatus,
+            'aneca_canonical_validation_errors=' . implode(' || ', $canonicalValidationErrors),
+            'aneca_canonical_validation_warnings=' . implode(' || ', $canonicalValidationWarnings),
             'paginas_texto_nativo=' . $metodos['texto_nativo'],
             'paginas_ocr=' . $metodos['ocr'],
             'paginas_mixto=' . $metodos['mixto'],

@@ -1,0 +1,329 @@
+﻿docs\2026-03-25-resultados-pruebas-backend-tutorias.md:8:- Estado final de la batería agresiva de 1 hora: **PASS**
+docs\2026-03-25-resultados-pruebas-backend-tutorias.md:57:- Los errores esperados confirman que el backend está aplicando reglas de negocio de forma activa.
+docs\2026-03-25-resultados-pruebas-backend-tutorias.md:74:- El backend Tutor/Tutoría queda validado con una batería agresiva de 1 hora, sin fallos inesperados, con alta carga de operaciones y comprobaciones de invariantes activas.
+docs\2026-03-24-resumen-trabajo.md:14:- **Decisión del día**: mantener arquitectura modular para aislar fallos y facilitar integración progresiva.
+docs\2026-03-26-implementacion-skill-ejecutar-tests.md:13:- Creacion de matriz operativa de apoyo:
+docs\2026-03-26-implementacion-skill-ejecutar-tests.md:35:- mision operativa de la skill
+docs\2026-03-26-implementacion-skill-ejecutar-tests.md:104:- Skill creada y operativa en el repositorio.
+docs\contratos-json-acelerador-v1.md:7:El **unico contrato canonico oficial de dominio** del proyecto Acelerador es:
+docs\contratos-json-acelerador-v1.md:17:Ningun contrato tecnico local de `meritos/scraping` sustituye ni redefine el contrato canonico ANECA.
+docs\contratos-json-acelerador-v1.md:45:  - Ambito: salida actual del pipeline legacy (`tipo_documento`, `iva`, etc.).
+docs\2026-03-25-checkpoint-backend-tutorias.md:9:- Ejecutar y documentar una batería agresiva de pruebas de 1 hora.
+docs\2026-03-25-checkpoint-backend-tutorias.md:29:  - sincronización masiva con consistencia
+docs\2026-03-25-checkpoint-backend-tutorias.md:41:## 3) Testing y validación intensiva
+docs\2026-03-25-checkpoint-backend-tutorias.md:56:- Pruebas agresivas 1h: **superadas (sin errores inesperados)**
+docs\2026-03-25-checkpoint-backend-tutorias.md:74:  - migración progresiva del frontend `acelerador_panel/fronten` para consumir API en lugar de SQL directo.
+meritos/scraping\tools\validate_scraping_technical_contracts.php:6: * No valida contrato canonico ANECA de dominio.
+meritos/scraping\tools\smoke_jobs_queue.php:93:        'tipo_documento',
+meritos/scraping\tools\smoke_jobs_queue.php:96:        'total_bi',
+meritos/scraping\tools\smoke_jobs_queue.php:97:        'iva',
+meritos/scraping\tools\smoke_jobs_queue.php:98:        'total_a_pagar',
+meritos/scraping\tools\smoke_jobs_queue.php:194:        'tipo_documento' => 'informe',
+meritos/scraping\tools\smoke_jobs_queue.php:197:        'total_bi' => '10',
+meritos/scraping\tools\smoke_jobs_queue.php:198:        'iva' => '2.1',
+meritos/scraping\tools\smoke_jobs_queue.php:199:        'total_a_pagar' => '12.1',
+meritos/scraping\tools\smoke_jobs_queue.php:224:    foreach (['tipo_documento', 'numero', 'fecha', 'total_bi', 'iva', 'total_a_pagar'] as $campo) {
+docs\estado-tecnico-2026-04-06.md:52:- Observaciones: Nivel=standard; Ventana=15m; Presupuesto intensivo=0s; Distribucion=sin fase intensiva; No verificables=0; Nivel standard no ejecuta fase intensiva.
+docs\estado-tecnico-2026-04-06.md:72:- Comparativa entre fuentes importadas desde ZIP y archivos adaptados en `acelerador_panel/fronten`.
+docs\estado-tecnico-2026-04-06.md:172:- Bateria intensiva real ejecutada:
+docs\estado-tecnico-2026-04-06.md:192:- El flujo normal con sesion activa se mantiene sin cambios de comportamiento.
+docs\estado-tecnico-2026-03-29.md:39:- No hay riesgos abiertos derivados de cambios no confirmados en el repositorio.
+docs\control-versiones-estado-tecnico-mvp.md:12:## Comparativa v0.1 -> v0.2
+docs\control-versiones-estado-tecnico-mvp.md:19:| Validacion de carga backend tutorias | No reflejada | Bateria agresiva 1h en PASS | `docs/2026-03-25-resultados-pruebas-backend-tutorias.md`, `acelerador_panel/backend/tests/results/aggressive_battery_2026-03-25_1h.json` |
+docs\control-versiones-estado-tecnico-mvp.md:28:- Se ejecuta y documenta una bateria agresiva de 1 hora en PASS.
+docs\control-versiones-estado-tecnico-mvp.md:30:- Se incorpora una skill operativa para validaciones adaptativas (`ejecutar-tests`).
+docs\estado-contratos-json-2026-04-21.md:5:- El contrato canonico oficial del proyecto queda fijado de forma explicita en:
+docs\estado-contratos-json-2026-04-21.md:10:- Se deja implementada una capa de adaptacion para normalizar la salida legacy del pipeline al contrato canonico ANECA, sin romper el runtime actual:
+docs\estado-contratos-json-2026-04-21.md:38:- `docs/schemas/pipeline-result.v1.schema.json`
+docs\estado-contratos-json-2026-04-21.md:66:## 7. Decision sobre `pipeline-result.v1.schema.json`
+docs\estado-contratos-json-2026-04-21.md:71:  - `docs/schemas/pipeline-result.v1.schema.json`
+docs\estado-contratos-json-2026-04-21.md:72:- Archivo vigente equivalente (legacy):
+docs\estado-contratos-json-2026-04-21.md:78:  - `tipo_documento`, `numero`, `fecha`, `total_bi`, `iva`, `total_a_pagar`, `texto_preview`
+docs\estado-contratos-json-2026-04-21.md:82:- Esa forma no coincide con el contrato canonico ANECA por bloques (`bloque_1..4`, `metadatos_extraccion`, `texto_extraido`), por lo que no puede etiquetarse como canonica.
+docs\estado-contratos-json-2026-04-21.md:92:  2. Planificar migracion de consumidores a contrato canonico ANECA.
+docs\estado-contratos-json-2026-04-21.md:93:  3. Retirar progresivamente el payload legacy cuando no existan consumidores dependientes.
+docs\estado-tecnico-2026-04-10.md:12:- OCR del evaluador queda cerrado operativamente con fallback real activo.
+docs\estado-tecnico-2026-04-10.md:32:- Este documento se mantiene como referencia operativa principal del cierre.
+docs\estado-tecnico-2026-03-27.md:24:- Se añadió el flag --non-interactive para automatización explícita y se eliminó el fallback silencioso cuando no hay entrada interactiva real.
+docs\estado-tecnico-2026-03-27.md:43:- Dependencia operativa de php CLI y comandos de validación existentes del repositorio para ejecutar la batería standard.
+docs\estado-tecnico-2026-03-27.md:44:- Dependencia de entrada estándar interactiva del entorno de ejecución para capturar prompts correctamente.
+docs\estado-tecnico-2026-03-27.md:53:- Mantener validación continua del flujo interactivo junto con pruebas automatizadas no interactivas.
+meritos/scraping\src\AnecaCanonicalAdapter.php:4: * Adaptador de normalizacion al contrato canonico oficial ANECA.
+meritos/scraping\src\AnecaCanonicalAdapter.php:84:    private function resolveText($primary, $fallback): string
+meritos/scraping\src\AnecaCanonicalAdapter.php:99:    private function resolveRequiredFileName($first, $second, string $fallback): string
+meritos/scraping\src\AnecaCanonicalAdapter.php:113:    private function safeString($value): ?string
+docs\estado-tecnico-2026-04-09.md:13:- Se dejo validacion reproducible de OCR/fallback y se ejecuto bateria agresiva de 6h para validar estabilidad global.
+docs\estado-tecnico-2026-04-09.md:24:- Actualizado evaluador/src/Pipeline.php con rutas de extraccion pdftotext + fallback OCR y metadatos de trazabilidad (modo_extraccion_texto, fallback_ocr_activado, detalle_extraccion_texto, ocr_disponible).
+docs\estado-tecnico-2026-04-09.md:35:- Se mantiene compatibilidad con el contrato canonico ANECA v1 al no romper campos obligatorios ni estructura top-level.
+docs\estado-tecnico-2026-04-09.md:45:- Inspect schema backend quedo no verificable en la bateria agresiva por BD ausente (Unknown database 'acelerador').
+docs\estado-tecnico-2026-04-09.md:46:- Pendiente evidencia final OCR con fallback realmente activado sobre entorno con OCR operativo.
+docs\estado-tecnico-2026-04-09.md:50:- Reejecutar evaluador/tests/validate_ocr_fallback.php hasta obtener casos con fallback_ocr_activado=true.
+docs\estado-tecnico-mvp-2026-03-26.md:29:  - `mcp-server/resultados/validacion_ocr_agresiva_report.json`
+docs\estado-tecnico-mvp-2026-03-26.md:50:  - El backend API existe, pero no se observa migracion completa del frontend para consumirlo de forma nativa.
+docs\estado-tecnico-mvp-2026-03-26.md:78:  - Bateria agresiva backend 1h en PASS (docs + reporte JSON)
+docs\estado-tecnico-mvp.md:4:> Para estado actualizado y comparativa:
+docs\estado-tecnico-mvp.md:16:  - `tipo_documento`, `numero`, `fecha`, `total_bi`, `iva`, `total_a_pagar`, `texto_preview`
+docs\estrategia-testing-mvp.md:49:  - puede incluir iteraciones intensivas y carga de OCR/DB.
+docs\estrategia-testing-mvp.md:83:## Propuesta operativa de ejecución
+docs\estrategia-testing-mvp.md:109:  - Mitigación: normalización progresiva tras entrega MVP.
+meritos/scraping\public\api_cv_procesar.php:4:// No define el contrato canonico oficial de dominio (ANECA).
+meritos/scraping\src\AnecaExtractor.php:7: * - Este extractor NO define el contrato canonico oficial del dominio ANECA.
+meritos/scraping\src\AnecaExtractor.php:9: * - El contrato canonico oficial del proyecto es:
+meritos/scraping\src\AnecaExtractor.php:17:            'tipo_documento' => $this->extraerTipoDocumento($texto),
+meritos/scraping\src\AnecaExtractor.php:20:            'total_bi' => $this->extraerTotalBI($texto),
+meritos/scraping\src\AnecaExtractor.php:21:            'iva' => $this->extraerIVA($texto),
+meritos/scraping\src\AnecaExtractor.php:22:            'total_a_pagar' => $this->extraerTotalPagar($texto),
+meritos/scraping\src\AnecaExtractor.php:27:    private function extraerTipoDocumento(string $texto): ?string
+meritos/scraping\src\AnecaExtractor.php:35:    private function extraerNumero(string $texto): ?string
+meritos/scraping\src\AnecaExtractor.php:43:    private function extraerFecha(string $texto): ?string
+meritos/scraping\src\AnecaExtractor.php:56:    private function extraerTotalBI(string $texto): ?string
+meritos/scraping\src\AnecaExtractor.php:64:    private function extraerIVA(string $texto): ?string
+meritos/scraping\src\AnecaExtractor.php:77:    private function extraerTotalPagar(string $texto): ?string
+docs\registro-diario-2026-03-29.md:33:- La documentación diaria se alimentó con evidencia real derivada de git status de la sesión.
+docs\registro-diario-2026-03-27.md:33:- Se decidió tratar ausencia de entrada interactiva como error controlado para evitar decisiones por defecto no solicitadas.
+docs\registro-diario-2026-03-27.md:44:- [﻿Basilio Lagares | Desarrollo backend] La documentación diaria se alimentó con evidencia real derivada de git status de la sesión.
+meritos/scraping\public\subir.php:4:// No define el contrato canonico oficial de dominio (ANECA).
+docs\registro-diario-2026-04-02.md:35:- La documentación diaria se alimentó con evidencia real derivada de git status de la sesión.
+meritos/scraping\src\JsonSchemaLiteValidator.php:19:    private array $rootSchema;
+meritos/scraping\src\JsonSchemaLiteValidator.php:45:    private function validateNode(mixed $data, array $schema, string $path, array &$errors): void
+meritos/scraping\src\JsonSchemaLiteValidator.php:164:    private function validateComposition(mixed $data, array $schema, string $path, array &$errors): bool
+meritos/scraping\src\JsonSchemaLiteValidator.php:225:    private function resolveRef(string $ref): ?array
+meritos/scraping\src\JsonSchemaLiteValidator.php:249:    private function matchesAnyType(mixed $data, array $allowedTypes): bool
+meritos/scraping\src\JsonSchemaLiteValidator.php:259:    private function matchesType(string $type, mixed $data): bool
+meritos/scraping\src\JsonSchemaLiteValidator.php:273:    private function isObject(mixed $data): bool
+meritos/scraping\src\JsonSchemaLiteValidator.php:278:    private function isArray(mixed $data): bool
+meritos/scraping\src\JsonSchemaLiteValidator.php:283:    private function detectType(mixed $data): string
+meritos/scraping\src\JsonSchemaLiteValidator.php:309:    private function isValidDateTime(string $value): bool
+meritos/scraping\src\CvProcessingJobService.php:9:    private $queue;
+meritos/scraping\src\CvProcessingJobService.php:10:    private $cache;
+meritos/scraping\src\CvProcessingJobService.php:11:    private $pdfDir;
+meritos/scraping\src\CvProcessingJobService.php:12:    private $heavyThresholdBytes;
+meritos/scraping\src\CvProcessingJobService.php:13:    private $resultValidator;
+meritos/scraping\src\CvProcessingJobService.php:150:    private function createCompletedJobFromCache(
+meritos/scraping\src\CvProcessingJobService.php:269:    private function validateUploadArray(array $uploadedFile): void
+meritos/scraping\src\CvProcessingJobService.php:286:    private function detectMimeType(string $filePath): string
+meritos/scraping\src\CvProcessingJobService.php:302:    private function moveUploadedFile(string $tmpPath, string $targetPath): bool
+meritos/scraping\src\CvProcessingJobService.php:316:    private function buildStoredFileName(string $originalName): string
+meritos/scraping\src\CvProcessingJobService.php:333:    private function readEnvInt(string $envVar, int $default, int $min, int $max): int
+meritos/scraping\src\CvProcessingJobService.php:351:    private function buildValidationMessageForCompletion(array $validation, string $prefix): string
+meritos/scraping\src\CvProcessingJobService.php:369:    private function safeString($value): ?string
+meritos/scraping\src\OcrEnvironmentChecker.php:5:    private $warnings = [];
+meritos/scraping\src\OcrEnvironmentChecker.php:6:    private $misconfigured = false;
+meritos/scraping\src\OcrEnvironmentChecker.php:45:    private function checkTool(string $toolName, string $envVar, string $versionArg): array
+meritos/scraping\src\OcrEnvironmentChecker.php:90:    private function resolveFromEnvironmentValue(string $value): ?string
+meritos/scraping\src\OcrEnvironmentChecker.php:106:    private function resolveMode(bool $ocrReady, bool $pdftoppmAvailable, bool $tesseractAvailable): string
+meritos/scraping\src\OcrEnvironmentChecker.php:123:    private function isExecutablePath(string $path): bool
+meritos/scraping\src\OcrEnvironmentChecker.php:136:    private function looksLikeCommand(string $value): bool
+meritos/scraping\src\OcrEnvironmentChecker.php:141:    private function findInPath(string $command): ?string
+meritos/scraping\src\OcrEnvironmentChecker.php:169:    private function detectVersion(string $pathOrCommand, string $versionArg): ?string
+meritos/scraping\src\OcrEnvironmentChecker.php:191:    private function buildExecutableCommand(string $pathOrCommand): string
+docs\registro-diario-2026-04-06.md:35:- La documentación diaria se alimentó con evidencia real derivada de git status de la sesión.
+docs\registro-diario-2026-04-06.md:52:- Observaciones: Nivel=standard; Ventana=15m; Presupuesto intensivo=0s; Distribucion=sin fase intensiva; No verificables=0; Nivel standard no ejecuta fase intensiva..
+docs\registro-diario-2026-04-06.md:76:- Se ejecuto bateria agresiva de 1 hora en tiempo real:
+meritos/scraping\src\OcrProcessor.php:5:    private $tesseractPath;
+meritos/scraping\src\OcrProcessor.php:6:    private $idioma;
+meritos/scraping\src\OcrProcessor.php:126:    private function resolveExecutablePath(string $envVar, array $candidates, string $commandName): ?string
+meritos/scraping\src\OcrProcessor.php:146:    private function existsInPath(string $commandName): bool
+meritos/scraping\src\OcrProcessor.php:159:    private function buildExecutableCommand(string $pathOrCommand): string
+meritos/scraping\src\OcrProcessor.php:168:    private function elapsedMs(float $inicio): float
+docs\registro-diario-2026-04-09.md:13:- Se dejo trazabilidad tecnica y evidencia de pruebas agresivas para soporte de decision de cierre.
+docs\registro-diario-2026-04-09.md:17:- Integracion efectiva de fallback OCR en ruta principal de procesamiento.
+docs\registro-diario-2026-04-09.md:20:- Ejecucion y seguimiento de bateria agresiva 6h con $ejecutar-tests.
+docs\registro-diario-2026-04-09.md:35:- Se ejecuto bateria agresiva completa de 6h para comprobar estabilidad global de los cambios.
+docs\registro-diario-2026-04-09.md:38:- Instalar OCR (tesseract+tessdata) y repetir evidencia de fallback activado.
+meritos/scraping\src\PdfNativeTextExtractor.php:5:    private $minChars;
+meritos/scraping\src\PdfNativeTextExtractor.php:6:    private $minWords;
+meritos/scraping\src\PdfNativeTextExtractor.php:7:    private $minAlnumRatio;
+meritos/scraping\src\PdfNativeTextExtractor.php:19:            throw new Exception('No existe el PDF para extraccion nativa: ' . $pdfPath);
+meritos/scraping\src\PdfNativeTextExtractor.php:68:    private function ensurePdfParserLoaded(): void
+meritos/scraping\src\PdfNativeTextExtractor.php:87:    private function evaluarCalidad(string $texto): array
+meritos/scraping\src\PdfNativeTextExtractor.php:144:    private function buildReason(
+meritos/scraping\src\PdfNativeTextExtractor.php:179:    private function normalizarTexto(string $texto): string
+meritos/scraping\src\PdfNativeTextExtractor.php:187:    private function strlenUtf8(string $texto): int
+meritos/scraping\src\PdfNativeTextExtractor.php:196:    private function elapsedMs(float $inicio): float
+meritos/scraping\src\PdfNativeTextExtractor.php:201:    private function limitInt(int $value, int $min, int $max): int
+meritos/scraping\src\PdfNativeTextExtractor.php:214:    private function limitFloat(float $value, float $min, float $max): float
+meritos/scraping\src\PdfToImage.php:5:    private $pdftoppmPath;
+meritos/scraping\src\PdfToImage.php:6:    private $dpi;
+meritos/scraping\src\PdfToImage.php:104:    private function assertDisponible(): void
+meritos/scraping\src\PdfToImage.php:111:    private function normalizarPaginas(array $paginas): array
+meritos/scraping\src\PdfToImage.php:128:    private function resolveExecutablePath(string $envVar, array $candidates, string $commandName): ?string
+meritos/scraping\src\PdfToImage.php:148:    private function existsInPath(string $commandName): bool
+meritos/scraping\src\PdfToImage.php:161:    private function buildExecutableCommand(string $pathOrCommand): string
+meritos/scraping\src\PdfToImage.php:170:    private function limitInt(int $value, int $min, int $max): int
+meritos/scraping\output\json\Document1_pdfcreator.json:2:    "tipo_documento": null,
+meritos/scraping\output\json\Document1_pdfcreator.json:5:    "total_bi": null,
+meritos/scraping\output\json\Document1_pdfcreator.json:6:    "iva": null,
+meritos/scraping\output\json\Document1_pdfcreator.json:7:    "total_a_pagar": null,
+meritos/scraping\output\json\Document1_pdfcreator.json:8:    "texto_preview": "Document title \n \nCalibri : Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla lacus arcu, feugiat a ligula \ncursus, feugiat dapibus diam. Cras augue ante, volutpat non velit sit amet, vehicula facilisis lacus. \nMorbi vitae sapien elementum, gravida felis non, egestas magna. Aenean at mauris vitae magna \ndignissim dapibus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia \nCurae; Vivamus purus urna, sagittis eget semper id, porta vel risus. Integer sed felis rutrum, tempor \nnisl non, pellentesque elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi arcu nunc, \ncursus a libero eu, bibendum accumsan est. Vivamus non risus pellentesque massa tempus \nbibendum. Nunc in commodo dui. Integer pharetra felis arcu, id cursus lacus fringilla vel. Vestibulum \neget purus consequat, consequat mi ac, feugiat mi. \nArial : Praesent dictum vel orci ut aliquam. In hac habitasse platea dictumst. Nulla fermentum \nnibh eget rutrum suscipit. Donec in luctus eros. Cras tristique erat a tellus sodales, sit amet \ntempor massa aliquet. Ut a metus vitae ligula viverra congue. Curabitur non feugiat lacus. \nInteger a euismod quam. Donec eu laoreet magna",
+meritos/scraping\src\Pipeline.php:43:            'extraccion_nativa_ms' => 0.0,
+meritos/scraping\src\Pipeline.php:55:        $fallbackLegacyActivado = false;
+meritos/scraping\src\Pipeline.php:73:        $this->reportPhase($phaseCallback, 'procesando_pdf', 18, 'extraccion_nativa');
+meritos/scraping\src\Pipeline.php:79:            $eventos[] = 'extraccion_nativa_ok';
+meritos/scraping\src\Pipeline.php:81:            $eventos[] = 'extraccion_nativa_error:' . $e->getMessage();
+meritos/scraping\src\Pipeline.php:84:        $timings['extraccion_nativa_ms'] = $this->elapsedMs($inicioNativo);
+meritos/scraping\src\Pipeline.php:222:            $fallbackLegacyActivado = true;
+meritos/scraping\src\Pipeline.php:223:            $eventos[] = 'activando_fallback_legacy';
+meritos/scraping\src\Pipeline.php:341:            'fallback_legacy_activado' => $fallbackLegacyActivado,
+meritos/scraping\src\Pipeline.php:364:    private function procesarConFlujoLegacy(string $pdfPath, string $imagePrefix, PdfToImage $pdfToImage, OcrProcessor $ocr): array
+meritos/scraping\src\Pipeline.php:409:    private function inferirNumeroPaginaDesdeImagen(string $imagePath, int $fallback): int
+meritos/scraping\src\Pipeline.php:424:    private function prepararBaseCache(string $pdfPath, ProcessingCache $cache): array
+meritos/scraping\src\Pipeline.php:470:    private function ensureDirectories(array $directories): void
+meritos/scraping\src\Pipeline.php:483:    private function consolidarTextoPorPagina(array $textoPorPagina): string
+meritos/scraping\src\Pipeline.php:502:    private function combinarTextoNativoYOcr(string $textoNativo, string $textoOcr): string
+meritos/scraping\src\Pipeline.php:532:    private function normalizarTexto(string $texto): string
+meritos/scraping\src\Pipeline.php:540:    private function guardarArtefactosTrazabilidad(string $traceFile, string $logFile, array $trace): void
+meritos/scraping\src\Pipeline.php:588:            'fallback_legacy_activado=' . (!empty($trace['fallback_legacy_activado']) ? 'true' : 'false'),
+meritos/scraping\src\Pipeline.php:599:            'timing_extraccion_nativa_ms=' . (float)($timings['extraccion_nativa_ms'] ?? 0.0),
+meritos/scraping\src\Pipeline.php:618:            . ' nativo_ms=' . (string)($timings['extraccion_nativa_ms'] ?? 0.0)
+meritos/scraping\src\Pipeline.php:624:    private function roundTimingArray(array $timings): array
+meritos/scraping\src\Pipeline.php:633:    private function elapsedMs(float $inicio): float
+meritos/scraping\src\Pipeline.php:638:    private function reportPhase(
+meritos/scraping\src\Pipeline.php:659:    private function checkEnvironmentSafely(): array
+meritos/scraping\output\text\Document1_pdfcreator.txt:7:Curae; Vivamus purus urna, sagittis eget semper id, porta vel risus. Integer sed felis rutrum, tempor 
+meritos/scraping\output\text\Document1_pdfcreator.txt:9:cursus a libero eu, bibendum accumsan est. Vivamus non risus pellentesque massa tempus 
+meritos/scraping\output\text\Document1_pdfcreator.txt:35:pellentesque et et lectus. Pellentesque in augue ipsum. Vivamus sapien lorem, 
+meritos/scraping\output\json\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.json:2:    "tipo_documento": null,
+meritos/scraping\output\json\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.json:5:    "total_bi": null,
+meritos/scraping\output\json\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.json:6:    "iva": null,
+meritos/scraping\output\json\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.json:7:    "total_a_pagar": null,
+meritos/scraping\output\json\smoke_20260417_110306_80a6c4_ok.json:2:    "tipo_documento": null,
+meritos/scraping\output\json\smoke_20260417_110306_80a6c4_ok.json:5:    "total_bi": null,
+meritos/scraping\output\json\smoke_20260417_110306_80a6c4_ok.json:6:    "iva": null,
+meritos/scraping\output\json\smoke_20260417_110306_80a6c4_ok.json:7:    "total_a_pagar": null,
+meritos/scraping\output\json\smoke_20260417_110306_80a6c4_ok.json:8:    "texto_preview": "Document title \n \nCalibri : Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla lacus arcu, feugiat a ligula \ncursus, feugiat dapibus diam. Cras augue ante, volutpat non velit sit amet, vehicula facilisis lacus. \nMorbi vitae sapien elementum, gravida felis non, egestas magna. Aenean at mauris vitae magna \ndignissim dapibus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia \nCurae; Vivamus purus urna, sagittis eget semper id, porta vel risus. Integer sed felis rutrum, tempor \nnisl non, pellentesque elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi arcu nunc, \ncursus a libero eu, bibendum accumsan est. Vivamus non risus pellentesque massa tempus \nbibendum. Nunc in commodo dui. Integer pharetra felis arcu, id cursus lacus fringilla vel. Vestibulum \neget purus consequat, consequat mi ac, feugiat mi. \nArial : Praesent dictum vel orci ut aliquam. In hac habitasse platea dictumst. Nulla fermentum \nnibh eget rutrum suscipit. Donec in luctus eros. Cras tristique erat a tellus sodales, sit amet \ntempor massa aliquet. Ut a metus vitae ligula viverra congue. Curabitur non feugiat lacus. \nInteger a euismod quam. Donec eu laoreet magna",
+meritos/scraping\output\json\smoke_20260417_112527_a0aa3f_ok.json:2:    "tipo_documento": null,
+meritos/scraping\output\json\smoke_20260417_112527_a0aa3f_ok.json:5:    "total_bi": null,
+meritos/scraping\output\json\smoke_20260417_112527_a0aa3f_ok.json:6:    "iva": null,
+meritos/scraping\output\json\smoke_20260417_112527_a0aa3f_ok.json:7:    "total_a_pagar": null,
+meritos/scraping\output\json\smoke_20260417_112527_a0aa3f_ok.json:8:    "texto_preview": "Document title \n \nCalibri : Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla lacus arcu, feugiat a ligula \ncursus, feugiat dapibus diam. Cras augue ante, volutpat non velit sit amet, vehicula facilisis lacus. \nMorbi vitae sapien elementum, gravida felis non, egestas magna. Aenean at mauris vitae magna \ndignissim dapibus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia \nCurae; Vivamus purus urna, sagittis eget semper id, porta vel risus. Integer sed felis rutrum, tempor \nnisl non, pellentesque elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi arcu nunc, \ncursus a libero eu, bibendum accumsan est. Vivamus non risus pellentesque massa tempus \nbibendum. Nunc in commodo dui. Integer pharetra felis arcu, id cursus lacus fringilla vel. Vestibulum \neget purus consequat, consequat mi ac, feugiat mi. \nArial : Praesent dictum vel orci ut aliquam. In hac habitasse platea dictumst. Nulla fermentum \nnibh eget rutrum suscipit. Donec in luctus eros. Cras tristique erat a tellus sodales, sit amet \ntempor massa aliquet. Ut a metus vitae ligula viverra congue. Curabitur non feugiat lacus. \nInteger a euismod quam. Donec eu laoreet magna",
+meritos/scraping\output\text\smoke_20260417_112527_a0aa3f_ok.txt:7:Curae; Vivamus purus urna, sagittis eget semper id, porta vel risus. Integer sed felis rutrum, tempor 
+meritos/scraping\output\text\smoke_20260417_112527_a0aa3f_ok.txt:9:cursus a libero eu, bibendum accumsan est. Vivamus non risus pellentesque massa tempus 
+meritos/scraping\output\text\smoke_20260417_112527_a0aa3f_ok.txt:35:pellentesque et et lectus. Pellentesque in augue ipsum. Vivamus sapien lorem, 
+meritos/scraping\src\ProcessingJobWorker.php:10:    private $queue;
+meritos/scraping\src\ProcessingJobWorker.php:11:    private $cache;
+meritos/scraping\src\ProcessingJobWorker.php:12:    private $logsDir;
+meritos/scraping\src\ProcessingJobWorker.php:13:    private $resultValidator;
+meritos/scraping\src\ProcessingJobWorker.php:305:    private function defaultCacheLookup(): array
+meritos/scraping\src\ProcessingJobWorker.php:324:    private function validateResult(array $resultado): array
+meritos/scraping\src\ProcessingJobWorker.php:331:    private function locatePipelineArtifacts(string $pdfPath, float $startedAt): array
+meritos/scraping\src\ProcessingJobWorker.php:344:    private function pickLatestArtifact(string $pattern, float $startedAt): ?string
+meritos/scraping\src\ProcessingJobWorker.php:382:    private function detectPartialError(?string $tracePath): bool
+meritos/scraping\src\ProcessingJobWorker.php:407:    private function elapsedMsFromJobStart(array $job): float
+meritos/scraping\src\ProcessingJobWorker.php:422:    private function resolveHashFromJobOrFile(array $job, string $pdfPath): string
+meritos/scraping\src\ProcessingJobWorker.php:432:    private function applyCacheContextToJob(string $jobId, string $hashPdf, array $cacheLookup, bool $cacheHit): array
+meritos/scraping\src\ProcessingJobWorker.php:494:    private function persistCacheForJob(
+meritos/scraping\src\ProcessingJobWorker.php:573:    private function loadExtractedTextIfAvailable(array $resultado, array $job): ?string
+meritos/scraping\src\ProcessingJobWorker.php:600:    private function applyValidationContextToJob(string $jobId, array $validation): array
+meritos/scraping\src\ProcessingJobWorker.php:618:    private function buildValidationMessageForCompletion(array $validation, string $prefix): string
+meritos/scraping\src\ProcessingJobWorker.php:636:    private function safeString($value): ?string
+meritos/scraping\src\ProcessingJobWorker.php:646:    private function safeStringList($value): array
+docs\test-runs\ejecutar-tests-agresivo-6h_20260409_131828.json:76:            "name": "Backend bateria agresiva (16200s)",
+docs\schemas\api-response.v1.schema.json:5:  "description": "Contrato tecnico local de respuestas JSON publicadas por api_cv_procesar.php y subir.php. NO es contrato canonico de dominio.",
+docs\schemas\api-response.v1.schema.json:98:      "description": "Resultado legacy/transitorio del pipeline local. NO equivale al contrato canonico ANECA.",
+docs\schemas\api-response.v1.schema.json:100:        "tipo_documento",
+docs\schemas\api-response.v1.schema.json:103:        "total_bi",
+docs\schemas\api-response.v1.schema.json:104:        "iva",
+docs\schemas\api-response.v1.schema.json:105:        "total_a_pagar",
+docs\schemas\api-response.v1.schema.json:113:        "tipo_documento": {
+docs\schemas\api-response.v1.schema.json:131:        "total_bi": {
+docs\schemas\api-response.v1.schema.json:137:        "iva": {
+docs\schemas\api-response.v1.schema.json:143:        "total_a_pagar": {
+docs\schemas\validacion-contrato-canonico-aneca-v1.md:1:# Validacion automatica del contrato canonico ANECA v1
+docs\schemas\validacion-contrato-canonico-aneca-v1.md:3:Este documento describe como ejecutar la validacion del contrato canonico ANECA (ruta SIN MCP) contra salidas reales del evaluador.
+docs\schemas\validacion-contrato-canonico-aneca-v1.md:7:- Este flujo valida el **contrato canonico oficial de dominio**.
+meritos/scraping\output\text\smoke_20260417_110306_80a6c4_ok.txt:7:Curae; Vivamus purus urna, sagittis eget semper id, porta vel risus. Integer sed felis rutrum, tempor 
+meritos/scraping\output\text\smoke_20260417_110306_80a6c4_ok.txt:9:cursus a libero eu, bibendum accumsan est. Vivamus non risus pellentesque massa tempus 
+meritos/scraping\output\text\smoke_20260417_110306_80a6c4_ok.txt:35:pellentesque et et lectus. Pellentesque in augue ipsum. Vivamus sapien lorem, 
+meritos/scraping\output\logs\smoke_20260417_112527_a0aa3f_ok.20260417_112527.trace.json:7:    "fallback_legacy_activado": false,
+meritos/scraping\output\logs\smoke_20260417_112527_a0aa3f_ok.20260417_112527.trace.json:32:        "extraccion_nativa_ms": 278.88,
+meritos/scraping\output\logs\smoke_20260417_112527_a0aa3f_ok.20260417_112527.trace.json:56:        "extraccion_nativa_ok"
+meritos/scraping\output\logs\Document1_pdfcreator.20260417_112701.trace.json:7:    "fallback_legacy_activado": false,
+meritos/scraping\output\logs\Document1_pdfcreator.20260417_112701.trace.json:32:        "extraccion_nativa_ms": 258.94,
+meritos/scraping\output\logs\Document1_pdfcreator.20260417_112701.trace.json:56:        "extraccion_nativa_ok"
+meritos/scraping\output\logs\Document1_pdfcreator.20260417_085751.pipeline.log:6:fallback_legacy_activado=false
+meritos/scraping\output\logs\Document1_pdfcreator.20260417_085751.pipeline.log:17:timing_extraccion_nativa_ms=269.73
+meritos/scraping\output\logs\Document1_pdfcreator.20260417_085751.pipeline.log:26:eventos=ocr_env_mode:ocr_unavailable | ocr_env_warning:No se detecto pdftoppm en PATH ni via PDFTOPPM_PATH. | ocr_env_warning:No se detecto tesseract en PATH ni via TESSERACT_PATH. | extraccion_nativa_ok
+meritos/scraping\output\logs\smoke_20260417_110306_80a6c4_ok.20260417_110306.pipeline.log:6:fallback_legacy_activado=false
+meritos/scraping\output\logs\smoke_20260417_110306_80a6c4_ok.20260417_110306.pipeline.log:17:timing_extraccion_nativa_ms=230.92
+meritos/scraping\output\logs\smoke_20260417_110306_80a6c4_ok.20260417_110306.pipeline.log:26:eventos=ocr_env_mode:ocr_unavailable | ocr_env_warning:No se detecto pdftoppm en PATH ni via PDFTOPPM_PATH. | ocr_env_warning:No se detecto tesseract en PATH ni via TESSERACT_PATH. | extraccion_nativa_ok
+meritos/scraping\output\logs\Document1_pdfcreator.20260417_083145.pipeline.log:6:fallback_legacy_activado=false
+meritos/scraping\output\logs\Document1_pdfcreator.20260417_083145.pipeline.log:8:timing_extraccion_nativa_ms=489.26
+meritos/scraping\output\logs\Document1_pdfcreator.20260417_083145.pipeline.log:17:eventos=extraccion_nativa_ok
+meritos/scraping\output\logs\Document1_pdfcreator.20260417_083145.trace.json:7:    "fallback_legacy_activado": false,
+meritos/scraping\output\logs\Document1_pdfcreator.20260417_083145.trace.json:10:        "extraccion_nativa_ms": 489.26,
+meritos/scraping\output\logs\Document1_pdfcreator.20260417_083145.trace.json:31:        "extraccion_nativa_ok"
+meritos/scraping\output\logs\Document1_pdfcreator.20260417_085751.trace.json:7:    "fallback_legacy_activado": false,
+meritos/scraping\output\logs\Document1_pdfcreator.20260417_085751.trace.json:32:        "extraccion_nativa_ms": 269.73,
+meritos/scraping\output\logs\Document1_pdfcreator.20260417_085751.trace.json:56:        "extraccion_nativa_ok"
+meritos/scraping\output\logs\Document1_pdfcreator.20260417_112701.pipeline.log:6:fallback_legacy_activado=false
+meritos/scraping\output\logs\Document1_pdfcreator.20260417_112701.pipeline.log:17:timing_extraccion_nativa_ms=258.94
+meritos/scraping\output\logs\Document1_pdfcreator.20260417_112701.pipeline.log:26:eventos=ocr_env_mode:ocr_unavailable | ocr_env_warning:No se detecto pdftoppm en PATH ni via PDFTOPPM_PATH. | ocr_env_warning:No se detecto tesseract en PATH ni via TESSERACT_PATH. | extraccion_nativa_ok
+docs\schemas\processing-cache.v1.schema.json:5:  "description": "Contrato tecnico interno de metadatos de cache en output/cache/<cache_key>.meta.json. NO es contrato canonico de dominio.",
+meritos/scraping\src\ProcessingJobQueue.php:5:    private $jobsDir;
+meritos/scraping\src\ProcessingJobQueue.php:6:    private $jobLogsDir;
+meritos/scraping\src\ProcessingJobQueue.php:338:    private function ensureDirectories(): void
+meritos/scraping\src\ProcessingJobQueue.php:351:    private function readJobOrFail(string $jobId): array
+meritos/scraping\src\ProcessingJobQueue.php:361:    private function writeJob(array $job): void
+meritos/scraping\src\ProcessingJobQueue.php:382:    private function jobFilePath(string $jobId): string
+meritos/scraping\src\ProcessingJobQueue.php:388:    private function lockFilePath(string $jobId): string
+meritos/scraping\src\ProcessingJobQueue.php:394:    private function openLock(string $jobId)
+meritos/scraping\src\ProcessingJobQueue.php:411:    private function unlock($handle): void
+meritos/scraping\src\ProcessingJobQueue.php:421:    private function normalizeJobId(string $jobId): string
+meritos/scraping\src\ProcessingJobQueue.php:430:    private function generateJobId(): string
+meritos/scraping\src\ProcessingJobQueue.php:435:    private function limitInt(int $value, int $min, int $max): int
+docs\schemas\README.md:7:Este es el unico contrato canonico oficial del proyecto.
+docs\schemas\README.md:21:Representa la salida heredada del pipeline actual. Debe retirarse cuando la salida del pipeline sea ANECA canonica de forma nativa.
+meritos/scraping\output\logs\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.20260417_083222.pipeline.log:6:fallback_legacy_activado=false
+meritos/scraping\output\logs\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.20260417_083222.pipeline.log:8:timing_extraccion_nativa_ms=13.44
+meritos/scraping\output\logs\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.20260417_083222.pipeline.log:17:eventos=extraccion_nativa_ok | pagina_1_candidata_ocr:pocos_caracteres | ocr_selectivo_no_disponible
+meritos/scraping\output\logs\smoke_20260417_112527_a0aa3f_ok.20260417_112527.pipeline.log:6:fallback_legacy_activado=false
+meritos/scraping\output\logs\smoke_20260417_112527_a0aa3f_ok.20260417_112527.pipeline.log:17:timing_extraccion_nativa_ms=278.88
+meritos/scraping\output\logs\smoke_20260417_112527_a0aa3f_ok.20260417_112527.pipeline.log:26:eventos=ocr_env_mode:ocr_unavailable | ocr_env_warning:No se detecto pdftoppm en PATH ni via PDFTOPPM_PATH. | ocr_env_warning:No se detecto tesseract en PATH ni via TESSERACT_PATH. | extraccion_nativa_ok
+meritos/scraping\output\logs\smoke_20260417_110306_80a6c4_ok.20260417_110306.trace.json:7:    "fallback_legacy_activado": false,
+meritos/scraping\output\logs\smoke_20260417_110306_80a6c4_ok.20260417_110306.trace.json:32:        "extraccion_nativa_ms": 230.92,
+meritos/scraping\output\logs\smoke_20260417_110306_80a6c4_ok.20260417_110306.trace.json:56:        "extraccion_nativa_ok"
+meritos/scraping\output\logs\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.20260417_083222.trace.json:9:    "fallback_legacy_activado": false,
+meritos/scraping\output\logs\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.20260417_083222.trace.json:12:        "extraccion_nativa_ms": 13.44,
+meritos/scraping\output\logs\SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.20260417_083222.trace.json:33:        "extraccion_nativa_ok",
+meritos/scraping\src\PipelineResultValidator.php:7: * - No valida el contrato canonico oficial ANECA del proyecto.
+meritos/scraping\src\PipelineResultValidator.php:8: * - Se usa para robustez operativa local hasta completar la normalizacion total a ANECA.
+meritos/scraping\src\PipelineResultValidator.php:56:        $camposExtraccion = ['tipo_documento', 'numero', 'fecha', 'total_bi', 'iva', 'total_a_pagar'];
+meritos/scraping\src\PipelineResultValidator.php:141:    private function requiredKeys(): array
+meritos/scraping\src\PipelineResultValidator.php:144:            'tipo_documento',
+meritos/scraping\src\PipelineResultValidator.php:147:            'total_bi',
+meritos/scraping\src\PipelineResultValidator.php:148:            'iva',
+meritos/scraping\src\PipelineResultValidator.php:149:            'total_a_pagar',
+meritos/scraping\src\PipelineResultValidator.php:161:    private function normalizePayload($payload, array &$errors): ?array
+meritos/scraping\src\PipelineResultValidator.php:196:    private function isNonEmptyString($value): bool
+meritos/scraping\src\PipelineResultValidator.php:204:    private function hasMeaningfulValue($value): bool
+meritos/scraping\src\PipelineResultValidator.php:221:    private function normalizeStringList($value): array
+meritos/scraping\src\PipelineResultValidator.php:241:    private function build(
+meritos/scraping\src\ProcessingCache.php:5:    private $cacheDir;
+meritos/scraping\src\ProcessingCache.php:6:    private $versions;
+meritos/scraping\src\ProcessingCache.php:233:    private function validateCurrentMeta(array $meta, string $hashPdf, string $cacheKey, array $paths): array
+meritos/scraping\src\ProcessingCache.php:280:    private function compareVersionReason(array $meta, array $currentVersions): ?string
+meritos/scraping\src\ProcessingCache.php:301:    private function findMetaEntriesByHash(string $hashPdf): array
+meritos/scraping\src\ProcessingCache.php:326:    private function deriveHistoryInvalidationReason(array $history, string $currentCacheKey): ?string
+meritos/scraping\src\ProcessingCache.php:351:    private function markHistoryObsolete(array $history, string $currentCacheKey, string $reason): void
+meritos/scraping\src\ProcessingCache.php:383:    private function pathsForKey(string $cacheKey): array
+meritos/scraping\src\ProcessingCache.php:394:    private function normalizeVersions(array $overrides): array
+meritos/scraping\src\ProcessingCache.php:416:    private function readEnvString(string $envVar, string $default): string
+meritos/scraping\src\ProcessingCache.php:426:    private function readEnvOptionalString(string $envVar, ?string $default): ?string
+meritos/scraping\src\ProcessingCache.php:436:    private function safeReadJsonFile(string $path): ?array
+meritos/scraping\src\ProcessingCache.php:455:    private function safeReadTextFile(?string $path): ?string
+meritos/scraping\src\ProcessingCache.php:469:    private function resolvePathFromMeta($value, ?string $fallback): ?string
+meritos/scraping\src\ProcessingCache.php:483:    private function isAbsolutePath(string $path): bool
+meritos/scraping\src\ProcessingCache.php:501:    private function safeString($value): ?string
+meritos/scraping\src\ProcessingCache.php:515:    private function safeStringList($value): array
+meritos/scraping\src\ProcessingCache.php:538:    private function atomicWriteFile(string $path, string $content): void
+docs\schemas\pipeline-result-legacy.v1.schema.json:5:  "description": "Contrato tecnico legacy/transitorio de la salida actual del pipeline de meritos/scraping. NO es el contrato canonico oficial ANECA.",
+docs\schemas\pipeline-result-legacy.v1.schema.json:8:    "tipo_documento",
+docs\schemas\pipeline-result-legacy.v1.schema.json:11:    "total_bi",
+docs\schemas\pipeline-result-legacy.v1.schema.json:12:    "iva",
+docs\schemas\pipeline-result-legacy.v1.schema.json:13:    "total_a_pagar",
+docs\schemas\pipeline-result-legacy.v1.schema.json:21:    "tipo_documento": {
+docs\schemas\pipeline-result-legacy.v1.schema.json:39:    "total_bi": {
+docs\schemas\pipeline-result-legacy.v1.schema.json:45:    "iva": {
+docs\schemas\pipeline-result-legacy.v1.schema.json:51:    "total_a_pagar": {
+docs\schemas\processing-job.v1.schema.json:5:  "description": "Contrato tecnico interno del archivo JSON de job generado por ProcessingJobQueue y actualizado por ProcessingJobWorker. NO es contrato canonico de dominio.",

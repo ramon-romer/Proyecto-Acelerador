@@ -3,18 +3,24 @@
 require_once __DIR__ . '/Pipeline.php';
 require_once __DIR__ . '/ProcessingJobQueue.php';
 require_once __DIR__ . '/ProcessingCache.php';
+require_once __DIR__ . '/PipelineResultValidator.php';
+require_once __DIR__ . '/AnecaCanonicalResultValidator.php';
 
 class ProcessingJobWorker
 {
     private $queue;
     private $cache;
     private $logsDir;
+    private $resultValidator;
+    private $anecaCanonicalValidator;
 
     public function __construct(?ProcessingJobQueue $queue = null, ?ProcessingCache $cache = null)
     {
         $this->queue = $queue ?? new ProcessingJobQueue();
         $this->cache = $cache ?? new ProcessingCache();
         $this->logsDir = __DIR__ . '/../output/logs';
+        $this->resultValidator = new PipelineResultValidator();
+        $this->anecaCanonicalValidator = new AnecaCanonicalResultValidator();
     }
 
     public function processNextPendingJob(): ?array
@@ -61,6 +67,7 @@ class ProcessingJobWorker
         $pipelineLogPath = null;
         $hashPdf = '';
         $cacheLookup = $this->defaultCacheLookup();
+        $lastValidation = null;
 
         try {
             $hashPdf = $this->resolveHashFromJobOrFile($job, $pdfPath);
@@ -76,20 +83,35 @@ class ProcessingJobWorker
                     $jobId,
                     'cache_hit cache_key=' . (string)($cacheLookup['cache_key'] ?? '')
                     . ' cache_estado=' . (string)($cacheLookup['cache_estado'] ?? '')
+                    . ' aneca_canonical_ready=' . (!empty($cacheLookup['aneca_canonical_ready']) ? 'true' : 'false')
+                    . ' aneca_canonical_validation_status=' . (string)($cacheLookup['aneca_canonical_validation_status'] ?? '')
                 );
 
                 $this->queue->setPhase($jobId, 'validando_resultado', 98, 'cache_hit');
 
                 $cachedResult = $cacheLookup['resultado_json'];
-                $validationError = $this->validateResult($cachedResult);
-                if ($validationError !== null) {
-                    $this->queue->appendLog($jobId, 'cache_hit_descartado motivo=' . $validationError);
+                $lastValidation = $this->validateResult($cachedResult);
+                $this->applyValidationContextToJob($jobId, $lastValidation);
+
+                if (!$this->resultValidator->isCacheable($lastValidation)) {
+                    $cacheLookup['cache_hit'] = false;
+                    $cacheLookup['cache_estado'] = 'no_valida';
+                    $cacheLookup['motivo_invalidation'] = 'validation_status_' . (string)($lastValidation['validation_status'] ?? 'desconocido');
+
+                    $this->queue->appendLog(
+                        $jobId,
+                        'cache_hit_descartado motivo=' . $this->resultValidator->summarize($lastValidation)
+                    );
                 } else {
                     $meta = is_array($cacheLookup['metadata'] ?? null) ? $cacheLookup['metadata'] : [];
                     $tracePathCache = $this->safeString($meta['trace_path'] ?? null);
                     $pipelineLogPathCache = $this->safeString($meta['pipeline_log_path'] ?? $meta['log_path'] ?? null);
-                    $hasPartialCache = !empty($meta['error_parcial']);
+                    $hasPartialCache = !empty($meta['error_parcial']) || !$this->resultValidator->isClean($lastValidation);
                     $elapsedMsCache = round((microtime(true) - $startedAt) * 1000, 2);
+                    $cacheMessage = $this->buildValidationMessageForCompletion(
+                        $lastValidation,
+                        'Resultado servido desde cache'
+                    );
 
                     $this->queue->markCompleted(
                         $jobId,
@@ -98,10 +120,11 @@ class ProcessingJobWorker
                         $pipelineLogPathCache,
                         $elapsedMsCache,
                         $hasPartialCache,
-                        $hasPartialCache ? 'Resultado servido desde cache con error parcial previo.' : null
+                        $hasPartialCache ? $cacheMessage : null
                     );
 
                     $jobFinalCache = $this->applyCacheContextToJob($jobId, $hashPdf, $cacheLookup, true);
+                    $jobFinalCache = $this->applyValidationContextToJob($jobId, $lastValidation);
 
                     $this->queue->appendLog(
                         $jobId,
@@ -112,10 +135,24 @@ class ProcessingJobWorker
                     return $jobFinalCache;
                 }
             } else {
+                $cacheEstadoLookup = (string)($cacheLookup['cache_estado'] ?? 'miss');
+                $cacheMotivoLookup = (string)($cacheLookup['motivo_invalidation'] ?? 'cache_no_encontrada');
+
+                if ($cacheEstadoLookup === 'obsoleta' && strpos($cacheMotivoLookup, 'version_') === 0) {
+                    $this->queue->appendLog(
+                        $jobId,
+                        'cache_obsoleta_por_cambio_version motivo=' . $cacheMotivoLookup
+                    );
+                    error_log(
+                        '[meritos-scraping] cache_obsoleta_worker hash=' . $hashPdf
+                        . ' motivo=' . $cacheMotivoLookup
+                    );
+                }
+
                 $this->queue->appendLog(
                     $jobId,
-                    'cache_miss cache_estado=' . (string)($cacheLookup['cache_estado'] ?? 'miss')
-                    . ' motivo=' . (string)($cacheLookup['motivo_invalidation'] ?? 'cache_no_encontrada')
+                    'cache_miss cache_estado=' . $cacheEstadoLookup
+                    . ' motivo=' . $cacheMotivoLookup
                 );
             }
 
@@ -150,17 +187,30 @@ class ProcessingJobWorker
 
             $this->queue->setPhase($jobId, 'validando_resultado', 95, 'validando_resultado');
 
-            $validationError = $this->validateResult($resultado);
-            if ($validationError !== null) {
-                throw new Exception($validationError);
+            $lastValidation = $this->validateResult($resultado);
+            $this->queue->appendLog(
+                $jobId,
+                'validacion_resultado ' . $this->resultValidator->summarize($lastValidation)
+            );
+            $this->applyValidationContextToJob($jobId, $lastValidation);
+
+            if ((string)($lastValidation['validation_status'] ?? '') === PipelineResultValidator::STATUS_INVALIDO) {
+                throw new Exception('Resultado invalido: ' . $this->resultValidator->summarize($lastValidation));
             }
 
             $artifacts = $this->locatePipelineArtifacts($pdfPath, $startedAt);
             $tracePath = $artifacts['trace_path'];
             $pipelineLogPath = $artifacts['pipeline_log_path'];
+            $canonicalContext = $this->resolveAnecaCanonicalContext($pdfPath, $tracePath, $startedAt);
 
-            $hasPartialError = $this->detectPartialError($tracePath);
+            $hasPartialError = $this->detectPartialError($tracePath) || !$this->resultValidator->isClean($lastValidation);
             $elapsedMs = round((microtime(true) - $startedAt) * 1000, 2);
+            $completionMessage = $hasPartialError
+                ? $this->buildValidationMessageForCompletion(
+                    $lastValidation,
+                    'Proceso finalizado con observaciones'
+                )
+                : null;
 
             $cacheSaveInfo = $this->persistCacheForJob(
                 $hashPdf,
@@ -169,7 +219,9 @@ class ProcessingJobWorker
                 $tracePath,
                 $pipelineLogPath,
                 $elapsedMs,
-                $hasPartialError
+                $hasPartialError,
+                $lastValidation,
+                $canonicalContext
             );
 
             $jobFinal = $this->queue->markCompleted(
@@ -179,12 +231,12 @@ class ProcessingJobWorker
                 $pipelineLogPath,
                 $elapsedMs,
                 $hasPartialError,
-                $hasPartialError ? 'Proceso finalizado con errores parciales detectados por pagina.' : null
+                $completionMessage
             );
 
             $jobFinal = $this->queue->updateJob(
                 $jobId,
-                function (array $current) use ($hashPdf, $cacheSaveInfo): array {
+                function (array $current) use ($hashPdf, $cacheSaveInfo, $canonicalContext): array {
                     $current['hash_pdf'] = $hashPdf;
                     $current['cache_hit'] = false;
                     $current['cache_key'] = $cacheSaveInfo['cache_key'] ?? ($current['cache_key'] ?? null);
@@ -194,9 +246,17 @@ class ProcessingJobWorker
                     $current['cache_meta_path'] = $cacheSaveInfo['meta_path'] ?? null;
                     $current['cache_result_path'] = $cacheSaveInfo['result_path'] ?? null;
                     $current['cache_text_path'] = $cacheSaveInfo['text_path'] ?? null;
+                    $current['aneca_canonical_path'] = $cacheSaveInfo['aneca_canonical_path']
+                        ?? ($canonicalContext['aneca_canonical_path'] ?? ($current['aneca_canonical_path'] ?? null));
+                    $current['aneca_canonical_ready'] = !empty($cacheSaveInfo['aneca_canonical_ready'])
+                        || !empty($canonicalContext['aneca_canonical_ready']);
+                    $current['aneca_canonical_validation_status'] = $cacheSaveInfo['aneca_canonical_validation_status']
+                        ?? ($canonicalContext['aneca_canonical_validation_status']
+                        ?? ($current['aneca_canonical_validation_status'] ?? null));
                     return $current;
                 }
             );
+            $jobFinal = $this->applyValidationContextToJob($jobId, $lastValidation);
 
             $this->queue->appendLog(
                 $jobId,
@@ -208,6 +268,12 @@ class ProcessingJobWorker
             return $jobFinal;
         } catch (Throwable $e) {
             $elapsedMs = round((microtime(true) - $startedAt) * 1000, 2);
+            $normalizedValidation = is_array($lastValidation)
+                ? $this->resultValidator->normalizeValidation($lastValidation)
+                : null;
+            $validationStatus = is_array($normalizedValidation) ? ($normalizedValidation['validation_status'] ?? null) : null;
+            $validationErrors = is_array($normalizedValidation) ? ($normalizedValidation['validation_errors'] ?? []) : [];
+            $validationWarnings = is_array($normalizedValidation) ? ($normalizedValidation['validation_warnings'] ?? []) : [];
 
             $jobError = $this->queue->markError(
                 $jobId,
@@ -220,7 +286,13 @@ class ProcessingJobWorker
 
             $jobError = $this->queue->updateJob(
                 $jobId,
-                function (array $current) use ($hashPdf, $cacheLookup): array {
+                function (array $current) use (
+                    $hashPdf,
+                    $cacheLookup,
+                    $validationStatus,
+                    $validationErrors,
+                    $validationWarnings
+                ): array {
                     if ($hashPdf !== '') {
                         $current['hash_pdf'] = $hashPdf;
                     }
@@ -230,6 +302,13 @@ class ProcessingJobWorker
                     $current['cache_estado'] = $cacheLookup['cache_estado'] ?? ($current['cache_estado'] ?? null);
                     $current['motivo_invalidation'] = $cacheLookup['motivo_invalidation'] ?? null;
                     $current['cache_guardada'] = false;
+                    $current['aneca_canonical_path'] = $cacheLookup['aneca_canonical_path'] ?? ($current['aneca_canonical_path'] ?? null);
+                    $current['aneca_canonical_ready'] = !empty($cacheLookup['aneca_canonical_ready']);
+                    $current['aneca_canonical_validation_status'] = $cacheLookup['aneca_canonical_validation_status']
+                        ?? ($current['aneca_canonical_validation_status'] ?? null);
+                    $current['validation_status'] = $validationStatus ?? ($current['validation_status'] ?? null);
+                    $current['validation_errors'] = is_array($validationErrors) ? $validationErrors : [];
+                    $current['validation_warnings'] = is_array($validationWarnings) ? $validationWarnings : [];
                     return $current;
                 }
             );
@@ -254,32 +333,23 @@ class ProcessingJobWorker
             'meta_path' => null,
             'resultado_json_path' => null,
             'texto_extraido_path' => null,
+            'aneca_canonical_path' => null,
+            'aneca_canonical_ready' => false,
+            'aneca_canonical_validation_status' => null,
+            'aneca_canonical_validation_errors' => [],
+            'aneca_canonical_validation_warnings' => [],
+            'aneca_canonical_json' => null,
+            'validation_status' => null,
+            'validation_errors' => [],
+            'validation_warnings' => [],
         ];
     }
 
-    private function validateResult(array $resultado): ?string
+    private function validateResult(array $resultado): array
     {
-        $requiredKeys = [
-            'tipo_documento',
-            'numero',
-            'fecha',
-            'total_bi',
-            'iva',
-            'total_a_pagar',
-            'texto_preview',
-            'archivo_pdf',
-            'paginas_detectadas',
-            'txt_generado',
-            'json_generado',
-        ];
-
-        foreach ($requiredKeys as $key) {
-            if (!array_key_exists($key, $resultado)) {
-                return 'Resultado sin clave requerida: ' . $key;
-            }
-        }
-
-        return null;
+        return $this->resultValidator->normalizeValidation(
+            $this->resultValidator->validate($resultado)
+        );
     }
 
     private function locatePipelineArtifacts(string $pdfPath, float $startedAt): array
@@ -293,6 +363,105 @@ class ProcessingJobWorker
             'trace_path' => $this->pickLatestArtifact($tracePattern, $startedAt),
             'pipeline_log_path' => $this->pickLatestArtifact($pipelinePattern, $startedAt),
         ];
+    }
+
+    /**
+     * @return array<string,mixed>
+     */
+    private function resolveAnecaCanonicalContext(string $pdfPath, ?string $tracePath, float $startedAt): array
+    {
+        $context = [
+            'aneca_canonical_path' => null,
+            'aneca_canonical_ready' => false,
+            'aneca_canonical_validation_status' => null,
+            'aneca_canonical_validation_errors' => [],
+            'aneca_canonical_validation_warnings' => [],
+            'aneca_canonical_json' => null,
+        ];
+
+        $normalizationFromTrace = null;
+        if ($tracePath !== null && is_file($tracePath)) {
+            $trace = $this->safeReadJsonObject($tracePath);
+            if (is_array($trace)) {
+                $normalizationFromTrace = is_array($trace['normalizacion_contrato_canonico_aneca'] ?? null)
+                    ? $trace['normalizacion_contrato_canonico_aneca']
+                    : null;
+            }
+        }
+
+        $candidatePaths = [];
+        if (is_array($normalizationFromTrace)) {
+            $traceFile = $this->safeString($normalizationFromTrace['archivo_json_canonico'] ?? null);
+            if ($traceFile !== null) {
+                $candidatePaths[] = __DIR__ . '/../output/json/' . basename($traceFile);
+            }
+        }
+
+        $baseName = pathinfo($pdfPath, PATHINFO_FILENAME);
+        $candidatePaths[] = __DIR__ . '/../output/json/' . $baseName . '.aneca.canonico.json';
+        $candidatePaths = array_values(array_unique($candidatePaths));
+
+        $threshold = (int)floor($startedAt) - 5;
+        $selectedPath = null;
+        foreach ($candidatePaths as $candidate) {
+            if (!is_file($candidate)) {
+                continue;
+            }
+
+            $mtime = @filemtime($candidate);
+            if (is_int($mtime) && $mtime >= $threshold) {
+                $selectedPath = $candidate;
+                break;
+            }
+        }
+
+        if ($selectedPath === null) {
+            foreach ($candidatePaths as $candidate) {
+                if (is_file($candidate)) {
+                    $selectedPath = $candidate;
+                    break;
+                }
+            }
+        }
+
+        if ($selectedPath !== null) {
+            $validation = $this->anecaCanonicalValidator->validateFile($selectedPath);
+            $context['aneca_canonical_path'] = $selectedPath;
+            $context['aneca_canonical_ready'] = !empty($validation['aneca_canonical_ready']);
+            $context['aneca_canonical_validation_status'] = $this->safeString(
+                $validation['aneca_canonical_validation_status'] ?? null
+            );
+            $context['aneca_canonical_validation_errors'] = $this->safeStringList(
+                $validation['aneca_canonical_validation_errors'] ?? []
+            );
+            $context['aneca_canonical_validation_warnings'] = $this->safeStringList(
+                $validation['aneca_canonical_validation_warnings'] ?? []
+            );
+            $context['aneca_canonical_json'] = $this->safeReadJsonObject($selectedPath);
+
+            return $context;
+        }
+
+        if (is_array($normalizationFromTrace)) {
+            $traceStatus = $this->safeString($normalizationFromTrace['validation_status'] ?? null);
+            $context['aneca_canonical_validation_status'] = $traceStatus;
+            $context['aneca_canonical_validation_errors'] = $this->safeStringList(
+                $normalizationFromTrace['validation_errors'] ?? []
+            );
+            $context['aneca_canonical_validation_warnings'] = $this->safeStringList(
+                $normalizationFromTrace['validation_warnings'] ?? []
+            );
+
+            if (!empty($normalizationFromTrace['ready'])) {
+                $context['aneca_canonical_ready'] = false;
+                if ($traceStatus === null) {
+                    $context['aneca_canonical_validation_status'] = 'invalido';
+                }
+                $context['aneca_canonical_validation_errors'][] = 'aneca_canonical_path_inexistente';
+            }
+        }
+
+        return $context;
     }
 
     private function pickLatestArtifact(string $pattern, float $startedAt): ?string
@@ -387,10 +556,38 @@ class ProcessingJobWorker
     {
         $versions = $this->cache->getVersions();
         $cacheMeta = is_array($cacheLookup['metadata'] ?? null) ? $cacheLookup['metadata'] : [];
+        $validationStatus = $this->safeString(
+            $cacheLookup['validation_status'] ?? ($cacheMeta['validation_status'] ?? null)
+        );
+        $validationErrors = $this->safeStringList(
+            $cacheLookup['validation_errors'] ?? ($cacheMeta['validation_errors'] ?? [])
+        );
+        $validationWarnings = $this->safeStringList(
+            $cacheLookup['validation_warnings'] ?? ($cacheMeta['validation_warnings'] ?? [])
+        );
+        $canonicalPath = $this->safeString(
+            $cacheLookup['aneca_canonical_path'] ?? ($cacheMeta['aneca_canonical_path'] ?? null)
+        );
+        $canonicalReady = !empty($cacheLookup['aneca_canonical_ready']) || !empty($cacheMeta['aneca_canonical_ready']);
+        $canonicalValidationStatus = $this->safeString(
+            $cacheLookup['aneca_canonical_validation_status'] ?? ($cacheMeta['aneca_canonical_validation_status'] ?? null)
+        );
 
         return $this->queue->updateJob(
             $jobId,
-            function (array $current) use ($hashPdf, $cacheLookup, $cacheHit, $versions, $cacheMeta): array {
+            function (array $current) use (
+                $hashPdf,
+                $cacheLookup,
+                $cacheHit,
+                $versions,
+                $cacheMeta,
+                $validationStatus,
+                $validationErrors,
+                $validationWarnings,
+                $canonicalPath,
+                $canonicalReady,
+                $canonicalValidationStatus
+            ): array {
                 $current['hash_pdf'] = $hashPdf;
                 $current['cache_hit'] = $cacheHit;
                 $current['cache_key'] = $cacheLookup['cache_key'] ?? ($current['cache_key'] ?? null);
@@ -404,6 +601,13 @@ class ProcessingJobWorker
                 $current['cache_meta_path'] = $cacheLookup['meta_path'] ?? ($current['cache_meta_path'] ?? null);
                 $current['cache_result_path'] = $cacheLookup['resultado_json_path'] ?? ($current['cache_result_path'] ?? null);
                 $current['cache_text_path'] = $cacheLookup['texto_extraido_path'] ?? ($current['cache_text_path'] ?? null);
+                $current['aneca_canonical_path'] = $canonicalPath ?? ($current['aneca_canonical_path'] ?? null);
+                $current['aneca_canonical_ready'] = $canonicalReady;
+                $current['aneca_canonical_validation_status'] = $canonicalValidationStatus
+                    ?? ($current['aneca_canonical_validation_status'] ?? null);
+                $current['validation_status'] = $validationStatus ?? ($current['validation_status'] ?? null);
+                $current['validation_errors'] = $validationErrors;
+                $current['validation_warnings'] = $validationWarnings;
 
                 if ($cacheHit) {
                     $current['cache_guardada'] = true;
@@ -431,10 +635,14 @@ class ProcessingJobWorker
         ?string $tracePath,
         ?string $pipelineLogPath,
         float $tiempoTotalMs,
-        bool $hasPartialError
+        bool $hasPartialError,
+        array $validation,
+        array $canonicalContext
     ): array {
         $archivoOriginal = (string)($job['archivo_original'] ?? $job['archivo_pdf'] ?? 'cv.pdf');
-        $estadoCache = $hasPartialError ? 'parcial' : 'valida';
+        $validation = $this->resultValidator->normalizeValidation($validation);
+        $cacheable = $this->resultValidator->isCacheable($validation);
+        $estadoCache = $cacheable ? 'valida' : 'no_valida';
         $textoExtraido = $this->loadExtractedTextIfAvailable($resultado, $job);
 
         $metadata = [
@@ -444,6 +652,14 @@ class ProcessingJobWorker
             'tiempo_total_ms' => $tiempoTotalMs,
             'estado_cache' => $estadoCache,
             'error_parcial' => $hasPartialError,
+            'aneca_canonical_path' => $canonicalContext['aneca_canonical_path'] ?? null,
+            'aneca_canonical_ready' => !empty($canonicalContext['aneca_canonical_ready']),
+            'aneca_canonical_validation_status' => $canonicalContext['aneca_canonical_validation_status'] ?? null,
+            'aneca_canonical_validation_errors' => $canonicalContext['aneca_canonical_validation_errors'] ?? [],
+            'aneca_canonical_validation_warnings' => $canonicalContext['aneca_canonical_validation_warnings'] ?? [],
+            'validation_status' => $validation['validation_status'] ?? null,
+            'validation_errors' => $validation['validation_errors'] ?? [],
+            'validation_warnings' => $validation['validation_warnings'] ?? [],
         ];
 
         try {
@@ -460,6 +676,9 @@ class ProcessingJobWorker
                 (string)($job['id'] ?? ''),
                 'cache_guardada_correctamente cache_key=' . (string)($saved['cache_key'] ?? '')
                 . ' cache_estado=' . $cacheEstadoFinal
+                . ' validation_status=' . (string)($validation['validation_status'] ?? '')
+                . ' aneca_canonical_ready=' . (!empty($saved['aneca_canonical_ready']) ? 'true' : 'false')
+                . ' aneca_canonical_validation_status=' . (string)($saved['aneca_canonical_validation_status'] ?? '')
             );
 
             return [
@@ -470,6 +689,9 @@ class ProcessingJobWorker
                 'meta_path' => $saved['meta_path'] ?? null,
                 'result_path' => $saved['result_path'] ?? null,
                 'text_path' => $saved['text_path'] ?? null,
+                'aneca_canonical_path' => $saved['aneca_canonical_path'] ?? ($canonicalContext['aneca_canonical_path'] ?? null),
+                'aneca_canonical_ready' => !empty($saved['aneca_canonical_ready']) || !empty($canonicalContext['aneca_canonical_ready']),
+                'aneca_canonical_validation_status' => $saved['aneca_canonical_validation_status'] ?? ($canonicalContext['aneca_canonical_validation_status'] ?? null),
             ];
         } catch (Throwable $e) {
             $cacheKey = null;
@@ -492,6 +714,9 @@ class ProcessingJobWorker
                 'meta_path' => null,
                 'result_path' => null,
                 'text_path' => null,
+                'aneca_canonical_path' => $canonicalContext['aneca_canonical_path'] ?? null,
+                'aneca_canonical_ready' => !empty($canonicalContext['aneca_canonical_ready']),
+                'aneca_canonical_validation_status' => $canonicalContext['aneca_canonical_validation_status'] ?? null,
             ];
         }
     }
@@ -523,6 +748,57 @@ class ProcessingJobWorker
         return null;
     }
 
+    private function applyValidationContextToJob(string $jobId, array $validation): array
+    {
+        $validation = $this->resultValidator->normalizeValidation($validation);
+        $status = $this->safeString($validation['validation_status'] ?? null);
+        $errors = $this->safeStringList($validation['validation_errors'] ?? []);
+        $warnings = $this->safeStringList($validation['validation_warnings'] ?? []);
+
+        return $this->queue->updateJob(
+            $jobId,
+            function (array $current) use ($status, $errors, $warnings): array {
+                $current['validation_status'] = $status;
+                $current['validation_errors'] = $errors;
+                $current['validation_warnings'] = $warnings;
+                return $current;
+            }
+        );
+    }
+
+    private function buildValidationMessageForCompletion(array $validation, string $prefix): string
+    {
+        $validation = $this->resultValidator->normalizeValidation($validation);
+        $status = (string)($validation['validation_status'] ?? '');
+        $warnings = $this->safeStringList($validation['validation_warnings'] ?? []);
+        $errors = $this->safeStringList($validation['validation_errors'] ?? []);
+
+        $parts = [$prefix, 'status=' . $status];
+        if (!empty($warnings)) {
+            $parts[] = 'warnings=' . implode(',', array_slice($warnings, 0, 3));
+        }
+        if (!empty($errors)) {
+            $parts[] = 'errors=' . implode(',', array_slice($errors, 0, 3));
+        }
+
+        return implode(' ', $parts) . '.';
+    }
+
+    private function safeReadJsonObject(?string $path): ?array
+    {
+        if ($path === null || !is_file($path)) {
+            return null;
+        }
+
+        $raw = @file_get_contents($path);
+        if (!is_string($raw) || trim($raw) === '') {
+            return null;
+        }
+
+        $decoded = json_decode($raw, true);
+        return is_array($decoded) ? $decoded : null;
+    }
+
     private function safeString($value): ?string
     {
         if (!is_string($value)) {
@@ -531,5 +807,28 @@ class ProcessingJobWorker
 
         $trimmed = trim($value);
         return $trimmed === '' ? null : $trimmed;
+    }
+
+    private function safeStringList($value): array
+    {
+        if (!is_array($value)) {
+            return [];
+        }
+
+        $out = [];
+        foreach ($value as $item) {
+            if (!is_string($item)) {
+                continue;
+            }
+
+            $trimmed = trim($item);
+            if ($trimmed === '') {
+                continue;
+            }
+
+            $out[] = $trimmed;
+        }
+
+        return array_values(array_unique($out));
     }
 }

@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * Extractor tecnico legacy/transitorio del modulo meritos/scraping.
+ *
+ * Importante:
+ * - Este extractor NO define el contrato canonico oficial del dominio ANECA.
+ * - Su salida se mantiene por compatibilidad temporal del runtime actual.
+ * - El contrato canonico oficial del proyecto es:
+ *   docs/schemas/contrato-canonico-aneca-v1.schema.json
+ */
 class AnecaExtractor
 {
     public function extraer(string $texto): array
