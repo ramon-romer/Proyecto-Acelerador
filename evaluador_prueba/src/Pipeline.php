@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+require_once __DIR__ . '/compat_mbstring.php';
 require_once __DIR__ . '/TextCleaner.php';
 require_once __DIR__ . '/AnecaExtractor.php';
 require_once __DIR__ . '/OcrProcessor.php';

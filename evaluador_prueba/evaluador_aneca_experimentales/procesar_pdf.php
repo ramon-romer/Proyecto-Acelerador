@@ -5,6 +5,10 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
 
+@ini_set('max_execution_time', '600');
+@set_time_limit(600);
+@ini_set('memory_limit', '512M');
+
 require_once __DIR__ . '/../src/Pipeline.php';
 require_once __DIR__ . '/../src/FecytCvnExtractor.php';
 require __DIR__ . '/ui.php';
