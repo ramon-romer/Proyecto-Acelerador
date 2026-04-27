@@ -9,7 +9,7 @@ require_once __DIR__ . '/AnecaExtractor.php';
 require_once __DIR__ . '/AnecaCanonicalAdapter.php';
 require_once __DIR__ . '/AnecaCanonicalResultValidator.php';
 require_once __DIR__ . '/ProcessingCache.php';
-require_once __DIR__ . '/PipelineResultValidator.php';
+require_once __DIR__ . '/LegacyPipelineResultValidator.php';
 
 class Pipeline
 {
@@ -271,11 +271,11 @@ class Pipeline
         $datos['txt_generado'] = basename($textFile);
         $datos['json_generado'] = basename($jsonFile);
 
-        $resultValidator = new PipelineResultValidator();
-        $validation = $resultValidator->validate($datos);
-        if ((string)($validation['validation_status'] ?? '') === PipelineResultValidator::STATUS_INVALIDO) {
+        $legacyResultValidator = new LegacyPipelineResultValidator();
+        $validation = $legacyResultValidator->validate($datos);
+        if ((string)($validation['validation_status'] ?? '') === LegacyPipelineResultValidator::STATUS_INVALIDO) {
             throw new Exception(
-                'Resultado del pipeline invalido: ' . $resultValidator->summarize($validation)
+                'Resultado legacy del pipeline invalido: ' . $legacyResultValidator->summarize($validation)
             );
         }
 

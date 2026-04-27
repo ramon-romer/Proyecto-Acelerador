@@ -1,5 +1,8 @@
 <?php
 
+require_once __DIR__ . '/InternalPreferredArtifactResolver.php';
+require_once __DIR__ . '/OperationalArtifactDecisionResolver.php';
+
 class ProcessingJobQueue
 {
     private $jobsDir;
@@ -45,6 +48,8 @@ class ProcessingJobQueue
             'aneca_canonical_path' => null,
             'aneca_canonical_ready' => false,
             'aneca_canonical_validation_status' => null,
+            'resultado_principal_formato' => InternalPreferredArtifactResolver::FORMAT_LEGACY,
+            'resultado_principal_path' => null,
             'validation_status' => null,
             'validation_errors' => [],
             'validation_warnings' => [],
@@ -61,6 +66,7 @@ class ProcessingJobQueue
         foreach ($metadata as $key => $value) {
             $job[$key] = $value;
         }
+        $job = $this->hydratePreferredResultFields($job);
 
         $this->writeJob($job);
         $this->appendLog($jobId, 'job_creado estado=pendiente archivo=' . basename($pdfPath));
@@ -85,7 +91,7 @@ class ProcessingJobQueue
             throw new Exception('JSON de job invalido: ' . $jobId);
         }
 
-        return $data;
+        return $this->hydratePreferredResultFields($data);
     }
 
     public function listJobs(array $states = [], int $limit = 50): array
@@ -109,7 +115,7 @@ class ProcessingJobQueue
                 continue;
             }
 
-            $jobs[] = $job;
+            $jobs[] = $this->hydratePreferredResultFields($job);
         }
 
         usort(
@@ -328,6 +334,7 @@ class ProcessingJobQueue
             }
 
             $updated['id'] = $jobId;
+            $updated = $this->hydratePreferredResultFields($updated);
             $updated['fecha_actualizacion'] = gmdate('c');
 
             $this->writeJob($updated);
@@ -446,5 +453,87 @@ class ProcessingJobQueue
         }
 
         return $value;
+    }
+
+    /**
+     * @param array<string,mixed> $job
+     * @return array<string,mixed>
+     */
+    private function hydratePreferredResultFields(array $job): array
+    {
+        $legacyResultPath = $this->firstNonEmptyString([
+            $this->safeString($job['cache_result_path'] ?? null),
+            $this->safeString($job['resultado_json_path'] ?? null),
+        ]);
+        $anecaPath = $this->safeString($job['aneca_canonical_path'] ?? null);
+        $anecaReady = !empty($job['aneca_canonical_ready']);
+        $anecaStatus = $this->safeString($job['aneca_canonical_validation_status'] ?? null);
+        $legacyValidationStatus = $this->safeString($job['validation_status'] ?? null) ?? 'valido_con_advertencias';
+
+        $technicalPreferred = InternalPreferredArtifactResolver::resolvePreferredArtifact(
+            $legacyResultPath,
+            $anecaPath,
+            $anecaReady
+        );
+        $operationalDecision = OperationalArtifactDecisionResolver::decide(
+            [
+                'resultado_principal_formato' => $technicalPreferred['resultado_principal_formato'] ?? null,
+                'resultado_principal_path' => $technicalPreferred['resultado_principal_path'] ?? null,
+                'aneca_canonical_path' => $anecaPath,
+                'aneca_canonical_ready' => $anecaReady,
+                'aneca_canonical_validation_status' => $anecaStatus,
+            ],
+            [
+                'validation_status' => $legacyValidationStatus,
+            ]
+        );
+
+        $artifactFormat = (string)($operationalDecision['artifact_format'] ?? '');
+        if (!in_array($artifactFormat, ['aneca', 'legacy'], true)) {
+            $artifactFormat = (string)($technicalPreferred['resultado_principal_formato'] ?? InternalPreferredArtifactResolver::FORMAT_LEGACY);
+        }
+
+        $artifactPath = $this->safeString($operationalDecision['artifact_path'] ?? null);
+        if ($artifactPath === null) {
+            $artifactPath = $artifactFormat === 'aneca'
+                ? $anecaPath
+                : $legacyResultPath;
+        }
+
+        $job['resultado_principal_formato'] = $artifactFormat;
+        $job['resultado_principal_path'] = $artifactPath;
+
+        return $job;
+    }
+
+    private function safeString($value): ?string
+    {
+        if (!is_string($value)) {
+            return null;
+        }
+
+        $trimmed = trim($value);
+        return $trimmed === '' ? null : $trimmed;
+    }
+
+    /**
+     * @param array<int,?string> $values
+     */
+    private function firstNonEmptyString(array $values): ?string
+    {
+        foreach ($values as $value) {
+            if (!is_string($value)) {
+                continue;
+            }
+
+            $trimmed = trim($value);
+            if ($trimmed === '') {
+                continue;
+            }
+
+            return $trimmed;
+        }
+
+        return null;
     }
 }

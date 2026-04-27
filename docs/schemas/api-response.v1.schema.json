@@ -389,6 +389,8 @@
         "error_parcial",
         "error_mensaje",
         "resultado",
+        "resultado_preferente_formato",
+        "resultado_preferente",
         "trace_path",
         "log_path",
         "pipeline_log_path",
@@ -436,9 +438,10 @@
         },
         "resultado_preferente_formato": {
           "type": "string",
+          "description": "Salida preferente estable configurable por runtime: aneca o legacy.",
           "enum": [
             "legacy",
-            "aneca_canonico"
+            "aneca"
           ]
         },
         "resultado_preferente": {
@@ -460,6 +463,8 @@
         "progreso_porcentaje",
         "fase_actual",
         "resultado",
+        "resultado_preferente_formato",
+        "resultado_preferente",
         "trace_path",
         "log_path",
         "pipeline_log_path",
@@ -515,9 +520,10 @@
         },
         "resultado_preferente_formato": {
           "type": "string",
+          "description": "Salida preferente estable configurable por runtime: aneca o legacy.",
           "enum": [
             "legacy",
-            "aneca_canonico"
+            "aneca"
           ]
         },
         "resultado_preferente": {

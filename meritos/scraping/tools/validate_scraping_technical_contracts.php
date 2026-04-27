@@ -300,7 +300,7 @@ function buildApiSamples(array $jobInitial, array $jobFinal, array $enqueued): a
         'aneca_canonical_validation_status' => nullableString($jobFinal['aneca_canonical_validation_status'] ?? null),
         'resultado_aneca_canonico' => $finalAnecaPayload,
         'resultado_preferente_formato' => !empty($jobFinal['aneca_canonical_ready']) && is_array($finalAnecaPayload)
-            ? 'aneca_canonico'
+            ? 'aneca'
             : 'legacy',
         'resultado_preferente' => !empty($jobFinal['aneca_canonical_ready']) && is_array($finalAnecaPayload)
             ? $finalAnecaPayload
@@ -324,7 +324,7 @@ function buildApiSamples(array $jobInitial, array $jobFinal, array $enqueued): a
         'aneca_canonical_validation_status' => nullableString($jobFinal['aneca_canonical_validation_status'] ?? null),
         'resultado_aneca_canonico' => $finalAnecaPayload,
         'resultado_preferente_formato' => !empty($jobFinal['aneca_canonical_ready']) && is_array($finalAnecaPayload)
-            ? 'aneca_canonico'
+            ? 'aneca'
             : 'legacy',
         'resultado_preferente' => !empty($jobFinal['aneca_canonical_ready']) && is_array($finalAnecaPayload)
             ? $finalAnecaPayload

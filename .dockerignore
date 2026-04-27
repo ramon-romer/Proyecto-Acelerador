@@ -1,0 +1,9 @@
+.git
+.gitignore
+.agents
+node_modules
+vendor
+meritos/scraping/output
+meritos/scraping/pdfs
+**/.DS_Store
+**/Thumbs.db

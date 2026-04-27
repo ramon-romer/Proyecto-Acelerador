@@ -1,0 +1,16 @@
+{
+    "ok": true,
+    "message": "Job creado en cola.",
+    "job_id": "job_20260427_093249_560477a7",
+    "estado": "pendiente",
+    "progreso_porcentaje": 0,
+    "fase_actual": "pendiente",
+    "es_pesado": false,
+    "aneca_canonical_path": null,
+    "aneca_canonical_ready": false,
+    "aneca_canonical_validation_status": null,
+    "endpoints": {
+        "estado": "\/api\/cv\/procesar\/job_20260427_093249_560477a7\/estado",
+        "resultado": "\/api\/cv\/procesar\/job_20260427_093249_560477a7\/resultado"
+    }
+}

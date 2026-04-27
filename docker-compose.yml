@@ -1,9 +1,27 @@
+x-acelerador-php-base: &acelerador-php-base
+  build:
+    context: .
+    dockerfile: Dockerfile
+  image: proyecto-acelerador-php:local
+  working_dir: /app
+  volumes:
+    - scraping-output:/app/meritos/scraping/output
+    - scraping-pdfs:/app/meritos/scraping/pdfs
+
 services:
   acelerador-php:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    working_dir: /app
+    <<: *acelerador-php-base
+
+  acelerador-php-dev:
+    <<: *acelerador-php-base
+    profiles:
+      - dev
     volumes:
       - ./:/app
+      - scraping-output:/app/meritos/scraping/output
+      - scraping-pdfs:/app/meritos/scraping/pdfs
+
+volumes:
+  scraping-output:
+  scraping-pdfs:
 

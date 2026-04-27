@@ -1,0 +1,13 @@
+{
+    "tipo_documento": "informe",
+    "numero": "ABC-123",
+    "fecha": "2026-04-21",
+    "total_bi": "10",
+    "iva": "2.1",
+    "total_a_pagar": "12.1",
+    "texto_preview": "Texto con contenido suficiente",
+    "archivo_pdf": "demo.pdf",
+    "paginas_detectadas": 1,
+    "txt_generado": "demo.txt",
+    "json_generado": "demo.json"
+}

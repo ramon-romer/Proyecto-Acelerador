@@ -2,7 +2,8 @@
 
 require_once __DIR__ . '/ProcessingJobQueue.php';
 require_once __DIR__ . '/ProcessingCache.php';
-require_once __DIR__ . '/PipelineResultValidator.php';
+require_once __DIR__ . '/LegacyPipelineResultValidator.php';
+require_once __DIR__ . '/OperationalArtifactDecisionResolver.php';
 
 class CvProcessingJobService
 {
@@ -10,7 +11,7 @@ class CvProcessingJobService
     private $cache;
     private $pdfDir;
     private $heavyThresholdBytes;
-    private $resultValidator;
+    private $legacyResultValidator;
 
     public function __construct(
         ?ProcessingJobQueue $queue = null,
@@ -22,7 +23,7 @@ class CvProcessingJobService
         $this->cache = $cache ?? new ProcessingCache();
         $this->pdfDir = $pdfDir ?? (__DIR__ . '/../pdfs');
         $this->heavyThresholdBytes = $this->readEnvInt('SCRAPING_HEAVY_PDF_BYTES', 3 * 1024 * 1024, 128 * 1024, 500 * 1024 * 1024);
-        $this->resultValidator = new PipelineResultValidator();
+        $this->legacyResultValidator = new LegacyPipelineResultValidator();
 
         if (!is_dir($this->pdfDir) && !mkdir($this->pdfDir, 0777, true) && !is_dir($this->pdfDir)) {
             throw new Exception('No se pudo crear el directorio de PDFs: ' . $this->pdfDir);
@@ -48,23 +49,29 @@ class CvProcessingJobService
         $cacheLookup = $this->cache->resolveByHash($hashPdf, $originalName);
 
         if (!empty($cacheLookup['cache_hit']) && is_array($cacheLookup['resultado_json'] ?? null)) {
-            $validation = $this->resultValidator->normalizeValidation(
-                $this->resultValidator->validate((array)$cacheLookup['resultado_json'])
+            $validation = $this->legacyResultValidator->normalizeValidation(
+                $this->legacyResultValidator->validate((array)$cacheLookup['resultado_json'])
             );
             $cacheLookup['validation_status'] = $validation['validation_status'] ?? null;
             $cacheLookup['validation_errors'] = $validation['validation_errors'] ?? [];
             $cacheLookup['validation_warnings'] = $validation['validation_warnings'] ?? [];
+            $cacheDecision = $this->resolveOperationalDecision($cacheLookup, $validation);
 
-            if (!$this->resultValidator->isCacheable($validation)) {
+            if (empty($cacheDecision['cacheable'])) {
                 $cacheLookup['cache_hit'] = false;
                 $cacheLookup['cache_estado'] = 'no_valida';
-                $cacheLookup['motivo_invalidation'] = 'validation_status_' . (string)($validation['validation_status'] ?? 'desconocido');
+                $cacheLookup['motivo_invalidation'] = $cacheDecision['invalidation_reason'] ?? 'resultado_no_utilizable';
 
                 error_log(
                     '[meritos-scraping] cache_hit_descartado_subida hash=' . $hashPdf
-                    . ' motivo=' . $this->resultValidator->summarize($validation)
+                    . ' motivo=' . (string)($cacheLookup['motivo_invalidation'] ?? 'resultado_no_utilizable')
+                    . ' detalle=' . $this->describeOperationalDecision($cacheDecision)
                 );
             } else {
+                error_log(
+                    '[meritos-scraping] cache_hit_decision_subida hash=' . $hashPdf
+                    . ' detalle=' . $this->describeOperationalDecision($cacheDecision)
+                );
                 return $this->createCompletedJobFromCache(
                     $tmpPath,
                     $originalName,
@@ -74,7 +81,8 @@ class CvProcessingJobService
                     $hashPdf,
                     $cacheLookup,
                     $requestStartedAt,
-                    $validation
+                    $validation,
+                    $cacheDecision
                 );
             }
         }
@@ -108,6 +116,8 @@ class CvProcessingJobService
                 'aneca_canonical_path' => $cacheLookup['aneca_canonical_path'] ?? null,
                 'aneca_canonical_ready' => !empty($cacheLookup['aneca_canonical_ready']),
                 'aneca_canonical_validation_status' => $cacheLookup['aneca_canonical_validation_status'] ?? null,
+                'resultado_principal_formato' => $cacheLookup['resultado_principal_formato'] ?? 'legacy',
+                'resultado_principal_path' => $cacheLookup['resultado_principal_path'] ?? null,
             ]
         );
 
@@ -123,6 +133,7 @@ class CvProcessingJobService
             . ' queued_only=' . ($queuedOnly ? 'true' : 'false')
             . ' cache_hit=false'
             . ' cache_estado=' . $cacheEstado
+            . ' resultado_principal_formato=' . (string)($cacheLookup['resultado_principal_formato'] ?? 'legacy')
             . ' aneca_canonical_ready=' . (!empty($cacheLookup['aneca_canonical_ready']) ? 'true' : 'false')
             . ' aneca_canonical_validation_status=' . (string)($cacheLookup['aneca_canonical_validation_status'] ?? '')
             . ($cacheMotivo !== '' ? ' motivo_invalidation=' . $cacheMotivo : '')
@@ -161,7 +172,8 @@ class CvProcessingJobService
         string $hashPdf,
         array $cacheLookup,
         float $requestStartedAt,
-        array $validation
+        array $validation,
+        array $operationalDecision
     ): array {
         $safeName = $this->buildStoredFileName($originalName);
         $targetPath = $this->pdfDir . DIRECTORY_SEPARATOR . $safeName;
@@ -171,7 +183,7 @@ class CvProcessingJobService
         }
 
         $versions = $this->cache->getVersions();
-        $validation = $this->resultValidator->normalizeValidation($validation);
+        $validation = $this->legacyResultValidator->normalizeValidation($validation);
 
         $job = $this->queue->createJobForPdfPath(
             $targetPath,
@@ -199,16 +211,22 @@ class CvProcessingJobService
                 'aneca_canonical_path' => $cacheLookup['aneca_canonical_path'] ?? null,
                 'aneca_canonical_ready' => !empty($cacheLookup['aneca_canonical_ready']),
                 'aneca_canonical_validation_status' => $cacheLookup['aneca_canonical_validation_status'] ?? null,
+                'resultado_principal_formato' => $cacheLookup['resultado_principal_formato'] ?? 'legacy',
+                'resultado_principal_path' => $cacheLookup['resultado_principal_path'] ?? null,
             ]
         );
 
         $cacheMeta = is_array($cacheLookup['metadata'] ?? null) ? $cacheLookup['metadata'] : [];
         $tracePath = $this->safeString($cacheMeta['trace_path'] ?? null);
         $pipelineLogPath = $this->safeString($cacheMeta['pipeline_log_path'] ?? $cacheMeta['log_path'] ?? null);
-        $errorParcial = !empty($cacheMeta['error_parcial']) || !$this->resultValidator->isClean($validation);
+        $errorParcial = !empty($cacheMeta['error_parcial']) || empty($operationalDecision['is_clean']);
         $elapsedMs = round((microtime(true) - $requestStartedAt) * 1000, 2);
         $completionMessage = $errorParcial
-            ? $this->buildValidationMessageForCompletion($validation, 'Resultado servido desde cache')
+            ? $this->buildValidationMessageForCompletion(
+                $validation,
+                $operationalDecision,
+                'Resultado servido desde cache'
+            )
             : null;
 
         $job = $this->queue->markCompleted(
@@ -240,6 +258,10 @@ class CvProcessingJobService
                 $current['aneca_canonical_ready'] = !empty($cacheLookup['aneca_canonical_ready']);
                 $current['aneca_canonical_validation_status'] = $cacheLookup['aneca_canonical_validation_status']
                     ?? ($current['aneca_canonical_validation_status'] ?? null);
+                $current['resultado_principal_formato'] = $cacheLookup['resultado_principal_formato']
+                    ?? ($current['resultado_principal_formato'] ?? 'legacy');
+                $current['resultado_principal_path'] = $cacheLookup['resultado_principal_path']
+                    ?? ($current['resultado_principal_path'] ?? null);
                 $current['validation_status'] = $validation['validation_status'] ?? ($current['validation_status'] ?? null);
                 $current['validation_errors'] = is_array($validation['validation_errors'] ?? null) ? $validation['validation_errors'] : [];
                 $current['validation_warnings'] = is_array($validation['validation_warnings'] ?? null) ? $validation['validation_warnings'] : [];
@@ -249,8 +271,15 @@ class CvProcessingJobService
 
         $this->queue->appendLog(
             (string)$job['id'],
+            'decision_operativa_service_cache_hit ' . $this->describeOperationalDecision($operationalDecision)
+        );
+        $this->queue->appendLog(
+            (string)$job['id'],
             'cache_hit_subida cache_key=' . (string)($cacheLookup['cache_key'] ?? '')
             . ' cache_estado=' . (string)($cacheLookup['cache_estado'] ?? 'hit')
+            . ' resultado_principal_formato=' . (string)($cacheLookup['resultado_principal_formato'] ?? 'legacy')
+            . ' criterio_operativo=' . (string)($operationalDecision['criterion'] ?? 'legacy_fallback')
+            . ' formato_operativo=' . (string)($operationalDecision['artifact_format'] ?? 'legacy')
             . ' validation_status=' . (string)($validation['validation_status'] ?? '')
             . ' aneca_canonical_ready=' . (!empty($cacheLookup['aneca_canonical_ready']) ? 'true' : 'false')
             . ' aneca_canonical_validation_status=' . (string)($cacheLookup['aneca_canonical_validation_status'] ?? '')
@@ -264,6 +293,9 @@ class CvProcessingJobService
         error_log(
             '[meritos-scraping] cache_hit_subida hash=' . $hashPdf
             . ' cache_key=' . (string)($cacheLookup['cache_key'] ?? '')
+            . ' resultado_principal_formato=' . (string)($cacheLookup['resultado_principal_formato'] ?? 'legacy')
+            . ' criterio_operativo=' . (string)($operationalDecision['criterion'] ?? 'legacy_fallback')
+            . ' formato_operativo=' . (string)($operationalDecision['artifact_format'] ?? 'legacy')
             . ' validation_status=' . (string)($validation['validation_status'] ?? '')
             . ' aneca_canonical_ready=' . (!empty($cacheLookup['aneca_canonical_ready']) ? 'true' : 'false')
             . ' aneca_canonical_validation_status=' . (string)($cacheLookup['aneca_canonical_validation_status'] ?? '')
@@ -364,9 +396,9 @@ class CvProcessingJobService
         return $value;
     }
 
-    private function buildValidationMessageForCompletion(array $validation, string $prefix): string
+    private function buildValidationMessageForCompletion(array $validation, array $decision, string $prefix): string
     {
-        $validation = $this->resultValidator->normalizeValidation($validation);
+        $validation = $this->legacyResultValidator->normalizeValidation($validation);
         $status = (string)($validation['validation_status'] ?? '');
         $warnings = is_array($validation['validation_warnings'] ?? null) ? $validation['validation_warnings'] : [];
         $errors = is_array($validation['validation_errors'] ?? null) ? $validation['validation_errors'] : [];
@@ -378,8 +410,43 @@ class CvProcessingJobService
         if (!empty($errors)) {
             $parts[] = 'errors=' . implode(',', array_slice($errors, 0, 3));
         }
+        $parts[] = 'criterio=' . (string)($decision['criterion'] ?? 'legacy_fallback');
+        $parts[] = 'formato=' . (string)($decision['artifact_format'] ?? 'legacy');
+
+        $fallbackReason = $this->safeString($decision['fallback_reason'] ?? null);
+        if ($fallbackReason !== null) {
+            $parts[] = 'fallback=' . $fallbackReason;
+        }
 
         return implode(' ', $parts) . '.';
+    }
+
+    /**
+     * @param array<string,mixed> $cacheLookup
+     * @param array<string,mixed> $legacyValidation
+     * @return array<string,mixed>
+     */
+    private function resolveOperationalDecision(array $cacheLookup, array $legacyValidation): array
+    {
+        $legacyValidation = $this->legacyResultValidator->normalizeValidation($legacyValidation);
+        return OperationalArtifactDecisionResolver::decide(
+            [
+                'resultado_principal_formato' => $cacheLookup['resultado_principal_formato'] ?? null,
+                'resultado_principal_path' => $cacheLookup['resultado_principal_path'] ?? null,
+                'aneca_canonical_path' => $cacheLookup['aneca_canonical_path'] ?? null,
+                'aneca_canonical_ready' => !empty($cacheLookup['aneca_canonical_ready']),
+                'aneca_canonical_validation_status' => $cacheLookup['aneca_canonical_validation_status'] ?? null,
+            ],
+            $legacyValidation
+        );
+    }
+
+    /**
+     * @param array<string,mixed> $decision
+     */
+    private function describeOperationalDecision(array $decision): string
+    {
+        return OperationalArtifactDecisionResolver::describe($decision);
     }
 
     private function safeString($value): ?string
