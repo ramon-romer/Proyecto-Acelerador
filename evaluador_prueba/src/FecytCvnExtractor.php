@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+require_once __DIR__ . '/compat_mbstring.php';
+
 class FecytCvnExtractor
 {
     public function extraer(string $texto): array

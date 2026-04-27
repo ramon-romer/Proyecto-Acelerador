@@ -241,7 +241,7 @@ function calcular_1a_experimentales(array $publicaciones): float
     }
 
     // Regla de tres sobre el estándar PCD: 12 publicaciones equivalentes = 35 puntos.
-    $puntuacion = 35.0 * min(1.0, $equivalentes / 12.0);
+    $puntuacion = 35.0 * min(1.0, $equivalentes / 13.0);
 
     return exp_round(exp_clamp($puntuacion, 0.0, 35.0));
 }
@@ -353,17 +353,17 @@ function exp_puntuar_item_1c(array $item): float
         'europeo' => match ($rol) {
             'ip' => 4.80,
             'coip' => 4.10,
-            default => 0.90,
+            default => 1.60,
         },
         'nacional' => match ($rol) {
             'ip' => 4.20,
             'coip' => 3.60,
-            default => 0.60,
+            default => 1.15,
         },
         'autonomico' => match ($rol) {
             'ip' => 2.20,
             'coip' => 1.80,
-            default => 0.40,
+            default => 0.70,
         },
         'art83_conocimiento' => match ($rol) {
             'ip' => 1.00,
@@ -629,7 +629,7 @@ function calcular_2a_experimentales(array $items): float
         $tfm += exp_to_int($item['tfm'] ?? 0, 0);
     }
 
-    $pHoras = 17.0 * min(1.0, $horasTotal / 450.0);
+    $pHoras = 17.0 * min(1.0, $horasTotal / 250.0);
     $pTF = min(1.5, ($tfg * 0.15) + ($tfm * 0.30));
 
     return exp_round(exp_clamp($pHoras + $pTF, 0.0, 17.0));
@@ -1097,7 +1097,7 @@ function evaluar_expediente(array $datos): array
         'evaluacion_positiva' => $evaluacionPositiva,
         'resultado' => $resultadoTexto,
         'diagnostico' => [
-            'version' => 'conservadora_pep_experimentales_v3_1a_1c_duros',
+            'version' => 'pep_experimentales_v4_calibrada_cvn_1a_1c_2a',
             'conteos' => [
                 'publicaciones' => exp_count_valid($publicaciones),
                 'proyectos' => exp_count_valid($proyectos),

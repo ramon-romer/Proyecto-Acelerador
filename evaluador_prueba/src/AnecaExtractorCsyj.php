@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class AnecaExtractor
+class AnecaExtractorCsyj
 {
     public function extraer(string $texto): array
     {
