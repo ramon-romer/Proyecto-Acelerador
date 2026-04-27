@@ -597,11 +597,11 @@ function recomendaciones(array $e): array {
 
         // 2) Mapa de rutas
         const rutas = {
-          "CSYJ":          "/evaluador/evaluador_aneca_csyj/index.php",
-          "EXPERIMENTALES":"/evaluador/evaluador_aneca_experimentales/index.php",
-          "HUMANIDADES":   "/evaluador/evaluador_aneca_humanidades/index.php",
-          "SALUD":         "/evaluador/evaluador_aneca_salud/index.php",
-          "TECNICA":       "/evaluador/evaluador_aneca_tecnicas/index.php"
+          "CSYJ":          "/evaluador_prueba/evaluador_aneca_csyj/index.php",
+          "EXPERIMENTALES":"/evaluador_prueba/evaluador_aneca_experimentales/index.php",
+          "HUMANIDADES":   "/evaluador_prueba/evaluador_aneca_humanidades/index.php",
+          "SALUD":         "/evaluador_prueba/evaluador_aneca_salud/index.php",
+          "TECNICA":       "/evaluador_prueba/evaluador_aneca_tecnicas/index.php"
         };
 
         const rutaRelativa = rutas[perfilRaw];
