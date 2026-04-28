@@ -1,0 +1,27 @@
+[2026-04-27T09:32:49+00:00] job_creado estado=pendiente archivo=contracts_sample_20260427_093249_948ebed6.pdf
+[2026-04-27T09:32:49+00:00] upload_recibido archivo_original=contracts_sample.pdf tamano_bytes=38672 es_pesado=false queued_only=false cache_hit=false cache_estado=miss resultado_principal_formato=legacy aneca_canonical_ready=false aneca_canonical_validation_status= motivo_invalidation=cache_no_encontrada
+[2026-04-27T09:32:49+00:00] cache_miss cache_estado=miss motivo=cache_no_encontrada
+[2026-04-27T09:32:49+00:00] fase=procesando_pdf estado=procesando_pdf progreso=5
+[2026-04-27T09:32:49+00:00] inicio_worker hash_pdf=b079ab2201c676e7f2866470293da3dd42f3b6ee9966d77057ab4bbc378e60cc pdf=contracts_sample_20260427_093249_948ebed6.pdf
+[2026-04-27T09:32:49+00:00] fase=inicio_pipeline estado=procesando_pdf progreso=5
+[2026-04-27T09:32:49+00:00] fase_callback estado=procesando_pdf progreso=5 fase=inicio_pipeline
+[2026-04-27T09:32:49+00:00] fase=extraccion_nativa estado=procesando_pdf progreso=18
+[2026-04-27T09:32:49+00:00] fase_callback estado=procesando_pdf progreso=18 fase=extraccion_nativa
+[2026-04-27T09:32:49+00:00] fase=limpieza_texto estado=extrayendo_meritos progreso=72
+[2026-04-27T09:32:49+00:00] fase_callback estado=extrayendo_meritos progreso=72 fase=limpieza_texto
+[2026-04-27T09:32:49+00:00] fase=extraccion_semantica estado=extrayendo_meritos progreso=82
+[2026-04-27T09:32:49+00:00] fase_callback estado=extrayendo_meritos progreso=82 fase=extraccion_semantica
+[2026-04-27T09:32:49+00:00] fase=calculando_puntuacion estado=calculando_puntuacion progreso=90
+[2026-04-27T09:32:49+00:00] fase_callback estado=calculando_puntuacion progreso=90 fase=calculando_puntuacion
+[2026-04-27T09:32:49+00:00] fase=validando_resultado estado=validando_resultado progreso=95
+[2026-04-27T09:32:49+00:00] fase_callback estado=validando_resultado progreso=95 fase=validando_resultado
+[2026-04-27T09:32:49+00:00] fase=pipeline_finalizado estado=validando_resultado progreso=100
+[2026-04-27T09:32:49+00:00] fase_callback estado=validando_resultado progreso=100 fase=pipeline_finalizado
+[2026-04-27T09:32:49+00:00] fase=calculando_puntuacion estado=calculando_puntuacion progreso=90
+[2026-04-27T09:32:49+00:00] fase_calculando_puntuacion placeholder
+[2026-04-27T09:32:49+00:00] fase=validando_resultado estado=validando_resultado progreso=95
+[2026-04-27T09:32:49+00:00] validacion_resultado status=valido_con_advertencias warnings=resultado_con_campos_extraidos_parciales
+[2026-04-27T09:32:49+00:00] decision_operativa_runtime criterio=aneca_operativo formato=aneca cacheable=true clean=false legacy_status=valido_con_advertencias aneca_status=valido_con_advertencias principal_declarado=aneca
+[2026-04-27T09:32:49+00:00] cache_guardada_correctamente cache_key=cache_b079ab2201c676e7_f5715a1af696ce83 cache_estado=valida resultado_principal_formato=aneca criterio_operativo=aneca_operativo formato_operativo=aneca validation_status=valido_con_advertencias aneca_canonical_ready=true aneca_canonical_validation_status=valido_con_advertencias motivo_invalidation=
+[2026-04-27T09:32:49+00:00] job_finalizado estado=error_parcial tiempo_total_ms=522.47 error_parcial=true
+[2026-04-27T09:32:49+00:00] fin_worker estado=error_parcial tiempo_total_ms=522.47 cache_guardada=true criterio_operativo=aneca_operativo formato_operativo=aneca

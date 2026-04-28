@@ -22,6 +22,8 @@
     "aneca_canonical_path",
     "aneca_canonical_ready",
     "aneca_canonical_validation_status",
+    "resultado_principal_formato",
+    "resultado_principal_path",
     "validation_status",
     "validation_errors",
     "validation_warnings",
@@ -141,6 +143,21 @@
         "incompleto",
         "invalido"
       ]
+    },
+    "resultado_principal_formato": {
+      "type": "string",
+      "description": "Formato interno principal EFECTIVO/operativo del artefacto para consumo tecnico (aneca|legacy), segun criterio operativo y fallback legacy por compatibilidad.",
+      "enum": [
+        "legacy",
+        "aneca"
+      ]
+    },
+    "resultado_principal_path": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Ruta del artefacto interno principal resuelto en runtime."
     },
     "validation_status": {
       "type": [

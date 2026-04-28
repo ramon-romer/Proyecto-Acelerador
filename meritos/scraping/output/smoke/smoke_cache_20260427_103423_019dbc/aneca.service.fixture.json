@@ -1,0 +1,18 @@
+{
+    "bloque_1": [],
+    "bloque_2": [],
+    "bloque_3": [],
+    "bloque_4": [],
+    "metadatos_extraccion": {
+        "comite": "SMOKE",
+        "subcomite": null,
+        "archivo_pdf": "demo.pdf",
+        "fecha_extraccion": "2026-04-27T10:34:25+00:00",
+        "version_esquema": "1.0",
+        "requiere_revision_manual": false,
+        "origen_adaptacion": "smoke_jobs_queue"
+    },
+    "archivo_pdf": "demo.pdf",
+    "json_generado": "demo.aneca.canonico.json",
+    "texto_extraido": "contenido de prueba para salida preferente"
+}

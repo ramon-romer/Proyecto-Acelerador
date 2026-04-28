@@ -156,7 +156,7 @@ try {
     $canonicalForConsumer = loadCanonicalPayloadFromPath((string)($jobFromCache['aneca_canonical_path'] ?? ''));
     $preferCanonical = !empty($jobFromCache['aneca_canonical_ready']) && is_array($canonicalForConsumer);
     $consumoPayload = $preferCanonical ? $canonicalForConsumer : $legacyPayload;
-    $consumoFormato = $preferCanonical ? 'aneca_canonico' : 'legacy';
+    $consumoFormato = $preferCanonical ? 'aneca' : 'legacy';
     $consumoOk = is_array($consumoPayload)
         && (
             $consumoFormato === 'legacy'

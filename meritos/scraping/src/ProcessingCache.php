@@ -1,5 +1,8 @@
 <?php
 
+require_once __DIR__ . '/InternalPreferredArtifactResolver.php';
+require_once __DIR__ . '/OperationalArtifactDecisionResolver.php';
+
 class ProcessingCache
 {
     private $cacheDir;
@@ -89,9 +92,14 @@ class ProcessingCache
             'aneca_canonical_validation_errors' => [],
             'aneca_canonical_validation_warnings' => [],
             'aneca_canonical_json' => null,
+            'resultado_principal_formato' => InternalPreferredArtifactResolver::FORMAT_LEGACY,
+            'resultado_principal_path' => $paths['result_path'],
             'validation_status' => null,
             'validation_errors' => [],
             'validation_warnings' => [],
+            'operational_criterion' => null,
+            'operational_artifact_format' => null,
+            'operational_fallback_reason' => null,
         ];
 
         $meta = $this->safeReadJsonFile($paths['meta_path']);
@@ -135,9 +143,35 @@ class ProcessingCache
                     $response['aneca_canonical_json'] = $canonicalPath !== null && is_file($canonicalPath)
                         ? $this->safeReadJsonFile($canonicalPath)
                         : null;
+                    $operationalFormat = $this->safeString($validation['operational_artifact_format'] ?? null);
+                    $operationalPath = $this->safeString($validation['operational_artifact_path'] ?? null);
+                    if (!in_array($operationalFormat, ['aneca', 'legacy'], true)) {
+                        $preferredArtifact = InternalPreferredArtifactResolver::resolvePreferredArtifact(
+                            (string)$validation['result_path'],
+                            $canonicalPath,
+                            $canonicalReady
+                        );
+                        $operationalFormat = (string)($preferredArtifact['resultado_principal_formato'] ?? 'legacy');
+                        $operationalPath = $this->safeString($preferredArtifact['resultado_principal_path'] ?? null);
+                    }
+                    if ($operationalPath === null) {
+                        $operationalPath = $operationalFormat === 'aneca'
+                            ? $canonicalPath
+                            : (string)$validation['result_path'];
+                    }
+
+                    $response['resultado_principal_formato'] = $operationalFormat;
+                    $response['resultado_principal_path'] = $operationalPath;
                     $response['validation_status'] = $this->safeString($meta['validation_status'] ?? null);
                     $response['validation_errors'] = $this->safeStringList($meta['validation_errors'] ?? []);
                     $response['validation_warnings'] = $this->safeStringList($meta['validation_warnings'] ?? []);
+                    $response['operational_criterion'] = $this->safeString($validation['operational_criterion'] ?? null);
+                    $response['operational_artifact_format'] = $this->safeString(
+                        $validation['operational_artifact_format'] ?? null
+                    );
+                    $response['operational_fallback_reason'] = $this->safeString(
+                        $validation['operational_fallback_reason'] ?? null
+                    );
 
                     return $response;
                 }
@@ -147,6 +181,13 @@ class ProcessingCache
             } else {
                 $response['cache_estado'] = $validation['state'];
                 $response['motivo_invalidation'] = $validation['reason'];
+                $response['operational_criterion'] = $this->safeString($validation['operational_criterion'] ?? null);
+                $response['operational_artifact_format'] = $this->safeString(
+                    $validation['operational_artifact_format'] ?? null
+                );
+                $response['operational_fallback_reason'] = $this->safeString(
+                    $validation['operational_fallback_reason'] ?? null
+                );
             }
         }
 
@@ -244,6 +285,46 @@ class ProcessingCache
             'validation_errors' => $this->safeStringList($metadata['validation_errors'] ?? []),
             'validation_warnings' => $this->safeStringList($metadata['validation_warnings'] ?? []),
         ];
+        $canonicalPathResolved = $this->resolvePathFromMeta($meta['aneca_canonical_path'] ?? null, null);
+        $canonicalReadyResolved = !empty($meta['aneca_canonical_ready']) && $canonicalPathResolved !== null && is_file($canonicalPathResolved);
+        $canonicalStatusResolved = $this->safeString($meta['aneca_canonical_validation_status'] ?? null);
+        if (!empty($meta['aneca_canonical_ready']) && !$canonicalReadyResolved && $canonicalStatusResolved === null) {
+            $canonicalStatusResolved = 'invalido';
+        }
+
+        $legacyStatus = $this->normalizeLegacyStatusFromMeta($meta);
+        $technicalPreferred = InternalPreferredArtifactResolver::resolvePreferredArtifact(
+            $paths['result_path'],
+            $canonicalPathResolved,
+            $canonicalReadyResolved
+        );
+        $operationalDecision = OperationalArtifactDecisionResolver::decide(
+            [
+                'resultado_principal_formato' => $technicalPreferred['resultado_principal_formato'] ?? null,
+                'resultado_principal_path' => $technicalPreferred['resultado_principal_path'] ?? null,
+                'aneca_canonical_path' => $canonicalPathResolved,
+                'aneca_canonical_ready' => $canonicalReadyResolved,
+                'aneca_canonical_validation_status' => $canonicalStatusResolved,
+            ],
+            [
+                'validation_status' => $legacyStatus,
+            ]
+        );
+
+        $meta['aneca_canonical_path'] = $canonicalPathResolved;
+        $meta['aneca_canonical_ready'] = $canonicalReadyResolved;
+        $meta['aneca_canonical_validation_status'] = $canonicalStatusResolved;
+        $meta['resultado_principal_formato'] = in_array(
+            (string)($operationalDecision['artifact_format'] ?? ''),
+            ['aneca', 'legacy'],
+            true
+        )
+            ? (string)$operationalDecision['artifact_format']
+            : (string)($technicalPreferred['resultado_principal_formato'] ?? 'legacy');
+        $meta['resultado_principal_path'] = $this->safeString($operationalDecision['artifact_path'] ?? null)
+            ?? ($meta['resultado_principal_formato'] === 'aneca'
+                ? $canonicalPathResolved
+                : $paths['result_path']);
 
         $metaJson = json_encode($meta, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
         if ($metaJson === false) {
@@ -263,6 +344,8 @@ class ProcessingCache
             'aneca_canonical_validation_status' => $meta['aneca_canonical_validation_status'],
             'aneca_canonical_validation_errors' => $meta['aneca_canonical_validation_errors'],
             'aneca_canonical_validation_warnings' => $meta['aneca_canonical_validation_warnings'],
+            'resultado_principal_formato' => $meta['resultado_principal_formato'],
+            'resultado_principal_path' => $meta['resultado_principal_path'],
             'validation_status' => $meta['validation_status'],
             'validation_errors' => $meta['validation_errors'],
             'validation_warnings' => $meta['validation_warnings'],
@@ -292,14 +375,61 @@ class ProcessingCache
             return ['valid' => false, 'state' => 'no_valida', 'reason' => 'estado_cache_' . ($estadoCache === '' ? 'desconocido' : $estadoCache)];
         }
 
-        $validationStatus = strtolower(trim((string)($meta['validation_status'] ?? '')));
-        if ($validationStatus !== '' && !in_array($validationStatus, ['valido', 'valido_con_advertencias'], true)) {
-            return ['valid' => false, 'state' => 'no_valida', 'reason' => 'validation_status_' . $validationStatus];
-        }
-
         $resultPath = $this->resolvePathFromMeta($meta['resultado_json_path'] ?? null, $paths['result_path']);
         if (!is_file($resultPath)) {
             return ['valid' => false, 'state' => 'corrupta', 'reason' => 'resultado_json_inexistente'];
+        }
+
+        $canonicalPath = $this->resolvePathFromMeta($meta['aneca_canonical_path'] ?? null, null);
+        $canonicalReady = !empty($meta['aneca_canonical_ready']);
+        $canonicalStatus = $this->safeString($meta['aneca_canonical_validation_status'] ?? null);
+        if ($canonicalPath === null || !is_file($canonicalPath)) {
+            $canonicalPath = null;
+            $canonicalReady = false;
+            if (!empty($meta['aneca_canonical_ready']) && $canonicalStatus === null) {
+                $canonicalStatus = 'invalido';
+            }
+        }
+
+        $preferredArtifact = InternalPreferredArtifactResolver::resolvePreferredArtifact(
+            $resultPath,
+            $canonicalPath,
+            $canonicalReady
+        );
+        $metaPrimaryFormat = $this->safeString($meta['resultado_principal_formato'] ?? null);
+        if (!in_array($metaPrimaryFormat, ['aneca', 'legacy'], true)) {
+            $metaPrimaryFormat = (string)($preferredArtifact['resultado_principal_formato'] ?? 'legacy');
+        }
+
+        $metaPrimaryPath = $this->resolvePathFromMeta($meta['resultado_principal_path'] ?? null, null);
+        if ($metaPrimaryPath === null || !is_file($metaPrimaryPath)) {
+            $metaPrimaryPath = $this->safeString($preferredArtifact['resultado_principal_path'] ?? null);
+        }
+
+        $legacyStatus = $this->normalizeLegacyStatusFromMeta($meta);
+        $decision = OperationalArtifactDecisionResolver::decide(
+            [
+                'resultado_principal_formato' => $metaPrimaryFormat,
+                'resultado_principal_path' => $metaPrimaryPath,
+                'aneca_canonical_path' => $canonicalPath,
+                'aneca_canonical_ready' => $canonicalReady,
+                'aneca_canonical_validation_status' => $canonicalStatus,
+            ],
+            [
+                'validation_status' => $legacyStatus,
+            ]
+        );
+
+        if (empty($decision['cacheable'])) {
+            return [
+                'valid' => false,
+                'state' => 'no_valida',
+                'reason' => $this->normalizeInvalidationReasonFromOperationalDecision($decision),
+                'operational_criterion' => $decision['criterion'] ?? null,
+                'operational_artifact_format' => $decision['artifact_format'] ?? null,
+                'operational_artifact_path' => $decision['artifact_path'] ?? null,
+                'operational_fallback_reason' => $decision['fallback_reason'] ?? null,
+            ];
         }
 
         $textPathRaw = $this->resolvePathFromMeta($meta['texto_extraido_path'] ?? null, $paths['text_path']);
@@ -314,7 +444,44 @@ class ProcessingCache
             'reason' => null,
             'result_path' => $resultPath,
             'text_path' => $textPath,
+            'operational_criterion' => $decision['criterion'] ?? null,
+            'operational_artifact_format' => $decision['artifact_format'] ?? null,
+            'operational_artifact_path' => $decision['artifact_path'] ?? null,
+            'operational_fallback_reason' => $decision['fallback_reason'] ?? null,
         ];
+    }
+
+    private function normalizeLegacyStatusFromMeta(array $meta): string
+    {
+        $rawStatus = strtolower(trim((string)($meta['validation_status'] ?? '')));
+        if ($rawStatus === '') {
+            // Compatibilidad con metas antiguas que no trazaban validation_status.
+            return 'valido_con_advertencias';
+        }
+
+        if (in_array($rawStatus, ['valido', 'valido_con_advertencias', 'incompleto', 'invalido'], true)) {
+            return $rawStatus;
+        }
+
+        return 'invalido';
+    }
+
+    /**
+     * @param array<string,mixed> $decision
+     */
+    private function normalizeInvalidationReasonFromOperationalDecision(array $decision): string
+    {
+        $reason = (string)($decision['invalidation_reason'] ?? 'resultado_no_utilizable');
+        $legacyPrefix = 'legacy_validation_status_';
+        if (strpos($reason, $legacyPrefix) === 0) {
+            $status = trim((string)substr($reason, strlen($legacyPrefix)));
+            if ($status === '') {
+                $status = 'desconocido';
+            }
+            return 'validation_status_' . $status;
+        }
+
+        return $reason;
     }
 
     private function compareVersionReason(array $meta, array $currentVersions): ?string

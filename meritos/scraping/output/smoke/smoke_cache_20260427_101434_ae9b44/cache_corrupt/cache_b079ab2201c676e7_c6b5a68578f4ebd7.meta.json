@@ -1,0 +1,30 @@
+{
+    "hash_pdf": "b079ab2201c676e7f2866470293da3dd42f3b6ee9966d77057ab4bbc378e60cc",
+    "cache_key": "cache_b079ab2201c676e7_c6b5a68578f4ebd7",
+    "archivo_original": "corrupt.pdf",
+    "fecha_procesamiento": "2026-04-27T10:14:36+00:00",
+    "version_pipeline": "hibrido_por_pagina_v1",
+    "version_baremo": "baremo_smoke_v1",
+    "version_schema": "schema_smoke_v1",
+    "resultado_json_path": "C:\\Users\\basil\\Documents\\GitHub\\Proyecto-Acelerador\\meritos\\scraping\\tools\/..\/output\/smoke\/smoke_cache_20260427_101434_ae9b44\/cache_corrupt\\cache_b079ab2201c676e7_c6b5a68578f4ebd7.result.json",
+    "texto_extraido_path": "C:\\Users\\basil\\Documents\\GitHub\\Proyecto-Acelerador\\meritos\\scraping\\tools\/..\/output\/smoke\/smoke_cache_20260427_101434_ae9b44\/cache_corrupt\\cache_b079ab2201c676e7_c6b5a68578f4ebd7.text.txt",
+    "trace_path": null,
+    "log_path": null,
+    "aneca_canonical_path": null,
+    "aneca_canonical_ready": false,
+    "aneca_canonical_validation_status": null,
+    "aneca_canonical_validation_errors": [],
+    "aneca_canonical_validation_warnings": [],
+    "tiempo_total_ms": null,
+    "estado_cache": "valida",
+    "error_parcial": false,
+    "pipeline_log_path": null,
+    "motivo_invalidation": null,
+    "validation_status": "invalido",
+    "validation_errors": [
+        "json_invalido"
+    ],
+    "validation_warnings": [],
+    "resultado_principal_formato": "legacy",
+    "resultado_principal_path": "C:\\Users\\basil\\Documents\\GitHub\\Proyecto-Acelerador\\meritos\\scraping\\tools\/..\/output\/smoke\/smoke_cache_20260427_101434_ae9b44\/cache_corrupt\\cache_b079ab2201c676e7_c6b5a68578f4ebd7.result.json"
+}

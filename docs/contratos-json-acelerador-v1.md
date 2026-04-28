@@ -53,7 +53,8 @@ Ningun contrato tecnico local de `meritos/scraping` sustituye ni redefine el con
   - `meritos/scraping/src/Pipeline.php`
 
 - Consumidores que aun dependen del payload legacy (`resultado_json` con `tipo_documento`, `iva`, etc.):
-  - `meritos/scraping/src/PipelineResultValidator.php`
+  - `meritos/scraping/src/LegacyPipelineResultValidator.php`
+  - `meritos/scraping/src/PipelineResultValidator.php` (alias transitorio de compatibilidad)
   - `meritos/scraping/public/subir.php` (campo `resultado`)
   - `meritos/scraping/public/api_cv_procesar.php` (campo `resultado`)
   - `meritos/scraping/tools/smoke_jobs_queue.php`
@@ -88,11 +89,28 @@ Y trazabilidad tecnica de convergencia en jobs/cache/API:
 - `aneca_canonical_path`
 - `aneca_canonical_ready`
 - `aneca_canonical_validation_status`
+- `resultado_principal_formato` (aneca|legacy)
+- `resultado_principal_path`
+
+En job/cache, `resultado_json` se mantiene por compatibilidad transitoria, pero el runtime ya expone
+un descriptor interno de artefacto principal (`resultado_principal_*`) para reducir el sesgo legacy-first.
+`resultado_principal_formato` representa el artefacto principal EFECTIVO/operativo (no solo disponibilidad tecnica).
+Ademas, `ProcessingJobWorker` aplica criterio operativo `aneca_operativo` cuando ANECA esta lista/usable
+y degrada a `legacy_fallback` cuando no lo esta, manteniendo continuidad con `resultado_json`.
+`CvProcessingJobService` usa el mismo criterio en cache-hit mediante `OperationalArtifactDecisionResolver`
+para evitar divergencias entre subida sincronica y ejecucion posterior del worker.
+`ProcessingCache::validateCurrentMeta()` aplica tambien esa decision operativa para validar reutilizacion
+de cache meta (`aneca_operativo` vs `legacy_fallback`) manteniendo compatibilidad con metadatos antiguos.
 
 ## Validaciones separadas por responsabilidad
 
 - Canonico de dominio ANECA:
   - `php evaluador/tests/validate_canonical_schema.php`
+  - `meritos/scraping/src/AnecaCanonicalResultValidator.php`
+
+- Tecnica legacy transitoria (payload heredado):
+  - `meritos/scraping/src/LegacyPipelineResultValidator.php`
+  - `meritos/scraping/src/PipelineResultValidator.php` (alias temporal para no romper imports legacy)
 
 - Contratos tecnicos internos de scraping:
   - `php meritos/scraping/tools/validate_scraping_technical_contracts.php`

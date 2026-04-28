@@ -1,0 +1,6 @@
+[2026-04-27T10:27:05+00:00] job_creado estado=pendiente archivo=worker_legacy.pdf
+[2026-04-27T10:27:05+00:00] cache_hit cache_key=cache_b079ab2201c676e7_c6b5a68578f4ebd7 cache_estado=hit resultado_principal_formato=legacy aneca_canonical_ready=false aneca_canonical_validation_status=
+[2026-04-27T10:27:05+00:00] fase=cache_hit estado=validando_resultado progreso=98
+[2026-04-27T10:27:05+00:00] decision_operativa_cache criterio=legacy_fallback formato=legacy cacheable=true clean=true legacy_status=valido aneca_status= principal_declarado=legacy fallback=aneca_not_ready
+[2026-04-27T10:27:05+00:00] job_finalizado estado=completado tiempo_total_ms=18.32
+[2026-04-27T10:27:05+00:00] fin_worker_cache estado=completado tiempo_total_ms=18.32 criterio_operativo=legacy_fallback formato_operativo=legacy

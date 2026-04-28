@@ -1,0 +1,6 @@
+[2026-04-27T10:34:24+00:00] job_creado estado=pendiente archivo=worker_aneca.pdf
+[2026-04-27T10:34:24+00:00] cache_hit cache_key=cache_b079ab2201c676e7_c6b5a68578f4ebd7 cache_estado=hit resultado_principal_formato=aneca aneca_canonical_ready=true aneca_canonical_validation_status=valido
+[2026-04-27T10:34:24+00:00] fase=cache_hit estado=validando_resultado progreso=98
+[2026-04-27T10:34:24+00:00] decision_operativa_cache criterio=aneca_operativo formato=aneca cacheable=true clean=true legacy_status=valido aneca_status=valido principal_declarado=aneca
+[2026-04-27T10:34:24+00:00] job_finalizado estado=completado tiempo_total_ms=16.12
+[2026-04-27T10:34:25+00:00] fin_worker_cache estado=completado tiempo_total_ms=16.12 criterio_operativo=aneca_operativo formato_operativo=aneca

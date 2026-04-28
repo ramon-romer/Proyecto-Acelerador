@@ -21,6 +21,8 @@
     "aneca_canonical_validation_status",
     "aneca_canonical_validation_errors",
     "aneca_canonical_validation_warnings",
+    "resultado_principal_formato",
+    "resultado_principal_path",
     "tiempo_total_ms",
     "estado_cache",
     "error_parcial",
@@ -117,6 +119,21 @@
       "items": {
         "type": "string"
       }
+    },
+    "resultado_principal_formato": {
+      "type": "string",
+      "description": "Formato interno principal EFECTIVO/operativo de artefacto en cache tecnica (aneca|legacy).",
+      "enum": [
+        "legacy",
+        "aneca"
+      ]
+    },
+    "resultado_principal_path": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Ruta del artefacto interno principal EFECTIVO/operativo resuelto al guardar cache."
     },
     "tiempo_total_ms": {
       "type": [

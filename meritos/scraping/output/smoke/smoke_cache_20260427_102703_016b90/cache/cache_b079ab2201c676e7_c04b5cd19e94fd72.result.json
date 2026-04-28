@@ -1,0 +1,13 @@
+{
+    "tipo_documento": null,
+    "numero": "n",
+    "fecha": null,
+    "total_bi": null,
+    "iva": null,
+    "total_a_pagar": null,
+    "texto_preview": "Document title \n \nCalibri : Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla lacus arcu, feugiat a ligula \ncursus, feugiat dapibus diam. Cras augue ante, volutpat non velit sit amet, vehicula facilisis lacus. \nMorbi vitae sapien elementum, gravida felis non, egestas magna. Aenean at mauris vitae magna \ndignissim dapibus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia \nCurae; Vivamus purus urna, sagittis eget semper id, porta vel risus. Integer sed felis rutrum, tempor \nnisl non, pellentesque elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi arcu nunc, \ncursus a libero eu, bibendum accumsan est. Vivamus non risus pellentesque massa tempus \nbibendum. Nunc in commodo dui. Integer pharetra felis arcu, id cursus lacus fringilla vel. Vestibulum \neget purus consequat, consequat mi ac, feugiat mi. \nArial : Praesent dictum vel orci ut aliquam. In hac habitasse platea dictumst. Nulla fermentum \nnibh eget rutrum suscipit. Donec in luctus eros. Cras tristique erat a tellus sodales, sit amet \ntempor massa aliquet. Ut a metus vitae ligula viverra congue. Curabitur non feugiat lacus. \nInteger a euismod quam. Donec eu laoreet magna",
+    "archivo_pdf": "cv_cache_smoke_20260427_102704_005090ce.pdf",
+    "paginas_detectadas": 1,
+    "txt_generado": "cv_cache_smoke_20260427_102704_005090ce.txt",
+    "json_generado": "cv_cache_smoke_20260427_102704_005090ce.json"
+}

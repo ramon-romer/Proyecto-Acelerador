@@ -5,6 +5,7 @@
 
 require_once __DIR__ . '/../src/CvProcessingJobService.php';
 require_once __DIR__ . '/../src/ProcessingJobQueue.php';
+require_once __DIR__ . '/../src/PreferredResultResolver.php';
 
 $method = strtoupper((string)($_SERVER['REQUEST_METHOD'] ?? 'GET'));
 $route = resolveRoute();
@@ -101,17 +102,14 @@ try {
             );
         }
 
+        $legacyPayload = is_array($job['resultado_json'] ?? null) ? $job['resultado_json'] : [];
         $anecaPayload = $includeAnecaPayload ? loadAnecaCanonicalPayloadFromJob($job) : null;
-        $preferedPayload = $job['resultado_json'];
-        $preferedFormat = 'legacy';
-        if (
-            $preferAnecaCanonical
-            && !empty($job['aneca_canonical_ready'])
-            && is_array($anecaPayload)
-        ) {
-            $preferedPayload = $anecaPayload;
-            $preferedFormat = 'aneca_canonico';
-        }
+        $preferred = PreferredResultResolver::resolvePreferredResult(
+            $legacyPayload,
+            $preferAnecaCanonical,
+            !empty($job['aneca_canonical_ready']),
+            $anecaPayload
+        );
 
         $response = [
             'ok' => true,
@@ -119,23 +117,20 @@ try {
             'estado' => $estado,
             'error_parcial' => (bool)($job['error_parcial'] ?? false),
             'error_mensaje' => $job['error_mensaje'],
-            'resultado' => $job['resultado_json'],
+            'resultado' => $legacyPayload,
             'trace_path' => $job['trace_path'],
             'log_path' => $job['log_path'],
             'pipeline_log_path' => $job['pipeline_log_path'] ?? null,
             'aneca_canonical_path' => $job['aneca_canonical_path'] ?? null,
             'aneca_canonical_ready' => (bool)($job['aneca_canonical_ready'] ?? false),
             'aneca_canonical_validation_status' => $job['aneca_canonical_validation_status'] ?? null,
+            'resultado_preferente_formato' => $preferred['resultado_preferente_formato'],
+            'resultado_preferente' => $preferred['resultado_preferente'],
             'tiempo_total_ms' => $job['tiempo_total_ms'],
         ];
 
         if ($includeAnecaPayload) {
             $response['resultado_aneca_canonico'] = $anecaPayload;
-        }
-
-        if ($preferAnecaCanonical) {
-            $response['resultado_preferente_formato'] = $preferedFormat;
-            $response['resultado_preferente'] = $preferedPayload;
         }
 
         respondJson($response, 200);
@@ -234,7 +229,11 @@ function shouldIncludeAnecaCanonicalPayload(): bool
 
 function shouldPreferAnecaCanonical(): bool
 {
-    return (string)($_GET['prefer_aneca'] ?? '') === '1';
+    $requestValue = array_key_exists('prefer_aneca', $_GET)
+        ? (string)$_GET['prefer_aneca']
+        : null;
+
+    return PreferredResultResolver::shouldPreferAneca($requestValue);
 }
 
 function loadAnecaCanonicalPayloadFromJob(array $job): ?array
