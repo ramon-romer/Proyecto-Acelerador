@@ -35,7 +35,8 @@ csyj_render_layout_start(
             </div>
 
             <div class="form-actions">
-                <button type="submit">Procesar PDF</button>
+                <button type="submit" name="formato_cv" value="aneca">Procesar PDF</button>
+                <button type="submit" name="formato_cv" value="cvn_fecyt" class="secondary">Procesar CVN (FECYT)</button>
                 <a class="btn outline" href="<?= csyj_h(csyj_listado_url()) ?>">Abrir listado</a>
             </div>
         </form>

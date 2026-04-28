@@ -131,16 +131,16 @@ function csyj_base_publicacion_1a(array $pub): float
 
     if (in_array($indice, ['JCR', 'SCOPUS', 'SJR'], true)) {
         return match ($cuartil) {
-            'Q1' => 3.80,
-            'Q2' => 2.80,
-            'Q3' => 1.80,
-            'Q4' => 1.00,
-            default => 0.80,
+            'Q1' => 5.20,
+            'Q2' => 3.50,
+            'Q3' => 2.60,
+            'Q4' => 1.20,
+            default => 1.00,
         };
     }
 
     if ($indice === 'ESCI' || $indice === 'ESI') {
-        return 1.50;
+        return $cuartil === 'Q1' ? 2.00 : 1.70;
     }
 
     if ($indice === 'CIRC') {
@@ -157,7 +157,12 @@ function csyj_base_publicacion_1a(array $pub): float
     }
 
     if ($indice === 'MIAR') {
-        return ($subtipo === 'ICDS') ? 1.20 : 0.90;
+        return match ($cuartil) {
+            'Q1' => 2.00,
+            'Q2' => 1.55,
+            'Q3', 'Q4' => 1.25,
+            default => ($subtipo === 'ICDS' ? 1.55 : 1.35),
+        };
     }
 
     return 0.45;
@@ -307,11 +312,11 @@ function csyj_puntuar_item_1b(array $item): float
         };
     } else {
         $base = match ($nivel) {
-            'spi_alto' => 1.60,
-            'spi_medio' => 1.30,
-            'bci' => 1.10,
-            'nacional' => 0.90,
-            default => 0.60,
+            'spi_alto', 'internacional' => 2.30,
+            'spi_medio' => 1.80,
+            'bci' => 1.50,
+            'nacional' => 1.25,
+            default => 0.85,
         };
     }
 
@@ -376,8 +381,9 @@ function csyj_puntuar_item_1c(array $item): float
         'europeo' => 2.30,
         'nacional' => 1.90,
         'autonomico', 'autonómico' => 1.15,
-        'universidad' => 0.75,
-        default => 0.60,
+        'universidad', 'otro_competitivo' => 1.00,
+        'art83_conocimiento' => 0.85,
+        default => 0.70,
     };
 
     $base *= match ($rol) {
@@ -429,9 +435,9 @@ function csyj_puntuar_item_1d(array $item): float
     $ambito = mb_strtolower(csyj_str($item['ambito'] ?? 'nacional'), 'UTF-8');
 
     $baseTipo = match ($tipo) {
-        'transferencia_conocimiento' => 0.70,
-        'contrato_transferencia' => 0.60,
-        'impacto_social' => 0.50,
+        'transferencia_conocimiento' => 1.00,
+        'contrato_transferencia' => 0.85,
+        'impacto_social' => 0.70,
         'difusion_especializada' => 0.35,
         default => 0.30,
     };
@@ -525,11 +531,11 @@ function csyj_puntuar_item_1f(array $item): float
     $invitada = csyj_bool($item['por_invitacion'] ?? false);
 
     $base = match ($tipo) {
-        'ponencia' => 0.46,
-        'comunicacion', 'comunicación' => 0.36,
-        'seminario', 'jornada', 'seminario/jornada' => 0.28,
-        'poster', 'póster' => 0.16,
-        default => 0.20,
+        'ponencia', 'ponencia_invitada' => 0.72,
+        'comunicacion', 'comunicación', 'comunicacion_oral' => 0.55,
+        'seminario', 'jornada', 'seminario/jornada' => 0.38,
+        'poster', 'póster' => 0.22,
+        default => 0.32,
     };
 
     $base *= match ($ambito) {
@@ -591,7 +597,7 @@ function csyj_puntuar_item_1g(array $item): float
         'coordinacion_libro', 'coordinación_libro' => 0.28,
         'organizacion_investigacion', 'organización_investigación' => 0.28,
         'tribunal_tesis' => 0.22,
-        'grupo_investigacion', 'grupo_investigación' => 0.18,
+        'grupo_investigacion', 'grupo_investigación' => 0.35,
         'publicacion_tesis', 'publicación_tesis' => 0.18,
         'resena', 'reseña' => 0.14,
         'divulgacion', 'divulgación' => 0.12,
@@ -767,10 +773,10 @@ function calcular_2d_csyj(array $materiales): float
         $relevancia = mb_strtolower(csyj_str($item['relevancia'] ?? 'media'), 'UTF-8');
 
         $base = match ($tipo) {
-            'publicacion_docente', 'publicación_docente' => 1.55,
-            'proyecto_innovacion', 'proyecto_innovación' => 1.35,
-            'material_publicado' => 1.05,
-            default => 0.75,
+            'publicacion_docente', 'publicación_docente' => 1.75,
+            'proyecto_innovacion', 'proyecto_innovación' => 3.05,
+            'material_publicado' => 1.15,
+            default => 0.85,
         };
 
         if ($isbn) {
@@ -811,12 +817,12 @@ function csyj_puntuar_item_3a(array $item): float
     $posteriorGrado = csyj_bool($item['posterior_grado'] ?? true, true);
 
     return match ($tipo) {
-        'doctorado_internacional' => 1.60,
+        'doctorado_internacional' => 2.40,
         'doctorado_sin_mencion', 'doctorado_sin_mención' => 0.0,
-        'beca_competitiva' => $posteriorGrado ? 1.30 : 0.0,
+        'beca_competitiva', 'beca_predoc_fpu', 'beca_predoc_fpi' => $posteriorGrado ? 1.40 : 0.0,
         'ayuda' => $posteriorGrado ? 0.70 : 0.0,
-        'master', 'máster' => 0.90,
-        'curso_especializacion', 'curso_especialización' => min(0.70, 0.12 * $duracion),
+        'master', 'máster' => 1.00,
+        'curso_especializacion', 'curso_especialización' => min(0.75, 0.75 * max(1.0, $duracion)),
         'movilidad', 'estancia' => ($duracion < 1.0) ? 0.0 : min(1.30, 0.28 * $duracion),
         default => 0.0,
     };
@@ -890,8 +896,8 @@ function calcular_4_csyj(array $otros): float
         $base = match ($tipo) {
             'gestion', 'gestión' => 0.42,
             'cargo_unipersonal' => 0.48,
-            'docencia_no_reglada' => 0.32,
-            'tfg_tfm' => 0.22,
+            'docencia_no_reglada' => 0.42,
+            'tfg_tfm' => 0.34,
             'tutor_uned' => 0.28,
             'curso_extension', 'curso_extensión' => 0.24,
             default => 0.18,

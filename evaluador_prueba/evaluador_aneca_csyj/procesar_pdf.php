@@ -10,10 +10,16 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 @ini_set('memory_limit', '512M');
 
 require_once __DIR__ . '/../src/AnecaExtractorCsyj.php';
+require_once __DIR__ . '/../src/FecytCvnExtractorCsyj.php';
 require_once __DIR__ . '/../src/Pipeline.php';
 require __DIR__ . '/ui.php';
 
 $nombreCandidato = trim($_POST['nombre_candidato'] ?? '');
+$formatoCv = trim((string)($_POST['formato_cv'] ?? 'aneca'));
+$formatoCvNormalizado = strtolower(str_replace(['-', ' '], '_', $formatoCv));
+$esCvnFecyt = in_array($formatoCvNormalizado, ['cvn_fecyt', 'fecyt_cvn', 'fecyt', 'cvn'], true)
+    || isset($_POST['procesar_cvn_fecyt'])
+    || isset($_POST['btn_cvn_fecyt']);
 
 if ($nombreCandidato === '') {
     die('Falta el nombre del candidato.');
@@ -45,7 +51,11 @@ if (!move_uploaded_file($_FILES['pdf_cv']['tmp_name'], $rutaPdf)) {
     die('No se pudo guardar el PDF.');
 }
 
-$pipeline = new Pipeline();
+$extractor = $esCvnFecyt ? new FecytCvnExtractorCsyj() : new AnecaExtractorCsyj();
+$etiquetaFormato = $esCvnFecyt ? 'CVN (FECYT)' : 'PDF estándar';
+$formatoCv = $esCvnFecyt ? 'cvn_fecyt' : 'aneca';
+
+$pipeline = new Pipeline($extractor);
 $jsonExtraido = $pipeline->procesar($rutaPdf);
 
 if (!is_array($jsonExtraido)) {
@@ -55,15 +65,13 @@ if (!is_array($jsonExtraido)) {
 $jsonExtraido['nombre_candidato'] = $nombreCandidato;
 $jsonExtraido['area'] = 'Ciencias Sociales y Jurídicas';
 $jsonExtraido['categoria'] = 'PCD/PUP';
+$jsonExtraido['formato_cv'] = $formatoCv;
+$jsonExtraido['formato_cv_label'] = $etiquetaFormato;
 
-if (!isset($jsonExtraido['bloque_1']) || !is_array($jsonExtraido['bloque_1'])) {
-    $jsonExtraido['bloque_1'] = [];
-}
-if (!isset($jsonExtraido['bloque_2']) || !is_array($jsonExtraido['bloque_2'])) {
-    $jsonExtraido['bloque_2'] = [];
-}
-if (!isset($jsonExtraido['bloque_3']) || !is_array($jsonExtraido['bloque_3'])) {
-    $jsonExtraido['bloque_3'] = [];
+foreach (['bloque_1', 'bloque_2', 'bloque_3'] as $bloqueKey) {
+    if (!isset($jsonExtraido[$bloqueKey]) || !is_array($jsonExtraido[$bloqueKey])) {
+        $jsonExtraido[$bloqueKey] = [];
+    }
 }
 if (!isset($jsonExtraido['bloque_4']) || !is_array($jsonExtraido['bloque_4'])) {
     $jsonExtraido['bloque_4'] = [];
@@ -84,8 +92,6 @@ $jsonExtraido['bloque_2']['material_docente'] = is_array($jsonExtraido['bloque_2
 
 $jsonExtraido['bloque_3']['formacion_academica'] = is_array($jsonExtraido['bloque_3']['formacion_academica'] ?? null) ? $jsonExtraido['bloque_3']['formacion_academica'] : [];
 $jsonExtraido['bloque_3']['experiencia_profesional'] = is_array($jsonExtraido['bloque_3']['experiencia_profesional'] ?? null) ? $jsonExtraido['bloque_3']['experiencia_profesional'] : [];
-
-$jsonExtraido['bloque_4'] = is_array($jsonExtraido['bloque_4']) ? $jsonExtraido['bloque_4'] : [];
 
 $jsonPlano = json_encode($jsonExtraido, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
 if ($jsonPlano === false) {
@@ -125,64 +131,26 @@ csyj_render_layout_start(
 ?>
 
 <style>
-    .resumen-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        gap: 14px;
-    }
-    .resumen-item {
-        border: 1px solid #dbe4ee;
-        border-radius: 12px;
-        padding: 14px;
-        background: #fff;
-    }
-    .resumen-item .k {
-        display: block;
-        color: #64748b;
-        font-size: 12px;
-        font-weight: 700;
-        margin-bottom: 8px;
-        text-transform: uppercase;
-    }
-    .resumen-item .v {
-        display: block;
-        font-size: 24px;
-        font-weight: 800;
-        color: #0f172a;
-    }
-    .subinfo {
-        color: #64748b;
-        font-size: 13px;
-    }
+    .resumen-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+    .resumen-item { border: 1px solid #dbe4ee; border-radius: 12px; padding: 14px; background: #fff; }
+    .resumen-item .k { display: block; color: #64748b; font-size: 12px; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; }
+    .resumen-item .v { display: block; font-size: 24px; font-weight: 800; color: #0f172a; }
+    .subinfo { color: #64748b; font-size: 13px; }
 </style>
 
 <section class="card stack">
     <div class="meta-grid">
-        <div class="metric">
-            <span class="label">Candidato</span>
-            <span class="value" style="font-size:20px"><?= csyj_h($nombreCandidato) ?></span>
-        </div>
-        <div class="metric">
-            <span class="label">Archivo</span>
-            <span class="value" style="font-size:18px"><?= csyj_h(basename($rutaPdf)) ?></span>
-        </div>
-        <div class="metric">
-            <span class="label">Área</span>
-            <span class="value" style="font-size:20px">Ciencias Sociales y Jurídicas</span>
-        </div>
-        <div class="metric">
-            <span class="label">Categoría</span>
-            <span class="value" style="font-size:20px">PCD/PUP</span>
-        </div>
+        <div class="metric"><span class="label">Candidato</span><span class="value" style="font-size:20px"><?= csyj_h($nombreCandidato) ?></span></div>
+        <div class="metric"><span class="label">Archivo</span><span class="value" style="font-size:18px"><?= csyj_h(basename($rutaPdf)) ?></span></div>
+        <div class="metric"><span class="label">Formato</span><span class="value" style="font-size:20px"><?= csyj_h($etiquetaFormato) ?></span></div>
+        <div class="metric"><span class="label">Categoría</span><span class="value" style="font-size:20px">PCD/PUP</span></div>
     </div>
 </section>
 
 <section class="card stack">
     <div>
         <h2 style="margin:0 0 6px;">Resumen de extracción</h2>
-        <p class="muted" style="margin:0;">
-            Conteo rápido de elementos detectados por el pipeline antes de evaluar o completar manualmente.
-        </p>
+        <p class="muted" style="margin:0;">Conteo rápido de elementos detectados por el pipeline antes de evaluar o completar manualmente.</p>
     </div>
 
     <div class="resumen-grid">
@@ -203,9 +171,7 @@ csyj_render_layout_start(
 <section class="card stack">
     <div>
         <h2 style="margin:0 0 6px;">Siguiente paso</h2>
-        <p class="muted" style="margin:0;">
-            Puedes guardar ya la evaluación con lo extraído del PDF o pasar antes por el formulario ampliado para completar apartados y corregir datos.
-        </p>
+        <p class="muted" style="margin:0;">Puedes guardar ya la evaluación con lo extraído del PDF o pasar antes por el formulario ampliado para completar apartados y corregir datos.</p>
     </div>
 
     <div class="toolbar">
