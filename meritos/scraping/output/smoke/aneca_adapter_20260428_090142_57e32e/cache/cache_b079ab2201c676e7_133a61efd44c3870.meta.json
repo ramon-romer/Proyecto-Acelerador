@@ -1,0 +1,32 @@
+{
+    "hash_pdf": "b079ab2201c676e7f2866470293da3dd42f3b6ee9966d77057ab4bbc378e60cc",
+    "cache_key": "cache_b079ab2201c676e7_133a61efd44c3870",
+    "archivo_original": "adapter_sample.pdf",
+    "fecha_procesamiento": "2026-04-28T09:01:42+00:00",
+    "version_pipeline": "adapter_smoke_v1",
+    "version_baremo": "adapter_smoke_v1",
+    "version_schema": "adapter_smoke_v1",
+    "resultado_json_path": "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\meritos\\scraping\\tools\/..\/output\/smoke\/aneca_adapter_20260428_090142_57e32e\/cache\\cache_b079ab2201c676e7_133a61efd44c3870.result.json",
+    "texto_extraido_path": "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\meritos\\scraping\\tools\/..\/output\/smoke\/aneca_adapter_20260428_090142_57e32e\/cache\\cache_b079ab2201c676e7_133a61efd44c3870.text.txt",
+    "trace_path": "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\meritos\\scraping\\src\/..\/output\/logs\/adapter_sample_20260428_090142_45790dbe.20260428_090142.trace.json",
+    "log_path": "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\meritos\\scraping\\tools\/..\/output\/smoke\/aneca_adapter_20260428_090142_57e32e\/jobs\/logs\/job_20260428_090142_fcf4c2ca.log",
+    "aneca_canonical_path": "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\meritos\\scraping\\src\/..\/output\/json\/adapter_sample_20260428_090142_45790dbe.aneca.canonico.json",
+    "aneca_canonical_ready": true,
+    "aneca_canonical_validation_status": "valido_con_advertencias",
+    "aneca_canonical_validation_errors": [],
+    "aneca_canonical_validation_warnings": [
+        "comite_no_identificado"
+    ],
+    "tiempo_total_ms": 437.87,
+    "estado_cache": "valida",
+    "error_parcial": true,
+    "pipeline_log_path": "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\meritos\\scraping\\src\/..\/output\/logs\/adapter_sample_20260428_090142_45790dbe.20260428_090142.pipeline.log",
+    "motivo_invalidation": null,
+    "validation_status": "valido_con_advertencias",
+    "validation_errors": [],
+    "validation_warnings": [
+        "resultado_con_campos_extraidos_parciales"
+    ],
+    "resultado_principal_formato": "aneca",
+    "resultado_principal_path": "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\meritos\\scraping\\src\/..\/output\/json\/adapter_sample_20260428_090142_45790dbe.aneca.canonico.json"
+}

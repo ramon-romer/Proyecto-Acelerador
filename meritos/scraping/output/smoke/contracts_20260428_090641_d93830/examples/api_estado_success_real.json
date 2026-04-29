@@ -1,0 +1,19 @@
+{
+    "ok": true,
+    "job_id": "job_20260428_090641_f149bb74",
+    "estado": "error_parcial",
+    "progreso_porcentaje": 100,
+    "fase_actual": "error_parcial",
+    "error_parcial": true,
+    "error_mensaje": "Proceso finalizado con observaciones status=valido_con_advertencias warnings=resultado_con_campos_extraidos_parciales criterio=aneca_operativo formato=aneca.",
+    "fecha_creacion": "2026-04-28T09:06:41+00:00",
+    "fecha_inicio": "2026-04-28T09:06:41+00:00",
+    "fecha_fin": "2026-04-28T09:06:42+00:00",
+    "tiempo_total_ms": 497.47,
+    "trace_path": "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\meritos\\scraping\\src\/..\/output\/logs\/contracts_sample_20260428_090641_d369ecab.20260428_090641.trace.json",
+    "log_path": "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\meritos\\scraping\\tools\/..\/output\/smoke\/contracts_20260428_090641_d93830\/jobs\/logs\/job_20260428_090641_f149bb74.log",
+    "pipeline_log_path": "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\meritos\\scraping\\src\/..\/output\/logs\/contracts_sample_20260428_090641_d369ecab.20260428_090641.pipeline.log",
+    "aneca_canonical_path": "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\meritos\\scraping\\src\/..\/output\/json\/contracts_sample_20260428_090641_d369ecab.aneca.canonico.json",
+    "aneca_canonical_ready": true,
+    "aneca_canonical_validation_status": "valido_con_advertencias"
+}

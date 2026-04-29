@@ -61,7 +61,12 @@ function runTestsIfRequested(bool $shouldRunTests, string $repositoryRoot, array
     }
 
     $command = escapeshellarg(PHP_BINARY) . ' ' .
-        escapeshellarg($runnerScript) . ' --json --nivel=' . escapeshellarg($nivel) . ' --ventana=' . escapeshellarg($ventana);
+        escapeshellarg($runnerScript)
+        . ' --json'
+        . ' --nivel=' . escapeshellarg($nivel)
+        . ' --ventana=' . escapeshellarg($ventana)
+        . ' --scope=toda-app'
+        . ' --intensiva=auto';
 
     try {
         $execution = runCommand($command, $repositoryRoot);

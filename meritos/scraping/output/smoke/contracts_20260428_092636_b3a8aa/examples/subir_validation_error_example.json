@@ -1,0 +1,11 @@
+{
+    "ok": false,
+    "message": "El procesamiento del CV finalizo con error de validacion.",
+    "job_id": "job_20260428_092636_8fc33850",
+    "estado": "error",
+    "error_mensaje": "error_simulado_para_schema",
+    "endpoints": {
+        "estado": "\/api\/cv\/procesar\/job_20260428_092636_8fc33850\/estado",
+        "resultado": "\/api\/cv\/procesar\/job_20260428_092636_8fc33850\/resultado"
+    }
+}

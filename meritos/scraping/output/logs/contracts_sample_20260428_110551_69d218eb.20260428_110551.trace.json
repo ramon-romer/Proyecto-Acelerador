@@ -1,0 +1,113 @@
+{
+    "pipeline": "hibrido_por_pagina_v1",
+    "run_id": "20260428_110551",
+    "archivo_pdf": "contracts_sample_20260428_110551_69d218eb.pdf",
+    "paginas_detectadas": 1,
+    "paginas_candidatas_ocr": [],
+    "fallback_legacy_activado": false,
+    "ocr_environment": {
+        "pdf_tools": {
+            "pdftoppm": {
+                "available": false,
+                "path": null,
+                "version": null
+            }
+        },
+        "ocr_tools": {
+            "tesseract": {
+                "available": false,
+                "path": null,
+                "version": null
+            }
+        },
+        "ocr_ready": false,
+        "mode": "ocr_unavailable",
+        "warnings": [
+            "No se detecto pdftoppm en PATH ni via PDFTOPPM_PATH.",
+            "No se detecto tesseract en PATH ni via TESSERACT_PATH."
+        ]
+    },
+    "timings_ms": {
+        "total_ms": 778.62,
+        "extraccion_nativa_ms": 402.77,
+        "ocr_ms": 0,
+        "limpieza_ms": 0.11,
+        "extraccion_semantica_ms": 0.37
+    },
+    "cache": {
+        "pdf_hash_sha256": "b079ab2201c676e7f2866470293da3dd42f3b6ee9966d77057ab4bbc378e60cc",
+        "cache_ready": true,
+        "cache_result_file": "cache_b079ab2201c676e7_c2655c6640fbf199.result.json",
+        "cache_trace_file": null,
+        "cache_meta_file": "cache_b079ab2201c676e7_c2655c6640fbf199.meta.json",
+        "hash_pdf": "b079ab2201c676e7f2866470293da3dd42f3b6ee9966d77057ab4bbc378e60cc",
+        "cache_key": "cache_b079ab2201c676e7_c2655c6640fbf199",
+        "cache_hit": false,
+        "cache_estado": "miss",
+        "motivo_invalidation": null,
+        "version_pipeline": "hibrido_por_pagina_v1",
+        "version_baremo": "v1",
+        "version_schema": null,
+        "cache_text_file": "cache_b079ab2201c676e7_c2655c6640fbf199.text.txt"
+    },
+    "validation_status": "valido_con_advertencias",
+    "validation_errors": [],
+    "validation_warnings": [
+        "resultado_con_campos_extraidos_parciales"
+    ],
+    "normalizacion_contrato_canonico_aneca": {
+        "enabled": true,
+        "schema": "contrato-canonico-aneca-v1.schema.json",
+        "status": "ok",
+        "archivo_json_canonico": "contracts_sample_20260428_110551_69d218eb.aneca.canonico.json",
+        "ready": true,
+        "validation_status": "valido_con_advertencias",
+        "validation_errors": [],
+        "validation_warnings": [
+            "comite_no_identificado"
+        ],
+        "validation_metrics": {
+            "total_evidencias": 15,
+            "secciones_con_contenido": 2,
+            "secciones": {
+                "bloque_1.publicaciones": 0,
+                "bloque_1.libros": 0,
+                "bloque_1.proyectos": 8,
+                "bloque_1.transferencia": 0,
+                "bloque_1.tesis_dirigidas": 0,
+                "bloque_1.congresos": 0,
+                "bloque_1.otros_meritos_investigacion": 0,
+                "bloque_2.docencia_universitaria": 0,
+                "bloque_2.evaluacion_docente": 0,
+                "bloque_2.formacion_docente": 0,
+                "bloque_2.material_docente": 0,
+                "bloque_3.formacion_academica": 0,
+                "bloque_3.experiencia_profesional": 0,
+                "bloque_4": 7
+            },
+            "texto_extraido_chars": 3221,
+            "texto_lineas_significativas": 38
+        },
+        "error": null
+    },
+    "trazabilidad_paginas": [
+        {
+            "numero_pagina": 1,
+            "metodo": "texto_nativo",
+            "tiempo_procesamiento_ms": 376.51,
+            "error_parcial": false
+        }
+    ],
+    "eventos": [
+        "ocr_env_mode:ocr_unavailable",
+        "ocr_env_warning:No se detecto pdftoppm en PATH ni via PDFTOPPM_PATH.",
+        "ocr_env_warning:No se detecto tesseract en PATH ni via TESSERACT_PATH.",
+        "extraccion_nativa_ok",
+        "normalizacion_aneca_ok"
+    ],
+    "artefactos": {
+        "txt_generado": "contracts_sample_20260428_110551_69d218eb.txt",
+        "json_generado": "contracts_sample_20260428_110551_69d218eb.json",
+        "json_canonico_aneca": "contracts_sample_20260428_110551_69d218eb.aneca.canonico.json"
+    }
+}

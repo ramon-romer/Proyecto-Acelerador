@@ -1,0 +1,5 @@
+[2026-04-28T11:05:55+00:00] job_creado estado=pendiente archivo=adapter_sample_20260428_110555_8ff69d0e.pdf
+[2026-04-28T11:05:55+00:00] job_finalizado estado=error_parcial tiempo_total_ms=31.15 error_parcial=true
+[2026-04-28T11:05:55+00:00] decision_operativa_service_cache_hit criterio=aneca_operativo formato=aneca cacheable=true clean=false legacy_status=valido_con_advertencias aneca_status=valido_con_advertencias principal_declarado=aneca
+[2026-04-28T11:05:55+00:00] cache_hit_subida cache_key=cache_b079ab2201c676e7_133a61efd44c3870 cache_estado=hit resultado_principal_formato=aneca criterio_operativo=aneca_operativo formato_operativo=aneca validation_status=valido_con_advertencias aneca_canonical_ready=true aneca_canonical_validation_status=valido_con_advertencias sin_reprocesar=true
+[2026-04-28T11:05:55+00:00] job_finalizado_desde_cache tiempo_total_ms=31.15
