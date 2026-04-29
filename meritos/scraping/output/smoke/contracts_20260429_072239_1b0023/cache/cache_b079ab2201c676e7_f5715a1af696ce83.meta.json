@@ -1,0 +1,32 @@
+{
+    "hash_pdf": "b079ab2201c676e7f2866470293da3dd42f3b6ee9966d77057ab4bbc378e60cc",
+    "cache_key": "cache_b079ab2201c676e7_f5715a1af696ce83",
+    "archivo_original": "contracts_sample.pdf",
+    "fecha_procesamiento": "2026-04-29T07:22:39+00:00",
+    "version_pipeline": "contracts_v1_pipeline",
+    "version_baremo": "contracts_v1_baremo",
+    "version_schema": "contracts_v1_schema",
+    "resultado_json_path": "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\meritos\\scraping\\tools\/..\/output\/smoke\/contracts_20260429_072239_1b0023\/cache\\cache_b079ab2201c676e7_f5715a1af696ce83.result.json",
+    "texto_extraido_path": "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\meritos\\scraping\\tools\/..\/output\/smoke\/contracts_20260429_072239_1b0023\/cache\\cache_b079ab2201c676e7_f5715a1af696ce83.text.txt",
+    "trace_path": "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\meritos\\scraping\\src\/..\/output\/logs\/contracts_sample_20260429_072239_adc81d28.20260429_072239.trace.json",
+    "log_path": "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\meritos\\scraping\\tools\/..\/output\/smoke\/contracts_20260429_072239_1b0023\/jobs\/logs\/job_20260429_072239_b09d0689.log",
+    "aneca_canonical_path": "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\meritos\\scraping\\src\/..\/output\/json\/contracts_sample_20260429_072239_adc81d28.aneca.canonico.json",
+    "aneca_canonical_ready": true,
+    "aneca_canonical_validation_status": "valido_con_advertencias",
+    "aneca_canonical_validation_errors": [],
+    "aneca_canonical_validation_warnings": [
+        "comite_no_identificado"
+    ],
+    "tiempo_total_ms": 462.27,
+    "estado_cache": "valida",
+    "error_parcial": true,
+    "pipeline_log_path": "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\meritos\\scraping\\src\/..\/output\/logs\/contracts_sample_20260429_072239_adc81d28.20260429_072239.pipeline.log",
+    "motivo_invalidation": null,
+    "validation_status": "valido_con_advertencias",
+    "validation_errors": [],
+    "validation_warnings": [
+        "resultado_con_campos_extraidos_parciales"
+    ],
+    "resultado_principal_formato": "aneca",
+    "resultado_principal_path": "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\meritos\\scraping\\src\/..\/output\/json\/contracts_sample_20260429_072239_adc81d28.aneca.canonico.json"
+}

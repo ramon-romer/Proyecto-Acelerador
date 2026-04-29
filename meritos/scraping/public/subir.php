@@ -39,7 +39,6 @@ try {
                 'fase_actual' => $job['fase_actual'],
                 'es_pesado' => $enqueued['is_heavy'],
                 'umbral_pesado_bytes' => $enqueued['heavy_threshold_bytes'],
-                'aneca_canonical_path' => $job['aneca_canonical_path'] ?? null,
                 'aneca_canonical_ready' => (bool)($job['aneca_canonical_ready'] ?? false),
                 'aneca_canonical_validation_status' => $job['aneca_canonical_validation_status'] ?? null,
                 'endpoints' => [
@@ -61,7 +60,7 @@ try {
                 'message' => 'El procesamiento del CV finalizo con error de validacion.',
                 'job_id' => $jobProcesado['id'],
                 'estado' => $estadoFinal,
-                'error_mensaje' => $jobProcesado['error_mensaje'] ?? null,
+                'error_mensaje' => sanitizePublicMessage($jobProcesado['error_mensaje'] ?? null),
                 'endpoints' => [
                     'estado' => '/api/cv/procesar/' . $jobProcesado['id'] . '/estado',
                     'resultado' => '/api/cv/procesar/' . $jobProcesado['id'] . '/resultado',
@@ -88,10 +87,6 @@ try {
         'progreso_porcentaje' => $jobProcesado['progreso_porcentaje'],
         'fase_actual' => $jobProcesado['fase_actual'],
         'resultado' => $legacyPayload,
-        'trace_path' => $jobProcesado['trace_path'] ?? null,
-        'log_path' => $jobProcesado['log_path'] ?? null,
-        'pipeline_log_path' => $jobProcesado['pipeline_log_path'] ?? null,
-        'aneca_canonical_path' => $jobProcesado['aneca_canonical_path'] ?? null,
         'aneca_canonical_ready' => (bool)($jobProcesado['aneca_canonical_ready'] ?? false),
         'aneca_canonical_validation_status' => $jobProcesado['aneca_canonical_validation_status'] ?? null,
         'resultado_preferente_formato' => $preferred['resultado_preferente_formato'],
@@ -109,7 +104,7 @@ try {
 
     responder($payload, 200);
 } catch (Throwable $e) {
-    responderError('Error al subir/procesar CV: ' . $e->getMessage(), 500);
+    responderError('Error interno al subir/procesar CV.', 500);
 }
 
 function responder(array $payload, int $statusCode): void
@@ -186,6 +181,18 @@ function shouldPreferAnecaCanonical(): bool
     }
 
     return PreferredResultResolver::shouldPreferAneca($requestValue);
+}
+
+function sanitizePublicMessage(mixed $message): ?string
+{
+    if (!is_string($message)) {
+        return null;
+    }
+
+    $message = preg_replace('/[A-Za-z]:[\\\\\\/][^\\s<>"\']+/', '[ruta_interna]', $message);
+    $message = preg_replace('~/(?:var|home|srv|opt|tmp|mnt|Users|www|app)(?:/[^\\s<>"\']*)?~', '[ruta_interna]', (string)$message);
+
+    return $message === '' ? null : $message;
 }
 
 function loadAnecaCanonicalPayloadFromJob(array $job): ?array

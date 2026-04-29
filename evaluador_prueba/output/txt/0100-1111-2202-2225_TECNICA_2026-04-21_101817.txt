@@ -1,0 +1,659 @@
+Alberto Mayorgas Reyes
+Generado desde: Editor CVN de FECYT
+
+Fecha del documento: 02/04/2025
+v 1.4.3
+41f0dace56dfeb946569dd49af42aa7b
+
+Este fichero electrónico (PDF) contiene incrustada la tecnología CVN (CVN-XML). La tecnología CVN de este fichero permite exportar e importar los datos
+curriculares desde y hacia cualquier base de datos compatible. Listado de Bases de Datos adaptadas disponible en http://cvn.fecyt.es/
+
+41f0dace56dfeb946569dd49af42aa7b
+
+Resumen libre del currículum
+Descripción breve de la trayectoria científica, los principales logros científico-técnicos
+obtenidos, los intereses y objetivos científico-técnicos a medio/largo plazo de la línea de
+investigación. Incluye también otros aspectos o peculiaridades importantes.
+
+Trabajo como Profesor Colaborador Doctor en la Universidad CEU Fernando III,
+personal a tiempo completo con docencia en el Máster Universitario de Big Data y
+Business Analytics. Además realizo funciones de análisis de datos y encuestas en la
+Unidad de Calidad, y realizo funciones de profesor de apoyo en las prácticas del Grado
+en Ingeniería Informática y el Grado en Ingeniería de Sistemas de Telecomunicación.
+He participado como Investigador Doctor en la Universidad Politécnica de Cartagena,
+personal laboral a tiempo completo, asociado a los proyectos de investigación:
+1) C-QuENS project, Horizon Europe, 3M€, ID: 101135359
+2) TAQNED project, AEI
+Spain, 340K€, ID: CNS2023-144994
+Durante mi carrera investigadora he publicado 9 artículos de investigación en revistas de
+alto impacto y 4 proceedings de conferencias. Como docente universitario, he impartido
+16.5 créditos ECTS en el Departmento de Matemática Aplicada de la Universidad de
+Granada, en una amplia variedad de Grados Universitarios, desde Administración y
+Dirección de Empresas hasta Química. Además, he impartido 9 créditos ECTS en la
+Escuela Politécnica Superior de la Universidad CEU Fernando III.
+Mis líneas actuales de investigación son:
+1) Quantum sensing in NV centers
+2) Dispositivos nanoelectrónicos cuánticos
+3) Estados Coherentes, Simetrías y Teoría Cuántica de Campos con aplicaciones a
+Sistemas de Muchos Cuerpos y Sistemas de Materia Condensada.
+4) Fenómenos Críticos y Fases Topológicas en Sistemas Cuánticos.
+Empecé mi carrera investigadora en 2017 como alumno interno en el Departamento
+de Física Atómica, Molecular y Nuclear de la Universidad de Sevilla, donde realicé
+estudios avanzados en Métodos Matemáticos aplicados a la Física con el Profesor
+Antonio Prados Montaño. En 2018 obtuve una Beca de Colaboración de 1 año para
+continuar dichos estudios y obordar un nuevo tema, la Integral de Caminos en Física.
+Al año siguiente realicé un Máster Oficial de Física y Matemáticas en la Universidad
+de Granada (UGR), y en 2020 el Ministerio de Universidades me concedió una beca
+FPU para realizar estudios de Doctorado y trabajar como Investigador Predoctoral en
+Formación dentro de la UGR. En abril de 2024, finalicé los estudios de Doctorado y
+me incorporé en la Universidad Politécnica de Cartagena como Investigador Doctor. A
+principios de noviembre de 2024, regresé a mi ciudad natal, Sevilla, donde me incorporé
+como personal de la UF3.
+41f0dace56dfeb946569dd49af42aa7b
+
+También manejo con soltura Mathematica, MatLab, y LaTeX. He conseguido ejecutar
+funciones de MatLab desde la interfaz de Mathematica, aprovechando al máximo la
+capacidad de cálculo numérico que ofrece MatLab y las herramientas de cálculos
+simbólico y representación de figuras que tiene Mathematica.
+De forma paralela a mi investigación en el campo de la Física y las Matemáticas, estoy
+formándome como Cientifico de Datos a través de la plataforma edX, donde en enero
+de 2021 obtuve la certificación de IBM Python Data Science Professional Certificate.
+41f0dace56dfeb946569dd49af42aa7b
+
+Indicadores generales de calidad de la producción científica
+Información sobre el número de sexenios de investigación y la fecha del último concedido, número
+de tesis doctorales dirigidas en los últimos 10 años, citas totales, promedio de citas/año durante
+los últimos 5 años (sin incluir el año actual), publicaciones totales en primer cuartil (Q1), índice
+h. Incluye otros indicadores considerados de importancia.
+
+Durante mi carrera investigadora he publicado 9 artículos de investigación en revistas
+de alto impacto y 4 proceedings de conferencias internacionales.
+Mis líneas actuales de investigación son:
+1) Quantum sensing in NV centers
+2) Dispositivos nanoelectrónicos cuánticos
+3) Estados Coherentes, Simetrías y Teoría Cuántica de Campos con aplicaciones a
+Sistemas de Muchos Cuerpos y Sistemas de Materia Condensada.
+4) Fenómenos Críticos y Fases Topológicas en Sistemas Cuánticos.
+41f0dace56dfeb946569dd49af42aa7b
+
+Alberto Mayorgas Reyes
+Apellidos:
+Nombre:
+ORCID:
+ScopusID:
+ResearcherID:
+Fecha de nacimiento:
+Sexo:
+Nacionalidad:
+País de nacimiento:
+C. Autón./Reg. de nacimiento:
+Ciudad de nacimiento:
+Teléfono fijo:
+Correo electrónico:
+Teléfono móvil:
+
+Mayorgas Reyes
+Alberto
+0000-0002-7071-2025
+57221621072
+AAX-6125-2021
+Hombre
+España
+España
+Andalucía
+Sevilla
+
+Situación profesional actual
+Entidad empleadora: Universidad Fernando III
+Tipo de entidad: Universidad
+Departamento: Departamento de Ingeniería, Escuela Politécnica Superior
+Categoría profesional: Profesor Colaborador Doctor
+Fecha de inicio: 04/11/2024
+Modalidad de contrato: Contrato laboral
+Régimen de dedicación: Tiempo completo
+indefinido
+Funciones desempeñadas: Profesor en el Máster de Big Data y Business Analytics, e
+investigador.
+
+Cargos y actividades desempeñados con anterioridad
+Entidad empleadora
+
+Categoría profesional
+
+Fecha
+de inicio
+23/05/2024
+31/10/2020
+
+1
+2
+
+Universidad Politécnica de Cartagena
+Universidad de Granada
+
+1
+
+Entidad empleadora: Universidad Politécnica de Tipo de entidad: Universidad
+Cartagena
+Departamento: Departamento de Física Aplicada y Tecnología Naval, Campus Muralla del Mar
+Ciudad entidad empleadora: Cartagena, Región de Murcia, España
+Categoría profesional: Investigador doctor
+Fecha de inicio-fin: 23/05/2024 - 28/10/2024
+Duración: 5 meses - 6 días
+Modalidad de contrato: Contrato laboral indefinido
+Régimen de dedicación: Tiempo completo
+Funciones desempeñadas: Investigador en los proyectos: C-QuENS project, Horizon Europe,
+3M€, ID: 101135359. TAQNED project, AEI Spain, 340K€, ID: CNS2023-144994
+
+5
+
+Investigador doctor
+Personal investigador predoctoral en
+formación
+
+41f0dace56dfeb946569dd49af42aa7b
+Ámbito actividad de dirección y/o gestión: Universitaria
+
+2
+
+Entidad empleadora: Universidad de Granada
+Tipo de entidad: Universidad
+Categoría profesional: Personal investigador predoctoral en formación
+Fecha de inicio-fin: 31/10/2020 - 29/04/2024
+Duración: 3 años - 6 meses
+Modalidad de contrato: Becario/a (pre o posdoctoral, otros)
+Régimen de dedicación: Tiempo completo
+
+Resumen de la actividad profesional
+Trabajo como Profesor Colaborador Doctor en la Universidad CEU Fernando III, personal a tiempo
+completo con docencia en el Máster Universitario de Big Data y Business Analytics. Además realizo
+funciones de análisis de datos y encuestas en la Unidad de Calidad, y realizo funciones de profesor
+de apoyo en las prácticas del Grado en Ingeniería Informática y el Grado en Ingeniería de Sistemas
+de Telecomunicación.
+41f0dace56dfeb946569dd49af42aa7b
+
+Formación académica recibida
+Titulación universitaria
+Estudios de 1º y 2º ciclo, y antiguos ciclos (Licenciados, Diplomados, Ingenieros Superiores,
+Ingenieros Técnicos, Arquitectos)
+1
+
+Titulación universitaria: Titulado Superior
+Nombre del título: Máster Universitario en Física y Matemáticas
+Entidad de titulación: Universidad de Granada
+Tipo de entidad: Universidad
+Fecha de titulación: 15/07/2020
+Nota media del expediente: Sobresaliente
+
+2
+
+Titulación universitaria: Titulado Medio
+Nombre del título: Graduado en Física
+Entidad de titulación: Universidad de Sevilla
+Fecha de titulación: 31/07/2019
+Nota media del expediente: Notable
+
+Tipo de entidad: Universidad
+
+Doctorados
+Programa de doctorado: Doctor en Programa Oficial de Posgrado en Física y Matemáticas
+Entidad de titulación: Universidad de Granada
+Tipo de entidad: Universidad
+Ciudad entidad titulación: Granada, Andalucía, España
+Fecha de titulación: 03/05/2024
+Doctorado Europeo: Sí
+Fecha de mención: 03/05/2024
+Título de la tesis: Quantum and Topological Phase Transitions in Multi-QuDit Systems and 2D Materials
+Director/a de tesis: Manuel Calixto Molina
+Codirector/a de tesis: Julio Guerrero García
+Calificación obtenida: Sobresaliente Cum Laude
+Mención de calidad: Sí
+Premio extraordinario doctor: No
+
+Conocimiento de idiomas
+Idioma
+Inglés
+
+Comprensión
+auditiva
+C1
+
+Comprensión
+de lectura
+C1
+
+7
+
+Interacción oral
+
+Expresión oral
+
+Expresión escrita
+
+C1
+
+C1
+
+C1
+
+41f0dace56dfeb946569dd49af42aa7b
+
+Actividad docente
+Formación académica impartida
+1
+
+Nombre de la asignatura/curso: Fundamentos Matemáticos en la Arquitectura 2
+Titulación universitaria: Graduado en Estudios de Arquitectura
+Fecha de inicio: 2023
+Fecha de finalización: 2024
+Tipo de horas/créditos ECTS: Horas
+Nº de horas/créditos ECTS: 30
+Entidad de realización: Universidad de Granada
+Tipo de entidad: Universidad
+
+2
+
+Nombre de la asignatura/curso: Matemáticas
+Titulación universitaria: Graduado en Biología
+Fecha de inicio: 2023
+Tipo de horas/créditos ECTS: Horas
+Nº de horas/créditos ECTS: 10
+Entidad de realización: Universidad de Granada
+
+Fecha de finalización: 2024
+
+Tipo de entidad: Universidad
+
+3
+
+Nombre de la asignatura/curso: Métodos Numéricos II
+Titulación universitaria: Graduado en Ingeniería Informática y Matemáticas
+Fecha de inicio: 2023
+Fecha de finalización: 2024
+Tipo de horas/créditos ECTS: Horas
+Nº de horas/créditos ECTS: 10
+Entidad de realización: Universidad de Granada
+Tipo de entidad: Universidad
+
+4
+
+Nombre de la asignatura/curso: Fundamentos Matemáticos de la Arquitectura 2
+Titulación universitaria: Graduado en Estudios de Arquitectura
+Fecha de inicio: 2022
+Fecha de finalización: 2023
+Tipo de horas/créditos ECTS: Horas
+Nº de horas/créditos ECTS: 20
+Entidad de realización: Universidad de Granada
+Tipo de entidad: Universidad
+
+5
+
+Nombre de la asignatura/curso: Matemáticas
+Titulación universitaria: Graduado en Administración y Dirección de Empresas
+Fecha de inicio: 2022
+Fecha de finalización: 2023
+Tipo de horas/créditos ECTS: Horas
+Nº de horas/créditos ECTS: 35
+Entidad de realización: Universidad de Granada
+Tipo de entidad: Universidad
+
+6
+
+Nombre de la asignatura/curso: Matemáticas
+Titulación universitaria: Graduado en Edificación - Administración y Dirección de Empresas
+Fecha de inicio: 2021
+Fecha de finalización: 2022
+Tipo de horas/créditos ECTS: Horas
+Nº de horas/créditos ECTS: 40
+Entidad de realización: Universidad de Granada
+Tipo de entidad: Universidad
+41f0dace56dfeb946569dd49af42aa7b
+
+7
+
+Nombre de la asignatura/curso: Matemáticas II
+Titulación universitaria: Graduado en Química
+Fecha de inicio: 2021
+Tipo de horas/créditos ECTS: Horas
+Nº de horas/créditos ECTS: 20
+Entidad de realización: Universidad de Granada
+
+Fecha de finalización: 2022
+
+Tipo de entidad: Universidad
+
+Dirección de tesis doctorales y/o trabajos fin de estudios
+Título del trabajo: Computación cuántica con qutrits: extensión del Hamiltoniano de Feynman
+Tipo de proyecto: Tesina
+Codirector/a tesis: Manuel Calixto Molina
+Entidad de realización: Universidad de Granada
+Tipo de entidad: Universidad
+Ciudad entidad realización: Granada, Andalucía, España
+Alumno/a: Iván López García
+Calificación obtenida: 9.5
+Fecha de defensa: 14/07/2022
+
+Pluralidad, interdisciplinariedad y complejidad docente
+Tengo una amplia experiencia docente en Grados y Másteres Universitarios, desde ciencias naturales
+a sociales. En particular, he impartido Matemáticas I y II en los Grados de Biología, Química,
+Administración y Dirección de Empresas, Edificación y Arquitectura; Métodos Numéricos en el Grado
+de Ingeriería Informática; y las asignaturas Herramientas de Análisis Estadístico, Análisis de Series
+Temporales, Modelos de Predicción, y Sistemas Soporte a la Decisión en el Máster Universitario de
+Big Data y Business Analytics. Por tanto, dispongo de un carácter interdisciplinario como docente en
+asignaturas de Matemáticas, Física, Informática y Estadística.
+
+Experiencia científica y tecnológica
+Actividad científica o tecnológica
+Proyectos de I+D+i financiados en convocatorias competitivas de Administraciones o
+entidades públicas y privadas
+1
+
+Nombre del proyecto: Capacitation of Quantum-Entangled NV-Center Sensing (COMPETITIVO)
+Ámbito geográfico: Unión Europea
+Grado de contribución: Investigador/a
+Entidad de realización: Universidad Politécnica de Tipo de entidad: Universidad
+Cartagena
+Nº de investigadores/as: 6
+Fecha de inicio-fin: 2024 - 2027
+Cuantía total: 2.999.990 €
+41f0dace56dfeb946569dd49af42aa7b
+
+2
+
+Nombre del proyecto: Diseño de Dispositivos Nanoelectrónicos Cuánticos Autónomos Basado en
+Tensores de Transferencia (COMPETITIVO)
+Ámbito geográfico: Nacional
+Grado de contribución: Investigador/a
+Entidad de realización: Universidad Politécnica de Tipo de entidad: Universidad
+Cartagena
+Nº de investigadores/as: 2
+Fecha de inicio-fin: 2024 - 2026
+Cuantía total: 339.713,55 €
+
+3
+
+Nombre del proyecto: SIMETRÍA Y COHERENCIA EN SISTEMAS CRÍTICOS CUÁNTICOS
+(COMPETITIVO)
+Ámbito geográfico: Nacional
+Grado de contribución: Investigador/a
+Entidad de realización: Universidad de Jaén
+Tipo de entidad: Universidad
+Nº de investigadores/as: 6
+Fecha de inicio-fin: 2023 - 2026
+Cuantía total: 25.125 €
+
+4
+
+Nombre del proyecto: Fenómenos críticos, simetría y fases topológicas en sistemas cuánticos
+(COMPETITIVO)
+Ámbito geográfico: Nacional
+Grado de contribución: Investigador/a
+Entidad de realización: Universidad de Granada
+Tipo de entidad: Universidad
+Nº de investigadores/as: 5
+Fecha de inicio-fin: 01/09/2020 - 30/09/2022
+Cuantía subproyecto: 30.250 €
+
+Actividades científicas y tecnológicas
+Producción científica
+Publicaciones, documentos científicos y técnicos
+1
+
+Manuel Calixto; Alberto Mayorgas; Octavio Castaños. Capturing magic angles in twisted bilayer graphene from
+information theory markers. Physica E: Low-dimensional Systems and Nanostructures. 169 - 116199, Elsevier,
+04/2025. Disponible en Internet en: <https://doi.org/10.1016/j.physe.2025.116199>. ISSN 1873-1759
+Tipo de producción: Artículo científico
+Tipo de soporte: Revista
+Posición de firma: 2
+Nº total de autores: 3
+Autor de correspondencia: No
+
+2
+
+Alberto Mayorgas; Manuel Calixto; Nicolás Cordero; Elvira Romera; Octavio Castaños. Quantum revivals in
+HgTe/CdTe quantum wells and topological phase transitions. Quantum revivals in HgTe/CdTe quantum wells
+and topological phase transitions. 7 - 029, SciPost Physics Core, 13/05/2024. Disponible en Internet en:
+<https://scipost.org/10.21468/SciPostPhysCore.7.2.029>. ISSN 2666-9366
+Tipo de producción: Artículo científico
+Tipo de soporte: Revista
+Posición de firma: 1
+Nº total de autores: 5
+Autor de correspondencia: Sí
+41f0dace56dfeb946569dd49af42aa7b
+
+3
+
+Manuel Calixto; Alberto Mayorgas; Nicolás A. Cordero; Elvira Romera; Octavio Héctor Castaños Garza. Faraday
+rotation and transmittance as markers of topological phase transitions in 2D materials. SciPost Phys.16, pp. 077
+- 077. SciPost, 18/03/2024. Disponible en Internet en: <https://scipost.org/10.21468/SciPostPhys.16.3.077>. ISSN
+2542-4653
+Tipo de producción: Artículo científico
+Tipo de soporte: Revista
+Posición de firma: 2
+Nº total de autores: 5
+
+4
+
+Alberto Mayorgas; Julio Guerrero; Manuel Calixto. Localization measures of parity adapted U(D)-spin
+coherent states applied to the phase space analysis of the $D$-level Lipkin-Meshkov-Glick model. Phys.
+Rev. E. 108, pp. 024107 - 024107. American Physical Society, 08/2023. Disponible en Internet en:
+<https://link.aps.org/doi/10.1103/PhysRevE.108.024107>. ISSN 2470-0053
+DOI: 10.1103/PhysRevE.108.024107
+Tipo de producción: Artículo científico
+Tipo de soporte: Revista
+Posición de firma: 1
+Nº total de autores: 3
+Autor de correspondencia: Sí
+
+5
+
+Julio Guerrero; Antonio Sojo; Alberto Mayorgas; Manuel Calixto. Schmidt decomposition of parity adapted coherent
+states for symmetric multi-quDits. Journal of Physics A: Mathematical and Theoretical. 56 - 35, pp. 355304 355304. IOP Publishing, 08/2023. Disponible en Internet en: <https://dx.doi.org/10.1088/1751-8121/aceae0>. ISSN
+1751-8121
+DOI: 10.1088/1751-8121/aceae0
+Tipo de producción: Artículo científico
+Tipo de soporte: Revista
+Posición de firma: 3
+Nº total de autores: 4
+Autor de correspondencia: Sí
+
+6
+
+Julio Guerrero; Alberto Mayorgas; Manuel Calixto. Information diagrams in the study of entanglement in
+symmetric multi-quDit systems and applications to quantum phase transitions in Lipkin–Meshkov–Glick D-level
+atom models. Quantum Information Processing. 21 - 223, Springer, 24/06/2022. Disponible en Internet en:
+<https://link.springer.com/article/10.1007/s11128-022-03524-7>. ISSN 1570-0755
+Tipo de producción: Artículo científico
+Tipo de soporte: Revista
+Posición de firma: 2
+Nº total de autores: 3
+
+7
+
+Alberto Mayorgas; Alberto Mayorgas; Julio Guerrero. Hilbert Space Structure of the Low Energy Sector of U(N)
+Quantum Hall Ferromagnets and Their Classical Limit. Symmetry. 14 - 872, MDPI, 30/03/2022. Disponible en Internet
+en: <https://doi.org/10.3390/sym14050872>. ISSN 2073-8994
+Tipo de producción: Artículo científico
+Tipo de soporte: Revista
+Posición de firma: 2
+Nº total de autores: 3
+
+8
+
+Manuel Calixto Molina; Alberto Mayorgas Reyes; Julio Guerrero García. Entanglement and U(D)-spin squeezing
+in symmetric multi-quDit systems and applications to quantum phase transitions in Lipkin–Meshkov–Glick D-level
+atom models. Quantum Information Processing. 20 - 304, Springer Nature, 13/09/2021. Disponible en Internet en:
+<https://link.springer.com/article/10.1007/s11128-021-03218-6>. ISSN 1570-0755
+Tipo de producción: Artículo científico
+Tipo de soporte: Revista
+Posición de firma: 2
+Nº total de autores: 3
+Autor de correspondencia: No
+
+9
+
+Manuel Calixto Molina; Alberto Mayorgas Reyes; Julio Guerrero García. Role of mixed permutation
+symmetry sectors in the thermodynamic limit of critical three-level Lipkin-Meshkov-Glick atom models.
+Physical Review E. 103 - 012116, American Physical Society, 19/01/2021. Disponible en Internet en:
+<https://journals.aps.org/pre/abstract/10.1103/PhysRevE.103.012116>. ISSN 2470-0053
+41f0dace56dfeb946569dd49af42aa7b
+Tipo de producción: Artículo científico
+Posición de firma: 2
+Nº total de autores: 3
+
+Tipo de soporte: Revista
+Autor de correspondencia: No
+
+Trabajos presentados en congresos nacionales o internacionales
+1
+
+Título del trabajo: Entanglement and U(D)-spin squeezing as quantum phase transitions indicators in
+symmetric sulti-quDit system
+Nombre del congreso: The 33rd International Organizing Committee of the International Colloquium on
+Group Theoretical Methods in Physics
+Ámbito geográfico: Internacional no UE
+Tipo de participación: Participativo - Ponencia oral (comunicación oral)
+Autor de correspondencia: Sí
+Ciudad de celebración: Cotonou, Benín
+Fecha de celebración: 15/07/2024
+Fecha de finalización: 19/07/2024
+Entidad organizadora: UNESCO
+"Entanglement and U(D)-spin squeezing as quantum phase transitions indicators in symmetric sulti-quDit
+system".
+
+2
+
+Título del trabajo: Parity adapted U(D)-spin coherent states and localization measures applied to the phase
+space analysis of the D-level Lipkin- Meshkov-Glick model
+Nombre del congreso: VI Workshop on Quantum Phase Transitions Focus on Quantum Computing
+(QPT2024)
+Ámbito geográfico: Autonómica
+Tipo de participación: Participativo - Ponencia oral (comunicación oral)
+Autor de correspondencia: Sí
+Ciudad de celebración: Huelva, Andalucía, España
+Fecha de celebración: 24/04/2024
+Fecha de finalización: 26/04/2024
+Entidad organizadora: University of Huelva
+Tipo de entidad: Universidad
+Ciudad entidad organizadora: Huelva, Andalucía, España
+"Parity adapted U(D)-spin coherent states and localization measures applied to the phase space analysis of
+the D-level Lipkin- Meshkov-Glick model".
+
+3
+
+Título del trabajo: Phase space analysis of the 3-level lipkin-meshkov-glick model using parity adapted
+U(D)-spin coherent states
+Nombre del congreso: Quantum electromagnetic phenomena conferences, from theory to advanced
+technology: QETTCON
+Ámbito geográfico: Internacional no UE
+Tipo de participación: Participativo - Ponencia oral (comunicación oral)
+Autor de correspondencia: Sí
+Ciudad de celebración: Ciudad de México, México
+Fecha de celebración: 06/11/2023
+Fecha de finalización: 09/11/2023
+Entidad organizadora: Instituto Politécnico Nacional Tipo de entidad: Instituto Universitario de
+Investigación
+Ciudad entidad organizadora: Ciudad de México, México
+"Phase space analysis of the 3-level lipkin-meshkov-glick model using parity adapted U(D)-spin coherent
+states".
+41f0dace56dfeb946569dd49af42aa7b
+
+4
+
+Título del trabajo: Localization measures of parity adapted U(D)-spin coherent states applied to the phase
+space analysis of the 3-level Lipkin-Meshkov-Glick model
+Nombre del congreso: XII. International Symposium on Quantum Theory and Symmetries (QTS12)
+Ámbito geográfico: Unión Europea
+Tipo de participación: Participativo - Ponencia oral (comunicación oral)
+Autor de correspondencia: Sí
+Ciudad de celebración: Praga, República Checa
+Fecha de celebración: 24/07/2023
+Fecha de finalización: 28/07/2023
+Entidad organizadora: Faculty of nuclear sciences and physical engineering
+Ciudad entidad organizadora: Praga, República Checa
+Alberto Mayorgas Reyes; Julio Guerrero; Manuel Calixto Molina. "Localization measures of parity adapted
+U(D)-spin coherent states applied to the phase space analysis of the 3-level Lipkin-Meshkov-Glick model".
+
+5
+
+Título del trabajo: Role of mixed permutation symmetry sectors in the thermodynamic limit of critical
+three-level Lipkin-Meshkov-Glick atom models
+Nombre del congreso: XXXIV International Colloquium on Group Theoretical Methods in Physics
+Ámbito geográfico: Unión Europea
+Tipo de participación: Participativo - Ponencia oral (comunicación oral)
+Autor de correspondencia: No
+Ciudad de celebración: Strasbourg, Alsace, Francia
+Fecha de celebración: 18/07/2022
+Fecha de finalización: 22/07/2022
+Entidad organizadora: Université de Strasbourg
+Tipo de entidad: Universidad
+Ciudad entidad organizadora: Strasbourg, Alsace, Francia
+Manuel Calixto Molina; Alberto Mayorgas Reyes; Julio Guerrero García. "Role of mixed permutation
+symmetry sectors in the thermodynamic limit of critical three-level Lipkin-Meshkov-Glick atom models".
+
+Trabajos presentados en jornadas, seminarios, talleres de trabajo y/o cursos nacionales o
+internacionales
+1
+
+Título del trabajo: Role of mixed permutation symmetry sectors in the thermodynamic limit of critical
+three-level Lipkin-Meshkov-Glick atom models
+Nombre del evento: Seminars of the Department of Mathematics and Department of Quantitative Methods
+at CUNEF Universidad
+Autor de correspondencia: Sí
+Ciudad de celebración: Madrid, Comunidad de Madrid, España
+Fecha de celebración: 15/11/2024
+Fecha de finalización: 15/11/2024
+Entidad organizadora: Colegio Universitario de
+Tipo de entidad: Centros y Estructuras
+Estudios Financieros - CUNEF (UCM)
+Universitarios y Asimilados
+
+2
+
+Título del trabajo: Young diagrams applications: Flavour Physics classification of quarks and hadrons in
+SU(3), SU(4) and SU(6)
+Nombre del evento: Quantum Journal Club del programa de doctorado Fisymat
+Autor de correspondencia: Sí
+Ciudad de celebración: Granada, Andalucía, España
+Fecha de celebración: 03/12/2021
+Fecha de finalización: 03/12/2021
+Entidad organizadora: Universidad de Granada
+Tipo de entidad: Universidad
+41f0dace56dfeb946569dd49af42aa7b
+
+3
+
+Título del trabajo: Young diagrams of Lie groups. Flavour Physics classification of quarks and hadrons in
+SU(3) and SU(4)
+Nombre del evento: Seminario de Jóvenes Investigadores del IMAG
+Autor de correspondencia: Sí
+Ciudad de celebración: Granada, Andalucía, España
+Fecha de celebración: 25/11/2021
+Fecha de finalización: 25/11/2021
+Entidad organizadora: FUNDACION EMPRESA UNIVERSIDAD DE GRANADA
+
+Otros méritos
+Estancias en centros públicos o privados
+Entidad de realización: University of Ulm
+Tipo de entidad: Universidad
+Facultad, instituto, centro: Institute of Theoretical Physics
+Ciudad entidad realización: Ulm, Tübingen, Alemania
+Fecha de inicio-fin: 01/05/2022 - 31/07/2022
+Duración: 3 meses
+Nombre del programa: Ayudas para la formación del profesorado universitario FPU (COMPETITIVO)
+Objetivos de la estancia: Doctorado/a
+Tareas contrastables: Creación de un borrador de un artículo científico con Julen Pedernales y Martin
+Plenio.
+Tipo Estancia: Investigación
+
+Ayudas y becas obtenidas
+Nombre de la ayuda: FPU19/06376 Ayudas para contratos predoctorales de Formación de Profesorado
+Universitario 2019
+Finalidad: Predoctoral
+Entidad concesionaria: Ministerio de Educación y Formación Profesional
+Fecha de concesión: 07/10/2020
+Duración: 3 años - 6 meses - 22 días
+Fecha de finalización: 29/04/2024
+Entidad de realización: Universidad de Granada
+
+14

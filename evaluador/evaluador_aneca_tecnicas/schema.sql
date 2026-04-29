@@ -4,6 +4,7 @@ USE evaluador_aneca_tecnicas;
 CREATE TABLE IF NOT EXISTS evaluaciones (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombre_candidato VARCHAR(150) NOT NULL,
+    orcid_candidato VARCHAR(19) NULL DEFAULT NULL,
     area VARCHAR(100) NOT NULL DEFAULT 'Técnicas',
     categoria VARCHAR(50) NOT NULL DEFAULT 'PCD/PUP',
     json_entrada LONGTEXT NOT NULL,
@@ -36,5 +37,6 @@ CREATE TABLE IF NOT EXISTS evaluaciones (
     cumple_regla_1 TINYINT(1) NOT NULL DEFAULT 0,
     cumple_regla_2 TINYINT(1) NOT NULL DEFAULT 0,
 
-    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    KEY idx_evaluaciones_orcid_candidato_fecha (orcid_candidato, fecha_creacion)
 );

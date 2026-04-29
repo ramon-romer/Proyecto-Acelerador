@@ -3,18 +3,123 @@ session_start();
 include('login.php');
 error_reporting(0);
 
+if (!function_exists('admin_h')) {
+  function admin_h($value)
+  {
+    return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
+  }
+}
+
+if (!function_exists('admin_csrf_token')) {
+  function admin_csrf_token()
+  {
+    if (empty($_SESSION['admin_csrf_token'])) {
+      $_SESSION['admin_csrf_token'] = bin2hex(random_bytes(32));
+    }
+
+    return $_SESSION['admin_csrf_token'];
+  }
+}
+
+if (!function_exists('admin_csrf_field')) {
+  function admin_csrf_field()
+  {
+    return '<input type="hidden" name="csrf_token" value="' . admin_h(admin_csrf_token()) . '">';
+  }
+}
+
+if (!function_exists('admin_csrf_is_valid')) {
+  function admin_csrf_is_valid()
+  {
+    $token = $_POST['csrf_token'] ?? '';
+    return is_string($token) && $token !== '' && hash_equals((string) ($_SESSION['admin_csrf_token'] ?? ''), $token);
+  }
+}
+
+if (!function_exists('admin_stmt')) {
+  function admin_stmt($conn, $sql, $types = '', &...$params)
+  {
+    $stmt = mysqli_prepare($conn, $sql);
+    if (!$stmt) {
+      return false;
+    }
+
+    if ($types !== '' && !mysqli_stmt_bind_param($stmt, $types, ...$params)) {
+      mysqli_stmt_close($stmt);
+      return false;
+    }
+
+    if (!mysqli_stmt_execute($stmt)) {
+      mysqli_stmt_close($stmt);
+      return false;
+    }
+
+    return $stmt;
+  }
+}
+
+if (!function_exists('admin_fetch_one')) {
+  function admin_fetch_one($conn, $sql, $types = '', &...$params)
+  {
+    $stmt = admin_stmt($conn, $sql, $types, ...$params);
+    if (!$stmt) {
+      return null;
+    }
+
+    $result = mysqli_stmt_get_result($stmt);
+    $row = $result ? mysqli_fetch_assoc($result) : null;
+    mysqli_stmt_close($stmt);
+
+    return $row ?: null;
+  }
+}
+
+if (!function_exists('admin_fetch_all')) {
+  function admin_fetch_all($conn, $sql, $types = '', &...$params)
+  {
+    $stmt = admin_stmt($conn, $sql, $types, ...$params);
+    if (!$stmt) {
+      return [];
+    }
+
+    $rows = [];
+    $result = mysqli_stmt_get_result($stmt);
+    if ($result) {
+      while ($row = mysqli_fetch_assoc($result)) {
+        $rows[] = $row;
+      }
+    }
+    mysqli_stmt_close($stmt);
+
+    return $rows;
+  }
+}
+
+if (!function_exists('admin_execute')) {
+  function admin_execute($conn, $sql, $types = '', &...$params)
+  {
+    $stmt = admin_stmt($conn, $sql, $types, ...$params);
+    if (!$stmt) {
+      return false;
+    }
+
+    mysqli_stmt_close($stmt);
+    return true;
+  }
+}
+
 // Protección de sesión y perfil ADMIN
 if (!isset($_SESSION['nombredelusuario']) || $_SESSION['nombredelusuario'] == '') {
   header("Location: ../../acelerador_login/fronten/index.php");
   exit();
 }
-$correo_admin = $_SESSION['nombredelusuario'];
-$q = mysqli_query($conn, "SELECT perfil FROM tbl_profesor WHERE correo = '$correo_admin'");
-if (!$q || mysqli_num_rows($q) == 0) {
+$correo_admin = (string) $_SESSION['nombredelusuario'];
+$admin_row = admin_fetch_one($conn, "SELECT perfil FROM tbl_profesor WHERE correo = ? LIMIT 1", "s", $correo_admin);
+if (!$admin_row) {
   header("Location: ../../acelerador_login/fronten/index.php");
   exit();
 }
-$perfil_admin = strtoupper((string) (mysqli_fetch_assoc($q)['perfil'] ?? ''));
+$perfil_admin = strtoupper((string) ($admin_row['perfil'] ?? ''));
 if ($perfil_admin != 'ADMIN' && $perfil_admin != 'ADMINISTRADOR') {
   header("Location: ../../acelerador_login/fronten/index.php");
   exit();
@@ -25,29 +130,37 @@ $tipo_mensaje = '';
 $usuario_encontrado = null;
 $grupos_usuario = [];
 $todos_grupos = [];
+$csrf_valido = true;
+
+admin_csrf_token();
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !admin_csrf_is_valid()) {
+  $csrf_valido = false;
+  $mensaje = "Operacion rechazada. Vuelve a cargar la pagina e intentalo de nuevo.";
+  $tipo_mensaje = "danger";
+}
 
 // ==================== PROCESAR ACCIONES POST ====================
 
 // --- CREAR USUARIO ---
-if (isset($_POST['accion']) && $_POST['accion'] == 'crear') {
-  $nombre = mysqli_real_escape_string($conn, trim($_POST['nombre'] ?? ''));
-  $apellidos = mysqli_real_escape_string($conn, trim($_POST['apellidos'] ?? ''));
-  $correo_nuevo = mysqli_real_escape_string($conn, trim($_POST['correo'] ?? ''));
+if ($csrf_valido && isset($_POST['accion']) && $_POST['accion'] == 'crear') {
+  $nombre = trim($_POST['nombre'] ?? '');
+  $apellidos = trim($_POST['apellidos'] ?? '');
+  $correo_nuevo = trim($_POST['correo'] ?? '');
   $pass_plano = trim($_POST['password'] ?? '');
-  $dni = mysqli_real_escape_string($conn, trim($_POST['dni'] ?? ''));
-  $orcid = mysqli_real_escape_string($conn, trim($_POST['orcid'] ?? ''));
-  $telefono = mysqli_real_escape_string($conn, trim($_POST['telefono'] ?? ''));
-  $perfil = mysqli_real_escape_string($conn, trim($_POST['perfil'] ?? ''));
-  $facultad = mysqli_real_escape_string($conn, trim($_POST['facultad'] ?? ''));
-  $departamento = mysqli_real_escape_string($conn, trim($_POST['departamento'] ?? ''));
-  $rama = mysqli_real_escape_string($conn, trim($_POST['rama'] ?? ''));
+  $dni = trim($_POST['dni'] ?? '');
+  $orcid = trim($_POST['orcid'] ?? '');
+  $telefono = trim($_POST['telefono'] ?? '');
+  $perfil = trim($_POST['perfil'] ?? '');
+  $facultad = trim($_POST['facultad'] ?? '');
+  $departamento = trim($_POST['departamento'] ?? '');
+  $rama = trim($_POST['rama'] ?? '');
 
   if (empty($nombre) || empty($apellidos) || empty($correo_nuevo) || empty($pass_plano) || empty($orcid)) {
     $mensaje = "Todos los campos obligatorios deben estar completos.";
     $tipo_mensaje = "danger";
   } else {
-    $check = mysqli_query($conn, "SELECT id_profesor FROM tbl_profesor WHERE ORCID = '$orcid'");
-    if (mysqli_num_rows($check) > 0) {
+    $check = admin_fetch_one($conn, "SELECT id_profesor FROM tbl_profesor WHERE ORCID = ? LIMIT 1", "s", $orcid);
+    if ($check) {
       $mensaje = "Ya existe un usuario con ese ORCID.";
       $tipo_mensaje = "warning";
     } else {
@@ -56,19 +169,17 @@ if (isset($_POST['accion']) && $_POST['accion'] == 'crear') {
         $mensaje = "No se pudo generar la contraseña segura para el nuevo usuario.";
         $tipo_mensaje = "danger";
       } else {
-        $pass = mysqli_real_escape_string($conn, $pass_hash);
-
         mysqli_begin_transaction($conn);
-        $ins1 = mysqli_query($conn, "INSERT INTO tbl_profesor (ORCID, nombre, apellidos, password, DNI, telefono, perfil, facultad, departamento, correo, rama) VALUES ('$orcid','$nombre','$apellidos','$pass','$dni','$telefono','$perfil','$facultad','$departamento','$correo_nuevo','$rama')");
-        $ins2 = mysqli_query($conn, "INSERT INTO tbl_usuario (correo, password) VALUES ('$correo_nuevo','$pass')");
+        $ins1 = admin_execute($conn, "INSERT INTO tbl_profesor (ORCID, nombre, apellidos, password, DNI, telefono, perfil, facultad, departamento, correo, rama) VALUES (?,?,?,?,?,?,?,?,?,?,?)", "sssssssssss", $orcid, $nombre, $apellidos, $pass_hash, $dni, $telefono, $perfil, $facultad, $departamento, $correo_nuevo, $rama);
+        $ins2 = admin_execute($conn, "INSERT INTO tbl_usuario (correo, password) VALUES (?,?)", "ss", $correo_nuevo, $pass_hash);
 
         if ($ins1 && $ins2) {
           mysqli_commit($conn);
-          $mensaje = "Usuario <strong>" . htmlspecialchars($nombre) . " " . htmlspecialchars($apellidos) . "</strong> creado correctamente.";
+          $mensaje = "Usuario <strong>" . admin_h($nombre) . " " . admin_h($apellidos) . "</strong> creado correctamente.";
           $tipo_mensaje = "success";
         } else {
           mysqli_rollback($conn);
-          $mensaje = "Error al crear el usuario: " . mysqli_error($conn);
+          $mensaje = "No se pudo crear el usuario.";
           $tipo_mensaje = "danger";
         }
       }
@@ -77,83 +188,107 @@ if (isset($_POST['accion']) && $_POST['accion'] == 'crear') {
 }
 
 // --- EDITAR USUARIO ---
-if (isset($_POST['accion']) && $_POST['accion'] == 'editar') {
-  $id_edit = intval($_POST['id_profesor']);
-  $nombre = mysqli_real_escape_string($conn, trim($_POST['nombre']));
-  $apellidos = mysqli_real_escape_string($conn, trim($_POST['apellidos']));
-  $correo_edit = mysqli_real_escape_string($conn, trim($_POST['correo']));
-  $dni = mysqli_real_escape_string($conn, trim($_POST['dni']));
-  $telefono = mysqli_real_escape_string($conn, trim($_POST['telefono']));
-  $perfil_edit = mysqli_real_escape_string($conn, trim($_POST['perfil']));
-  $facultad = mysqli_real_escape_string($conn, trim($_POST['facultad']));
-  $departamento = mysqli_real_escape_string($conn, trim($_POST['departamento']));
-  $rama = mysqli_real_escape_string($conn, trim($_POST['rama']));
+if ($csrf_valido && isset($_POST['accion']) && $_POST['accion'] == 'editar') {
+  $id_edit = intval($_POST['id_profesor'] ?? 0);
+  $nombre = trim($_POST['nombre'] ?? '');
+  $apellidos = trim($_POST['apellidos'] ?? '');
+  $correo_edit = trim($_POST['correo'] ?? '');
+  $dni = trim($_POST['dni'] ?? '');
+  $telefono = trim($_POST['telefono'] ?? '');
+  $perfil_edit = trim($_POST['perfil'] ?? '');
+  $facultad = trim($_POST['facultad'] ?? '');
+  $departamento = trim($_POST['departamento'] ?? '');
+  $rama = trim($_POST['rama'] ?? '');
 
   // Obtener correo antiguo para actualizar tbl_usuario
-  $old = mysqli_query($conn, "SELECT correo FROM tbl_profesor WHERE id_profesor = $id_edit");
-  $correo_old = mysqli_fetch_assoc($old)['correo'];
+  $old = admin_fetch_one($conn, "SELECT correo FROM tbl_profesor WHERE id_profesor = ? LIMIT 1", "i", $id_edit);
+  if (!$old) {
+    $mensaje = "No se encontro el usuario indicado.";
+    $tipo_mensaje = "warning";
+  } else {
+    $correo_old = (string) ($old['correo'] ?? '');
+    $upd1 = admin_execute($conn, "UPDATE tbl_profesor SET nombre=?, apellidos=?, correo=?, DNI=?, telefono=?, perfil=?, facultad=?, departamento=?, rama=? WHERE id_profesor = ?", "sssssssssi", $nombre, $apellidos, $correo_edit, $dni, $telefono, $perfil_edit, $facultad, $departamento, $rama, $id_edit);
+    $upd2 = admin_execute($conn, "UPDATE tbl_usuario SET correo=? WHERE correo=?", "ss", $correo_edit, $correo_old);
 
-  mysqli_query($conn, "UPDATE tbl_profesor SET nombre='$nombre', apellidos='$apellidos', correo='$correo_edit', DNI='$dni', telefono='$telefono', perfil='$perfil_edit', facultad='$facultad', departamento='$departamento', rama='$rama' WHERE id_profesor = $id_edit");
-  mysqli_query($conn, "UPDATE tbl_usuario SET correo='$correo_edit' WHERE correo='$correo_old'");
-
-  $mensaje = "Datos del usuario actualizados correctamente.";
-  $tipo_mensaje = "success";
+    if ($upd1 && $upd2) {
+      $mensaje = "Datos del usuario actualizados correctamente.";
+      $tipo_mensaje = "success";
+    } else {
+      $mensaje = "No se pudieron actualizar los datos del usuario.";
+      $tipo_mensaje = "danger";
+    }
+  }
   $_POST['orcid_buscar'] = $_POST['orcid_original'];
 }
 
 // --- ASIGNAR A GRUPO ---
-if (isset($_POST['accion']) && $_POST['accion'] == 'asignar_grupo') {
-  $id_prof = intval($_POST['id_profesor']);
-  $id_grupo = intval($_POST['id_grupo']);
+if ($csrf_valido && isset($_POST['accion']) && $_POST['accion'] == 'asignar_grupo') {
+  $id_prof = intval($_POST['id_profesor'] ?? 0);
+  $id_grupo = intval($_POST['id_grupo'] ?? 0);
 
-  $check_dup = mysqli_query($conn, "SELECT id FROM tbl_grupo_profesor WHERE id_grupo = $id_grupo AND id_profesor = $id_prof");
-  if (mysqli_num_rows($check_dup) > 0) {
+  $check_dup = admin_fetch_one($conn, "SELECT id FROM tbl_grupo_profesor WHERE id_grupo = ? AND id_profesor = ? LIMIT 1", "ii", $id_grupo, $id_prof);
+  if ($check_dup) {
     $mensaje = "El usuario ya pertenece a ese grupo.";
     $tipo_mensaje = "warning";
   } else {
-    mysqli_query($conn, "INSERT INTO tbl_grupo_profesor (id_grupo, id_profesor) VALUES ($id_grupo, $id_prof)");
-    $mensaje = "Usuario asignado al grupo correctamente.";
-    $tipo_mensaje = "success";
+    if (admin_execute($conn, "INSERT INTO tbl_grupo_profesor (id_grupo, id_profesor) VALUES (?, ?)", "ii", $id_grupo, $id_prof)) {
+      $mensaje = "Usuario asignado al grupo correctamente.";
+      $tipo_mensaje = "success";
+    } else {
+      $mensaje = "No se pudo asignar el usuario al grupo.";
+      $tipo_mensaje = "danger";
+    }
   }
   $_POST['orcid_buscar'] = $_POST['orcid_original'];
 }
 
 // --- ELIMINAR DE GRUPO ---
-if (isset($_POST['accion']) && $_POST['accion'] == 'quitar_grupo') {
-  $id_prof = intval($_POST['id_profesor']);
-  $id_grupo = intval($_POST['id_grupo']);
-  mysqli_query($conn, "DELETE FROM tbl_grupo_profesor WHERE id_grupo = $id_grupo AND id_profesor = $id_prof");
-  $mensaje = "Usuario eliminado del grupo.";
-  $tipo_mensaje = "success";
+if ($csrf_valido && isset($_POST['accion']) && $_POST['accion'] == 'quitar_grupo') {
+  $id_prof = intval($_POST['id_profesor'] ?? 0);
+  $id_grupo = intval($_POST['id_grupo'] ?? 0);
+  if (admin_execute($conn, "DELETE FROM tbl_grupo_profesor WHERE id_grupo = ? AND id_profesor = ?", "ii", $id_grupo, $id_prof)) {
+    $mensaje = "Usuario eliminado del grupo.";
+    $tipo_mensaje = "success";
+  } else {
+    $mensaje = "No se pudo eliminar el usuario del grupo.";
+    $tipo_mensaje = "danger";
+  }
   $_POST['orcid_buscar'] = $_POST['orcid_original'];
 }
 
 // --- ELIMINAR USUARIO ---
-if (isset($_POST['accion']) && $_POST['accion'] == 'eliminar') {
-  $id_del = intval($_POST['id_profesor']);
-  $correo_del_q = mysqli_query($conn, "SELECT correo FROM tbl_profesor WHERE id_profesor = $id_del");
-  $correo_del = mysqli_fetch_assoc($correo_del_q)['correo'];
+if ($csrf_valido && isset($_POST['accion']) && $_POST['accion'] == 'eliminar') {
+  $id_del = intval($_POST['id_profesor'] ?? 0);
+  $correo_del_row = admin_fetch_one($conn, "SELECT correo FROM tbl_profesor WHERE id_profesor = ? LIMIT 1", "i", $id_del);
 
-  mysqli_query($conn, "DELETE FROM tbl_grupo_profesor WHERE id_profesor = $id_del");
-  mysqli_query($conn, "DELETE FROM tbl_profesor WHERE id_profesor = $id_del");
-  mysqli_query($conn, "DELETE FROM tbl_usuario WHERE correo = '$correo_del'");
+  if (!$correo_del_row) {
+    $mensaje = "No se encontro el usuario indicado.";
+    $tipo_mensaje = "warning";
+  } else {
+    $correo_del = (string) ($correo_del_row['correo'] ?? '');
+    $del1 = admin_execute($conn, "DELETE FROM tbl_grupo_profesor WHERE id_profesor = ?", "i", $id_del);
+    $del2 = admin_execute($conn, "DELETE FROM tbl_profesor WHERE id_profesor = ?", "i", $id_del);
+    $del3 = admin_execute($conn, "DELETE FROM tbl_usuario WHERE correo = ?", "s", $correo_del);
 
-  $mensaje = "Usuario eliminado del sistema correctamente.";
-  $tipo_mensaje = "success";
+    if ($del1 && $del2 && $del3) {
+      $mensaje = "Usuario eliminado del sistema correctamente.";
+      $tipo_mensaje = "success";
+    } else {
+      $mensaje = "No se pudo eliminar el usuario.";
+      $tipo_mensaje = "danger";
+    }
+  }
 }
 
 // ==================== BUSCAR USUARIO POR ORCID ====================
-if (isset($_POST['orcid_buscar']) && !empty($_POST['orcid_buscar'])) {
-  $orcid_buscar = mysqli_real_escape_string($conn, trim($_POST['orcid_buscar']));
-  $q_buscar = mysqli_query($conn, "SELECT * FROM tbl_profesor WHERE ORCID = '$orcid_buscar'");
-  if ($q_buscar && mysqli_num_rows($q_buscar) > 0) {
-    $usuario_encontrado = mysqli_fetch_assoc($q_buscar);
+if ($csrf_valido && isset($_POST['orcid_buscar']) && !empty($_POST['orcid_buscar'])) {
+  $orcid_buscar = trim($_POST['orcid_buscar']);
+  $usuario_encontrado = admin_fetch_one($conn, "SELECT * FROM tbl_profesor WHERE ORCID = ? LIMIT 1", "s", $orcid_buscar);
+  if ($usuario_encontrado) {
+    $id_usuario_encontrado = intval($usuario_encontrado['id_profesor'] ?? 0);
 
     // Obtener grupos del usuario
-    $q_grupos_u = mysqli_query($conn, "SELECT g.id_grupo, g.nombre, t.nombre AS tutor_nombre, t.apellidos AS tutor_apellidos FROM tbl_grupo_profesor gp INNER JOIN tbl_grupo g ON gp.id_grupo = g.id_grupo INNER JOIN tbl_profesor t ON g.id_tutor = t.id_profesor WHERE gp.id_profesor = " . $usuario_encontrado['id_profesor']);
-    while ($q_grupos_u && $rg = mysqli_fetch_assoc($q_grupos_u)) {
-      $grupos_usuario[] = $rg;
-    }
+    $grupos_usuario = admin_fetch_all($conn, "SELECT g.id_grupo, g.nombre, t.nombre AS tutor_nombre, t.apellidos AS tutor_apellidos FROM tbl_grupo_profesor gp INNER JOIN tbl_grupo g ON gp.id_grupo = g.id_grupo INNER JOIN tbl_profesor t ON g.id_tutor = t.id_profesor WHERE gp.id_profesor = ?", "i", $id_usuario_encontrado);
 
     // Obtener todos los grupos para el selector de asignar
     $q_todos = mysqli_query($conn, "SELECT g.id_grupo, g.nombre, t.nombre AS tutor_nombre, t.apellidos AS tutor_apellidos FROM tbl_grupo g INNER JOIN tbl_profesor t ON g.id_tutor = t.id_profesor ORDER BY g.nombre ASC");
@@ -161,7 +296,7 @@ if (isset($_POST['orcid_buscar']) && !empty($_POST['orcid_buscar'])) {
       $todos_grupos[] = $rg;
     }
   } else {
-    $mensaje = "No se encontró ningún usuario con el ORCID <strong>" . htmlspecialchars($orcid_buscar) . "</strong>.";
+    $mensaje = "No se encontró ningún usuario con el ORCID <strong>" . admin_h($orcid_buscar) . "</strong>.";
     $tipo_mensaje = "warning";
   }
 }
@@ -222,11 +357,12 @@ if (isset($_POST['orcid_buscar']) && !empty($_POST['orcid_buscar'])) {
         style="background-color: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);">
         <h5 class="text-white fw-bold mb-3"><i class="bi bi-search me-2"></i>Buscar usuario por ORCID</h5>
         <form method="POST" style="padding:0; margin:0;">
+          <?php echo admin_csrf_field(); ?>
           <div class="d-flex gap-2 align-items-end">
             <div class="flex-grow-1">
               <input type="text" name="orcid_buscar" class="form-control" placeholder="0000-0000-0000-0000" required
                 pattern="[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}" title="Formato: 0000-0000-0000-0000"
-                value="<?php echo htmlspecialchars($_POST['orcid_buscar'] ?? ''); ?>"
+                value="<?php echo admin_h($_POST['orcid_buscar'] ?? ''); ?>"
                 style="background-color: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.35); color: white; padding: 10px 15px;">
             </div>
             <button type="submit"
@@ -294,10 +430,11 @@ if (isset($_POST['orcid_buscar']) && !empty($_POST['orcid_buscar'])) {
             <!-- TAB EDITAR -->
             <div class="tab-pane fade" id="tab-editar">
               <form method="POST" style="padding:0; margin:0;">
+                <?php echo admin_csrf_field(); ?>
                 <input type="hidden" name="accion" value="editar">
-                <input type="hidden" name="id_profesor" value="<?php echo $usuario_encontrado['id_profesor']; ?>">
+                <input type="hidden" name="id_profesor" value="<?php echo intval($usuario_encontrado['id_profesor']); ?>">
                 <input type="hidden" name="orcid_original"
-                  value="<?php echo htmlspecialchars($usuario_encontrado['ORCID']); ?>">
+                  value="<?php echo admin_h($usuario_encontrado['ORCID']); ?>">
                 <div class="row g-3">
                   <?php
                   $campos_edit = [
@@ -313,7 +450,7 @@ if (isset($_POST['orcid_buscar']) && !empty($_POST['orcid_buscar'])) {
                     <div class="col-md-6">
                       <label class="form-label text-light small mb-1"><?php echo $c['label']; ?></label>
                       <input type="<?php echo $c['type']; ?>" name="<?php echo $c['name']; ?>" class="form-control"
-                        value="<?php echo htmlspecialchars($c['value']); ?>"
+                        value="<?php echo admin_h($c['value']); ?>"
                         style="background-color: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.35); color: white;">
                     </div>
                   <?php endforeach; ?>
@@ -374,12 +511,13 @@ if (isset($_POST['orcid_buscar']) && !empty($_POST['orcid_buscar'])) {
                           </td>
                           <td class="border-end-0 border-bottom-0 text-center px-3 py-2">
                             <form method="POST" style="display:inline; padding:0; margin:0;">
+                              <?php echo admin_csrf_field(); ?>
                               <input type="hidden" name="accion" value="quitar_grupo">
                               <input type="hidden" name="id_profesor"
-                                value="<?php echo $usuario_encontrado['id_profesor']; ?>">
-                              <input type="hidden" name="id_grupo" value="<?php echo $gu['id_grupo']; ?>">
+                                value="<?php echo intval($usuario_encontrado['id_profesor']); ?>">
+                              <input type="hidden" name="id_grupo" value="<?php echo intval($gu['id_grupo']); ?>">
                               <input type="hidden" name="orcid_original"
-                                value="<?php echo htmlspecialchars($usuario_encontrado['ORCID']); ?>">
+                                value="<?php echo admin_h($usuario_encontrado['ORCID']); ?>">
                               <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill"
                                 onclick="return confirm('¿Eliminar de este grupo?')"><i class="bi bi-x-circle"></i></button>
                             </form>
@@ -397,17 +535,18 @@ if (isset($_POST['orcid_buscar']) && !empty($_POST['orcid_buscar'])) {
               <h6 class="text-white fw-bold mb-2"><i class="bi bi-plus-circle me-1"></i> Asignar a un grupo</h6>
               <?php if (count($todos_grupos) > 0): ?>
                 <form method="POST" style="padding:0; margin:0;">
+                  <?php echo admin_csrf_field(); ?>
                   <input type="hidden" name="accion" value="asignar_grupo">
-                  <input type="hidden" name="id_profesor" value="<?php echo $usuario_encontrado['id_profesor']; ?>">
+                  <input type="hidden" name="id_profesor" value="<?php echo intval($usuario_encontrado['id_profesor']); ?>">
                   <input type="hidden" name="orcid_original"
-                    value="<?php echo htmlspecialchars($usuario_encontrado['ORCID']); ?>">
+                    value="<?php echo admin_h($usuario_encontrado['ORCID']); ?>">
                   <div class="d-flex gap-2 align-items-end">
                     <div class="flex-grow-1">
                       <select name="id_grupo" class="form-select" required
                         style="background-color: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.35); color: white;">
                         <option value="" disabled selected>Seleccionar grupo...</option>
                         <?php foreach ($todos_grupos as $tg): ?>
-                          <option value="<?php echo $tg['id_grupo']; ?>">
+                          <option value="<?php echo intval($tg['id_grupo']); ?>">
                             <?php echo htmlspecialchars($tg['nombre'] . ' (Tutor: ' . $tg['tutor_nombre'] . ' ' . $tg['tutor_apellidos'] . ')'); ?>
                           </option>
                         <?php endforeach; ?>
@@ -433,8 +572,9 @@ if (isset($_POST['orcid_buscar']) && !empty($_POST['orcid_buscar'])) {
                   <code>tbl_profesor</code> y de <code>tbl_usuario</code>. No se puede deshacer.
                 </p>
                 <form method="POST" style="padding:0; margin:0;">
+                  <?php echo admin_csrf_field(); ?>
                   <input type="hidden" name="accion" value="eliminar">
-                  <input type="hidden" name="id_profesor" value="<?php echo $usuario_encontrado['id_profesor']; ?>">
+                  <input type="hidden" name="id_profesor" value="<?php echo intval($usuario_encontrado['id_profesor']); ?>">
                   <button type="submit" class="btn btn-danger rounded-pill px-4 py-2 fw-bold"
                     onclick="return confirm('¿Estás SEGURO de eliminar este usuario del sistema?')">
                     <i class="bi bi-trash-fill me-1"></i> Eliminar usuario permanentemente
@@ -457,6 +597,7 @@ if (isset($_POST['orcid_buscar']) && !empty($_POST['orcid_buscar'])) {
           <div class="p-4 rounded-4"
             style="background-color: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);">
             <form method="POST" style="padding:0; margin:0;">
+              <?php echo admin_csrf_field(); ?>
               <input type="hidden" name="accion" value="crear">
               <div class="row g-3">
                 <div class="col-md-6">

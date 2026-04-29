@@ -1,0 +1,7 @@
+{
+    "ok": false,
+    "job_id": "job_20260429_071113_42525049",
+    "estado": "error",
+    "message": "El job termino con error.",
+    "error_mensaje": "error_simulado_para_schema"
+}

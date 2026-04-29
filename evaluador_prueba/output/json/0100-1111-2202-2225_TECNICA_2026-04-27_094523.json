@@ -1,0 +1,212 @@
+{
+    "bloque_1": {
+        "publicaciones": [],
+        "libros": [],
+        "proyectos": [],
+        "transferencia": [],
+        "tesis_dirigidas": [
+            {
+                "id": "tesis_001",
+                "es_valido": true,
+                "tipo": "dirigida",
+                "proyecto_aprobado": true,
+                "doctorado_europeo": false,
+                "mencion_calidad": false,
+                "numero_codirectores": 0,
+                "fuente_texto": "Título del trabajo: Dirección tesis doctoral sobre enterramientos en valencina de la concepción\nEntidad de realización: Universidad de Sevilla\nTipo de entidad: Universidad\nAlumno\/a: Rosa Aranda Aranda\nFecha de defensa: 10\/02\/2011\n\nTutorías académicas de estudiantes\nNombre del programa: Formación personal docente\nEntidad de realización: FUNDACION EMPRESA UNIVERSIDAD DE GRANADA\nFrecuencia de la actividad: 10\nTutoría Reglada: Sí\n\nCursos y seminarios impartidos\n1\n\n2\n\nTipo de evento: Curso\nNombre del evento: curso de estratos arqueologicos\nEntidad organizadora: Universidad Pablo de Olavide\nHoras impartidas: 2.000\nFecha de impartición: 07\/02\/2025\nTemática: Formación Docente\n\nTipo de entidad: Universidad\n\nTipo de evento: Seminario\nNombre del evento: arqueología romana\nEntidad organizadora: universidad pab\nHoras impartidas: 5.000\nFecha de impartición: 10\/12\/2012\nTemática: Formación Docente\n\nProyectos de innovación docente\nTítulo del proyecto: Proyecto Italica y mosáicos\nTipo de participación: Investigador principal\nTipo duración relación laboral: Por tiempo determinado\nEntidad financiadora: CAJA AHORROS Y PENSIONES DE BARCELONA LA CAIXA\nFecha de inicio-fin: 10\/10\/2013 - 10\/10\/2014\nDuración: 1 año\nExperiencia científica y tecnológica\nGrupos\/equipos de investigación, desarrollo o innovación\nNombre del grupo: Grupo arqueológico de Huelva\nEntidad de afiliación: DIPUTACION PROVINCIAL DE HUELVA\nFecha de inicio: 01\/03\/2019\n\nResultados\nPropiedad industrial e intelectual\nTítulo propiedad industrial registrada: tipología de georadar arqueología\nFecha de registro: 01\/02\/2020\nFecha de concesión: 01\/04\/2021\n\nActividades científicas y tecnológicas\nProducción científica\nPublicaciones, documentos científicos y técnicos\n1\n\nRosa Puerta Lagares; Ramon Lagares Pérez. arqueologia en coria del rio. arqueologia en coria del rio. 1 - 1, pp.\n1 - 100. us, 01\/04\/2022.\nTipo de producción: Artículo científico\nNº total de autores: 2\n\n2\n\nRamon Lagares Pérez. arqueologia en bormujos. Arqueología en Bormujos. 1 - 1, pp. 1 - 89. us, 01\/04\/2020.\nTipo de producción: Artículo científico\nNº total de autores: 1\n\n3\n\nRamon Lagares Pérez. arqueologia puebla del rio. arqueologia puebla del rio. 1 - 1, pp. 12 - 67. universidad de\nsevilla, 01\/02\/2015.\nTipo de producción: Artículo de divulgación\nNº total de autores: 1\nTrabajos presentados en congresos nacionales o internacionales\nTítulo del trabajo: congreso asta regia\nNombre del congreso: Congreso arqueologia en Jerez\nCiudad de celebración: Andalucía, España\nFecha de celebración: 01\/05\/2021\nFecha de finalización: 01\/06\/2020\nEntidad organizadora: AYUNTAMIENTO DE JEREZ DE LA FRONTERA\nRamón Lagares Pérez.\n\nActividades de divulgación\n1\n\nTítulo del trabajo: conociendo valencina\nNombre del evento: jornadas protohistoria\nTipo de evento: Conferencias impartidas\nFecha de celebración: 01\/06\/2025\n\n2\n\nTítulo del trabajo: charlas sobre tartessos\nNombre del evento: jornadas tartessos\nTipo de evento: Conferencias impartidas\nFecha de celebración: 01\/01\/2025\n\nOtros méritos\nPeríodos de actividad investigadora, docente y de transferencia del conocimiento\nNombre de la actuación: Sexenio CNEAI\nEntidad acreditante: Universidad de Sevilla\nFecha de obtención: 01\/11\/2023\nTipo de actividad: Docencia\nAño de inicio: 2023\nAño de finalización: 2025\nPeriodo cubierto: 2023, 2024, 2025\nAño de Convocatoria: 2023\n\nTipo de entidad: Universidad\n\n6",
+                "confianza_extraccion": 0.8,
+                "requiere_revision": true
+            }
+        ],
+        "congresos": [
+            {
+                "id": "cong_001",
+                "es_valido": true,
+                "ambito": "internacional",
+                "tipo": "comunicacion_oral",
+                "proceso_selectivo": true,
+                "id_evento": "jornadas_protohistoria_01_06_2025",
+                "fuente_texto": "Título del trabajo: conociendo valencina\nNombre del evento: jornadas protohistoria\nTipo de evento: Conferencias impartidas\nFecha de celebración: 01\/06\/2025",
+                "confianza_extraccion": 0.88,
+                "requiere_revision": true
+            },
+            {
+                "id": "cong_002",
+                "es_valido": true,
+                "ambito": "internacional",
+                "tipo": "comunicacion_oral",
+                "proceso_selectivo": true,
+                "id_evento": "jornadas_tartessos_01_01_2025_otros_m_eritos_per_iodos_de_actividad_investigadora_docente_y_de_transferencia_del_conocimiento",
+                "fuente_texto": "Título del trabajo: charlas sobre tartessos\nNombre del evento: jornadas tartessos\nTipo de evento: Conferencias impartidas\nFecha de celebración: 01\/01\/2025\n\nOtros méritos\nPeríodos de actividad investigadora, docente y de transferencia del conocimiento\nNombre de la actuación: Sexenio CNEAI\nEntidad acreditante: Universidad de Sevilla\nFecha de obtención: 01\/11\/2023\nTipo de actividad: Docencia\nAño de inicio: 2023\nAño de finalización: 2025\nPeriodo cubierto: 2023, 2024, 2025\nAño de Convocatoria: 2023\n\nTipo de entidad: Universidad\n\n6",
+                "confianza_extraccion": 0.88,
+                "requiere_revision": true
+            }
+        ],
+        "otros_meritos_investigacion": []
+    },
+    "bloque_2": {
+        "docencia_universitaria": [
+            {
+                "id": "doc_001",
+                "es_valido": true,
+                "horas": 0,
+                "tipo": "grado",
+                "etapa": "grado",
+                "tfg": 0,
+                "tfm": 0,
+                "fuente_texto": "Nombre de la asignatura\/curso: arqueología prehistoria\nTitulación universitaria: Graduado en arqueología\nFecha de inicio: 01\/04\/2020\nFecha de finalización: 14\/04\/2026\nEntidad de realización: Universidad de Sevilla\nTipo de entidad: Universidad",
+                "confianza_extraccion": 0.92,
+                "requiere_revision": true
+            }
+        ],
+        "evaluacion_docente": [],
+        "formacion_docente": [
+            {
+                "id": "fdoc_001",
+                "es_valido": true,
+                "horas": 2,
+                "rol": "ponente",
+                "relacion_docente": true,
+                "fuente_texto": "2\n\nTipo de evento: Curso\nNombre del evento: curso de estratos arqueologicos\nEntidad organizadora: Universidad Pablo de Olavide\nHoras impartidas: 2.000\nFecha de impartición: 07\/02\/2025\nTemática: Formación Docente\n\nTipo de entidad: Universidad\n\nTipo de evento: Seminario\nNombre del evento: arqueología romana\nEntidad organizadora: universidad pab\nHoras impartidas: 5.000\nFecha de impartición: 10\/12\/2012\nTemática: Formación Docente\n\nProyectos de innovación docente\nTítulo del proyecto: Proyecto Italica y mosáicos\nTipo de participación: Investigador principal\nTipo duración relación laboral: Por tiempo determinado\nEntidad financiadora: CAJA AHORROS Y PENSIONES DE BARCELONA LA CAIXA\nFecha de inicio-fin: 10\/10\/2013 - 10\/10\/2014\nDuración: 1 año\nExperiencia científica y tecnológica\nGrupos\/equipos de investigación, desarrollo o innovación\nNombre del grupo: Grupo arqueológico de Huelva\nEntidad de afiliación: DIPUTACION PROVINCIAL DE HUELVA\nFecha de inicio: 01\/03\/2019\n\nResultados\nPropiedad industrial e intelectual\nTítulo propiedad industrial registrada: tipología de georadar arqueología\nFecha de registro: 01\/02\/2020\nFecha de concesión: 01\/04\/2021\n\nActividades científicas y tecnológicas\nProducción científica\nPublicaciones, documentos científicos y técnicos",
+                "confianza_extraccion": 0.7,
+                "requiere_revision": true
+            },
+            {
+                "id": "fdoc_002",
+                "es_valido": true,
+                "horas": 0,
+                "rol": "asistente",
+                "relacion_docente": true,
+                "fuente_texto": "Rosa Puerta Lagares; Ramon Lagares Pérez. arqueologia en coria del rio. arqueologia en coria del rio. 1 - 1, pp.\n1 - 100. us, 01\/04\/2022.\nTipo de producción: Artículo científico\nNº total de autores: 2",
+                "confianza_extraccion": 0.7,
+                "requiere_revision": true
+            },
+            {
+                "id": "fdoc_003",
+                "es_valido": true,
+                "horas": 0,
+                "rol": "asistente",
+                "relacion_docente": true,
+                "fuente_texto": "Ramon Lagares Pérez. arqueologia en bormujos. Arqueología en Bormujos. 1 - 1, pp. 1 - 89. us, 01\/04\/2020.\nTipo de producción: Artículo científico\nNº total de autores: 1",
+                "confianza_extraccion": 0.7,
+                "requiere_revision": true
+            },
+            {
+                "id": "fdoc_004",
+                "es_valido": true,
+                "horas": 0,
+                "rol": "asistente",
+                "relacion_docente": true,
+                "fuente_texto": "Ramon Lagares Pérez. arqueologia puebla del rio. arqueologia puebla del rio. 1 - 1, pp. 12 - 67. universidad de\nsevilla, 01\/02\/2015.\nTipo de producción: Artículo de divulgación\nNº total de autores: 1\nTrabajos presentados en congresos nacionales o internacionales\nTítulo del trabajo: congreso asta regia\nNombre del congreso: Congreso arqueologia en Jerez\nCiudad de celebración: Andalucía, España\nFecha de celebración: 01\/05\/2021\nFecha de finalización: 01\/06\/2020\nEntidad organizadora: AYUNTAMIENTO DE JEREZ DE LA FRONTERA\nRamón Lagares Pérez.\n\nActividades de divulgación",
+                "confianza_extraccion": 0.7,
+                "requiere_revision": true
+            },
+            {
+                "id": "fdoc_005",
+                "es_valido": true,
+                "horas": 0,
+                "rol": "asistente",
+                "relacion_docente": true,
+                "fuente_texto": "Título del trabajo: conociendo valencina\nNombre del evento: jornadas protohistoria\nTipo de evento: Conferencias impartidas\nFecha de celebración: 01\/06\/2025",
+                "confianza_extraccion": 0.7,
+                "requiere_revision": true
+            },
+            {
+                "id": "fdoc_006",
+                "es_valido": true,
+                "horas": 0,
+                "rol": "asistente",
+                "relacion_docente": true,
+                "fuente_texto": "Título del trabajo: charlas sobre tartessos\nNombre del evento: jornadas tartessos\nTipo de evento: Conferencias impartidas\nFecha de celebración: 01\/01\/2025\n\nOtros méritos\nPeríodos de actividad investigadora, docente y de transferencia del conocimiento\nNombre de la actuación: Sexenio CNEAI\nEntidad acreditante: Universidad de Sevilla\nFecha de obtención: 01\/11\/2023\nTipo de actividad: Docencia\nAño de inicio: 2023\nAño de finalización: 2025\nPeriodo cubierto: 2023, 2024, 2025\nAño de Convocatoria: 2023\n\nTipo de entidad: Universidad\n\n6",
+                "confianza_extraccion": 0.7,
+                "requiere_revision": true
+            }
+        ],
+        "material_docente": [
+            {
+                "id": "mdoc_001",
+                "es_valido": true,
+                "tipo": "proyecto_innovacion_docente",
+                "nivel_editorial": "nacional",
+                "fuente_texto": "Rosa Puerta Lagares; Ramon Lagares Pérez. arqueologia en coria del rio. arqueologia en coria del rio. 1 - 1, pp.\n1 - 100. us, 01\/04\/2022.\nTipo de producción: Artículo científico\nNº total de autores: 2",
+                "confianza_extraccion": 0.74,
+                "requiere_revision": true
+            },
+            {
+                "id": "mdoc_002",
+                "es_valido": true,
+                "tipo": "proyecto_innovacion_docente",
+                "nivel_editorial": "nacional",
+                "fuente_texto": "Ramon Lagares Pérez. arqueologia en bormujos. Arqueología en Bormujos. 1 - 1, pp. 1 - 89. us, 01\/04\/2020.\nTipo de producción: Artículo científico\nNº total de autores: 1",
+                "confianza_extraccion": 0.74,
+                "requiere_revision": true
+            },
+            {
+                "id": "mdoc_003",
+                "es_valido": true,
+                "tipo": "proyecto_innovacion_docente",
+                "nivel_editorial": "nacional",
+                "fuente_texto": "Ramon Lagares Pérez. arqueologia puebla del rio. arqueologia puebla del rio. 1 - 1, pp. 12 - 67. universidad de\nsevilla, 01\/02\/2015.\nTipo de producción: Artículo de divulgación\nNº total de autores: 1\nTrabajos presentados en congresos nacionales o internacionales\nTítulo del trabajo: congreso asta regia\nNombre del congreso: Congreso arqueologia en Jerez\nCiudad de celebración: Andalucía, España\nFecha de celebración: 01\/05\/2021\nFecha de finalización: 01\/06\/2020\nEntidad organizadora: AYUNTAMIENTO DE JEREZ DE LA FRONTERA\nRamón Lagares Pérez.\n\nActividades de divulgación",
+                "confianza_extraccion": 0.74,
+                "requiere_revision": true
+            },
+            {
+                "id": "mdoc_004",
+                "es_valido": true,
+                "tipo": "proyecto_innovacion_docente",
+                "nivel_editorial": "nacional",
+                "fuente_texto": "Título del trabajo: conociendo valencina\nNombre del evento: jornadas protohistoria\nTipo de evento: Conferencias impartidas\nFecha de celebración: 01\/06\/2025",
+                "confianza_extraccion": 0.74,
+                "requiere_revision": true
+            },
+            {
+                "id": "mdoc_005",
+                "es_valido": true,
+                "tipo": "proyecto_innovacion_docente",
+                "nivel_editorial": "nacional",
+                "fuente_texto": "Título del trabajo: charlas sobre tartessos\nNombre del evento: jornadas tartessos\nTipo de evento: Conferencias impartidas\nFecha de celebración: 01\/01\/2025\n\nOtros méritos\nPeríodos de actividad investigadora, docente y de transferencia del conocimiento\nNombre de la actuación: Sexenio CNEAI\nEntidad acreditante: Universidad de Sevilla\nFecha de obtención: 01\/11\/2023\nTipo de actividad: Docencia\nAño de inicio: 2023\nAño de finalización: 2025\nPeriodo cubierto: 2023, 2024, 2025\nAño de Convocatoria: 2023\n\nTipo de entidad: Universidad\n\n6",
+                "confianza_extraccion": 0.74,
+                "requiere_revision": true
+            }
+        ]
+    },
+    "bloque_3": {
+        "formacion_academica": [],
+        "experiencia_profesional": [
+            {
+                "id": "eprof_001",
+                "es_valido": true,
+                "justificada": true,
+                "no_valorable": false,
+                "anios": 0.57,
+                "relacion": "alta",
+                "fuente_texto": "Profesor en Universidad de Sevilla",
+                "confianza_extraccion": 0.82,
+                "requiere_revision": true
+            }
+        ]
+    },
+    "bloque_4": [
+        {
+            "id": "b4_001",
+            "es_valido": true,
+            "tipo": "divulgacion",
+            "fuente_texto": "Actividad de divulgación detectada en CVN",
+            "confianza_extraccion": 0.55,
+            "requiere_revision": true
+        }
+    ],
+    "metadatos_extraccion": {
+        "comite": "EXPERIMENTALES",
+        "subcomite": "CVN_FECYT",
+        "archivo_pdf": null,
+        "fecha_extraccion": "2026-04-27T09:45:24+02:00",
+        "version_esquema": "2.2-cvn-fecyt",
+        "requiere_revision_manual": true
+    },
+    "archivo_pdf": "0100-1111-2202-2225_TECNICA_2026-04-27_094523.pdf",
+    "json_generado": "0100-1111-2202-2225_TECNICA_2026-04-27_094523.json",
+    "texto_extraido_preview": "Ramon Lagares Pérez\nGenerado desde: Editor CVN de FECYT\n\nFecha del documento: 16\/04\/2026\nv 1.4.3\n9e9c2382817dd0bc136770167d56deb1\n\nEste fichero electrónico (PDF) contiene incrustada la tecnología CVN (CVN-XML). La tecnología CVN de este fichero permite exportar e importar los datos\ncurriculares desde y hacia cualquier base de datos compatible. Listado de Bases de Datos adaptadas disponible en http:\/\/cvn.fecyt.es\/\n\n9e9c2382817dd0bc136770167d56deb1\n\nRamon Lagares Pérez\nApellidos:\nNombre:\nNacionalidad:\nPaís de nacimiento:\nC. Autón.\/Reg. de nacimiento:\nCiudad de nacimiento:\nTeléfono fijo:\nCorreo electrónico:\nTeléfono móvil:\n\nLagares Pérez\nRamon\nEspaña\nEspaña\nAndalucía\nCoria del Río\n955772368\nchokitoni@gmail.com\n686510081\n\nSituación profesional actual\nEntidad empleadora: Universidad de Sevilla\nTipo de entidad: Universidad\nDepartamento: Arqueología, Facultad de Historia\nCategoría profesional: Profesor\nFecha de inicio: 01\/10\/2025\nModalidad de contrato: Contrato laboral temporal\n\nCargos y actividades desempeñados con anterioridad\nEntidad empleadora\n\nCategoría profesional\n\nUniversidad de Sevilla\n\nProfesor\n\nEntidad empleadora: Universidad de Sevilla\nCategoría profesional: Profesor\nFecha de inicio-fin: 04\/03\/2025 - 05\/02\/2026\n\n2\n\nTipo de entidad: Universidad\nDuración: 2 años - 3 meses - 12\ndías\n\nFecha\nde inicio\n04\/03\/2025\n\n9e9c2382817dd0bc136770167d56deb1\n\nFormación académica recibida\nTitulación universitaria\nEstudios de 1º y 2º ciclo, y antiguos ciclos (Licenciados, Diplomados, Ingenieros Superiores,\nIngenieros Técnicos, Arquitectos)\nTitulación universitaria: Doctor\nNombre del título: Graduado en arqueología\nEntidad de titulación: Universidad de Sevilla\nFecha de titulación: 10\/10\/2007\n\nTipo de entidad: Universidad\n\nDoctorados\nPrograma de doctorado: Programa Oficial de Doctorado en Arqueología\nEntidad de titulación: Universidad de Sevilla\nTipo de entidad: Universidad\nFecha de titulación: 2008\n\nCursos y seminarios recibidos de perfeccionamiento, innovación y mejora docente, nuevas\ntecnologías, etc., cuyo objetivo sea la mejora de la docencia\nTítulo del curso\/seminario: curso antropológico\nDuración en horas: 400 horas\nFecha de inicio: 01\/01\/2015\n\nConocimiento de idiomas\nIdioma\nInglés\n\nComprensión\nauditiva\nC1\n\nComprensión\nde lectura\nC1\n\nInteracción oral\n\nExpresión oral\n\nExpresión escrita\n\nC1\n\nC1\n\nC1\n\nActividad docente\nFormación académica impartida\nNombre de la asignatura\/curso: arqueología prehistoria\nTitulación universitaria: Graduado en arqueología\nFecha de inicio: 01\/04\/2020\nFecha de finalización: 14\/04\/2026\nEntidad de realización: Universidad de Sevilla\nTipo de entidad: Universidad\n9e9c2382817dd0bc136770167d56deb1\n\nDirección de tesis doctorales y\/o trabajos fin de estudios\nTítulo del trabajo: Dirección tesis doctoral sobre enterramientos en valencina de la concepción\nEntidad de realización: Universidad de Sevilla\nTipo de entidad: Universidad\nAlumno\/a: Rosa Aranda Aranda\nFecha de defensa: 10\/02\/2011\n\nTutorías académicas de estudiantes\nNombre del programa: Formación personal docente\nEntidad de realización: FUNDACION EMPRESA UNIVERSIDAD DE GRANADA\nFrecuencia de la actividad: 10\nTutoría Reglada: Sí\n\nCursos y seminarios impartidos\n1\n\n2\n\nTipo de evento: Curso\nNombre del evento: curso de estratos arqueologicos\nEntidad organizadora: Universidad Pablo de Olavide\nHoras impartidas: 2.000\nFecha de impartición: 07\/02\/2025\nTemática: Formación Docente\n\nTipo de entidad: Universidad\n\nTipo de evento: Seminario\nNombre del evento: arqueología romana\nEntidad organizadora: universidad pab\nHoras impartidas: 5.000\nFecha de impartición: 10\/12\/2012\nTemática: Formación Docente\n\nProyectos de innovación docente\nTítulo del proyecto: Proyecto Italica y mosáicos\nTipo de participación: Investigador principal\nTipo duración relación laboral: Por tiempo determinado\nEntidad financiadora: CAJA AHORROS Y PENSIONES DE BARCELONA LA CAIXA\nFecha de inicio-fin: 10\/10\/2013 - 10\/10\/2014\nDuración: 1 año\n9e9c2382817dd0bc136770167d56deb1\n\nExperiencia científica y tecnológica\nGrupos\/equipos de investigación, desarrollo o innovación\nNombre del grupo: Grupo arqueológico de Huelva\nEntidad de afiliación: DIPUTACION PROVINCIAL DE HUELVA\nFecha de inicio: 01\/03\/2019\n\nResultados\nPropiedad industrial e intelectual\nTítulo propiedad industrial registrada: tipología de georadar arqueología\nFecha de registro: 01\/02\/2020\nFecha de concesión: 01\/04\/2021\n\nActividades científicas y tecnológicas\nProducción científica\nPublicaciones, documentos científicos y técnicos\n1\n\nRosa Puerta Lagares; Ramon Lagares Pérez. arqueologia en coria del rio. arqueologia en coria del rio. 1 - 1, pp.\n1 - 100. us, 01\/04\/2022.\nTipo de producción: Artículo científico\nNº total de autores: 2\n\n2\n\nRamon Lagares Pérez. arqueologia en bormujos. Arqueología en Bormujos. 1 - 1, pp. 1 - 89. us, 01\/04\/2020.\nTipo de producción: Artículo científico\nNº total de autores: 1\n\n3\n\nRamon Lagares Pérez. arqueologia puebla del rio. arqueologia puebla del rio. 1 - 1, pp. 12 - 67. universidad de\nsevilla, 01\/02\/2015.\nTipo de producc",
+    "longitud_texto_extraido": 6150,
+    "metodo_extraccion": "pdftotext"
+}

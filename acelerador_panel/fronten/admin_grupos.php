@@ -3,18 +3,123 @@ session_start();
 include('login.php');
 error_reporting(0);
 
+if (!function_exists('admin_h')) {
+  function admin_h($value)
+  {
+    return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
+  }
+}
+
+if (!function_exists('admin_csrf_token')) {
+  function admin_csrf_token()
+  {
+    if (empty($_SESSION['admin_csrf_token'])) {
+      $_SESSION['admin_csrf_token'] = bin2hex(random_bytes(32));
+    }
+
+    return $_SESSION['admin_csrf_token'];
+  }
+}
+
+if (!function_exists('admin_csrf_field')) {
+  function admin_csrf_field()
+  {
+    return '<input type="hidden" name="csrf_token" value="' . admin_h(admin_csrf_token()) . '">';
+  }
+}
+
+if (!function_exists('admin_csrf_is_valid')) {
+  function admin_csrf_is_valid()
+  {
+    $token = $_POST['csrf_token'] ?? '';
+    return is_string($token) && $token !== '' && hash_equals((string) ($_SESSION['admin_csrf_token'] ?? ''), $token);
+  }
+}
+
+if (!function_exists('admin_stmt')) {
+  function admin_stmt($conn, $sql, $types = '', &...$params)
+  {
+    $stmt = mysqli_prepare($conn, $sql);
+    if (!$stmt) {
+      return false;
+    }
+
+    if ($types !== '' && !mysqli_stmt_bind_param($stmt, $types, ...$params)) {
+      mysqli_stmt_close($stmt);
+      return false;
+    }
+
+    if (!mysqli_stmt_execute($stmt)) {
+      mysqli_stmt_close($stmt);
+      return false;
+    }
+
+    return $stmt;
+  }
+}
+
+if (!function_exists('admin_fetch_one')) {
+  function admin_fetch_one($conn, $sql, $types = '', &...$params)
+  {
+    $stmt = admin_stmt($conn, $sql, $types, ...$params);
+    if (!$stmt) {
+      return null;
+    }
+
+    $result = mysqli_stmt_get_result($stmt);
+    $row = $result ? mysqli_fetch_assoc($result) : null;
+    mysqli_stmt_close($stmt);
+
+    return $row ?: null;
+  }
+}
+
+if (!function_exists('admin_fetch_all')) {
+  function admin_fetch_all($conn, $sql, $types = '', &...$params)
+  {
+    $stmt = admin_stmt($conn, $sql, $types, ...$params);
+    if (!$stmt) {
+      return [];
+    }
+
+    $rows = [];
+    $result = mysqli_stmt_get_result($stmt);
+    if ($result) {
+      while ($row = mysqli_fetch_assoc($result)) {
+        $rows[] = $row;
+      }
+    }
+    mysqli_stmt_close($stmt);
+
+    return $rows;
+  }
+}
+
+if (!function_exists('admin_execute')) {
+  function admin_execute($conn, $sql, $types = '', &...$params)
+  {
+    $stmt = admin_stmt($conn, $sql, $types, ...$params);
+    if (!$stmt) {
+      return false;
+    }
+
+    mysqli_stmt_close($stmt);
+    return true;
+  }
+}
+
 // Protección de sesión y perfil ADMIN
 if (!isset($_SESSION['nombredelusuario']) || $_SESSION['nombredelusuario'] == '') {
   header("Location: ../../acelerador_login/fronten/index.php");
   exit();
 }
-$correo_admin = $_SESSION['nombredelusuario'];
-$q = mysqli_query($conn, "SELECT perfil FROM tbl_profesor WHERE correo = '$correo_admin'");
-if (!$q || mysqli_num_rows($q) == 0) {
+$correo_admin = (string) $_SESSION['nombredelusuario'];
+$admin_row = admin_fetch_one($conn, "SELECT perfil FROM tbl_profesor WHERE correo = ? LIMIT 1", "s", $correo_admin);
+if (!$admin_row) {
   header("Location: ../../acelerador_login/fronten/index.php");
   exit();
 }
-$perfil_admin = strtoupper((string) (mysqli_fetch_assoc($q)['perfil'] ?? ''));
+$perfil_admin = strtoupper((string) ($admin_row['perfil'] ?? ''));
 if ($perfil_admin != 'ADMIN' && $perfil_admin != 'ADMINISTRADOR') {
   header("Location: ../../acelerador_login/fronten/index.php");
   exit();
@@ -24,69 +129,93 @@ $mensaje = '';
 $tipo_mensaje = '';
 $grupo_seleccionado = null;
 $profesores_grupo = [];
+$csrf_valido = true;
+
+admin_csrf_token();
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !admin_csrf_is_valid()) {
+  $csrf_valido = false;
+  $mensaje = "Operacion rechazada. Vuelve a cargar la pagina e intentalo de nuevo.";
+  $tipo_mensaje = "danger";
+}
 
 // ==================== PROCESAR ACCIONES POST ====================
 
 // --- CREAR GRUPO ---
-if (isset($_POST['accion']) && $_POST['accion'] == 'crear_grupo') {
-  $nombre_grupo = mysqli_real_escape_string($conn, trim($_POST['nombre_grupo']));
-  $id_tutor = intval($_POST['id_tutor']);
+if ($csrf_valido && isset($_POST['accion']) && $_POST['accion'] == 'crear_grupo') {
+  $nombre_grupo = trim($_POST['nombre_grupo'] ?? '');
+  $id_tutor = intval($_POST['id_tutor'] ?? 0);
 
   if (empty($nombre_grupo) || $id_tutor == 0) {
     $mensaje = "Debes indicar un nombre y seleccionar un tutor.";
     $tipo_mensaje = "danger";
   } else {
-    $check = mysqli_query($conn, "SELECT id_grupo FROM tbl_grupo WHERE nombre = '$nombre_grupo'");
-    if (mysqli_num_rows($check) > 0) {
+    $check = admin_fetch_one($conn, "SELECT id_grupo FROM tbl_grupo WHERE nombre = ? LIMIT 1", "s", $nombre_grupo);
+    if ($check) {
       $mensaje = "Ya existe un grupo con ese nombre.";
       $tipo_mensaje = "warning";
     } else {
-      mysqli_query($conn, "INSERT INTO tbl_grupo (nombre, id_tutor) VALUES ('$nombre_grupo', $id_tutor)");
-      $mensaje = "Grupo <strong>" . htmlspecialchars($nombre_grupo) . "</strong> creado correctamente.";
-      $tipo_mensaje = "success";
+      if (admin_execute($conn, "INSERT INTO tbl_grupo (nombre, id_tutor) VALUES (?, ?)", "si", $nombre_grupo, $id_tutor)) {
+        $mensaje = "Grupo <strong>" . admin_h($nombre_grupo) . "</strong> creado correctamente.";
+        $tipo_mensaje = "success";
+      } else {
+        $mensaje = "No se pudo crear el grupo.";
+        $tipo_mensaje = "danger";
+      }
     }
   }
 }
 
 // --- CAMBIAR TUTOR ---
-if (isset($_POST['accion']) && $_POST['accion'] == 'cambiar_tutor') {
-  $id_grupo = intval($_POST['id_grupo']);
-  $nuevo_tutor = intval($_POST['nuevo_tutor']);
-  mysqli_query($conn, "UPDATE tbl_grupo SET id_tutor = $nuevo_tutor WHERE id_grupo = $id_grupo");
-  $mensaje = "Tutor del grupo actualizado correctamente.";
-  $tipo_mensaje = "success";
+if ($csrf_valido && isset($_POST['accion']) && $_POST['accion'] == 'cambiar_tutor') {
+  $id_grupo = intval($_POST['id_grupo'] ?? 0);
+  $nuevo_tutor = intval($_POST['nuevo_tutor'] ?? 0);
+  if (admin_execute($conn, "UPDATE tbl_grupo SET id_tutor = ? WHERE id_grupo = ?", "ii", $nuevo_tutor, $id_grupo)) {
+    $mensaje = "Tutor del grupo actualizado correctamente.";
+    $tipo_mensaje = "success";
+  } else {
+    $mensaje = "No se pudo actualizar el tutor del grupo.";
+    $tipo_mensaje = "danger";
+  }
   if (isset($_POST['id_grupo_sel']))
     $_POST['ver_grupo'] = $_POST['id_grupo_sel'];
 }
 
 // --- CAMBIAR NOMBRE GRUPO ---
-if (isset($_POST['accion']) && $_POST['accion'] == 'renombrar_grupo') {
-  $id_grupo = intval($_POST['id_grupo']);
-  $nuevo_nombre = mysqli_real_escape_string($conn, trim($_POST['nuevo_nombre']));
+if ($csrf_valido && isset($_POST['accion']) && $_POST['accion'] == 'renombrar_grupo') {
+  $id_grupo = intval($_POST['id_grupo'] ?? 0);
+  $nuevo_nombre = trim($_POST['nuevo_nombre'] ?? '');
   if (!empty($nuevo_nombre)) {
-    mysqli_query($conn, "UPDATE tbl_grupo SET nombre = '$nuevo_nombre' WHERE id_grupo = $id_grupo");
-    $mensaje = "Nombre del grupo actualizado.";
-    $tipo_mensaje = "success";
+    if (admin_execute($conn, "UPDATE tbl_grupo SET nombre = ? WHERE id_grupo = ?", "si", $nuevo_nombre, $id_grupo)) {
+      $mensaje = "Nombre del grupo actualizado.";
+      $tipo_mensaje = "success";
+    } else {
+      $mensaje = "No se pudo actualizar el nombre del grupo.";
+      $tipo_mensaje = "danger";
+    }
   }
   $_POST['ver_grupo'] = $id_grupo;
 }
 
 // --- AÑADIR PROFESOR AL GRUPO ---
-if (isset($_POST['accion']) && $_POST['accion'] == 'añadir_prof') {
-  $id_grupo = intval($_POST['id_grupo']);
-  $orcid_add = mysqli_real_escape_string($conn, trim($_POST['orcid_add']));
+if ($csrf_valido && isset($_POST['accion']) && $_POST['accion'] == 'añadir_prof') {
+  $id_grupo = intval($_POST['id_grupo'] ?? 0);
+  $orcid_add = trim($_POST['orcid_add'] ?? '');
 
-  $q_prof = mysqli_query($conn, "SELECT id_profesor FROM tbl_profesor WHERE ORCID = '$orcid_add'");
-  if ($q_prof && mysqli_num_rows($q_prof) > 0) {
-    $id_prof = mysqli_fetch_assoc($q_prof)['id_profesor'];
-    $dup = mysqli_query($conn, "SELECT id FROM tbl_grupo_profesor WHERE id_grupo = $id_grupo AND id_profesor = $id_prof");
-    if (mysqli_num_rows($dup) > 0) {
+  $prof = admin_fetch_one($conn, "SELECT id_profesor FROM tbl_profesor WHERE ORCID = ? LIMIT 1", "s", $orcid_add);
+  if ($prof) {
+    $id_prof = intval($prof['id_profesor'] ?? 0);
+    $dup = admin_fetch_one($conn, "SELECT id FROM tbl_grupo_profesor WHERE id_grupo = ? AND id_profesor = ? LIMIT 1", "ii", $id_grupo, $id_prof);
+    if ($dup) {
       $mensaje = "Ese profesor ya pertenece a este grupo.";
       $tipo_mensaje = "warning";
     } else {
-      mysqli_query($conn, "INSERT INTO tbl_grupo_profesor (id_grupo, id_profesor) VALUES ($id_grupo, $id_prof)");
-      $mensaje = "Profesor añadido al grupo correctamente.";
-      $tipo_mensaje = "success";
+      if (admin_execute($conn, "INSERT INTO tbl_grupo_profesor (id_grupo, id_profesor) VALUES (?, ?)", "ii", $id_grupo, $id_prof)) {
+        $mensaje = "Profesor añadido al grupo correctamente.";
+        $tipo_mensaje = "success";
+      } else {
+        $mensaje = "No se pudo añadir el profesor al grupo.";
+        $tipo_mensaje = "danger";
+      }
     }
   } else {
     $mensaje = "No se encontró un profesor con ese ORCID.";
@@ -96,22 +225,31 @@ if (isset($_POST['accion']) && $_POST['accion'] == 'añadir_prof') {
 }
 
 // --- ELIMINAR PROFESOR DEL GRUPO ---
-if (isset($_POST['accion']) && $_POST['accion'] == 'quitar_prof') {
-  $id_grupo = intval($_POST['id_grupo']);
-  $id_prof = intval($_POST['id_profesor']);
-  mysqli_query($conn, "DELETE FROM tbl_grupo_profesor WHERE id_grupo = $id_grupo AND id_profesor = $id_prof");
-  $mensaje = "Profesor eliminado del grupo.";
-  $tipo_mensaje = "success";
+if ($csrf_valido && isset($_POST['accion']) && $_POST['accion'] == 'quitar_prof') {
+  $id_grupo = intval($_POST['id_grupo'] ?? 0);
+  $id_prof = intval($_POST['id_profesor'] ?? 0);
+  if (admin_execute($conn, "DELETE FROM tbl_grupo_profesor WHERE id_grupo = ? AND id_profesor = ?", "ii", $id_grupo, $id_prof)) {
+    $mensaje = "Profesor eliminado del grupo.";
+    $tipo_mensaje = "success";
+  } else {
+    $mensaje = "No se pudo eliminar el profesor del grupo.";
+    $tipo_mensaje = "danger";
+  }
   $_POST['ver_grupo'] = $id_grupo;
 }
 
 // --- ELIMINAR GRUPO ---
-if (isset($_POST['accion']) && $_POST['accion'] == 'eliminar_grupo') {
-  $id_grupo = intval($_POST['id_grupo']);
-  mysqli_query($conn, "DELETE FROM tbl_grupo_profesor WHERE id_grupo = $id_grupo");
-  mysqli_query($conn, "DELETE FROM tbl_grupo WHERE id_grupo = $id_grupo");
-  $mensaje = "Grupo eliminado correctamente.";
-  $tipo_mensaje = "success";
+if ($csrf_valido && isset($_POST['accion']) && $_POST['accion'] == 'eliminar_grupo') {
+  $id_grupo = intval($_POST['id_grupo'] ?? 0);
+  $del1 = admin_execute($conn, "DELETE FROM tbl_grupo_profesor WHERE id_grupo = ?", "i", $id_grupo);
+  $del2 = admin_execute($conn, "DELETE FROM tbl_grupo WHERE id_grupo = ?", "i", $id_grupo);
+  if ($del1 && $del2) {
+    $mensaje = "Grupo eliminado correctamente.";
+    $tipo_mensaje = "success";
+  } else {
+    $mensaje = "No se pudo eliminar el grupo.";
+    $tipo_mensaje = "danger";
+  }
 }
 
 // ==================== CARGAR DATOS ====================
@@ -137,16 +275,12 @@ while ($q_grupos && $rg = mysqli_fetch_assoc($q_grupos)) {
 }
 
 // Si se seleccionó un grupo para ver/modificar
-if (isset($_POST['ver_grupo'])) {
+if ($csrf_valido && isset($_POST['ver_grupo'])) {
   $id_ver = intval($_POST['ver_grupo']);
-  $q_det = mysqli_query($conn, "SELECT g.id_grupo, g.nombre, t.nombre AS tutor_nombre, t.apellidos AS tutor_apellidos, t.id_profesor AS id_tutor FROM tbl_grupo g INNER JOIN tbl_profesor t ON g.id_tutor = t.id_profesor WHERE g.id_grupo = $id_ver");
-  if ($q_det && mysqli_num_rows($q_det) > 0) {
-    $grupo_seleccionado = mysqli_fetch_assoc($q_det);
+  $grupo_seleccionado = admin_fetch_one($conn, "SELECT g.id_grupo, g.nombre, t.nombre AS tutor_nombre, t.apellidos AS tutor_apellidos, t.id_profesor AS id_tutor FROM tbl_grupo g INNER JOIN tbl_profesor t ON g.id_tutor = t.id_profesor WHERE g.id_grupo = ? LIMIT 1", "i", $id_ver);
+  if ($grupo_seleccionado) {
     // Cargar profesores del grupo
-    $q_profs = mysqli_query($conn, "SELECT p.id_profesor, p.ORCID, p.nombre, p.apellidos, p.departamento FROM tbl_grupo_profesor gp INNER JOIN tbl_profesor p ON gp.id_profesor = p.id_profesor WHERE gp.id_grupo = $id_ver ORDER BY p.nombre ASC");
-    while ($q_profs && $rp = mysqli_fetch_assoc($q_profs)) {
-      $profesores_grupo[] = $rp;
-    }
+    $profesores_grupo = admin_fetch_all($conn, "SELECT p.id_profesor, p.ORCID, p.nombre, p.apellidos, p.departamento FROM tbl_grupo_profesor gp INNER JOIN tbl_profesor p ON gp.id_profesor = p.id_profesor WHERE gp.id_grupo = ? ORDER BY p.nombre ASC", "i", $id_ver);
   }
 }
 ?>
@@ -206,6 +340,7 @@ if (isset($_POST['ver_grupo'])) {
         style="background-color: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);">
         <h5 class="text-white fw-bold mb-3"><i class="bi bi-plus-circle-fill me-2"></i>Crear nuevo grupo</h5>
         <form method="POST" style="padding:0; margin:0;">
+          <?php echo admin_csrf_field(); ?>
           <input type="hidden" name="accion" value="crear_grupo">
           <div class="row g-3 align-items-end">
             <div class="col-md-5">
@@ -219,7 +354,7 @@ if (isset($_POST['ver_grupo'])) {
                 style="background-color: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.35); color: white;">
                 <option value="" disabled selected>Seleccionar tutor...</option>
                 <?php foreach ($tutores as $t): ?>
-                  <option value="<?php echo $t['id_profesor']; ?>">
+                  <option value="<?php echo intval($t['id_profesor']); ?>">
                     <?php echo htmlspecialchars($t['nombre'] . ' ' . $t['apellidos']); ?>
                   </option>
                 <?php endforeach; ?>
@@ -264,17 +399,19 @@ if (isset($_POST['ver_grupo'])) {
                       <?php echo htmlspecialchars($g['tutor_nombre'] . ' ' . $g['tutor_apellidos']); ?>
                     </td>
                     <td class="border-end-0 border-bottom-0 text-white px-3 py-2 text-center">
-                      <?php echo $g['num_profesores']; ?>
+                      <?php echo intval($g['num_profesores']); ?>
                     </td>
                     <td class="border-end-0 border-bottom-0 text-center px-3 py-2">
                       <form method="POST" style="display:inline; padding:0; margin:0;">
-                        <input type="hidden" name="ver_grupo" value="<?php echo $g['id_grupo']; ?>">
+                        <?php echo admin_csrf_field(); ?>
+                        <input type="hidden" name="ver_grupo" value="<?php echo intval($g['id_grupo']); ?>">
                         <button type="submit" class="btn btn-outline-info btn-sm rounded-pill px-3"><i
                             class="bi bi-pencil-square me-1"></i> Modificar</button>
                       </form>
                       <form method="POST" style="display:inline; padding:0; margin:0;">
+                        <?php echo admin_csrf_field(); ?>
                         <input type="hidden" name="accion" value="eliminar_grupo">
-                        <input type="hidden" name="id_grupo" value="<?php echo $g['id_grupo']; ?>">
+                        <input type="hidden" name="id_grupo" value="<?php echo intval($g['id_grupo']); ?>">
                         <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill px-2"
                           onclick="return confirm('¿Eliminar este grupo y todas sus asignaciones?')"><i
                             class="bi bi-trash"></i></button>
@@ -302,11 +439,12 @@ if (isset($_POST['ver_grupo'])) {
           <div class="mb-4 p-3 rounded-3" style="background-color: rgba(255,255,255,0.05);">
             <h6 class="text-white-50 fw-bold mb-2"><i class="bi bi-cursor-text me-1"></i> Renombrar grupo</h6>
             <form method="POST" style="padding:0; margin:0;">
+              <?php echo admin_csrf_field(); ?>
               <input type="hidden" name="accion" value="renombrar_grupo">
-              <input type="hidden" name="id_grupo" value="<?php echo $grupo_seleccionado['id_grupo']; ?>">
+              <input type="hidden" name="id_grupo" value="<?php echo intval($grupo_seleccionado['id_grupo']); ?>">
               <div class="d-flex gap-2">
                 <input type="text" name="nuevo_nombre" class="form-control flex-grow-1"
-                  value="<?php echo htmlspecialchars($grupo_seleccionado['nombre']); ?>" required
+                  value="<?php echo admin_h($grupo_seleccionado['nombre']); ?>" required
                   style="background-color: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.35); color: white;">
                 <button type="submit"
                   class="btn btn-outline-light btn-sm rounded-pill px-3 text-nowrap">Renombrar</button>
@@ -320,14 +458,15 @@ if (isset($_POST['ver_grupo'])) {
               <?php echo htmlspecialchars($grupo_seleccionado['tutor_nombre'] . ' ' . $grupo_seleccionado['tutor_apellidos']); ?>)
             </h6>
             <form method="POST" style="padding:0; margin:0;">
+              <?php echo admin_csrf_field(); ?>
               <input type="hidden" name="accion" value="cambiar_tutor">
-              <input type="hidden" name="id_grupo" value="<?php echo $grupo_seleccionado['id_grupo']; ?>">
-              <input type="hidden" name="id_grupo_sel" value="<?php echo $grupo_seleccionado['id_grupo']; ?>">
+              <input type="hidden" name="id_grupo" value="<?php echo intval($grupo_seleccionado['id_grupo']); ?>">
+              <input type="hidden" name="id_grupo_sel" value="<?php echo intval($grupo_seleccionado['id_grupo']); ?>">
               <div class="d-flex gap-2">
                 <select name="nuevo_tutor" class="form-select flex-grow-1" required
                   style="background-color: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.35); color: white;">
                   <?php foreach ($tutores as $t): ?>
-                    <option value="<?php echo $t['id_profesor']; ?>" <?php echo $t['id_profesor'] == $grupo_seleccionado['id_tutor'] ? 'selected' : ''; ?>>
+                    <option value="<?php echo intval($t['id_profesor']); ?>" <?php echo $t['id_profesor'] == $grupo_seleccionado['id_tutor'] ? 'selected' : ''; ?>>
                       <?php echo htmlspecialchars($t['nombre'] . ' ' . $t['apellidos']); ?>
                     </option>
                   <?php endforeach; ?>
@@ -367,9 +506,10 @@ if (isset($_POST['ver_grupo'])) {
                         </td>
                         <td class="border-end-0 border-bottom-0 text-center px-3 py-2">
                           <form method="POST" style="display:inline; padding:0; margin:0;">
+                            <?php echo admin_csrf_field(); ?>
                             <input type="hidden" name="accion" value="quitar_prof">
-                            <input type="hidden" name="id_grupo" value="<?php echo $grupo_seleccionado['id_grupo']; ?>">
-                            <input type="hidden" name="id_profesor" value="<?php echo $pg['id_profesor']; ?>">
+                            <input type="hidden" name="id_grupo" value="<?php echo intval($grupo_seleccionado['id_grupo']); ?>">
+                            <input type="hidden" name="id_profesor" value="<?php echo intval($pg['id_profesor']); ?>">
                             <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill"
                               onclick="return confirm('¿Quitar a este profesor del grupo?')"><i
                                 class="bi bi-x-circle"></i></button>
@@ -388,8 +528,9 @@ if (isset($_POST['ver_grupo'])) {
             <h6 class="text-white-50 fw-bold mb-2"><i class="bi bi-person-plus-fill me-1"></i> Añadir profesor por ORCID
             </h6>
             <form method="POST" style="padding:0; margin:0;">
+              <?php echo admin_csrf_field(); ?>
               <input type="hidden" name="accion" value="añadir_prof">
-              <input type="hidden" name="id_grupo" value="<?php echo $grupo_seleccionado['id_grupo']; ?>">
+              <input type="hidden" name="id_grupo" value="<?php echo intval($grupo_seleccionado['id_grupo']); ?>">
               <div class="d-flex gap-2">
                 <input type="text" name="orcid_add" class="form-control flex-grow-1" placeholder="0000-0000-0000-0000"
                   required pattern="[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}"

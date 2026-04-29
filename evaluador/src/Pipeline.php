@@ -71,9 +71,29 @@ class Pipeline
 
         $datos['archivo_pdf'] = basename($pdfPath);
         $datos['json_generado'] = basename($jsonFile);
-        $datos['texto_extraido_preview'] = mb_substr($textoLimpio, 0, 5000, 'UTF-8');
-        $datos['longitud_texto_extraido'] = mb_strlen($textoLimpio, 'UTF-8');
-        $datos['metodo_extraccion'] = $metodoExtraccion;
+        $datos['texto_extraido'] = $textoLimpio;
+
+        $metaDir = __DIR__ . '/../output/meta/';
+        if (!is_dir($metaDir) && !mkdir($metaDir, 0777, true) && !is_dir($metaDir)) {
+            throw new Exception('No se pudo crear la carpeta de metadatos.');
+        }
+
+        $metadata = [
+            'archivo_pdf' => basename($pdfPath),
+            'json_generado' => basename($jsonFile),
+            'texto_extraido_preview' => mb_substr($textoLimpio, 0, 5000, 'UTF-8'),
+            'longitud_texto_extraido' => mb_strlen($textoLimpio, 'UTF-8'),
+            'metodo_extraccion' => $metodoExtraccion,
+        ];
+
+        $metadataJson = json_encode($metadata, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        if ($metadataJson === false) {
+            throw new Exception('Error al convertir los metadatos a JSON.');
+        }
+
+        if (file_put_contents($metaDir . $baseName . '.meta.json', $metadataJson) === false) {
+            throw new Exception('No se pudo guardar el archivo de metadatos.');
+        }
 
         $txtDir = __DIR__ . '/../output/txt/';
         if (!is_dir($txtDir) && !mkdir($txtDir, 0777, true) && !is_dir($txtDir)) {

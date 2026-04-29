@@ -1,6 +1,7 @@
 <?php
 session_start();
 include('login.php');
+require_once __DIR__ . '/../../evaluador/src/evaluaciones_traceability.php';
 error_reporting(0);
 
 // Si no hay sesión activa, redirigir al login
@@ -31,11 +32,15 @@ $query_perfil = mysqli_query(
 if ($query_perfil && mysqli_num_rows($query_perfil) > 0) {
   $datos_perfil = mysqli_fetch_array($query_perfil);
 
+  $nombreRaw    = trim((string)($datos_perfil['nombre']    ?? ''));
+  $apellidosRaw = trim((string)($datos_perfil['apellidos'] ?? ''));
+  $orcidRaw     = trim((string)($datos_perfil['orcid']     ?? ''));
+
   // Datos básicos
-  $nombre     = htmlspecialchars($datos_perfil['nombre']      ?? '');
-  $apellidos  = htmlspecialchars($datos_perfil['apellidos']   ?? '');
+  $nombre     = htmlspecialchars($nombreRaw);
+  $apellidos  = htmlspecialchars($apellidosRaw);
   $dni        = htmlspecialchars($datos_perfil['dni']         ?? '');
-  $orcid      = htmlspecialchars($datos_perfil['orcid']       ?? '');
+  $orcid      = htmlspecialchars($orcidRaw);
 
   // Datos extra
   $correo      = htmlspecialchars($datos_perfil['correo']      ?? '');
@@ -49,6 +54,7 @@ if ($query_perfil && mysqli_num_rows($query_perfil) > 0) {
   $_SESSION['rama_usuario']  = $datos_perfil['rama']  ?? '';
 
 } else {
+  $nombreRaw = $apellidosRaw = $orcidRaw = '';
   $nombre = $apellidos = $dni = $orcid = 'No registrado';
   $correo = $departamento = $telefono = $facultad = $rama = 'No registrado';
 }
@@ -102,11 +108,40 @@ try {
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
     ]);
     
-    // El profesor está ingresado como nombre, buscamos coincidencias con LIKE
-    $stmt = $pdo->prepare("SELECT * FROM evaluaciones WHERE nombre_candidato LIKE :nombre ORDER BY fecha_creacion DESC LIMIT 1");
-    // Extraemos solo el primer nombre o nombre completo as-is
-    $stmt->execute(['nombre' => '%' . trim($nombre) . '%']);
-    $eval = $stmt->fetch();
+    // Preferimos ORCID y dejamos el nombre solo para fallback legacy.
+    $hasOrcidColumn = aneca_pdo_table_has_column($pdo, 'evaluaciones', 'orcid_candidato');
+    $orcidBusqueda = aneca_normalize_orcid($orcidRaw);
+
+    if ($hasOrcidColumn && $orcidBusqueda !== null) {
+        $stmt = $pdo->prepare("SELECT * FROM evaluaciones WHERE orcid_candidato = :orcid ORDER BY fecha_creacion DESC LIMIT 1");
+        $stmt->execute(['orcid' => $orcidBusqueda]);
+        $eval = $stmt->fetch();
+    }
+
+    if (!$eval) {
+        // Fallback legacy: evaluaciones antiguas sin ORCID. El LIKE solo se acepta si hay una unica coincidencia.
+        $legacyWhere = $hasOrcidColumn ? "(orcid_candidato IS NULL OR orcid_candidato = '') AND " : "";
+        $nombreCompletoRaw = trim($nombreRaw . ' ' . $apellidosRaw);
+        $nombresLegacy = array_values(array_unique(array_filter([$nombreCompletoRaw, $nombreRaw])));
+
+        foreach ($nombresLegacy as $nombreLegacy) {
+            $stmt = $pdo->prepare("SELECT * FROM evaluaciones WHERE {$legacyWhere}nombre_candidato = :nombre ORDER BY fecha_creacion DESC LIMIT 1");
+            $stmt->execute(['nombre' => $nombreLegacy]);
+            $eval = $stmt->fetch();
+            if ($eval) {
+                break;
+            }
+        }
+
+        if (!$eval && $nombreRaw !== '') {
+            $stmt = $pdo->prepare("SELECT * FROM evaluaciones WHERE {$legacyWhere}nombre_candidato LIKE :nombre ORDER BY fecha_creacion DESC LIMIT 2");
+            $stmt->execute(['nombre' => '%' . $nombreRaw . '%']);
+            $legacyMatches = $stmt->fetchAll();
+            if (count($legacyMatches) === 1) {
+                $eval = $legacyMatches[0];
+            }
+        }
+    }
 } catch (PDOException $e) {
     $dbError = "No se pudo conectar a la base de datos de evaluaciones ({$dbName}). Comprueba que el servicio está activo.";
 }

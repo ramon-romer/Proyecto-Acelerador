@@ -1,0 +1,33 @@
+{
+    "hash_pdf": "b079ab2201c676e7f2866470293da3dd42f3b6ee9966d77057ab4bbc378e60cc",
+    "cache_key": "cache_b079ab2201c676e7_c6b5a68578f4ebd7",
+    "archivo_original": "cv_cache_smoke.pdf",
+    "fecha_procesamiento": "2026-04-29T07:35:22+00:00",
+    "version_pipeline": "hibrido_por_pagina_v1",
+    "version_baremo": "baremo_smoke_v1",
+    "version_schema": "schema_smoke_v1",
+    "resultado_json_path": "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\meritos\\scraping\\tools\/..\/output\/smoke\/smoke_cache_20260429_073522_09c28c\/cache\\cache_b079ab2201c676e7_c6b5a68578f4ebd7.result.json",
+    "texto_extraido_path": "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\meritos\\scraping\\tools\/..\/output\/smoke\/smoke_cache_20260429_073522_09c28c\/cache\\cache_b079ab2201c676e7_c6b5a68578f4ebd7.text.txt",
+    "trace_path": "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\meritos\\scraping\\src\/..\/output\/logs\/cv_cache_smoke_20260429_073522_7ecd1810.20260429_073522.trace.json",
+    "log_path": "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\meritos\\scraping\\tools\/..\/output\/smoke\/smoke_cache_20260429_073522_09c28c\/jobs\/logs\/job_20260429_073522_a4416a93.log",
+    "aneca_canonical_path": "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\meritos\\scraping\\src\/..\/output\/json\/cv_cache_smoke_20260429_073522_7ecd1810.aneca.canonico.json",
+    "aneca_canonical_ready": true,
+    "aneca_canonical_validation_status": "valido_con_advertencias",
+    "aneca_canonical_validation_errors": [],
+    "aneca_canonical_validation_warnings": [
+        "comite_no_identificado"
+    ],
+    "tiempo_total_ms": 540.06,
+    "estado_cache": "obsoleta",
+    "error_parcial": true,
+    "pipeline_log_path": "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\meritos\\scraping\\src\/..\/output\/logs\/cv_cache_smoke_20260429_073522_7ecd1810.20260429_073522.pipeline.log",
+    "motivo_invalidation": "version_baremo_changed",
+    "validation_status": "valido_con_advertencias",
+    "validation_errors": [],
+    "validation_warnings": [
+        "resultado_con_campos_extraidos_parciales"
+    ],
+    "resultado_principal_formato": "aneca",
+    "resultado_principal_path": "C:\\Users\\Basilio\\Documents\\GitHub\\Proyecto-Acelerador\\meritos\\scraping\\src\/..\/output\/json\/cv_cache_smoke_20260429_073522_7ecd1810.aneca.canonico.json",
+    "fecha_invalidacion": "2026-04-29T07:35:23+00:00"
+}

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/config.php';
 require __DIR__ . '/funciones_evaluador_tecnicas.php';
+require_once __DIR__ . '/../src/evaluaciones_traceability.php';
 
 $nombreCandidato = trim($_POST['nombre_candidato'] ?? '');
 $jsonEntrada = trim($_POST['json_entrada'] ?? '');
@@ -21,6 +22,8 @@ if (!is_array($datosExtraidos)) {
  * Normalizamos mínimos por seguridad, para que el evaluador
  * no falle si el extractor devuelve bloques incompletos.
  */
+$orcidCandidato = aneca_attach_candidate_orcid($datosExtraidos);
+
 $datosExtraidos['nombre_candidato'] = $nombreCandidato;
 $datosExtraidos['area'] = 'Técnicas';
 $datosExtraidos['categoria'] = 'PCD/PUP';
@@ -70,6 +73,7 @@ if ($jsonFinal === false) {
 
 $sql = "INSERT INTO evaluaciones (
     nombre_candidato,
+    orcid_candidato,
     area,
     categoria,
     json_entrada,
@@ -107,6 +111,7 @@ $sql = "INSERT INTO evaluaciones (
     fecha_creacion
 ) VALUES (
     :nombre_candidato,
+    :orcid_candidato,
     :area,
     :categoria,
     :json_entrada,
@@ -148,6 +153,7 @@ $stmt = $pdo->prepare($sql);
 
 $stmt->execute([
     ':nombre_candidato' => $nombreCandidato,
+    ':orcid_candidato' => $orcidCandidato,
     ':area' => 'Técnicas',
     ':categoria' => 'PCD/PUP',
     ':json_entrada' => $jsonFinal,

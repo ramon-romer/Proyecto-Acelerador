@@ -108,6 +108,9 @@ try {
 
         $validator = new JsonSchemaLiteValidator($schemas[$schemaName]);
         $errors = $validator->validate($payload);
+        if ($schemaName === 'api-response.v1.schema.json') {
+            $errors = array_merge($errors, findPublicResponseLeaks($payload));
+        }
         $ok = empty($errors);
 
         if (!$ok) {
@@ -232,7 +235,6 @@ function buildApiSamples(array $jobInitial, array $jobFinal, array $enqueued): a
         $pendingState = 'procesando_pdf';
     }
 
-    $initialAnecaPath = nullableString($jobInitial['aneca_canonical_path'] ?? null);
     $finalAnecaPath = nullableString($jobFinal['aneca_canonical_path'] ?? null);
     $finalAnecaPayload = is_string($finalAnecaPath) ? loadJsonIfExists($finalAnecaPath) : null;
 
@@ -244,7 +246,6 @@ function buildApiSamples(array $jobInitial, array $jobFinal, array $enqueued): a
         'progreso_porcentaje' => (int)($jobInitial['progreso_porcentaje'] ?? 0),
         'fase_actual' => (string)($jobInitial['fase_actual'] ?? 'pendiente'),
         'es_pesado' => (bool)($enqueued['is_heavy'] ?? false),
-        'aneca_canonical_path' => $initialAnecaPath,
         'aneca_canonical_ready' => (bool)($jobInitial['aneca_canonical_ready'] ?? false),
         'aneca_canonical_validation_status' => nullableString($jobInitial['aneca_canonical_validation_status'] ?? null),
         'endpoints' => $initialEndpoints,
@@ -259,7 +260,6 @@ function buildApiSamples(array $jobInitial, array $jobFinal, array $enqueued): a
         'fase_actual' => (string)($jobInitial['fase_actual'] ?? 'pendiente'),
         'es_pesado' => (bool)($enqueued['is_heavy'] ?? false),
         'umbral_pesado_bytes' => max(1, (int)($enqueued['heavy_threshold_bytes'] ?? 1)),
-        'aneca_canonical_path' => $initialAnecaPath,
         'aneca_canonical_ready' => (bool)($jobInitial['aneca_canonical_ready'] ?? false),
         'aneca_canonical_validation_status' => nullableString($jobInitial['aneca_canonical_validation_status'] ?? null),
         'endpoints' => $initialEndpoints,
@@ -277,10 +277,6 @@ function buildApiSamples(array $jobInitial, array $jobFinal, array $enqueued): a
         'fecha_inicio' => nullableString($jobFinal['fecha_inicio'] ?? null),
         'fecha_fin' => nullableString($jobFinal['fecha_fin'] ?? null),
         'tiempo_total_ms' => is_numeric($jobFinal['tiempo_total_ms'] ?? null) ? (float)$jobFinal['tiempo_total_ms'] : null,
-        'trace_path' => nullableString($jobFinal['trace_path'] ?? null),
-        'log_path' => nullableString($jobFinal['log_path'] ?? null),
-        'pipeline_log_path' => nullableString($jobFinal['pipeline_log_path'] ?? null),
-        'aneca_canonical_path' => $finalAnecaPath,
         'aneca_canonical_ready' => (bool)($jobFinal['aneca_canonical_ready'] ?? false),
         'aneca_canonical_validation_status' => nullableString($jobFinal['aneca_canonical_validation_status'] ?? null),
     ];
@@ -292,10 +288,6 @@ function buildApiSamples(array $jobInitial, array $jobFinal, array $enqueued): a
         'error_parcial' => (bool)($jobFinal['error_parcial'] ?? false),
         'error_mensaje' => nullableString($jobFinal['error_mensaje'] ?? null),
         'resultado' => (array)($jobFinal['resultado_json'] ?? []),
-        'trace_path' => nullableString($jobFinal['trace_path'] ?? null),
-        'log_path' => nullableString($jobFinal['log_path'] ?? null),
-        'pipeline_log_path' => nullableString($jobFinal['pipeline_log_path'] ?? null),
-        'aneca_canonical_path' => $finalAnecaPath,
         'aneca_canonical_ready' => (bool)($jobFinal['aneca_canonical_ready'] ?? false),
         'aneca_canonical_validation_status' => nullableString($jobFinal['aneca_canonical_validation_status'] ?? null),
         'resultado_aneca_canonico' => $finalAnecaPayload,
@@ -316,10 +308,6 @@ function buildApiSamples(array $jobInitial, array $jobFinal, array $enqueued): a
         'progreso_porcentaje' => (int)($jobFinal['progreso_porcentaje'] ?? 100),
         'fase_actual' => (string)($jobFinal['fase_actual'] ?? 'completado'),
         'resultado' => (array)($jobFinal['resultado_json'] ?? []),
-        'trace_path' => nullableString($jobFinal['trace_path'] ?? null),
-        'log_path' => nullableString($jobFinal['log_path'] ?? null),
-        'pipeline_log_path' => nullableString($jobFinal['pipeline_log_path'] ?? null),
-        'aneca_canonical_path' => $finalAnecaPath,
         'aneca_canonical_ready' => (bool)($jobFinal['aneca_canonical_ready'] ?? false),
         'aneca_canonical_validation_status' => nullableString($jobFinal['aneca_canonical_validation_status'] ?? null),
         'resultado_aneca_canonico' => $finalAnecaPayload,
@@ -519,6 +507,74 @@ function nullableString($value): ?string
 
     $trimmed = trim($value);
     return $trimmed === '' ? null : $trimmed;
+}
+
+/**
+ * @param array<string,mixed> $payload
+ * @return array<int,string>
+ */
+function findPublicResponseLeaks(array $payload): array
+{
+    $errors = [];
+    $sensitiveKeys = [
+        'trace_path',
+        'log_path',
+        'pipeline_log_path',
+        'aneca_canonical_path',
+        'pdf_path',
+        'stored_pdf_path',
+        'cache_meta_path',
+        'cache_result_path',
+        'cache_text_path',
+        'resultado_json_path',
+        'resultado_principal_path',
+        'meta_path',
+        'result_path',
+        'text_path',
+    ];
+
+    inspectPublicValue($payload, '$', $sensitiveKeys, $errors);
+
+    return $errors;
+}
+
+/**
+ * @param array<int,string> $sensitiveKeys
+ * @param array<int,string> $errors
+ */
+function inspectPublicValue($value, string $path, array $sensitiveKeys, array &$errors): void
+{
+    if (is_array($value)) {
+        foreach ($value as $key => $child) {
+            $childPath = $path . '.' . (string)$key;
+            if (in_array((string)$key, $sensitiveKeys, true)) {
+                $errors[] = $childPath . ': campo tecnico interno no permitido en respuesta publica';
+                continue;
+            }
+
+            inspectPublicValue($child, $childPath, $sensitiveKeys, $errors);
+        }
+
+        return;
+    }
+
+    if (is_string($value) && looksLikeInternalAbsolutePath($value)) {
+        $errors[] = $path . ': ruta absoluta interna no permitida en respuesta publica';
+    }
+}
+
+function looksLikeInternalAbsolutePath(string $value): bool
+{
+    $trimmed = trim($value);
+    if ($trimmed === '') {
+        return false;
+    }
+
+    if (preg_match('/^[A-Za-z]:[\\\\\\/]/', $trimmed) === 1) {
+        return true;
+    }
+
+    return preg_match('~^/(?:var|home|srv|opt|tmp|mnt|Users|www|app)(?:/|$)~', $trimmed) === 1;
 }
 
 /**

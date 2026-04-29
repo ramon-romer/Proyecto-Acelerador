@@ -137,6 +137,7 @@ DROP TABLE IF EXISTS `evaluaciones`;
 CREATE TABLE `evaluaciones` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nombre_candidato` varchar(150) NOT NULL,
+  `orcid_candidato` varchar(19) DEFAULT NULL,
   `area` varchar(100) NOT NULL DEFAULT 'Técnicas',
   `categoria` varchar(50) NOT NULL DEFAULT 'PCD/PUP',
   `json_entrada` longtext NOT NULL,
@@ -164,7 +165,8 @@ CREATE TABLE `evaluaciones` (
   `cumple_regla_1` tinyint(1) NOT NULL DEFAULT 0,
   `cumple_regla_2` tinyint(1) NOT NULL DEFAULT 0,
   `fecha_creacion` timestamp NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `idx_evaluaciones_orcid_candidato_fecha` (`orcid_candidato`,`fecha_creacion`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- CIENCIAS SOCIALES Y JURÍDICAS

@@ -9,8 +9,8 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 @set_time_limit(600);
 @ini_set('memory_limit', '512M');
 
-require_once __DIR__ . '/../src/AnecaExtractorCsyj.php';
-require_once __DIR__ . '/../src/FecytCvnExtractorCsyj.php';
+require_once __DIR__ . '/../src/AnecaExtractor.php';
+require_once __DIR__ . '/../src/FecytCvnExtractor.php';
 require_once __DIR__ . '/../src/Pipeline.php';
 require __DIR__ . '/ui.php';
 
@@ -51,7 +51,7 @@ if (!move_uploaded_file($_FILES['pdf_cv']['tmp_name'], $rutaPdf)) {
     die('No se pudo guardar el PDF.');
 }
 
-$extractor = $esCvnFecyt ? new FecytCvnExtractorCsyj() : new AnecaExtractorCsyj();
+$extractor = $esCvnFecyt ? new FecytCvnExtractor() : new AnecaExtractor();
 $etiquetaFormato = $esCvnFecyt ? 'CVN (FECYT)' : 'PDF estándar';
 $formatoCv = $esCvnFecyt ? 'cvn_fecyt' : 'aneca';
 

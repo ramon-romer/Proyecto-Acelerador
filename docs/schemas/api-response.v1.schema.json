@@ -230,9 +230,6 @@
         "es_pesado": {
           "type": "boolean"
         },
-        "aneca_canonical_path": {
-          "$ref": "#/$defs/nullable_string"
-        },
         "aneca_canonical_ready": {
           "type": "boolean"
         },
@@ -288,9 +285,6 @@
           "type": "integer",
           "minimum": 1
         },
-        "aneca_canonical_path": {
-          "$ref": "#/$defs/nullable_string"
-        },
         "aneca_canonical_ready": {
           "type": "boolean"
         },
@@ -316,10 +310,7 @@
         "fecha_creacion",
         "fecha_inicio",
         "fecha_fin",
-        "tiempo_total_ms",
-        "trace_path",
-        "log_path",
-        "pipeline_log_path"
+        "tiempo_total_ms"
       ],
       "properties": {
         "ok": {
@@ -359,18 +350,6 @@
         "tiempo_total_ms": {
           "$ref": "#/$defs/nullable_number"
         },
-        "trace_path": {
-          "$ref": "#/$defs/nullable_string"
-        },
-        "log_path": {
-          "$ref": "#/$defs/nullable_string"
-        },
-        "pipeline_log_path": {
-          "$ref": "#/$defs/nullable_string"
-        },
-        "aneca_canonical_path": {
-          "$ref": "#/$defs/nullable_string"
-        },
         "aneca_canonical_ready": {
           "type": "boolean"
         },
@@ -391,9 +370,6 @@
         "resultado",
         "resultado_preferente_formato",
         "resultado_preferente",
-        "trace_path",
-        "log_path",
-        "pipeline_log_path",
         "tiempo_total_ms"
       ],
       "properties": {
@@ -414,18 +390,6 @@
         },
         "resultado": {
           "$ref": "#/$defs/pipeline_result"
-        },
-        "trace_path": {
-          "$ref": "#/$defs/nullable_string"
-        },
-        "log_path": {
-          "$ref": "#/$defs/nullable_string"
-        },
-        "pipeline_log_path": {
-          "$ref": "#/$defs/nullable_string"
-        },
-        "aneca_canonical_path": {
-          "$ref": "#/$defs/nullable_string"
         },
         "aneca_canonical_ready": {
           "type": "boolean"
@@ -465,9 +429,6 @@
         "resultado",
         "resultado_preferente_formato",
         "resultado_preferente",
-        "trace_path",
-        "log_path",
-        "pipeline_log_path",
         "tiempo_total_ms",
         "endpoints"
       ],
@@ -496,18 +457,6 @@
         },
         "resultado": {
           "$ref": "#/$defs/pipeline_result"
-        },
-        "trace_path": {
-          "$ref": "#/$defs/nullable_string"
-        },
-        "log_path": {
-          "$ref": "#/$defs/nullable_string"
-        },
-        "pipeline_log_path": {
-          "$ref": "#/$defs/nullable_string"
-        },
-        "aneca_canonical_path": {
-          "$ref": "#/$defs/nullable_string"
         },
         "aneca_canonical_ready": {
           "type": "boolean"

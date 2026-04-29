@@ -33,7 +33,6 @@ try {
                 'progreso_porcentaje' => $job['progreso_porcentaje'],
                 'fase_actual' => $job['fase_actual'],
                 'es_pesado' => $enqueued['is_heavy'],
-                'aneca_canonical_path' => $job['aneca_canonical_path'] ?? null,
                 'aneca_canonical_ready' => (bool)($job['aneca_canonical_ready'] ?? false),
                 'aneca_canonical_validation_status' => $job['aneca_canonical_validation_status'] ?? null,
                 'endpoints' => [
@@ -56,15 +55,11 @@ try {
                 'progreso_porcentaje' => $job['progreso_porcentaje'],
                 'fase_actual' => $job['fase_actual'],
                 'error_parcial' => (bool)($job['error_parcial'] ?? false),
-                'error_mensaje' => $job['error_mensaje'],
+                'error_mensaje' => sanitizePublicMessage($job['error_mensaje'] ?? null),
                 'fecha_creacion' => $job['fecha_creacion'],
                 'fecha_inicio' => $job['fecha_inicio'],
                 'fecha_fin' => $job['fecha_fin'],
                 'tiempo_total_ms' => $job['tiempo_total_ms'],
-                'trace_path' => $job['trace_path'],
-                'log_path' => $job['log_path'],
-                'pipeline_log_path' => $job['pipeline_log_path'] ?? null,
-                'aneca_canonical_path' => $job['aneca_canonical_path'] ?? null,
                 'aneca_canonical_ready' => (bool)($job['aneca_canonical_ready'] ?? false),
                 'aneca_canonical_validation_status' => $job['aneca_canonical_validation_status'] ?? null,
             ],
@@ -84,7 +79,7 @@ try {
                     'job_id' => $job['id'],
                     'estado' => $estado,
                     'message' => 'El job termino con error.',
-                    'error_mensaje' => $job['error_mensaje'],
+                    'error_mensaje' => sanitizePublicMessage($job['error_mensaje'] ?? null),
                 ],
                 409
             );
@@ -116,12 +111,8 @@ try {
             'job_id' => $job['id'],
             'estado' => $estado,
             'error_parcial' => (bool)($job['error_parcial'] ?? false),
-            'error_mensaje' => $job['error_mensaje'],
+            'error_mensaje' => sanitizePublicMessage($job['error_mensaje'] ?? null),
             'resultado' => $legacyPayload,
-            'trace_path' => $job['trace_path'],
-            'log_path' => $job['log_path'],
-            'pipeline_log_path' => $job['pipeline_log_path'] ?? null,
-            'aneca_canonical_path' => $job['aneca_canonical_path'] ?? null,
             'aneca_canonical_ready' => (bool)($job['aneca_canonical_ready'] ?? false),
             'aneca_canonical_validation_status' => $job['aneca_canonical_validation_status'] ?? null,
             'resultado_preferente_formato' => $preferred['resultado_preferente_formato'],
@@ -147,7 +138,7 @@ try {
     respondJson(
         [
             'ok' => false,
-            'message' => 'Error en API de procesamiento CV: ' . $e->getMessage(),
+            'message' => 'Error interno en API de procesamiento CV.',
         ],
         500
     );
@@ -234,6 +225,18 @@ function shouldPreferAnecaCanonical(): bool
         : null;
 
     return PreferredResultResolver::shouldPreferAneca($requestValue);
+}
+
+function sanitizePublicMessage(mixed $message): ?string
+{
+    if (!is_string($message)) {
+        return null;
+    }
+
+    $message = preg_replace('/[A-Za-z]:[\\\\\\/][^\\s<>"\']+/', '[ruta_interna]', $message);
+    $message = preg_replace('~/(?:var|home|srv|opt|tmp|mnt|Users|www|app)(?:/[^\\s<>"\']*)?~', '[ruta_interna]', (string)$message);
+
+    return $message === '' ? null : $message;
 }
 
 function loadAnecaCanonicalPayloadFromJob(array $job): ?array
