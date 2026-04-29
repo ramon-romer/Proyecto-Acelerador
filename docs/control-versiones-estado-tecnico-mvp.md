@@ -1,6 +1,6 @@
 ﻿# Control de Versiones - estado-tecnico-mvp
 
-Ultima actualizacion: 2026-03-26
+Ultima actualizacion: 2026-04-29
 
 ## Versiones registradas
 
@@ -8,6 +8,7 @@ Ultima actualizacion: 2026-03-26
 |---|---|---|---|
 | v0.1-baseline | 2026-03-24 | `docs/estado-tecnico-mvp.md` | baseline historico |
 | v0.2-snapshot | 2026-03-26 | `docs/estado-tecnico-mvp-2026-03-26.md` | snapshot actualizado |
+| v0.3-cierre-pre-mvp | 2026-04-29 | `docs/cierre-pre-mvp-2026-04-29.md` | cierre pre-MVP |
 
 ## Comparativa v0.1 -> v0.2
 

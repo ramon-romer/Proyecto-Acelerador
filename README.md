@@ -12,6 +12,7 @@ Proyecto Acelerador CEU
 
 - [Resumen de trabajo](docs/2026-03-24-resumen-trabajo.md)
 - [Estado tecnico MVP](docs/estado-tecnico-mvp.md)
+- [Cierre pre-MVP 2026-04-29](docs/cierre-pre-mvp-2026-04-29.md)
 - [Estrategia de testing y calidad](docs/estrategia-testing-mvp.md)
 - [Despliegue Docker OCR](docs/despliegue-docker-ocr.md)
 - [Cola de procesamiento CV](docs/cola-procesamiento-cv.md)
