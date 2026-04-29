@@ -230,20 +230,39 @@ function exp_puntuar_item_1a(array $pub): float
         return 0.0;
     }
 
-    return exp_unidades_publicacion_1a($pub);
+    $tipoIndice = strtoupper(exp_str($pub['tipo_indice'] ?? $pub['indice'] ?? ''));
+
+    // En 1A de Experimentales se valoran publicaciones científicas indexadas.
+    if (!in_array($tipoIndice, ['JCR', 'SCOPUS', 'SJR'], true)) {
+        return 0.0;
+    }
+
+    // El tercil debe venir calculado desde CALIDAD POSICION x/y en el extractor.
+    // Ejemplo: 36/79 = 0,455 => T2.
+    $tercil = strtoupper(exp_str($pub['tercil'] ?? ''));
+
+    return match ($tercil) {
+        'T1' => 35.0 / 9.0,
+        'T2' => 35.0 / 12.0,
+        'T3' => 35.0 / 12.0,
+        default => 0.0,
+    };
 }
 
 function calcular_1a_experimentales(array $publicaciones): float
 {
-    $equivalentes = 0.0;
+    $total = 0.0;
+
     foreach ($publicaciones as $pub) {
-        $equivalentes += exp_puntuar_item_1a($pub);
+        if (!is_array($pub)) {
+            continue;
+        }
+
+        $total += exp_puntuar_item_1a($pub);
     }
 
-    // Regla de tres sobre el estándar PCD: 12 publicaciones equivalentes = 35 puntos.
-    $puntuacion = 35.0 * min(1.0, $equivalentes / 12.0);
-
-    return exp_round(exp_clamp($puntuacion, 0.0, 35.0));
+    // Máximo del apartado 1A en Experimentales.
+    return exp_round(exp_clamp($total, 0.0, 35.0));
 }
 
 /* =========================================================

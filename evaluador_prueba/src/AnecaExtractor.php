@@ -72,6 +72,8 @@ class AnecaExtractor
 
             $cuartil = $this->detectarCuartil($bloque);
             $tipoIndice = $this->detectarTipoIndice($bloque);
+            $rankingRevista = $this->detectarRankingRevista($posicion);
+            $tercilReal = $this->detectarTercilDesdeRanking($rankingRevista);
             $anio = $this->capturarEntero($bloque, 'AÑO');
             $citas = $this->capturarEntero($bloque, 'CALIDAD CITAS');
             $numAutores = $this->capturarEntero($bloque, 'NUMERO AUTORES')
@@ -90,7 +92,13 @@ class AnecaExtractor
                 'es_informe_proyecto' => false,
                 'tipo_indice' => $tipoIndice,
                 'cuartil' => $cuartil,
-                'tercil' => $this->cuartilATercil($cuartil),
+                // En Experimentales el tercil debe calcularse por CALIDAD POSICION x/y,
+                // no por la etiqueta Q1/Q2/Q3/Q4. Ejemplo: 36/79 = 0,455 => T2.
+                'tercil' => $tercilReal ?? $this->cuartilATercil($cuartil),
+                'calidad_posicion' => $posicion,
+                'ranking_posicion' => $rankingRevista['posicion'] ?? null,
+                'ranking_total' => $rankingRevista['total'] ?? null,
+                'ranking_ratio' => $rankingRevista['ratio'] ?? null,
                 'es_area_matematicas' => $this->esAreaMatematicas($bloque),
                 'afinidad' => $this->detectarAfinidad($bloque),
                 'posicion_autor' => $posicionAutor,
@@ -1102,6 +1110,59 @@ class AnecaExtractor
             return 'primero';
         }
         return $pos !== null ? 'intermedio' : $this->detectarPosicionAutor($bloque);
+    }
+
+
+    private function detectarRankingRevista(?string $calidadPosicion): ?array
+    {
+        if ($calidadPosicion === null || trim($calidadPosicion) === '') {
+            return null;
+        }
+
+        // Formatos esperados: "10/56 Q1", "36/79 Q2", "18 / 60 Q2".
+        if (!preg_match('/(\d{1,4})\s*\/\s*(\d{1,4})/u', $calidadPosicion, $m)) {
+            return null;
+        }
+
+        $posicion = (int)$m[1];
+        $total = (int)$m[2];
+
+        if ($posicion <= 0 || $total <= 0) {
+            return null;
+        }
+
+        return [
+            'posicion' => $posicion,
+            'total' => $total,
+            'ratio' => $posicion / $total,
+        ];
+    }
+
+    private function detectarTercilDesdeRanking(?array $ranking): ?string
+    {
+        if ($ranking === null || !isset($ranking['ratio'])) {
+            return null;
+        }
+
+        $ratio = (float)$ranking['ratio'];
+
+        if ($ratio <= 0.0) {
+            return null;
+        }
+
+        if ($ratio <= (1.0 / 3.0)) {
+            return 'T1';
+        }
+
+        if ($ratio <= (2.0 / 3.0)) {
+            return 'T2';
+        }
+
+        if ($ratio <= 1.0) {
+            return 'T3';
+        }
+
+        return null;
     }
 
     private function cuartilATercil(?string $cuartil): ?string
