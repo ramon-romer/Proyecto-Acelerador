@@ -214,69 +214,187 @@ function tec_factor_citas(int $citas, int $anios): float
 
 function tec_base_publicacion_1a(array $pub): float
 {
-    $tipo = tec_lower(tec_str($pub['tipo'] ?? 'articulo'));
-    $tipoIndice = strtoupper(tec_str($pub['tipo_indice'] ?? ''));
-    $tercil = strtoupper(tec_str($pub['tercil'] ?? ''));
-    $cuartil = strtoupper(tec_str($pub['cuartil'] ?? ''));
-    $subtipo = strtoupper(tec_str($pub['subtipo_indice'] ?? ''));
-
-    if ($tipo === 'patente') {
-        return match ($subtipo) {
-            'B1' => 3.0,
-            'B2' => 2.3,
-            default => 1.5,
-        };
-    }
-
-    if ($tipo === 'software') {
-        return 1.2;
-    }
+    $tercil = tec_obtener_tercil_1a($pub);
 
     if ($tercil === 'T1') {
-        return 4.5;
-    }
-    if ($tercil === 'T2') {
-        return 3.0;
-    }
-    if ($tercil === 'T3') {
-        return 1.4;
+        return 32.0 / 6.0;
     }
 
-    if ($cuartil === 'Q1') {
-        return 4.2;
-    }
-    if ($cuartil === 'Q2') {
-        return 2.8;
-    }
-    if ($cuartil === 'Q3' || $cuartil === 'Q4') {
-        return 1.2;
-    }
-
-    if ($tipoIndice === 'CORE' && in_array($subtipo, ['A', 'A+'], true)) {
-        return 1.4;
-    }
-
-    if ($tipoIndice === 'CSIE' && $subtipo === 'CLASE_1') {
-        return 1.4;
-    }
-
-    if (in_array($tipoIndice, ['RESH', 'AVERY', 'RIBA', 'ARTS_HUMANITIES'], true)) {
-        return 1.4;
-    }
-
-    if (in_array($tipoIndice, ['JCR', 'SCOPUS', 'SJR'], true)) {
-        return 0.7;
-    }
-
-    if ($tipoIndice === 'PATENTE') {
-        return match ($subtipo) {
-            'B1' => 3.0,
-            'B2' => 2.3,
-            default => 1.5,
-        };
+    if ($tercil === 'T2' || $tercil === 'T3') {
+        return 32.0 / 8.0;
     }
 
     return 0.0;
+}
+
+function tec_bool_value(mixed $value): bool
+{
+    if (is_bool($value)) {
+        return $value;
+    }
+
+    if (is_int($value) || is_float($value)) {
+        return (float)$value !== 0.0;
+    }
+
+    $s = tec_lower(tec_str($value));
+    if ($s === '') {
+        return false;
+    }
+
+    if (in_array($s, ['1', 'true', 't', 'si', 'sí', 's', 'yes', 'on'], true)) {
+        return true;
+    }
+
+    if (in_array($s, ['0', 'false', 'f', 'no', 'n', 'off', 'null'], true)) {
+        return false;
+    }
+
+    return is_numeric($s) ? ((float)$s !== 0.0) : false;
+}
+
+function tec_normalizar_numero(mixed $value): ?float
+{
+    if ($value === null || $value === '') {
+        return null;
+    }
+
+    if (is_int($value) || is_float($value)) {
+        return (float)$value;
+    }
+
+    $texto = trim((string)$value);
+    if ($texto === '') {
+        return null;
+    }
+
+    $texto = str_replace(' ', '', $texto);
+
+    if (preg_match('/-?\d+(?:[.,]\d+)?/u', $texto, $match) !== 1) {
+        return null;
+    }
+
+    return (float)str_replace(',', '.', $match[0]);
+}
+
+function tec_tercil_desde_ratio_1a(float $ratio): ?string
+{
+    if ($ratio <= 0.0 || $ratio > 1.0) {
+        return null;
+    }
+
+    if ($ratio <= (1.0 / 3.0)) {
+        return 'T1';
+    }
+
+    if ($ratio <= (2.0 / 3.0)) {
+        return 'T2';
+    }
+
+    return 'T3';
+}
+
+function tec_tercil_desde_ranking_1a(mixed $posicion, mixed $total): ?string
+{
+    $p = tec_normalizar_numero($posicion);
+    $t = tec_normalizar_numero($total);
+
+    if ($p === null || $t === null || $t <= 0.0) {
+        return null;
+    }
+
+    return tec_tercil_desde_ratio_1a($p / $t);
+}
+
+function tec_tercil_desde_calidad_posicion_1a(?string $calidadPosicion): ?string
+{
+    $valor = tec_str($calidadPosicion ?? '');
+    if ($valor === '') {
+        return null;
+    }
+
+    if (preg_match('/(\d+(?:[.,]\d+)?)\s*\/\s*(\d+(?:[.,]\d+)?)/u', $valor, $match) !== 1) {
+        return null;
+    }
+
+    return tec_tercil_desde_ranking_1a($match[1], $match[2]);
+}
+
+function tec_tercil_desde_cuartil_1a(?string $cuartil): ?string
+{
+    $valor = strtoupper(tec_str($cuartil ?? ''));
+    if ($valor === '') {
+        return null;
+    }
+
+    if (preg_match('/Q?\s*([1-4])/u', $valor, $match) !== 1) {
+        return null;
+    }
+
+    $q = (int)$match[1];
+
+    if ($q === 1) {
+        return 'T1';
+    }
+
+    if ($q === 2) {
+        return 'T2';
+    }
+
+    return 'T3';
+}
+
+function tec_obtener_tercil_1a(array $pub): ?string
+{
+    $tercil = strtoupper(tec_str($pub['tercil'] ?? ''));
+    if (preg_match('/T?\s*([123])/u', $tercil, $match) === 1) {
+        return 'T' . $match[1];
+    }
+
+    $tercilRanking = tec_tercil_desde_ranking_1a(
+        $pub['ranking_posicion'] ?? null,
+        $pub['ranking_total'] ?? null
+    );
+    if ($tercilRanking !== null) {
+        return $tercilRanking;
+    }
+
+    $tercilCalidad = tec_tercil_desde_calidad_posicion_1a(tec_str($pub['calidad_posicion'] ?? ''));
+    if ($tercilCalidad !== null) {
+        return $tercilCalidad;
+    }
+
+    return tec_tercil_desde_cuartil_1a(tec_str($pub['cuartil'] ?? ''));
+}
+
+function tec_publicacion_1a_es_puntuable(array $pub): bool
+{
+    if (array_key_exists('es_valida', $pub) && !tec_bool_value($pub['es_valida'])) {
+        return false;
+    }
+
+    if (array_key_exists('es_valido', $pub) && !tec_bool_value($pub['es_valido'])) {
+        return false;
+    }
+
+    foreach (['es_divulgacion', 'es_docencia', 'es_acta_congreso', 'es_informe_proyecto'] as $flag) {
+        if (array_key_exists($flag, $pub) && tec_bool_value($pub[$flag])) {
+            return false;
+        }
+    }
+
+    $tipoIndice = strtoupper(tec_str($pub['tipo_indice'] ?? ''));
+    $indice = strtoupper(tec_str($pub['indice'] ?? ''));
+    $hayIndiceValido = false;
+
+    foreach (['JCR', 'SCOPUS', 'SJR'] as $permitido) {
+        if (str_contains($tipoIndice, $permitido) || str_contains($indice, $permitido)) {
+            $hayIndiceValido = true;
+            break;
+        }
+    }
+
+    return $hayIndiceValido;
 }
 
 function tec_puntuar_item_1a(array $pub): float
@@ -285,55 +403,11 @@ function tec_puntuar_item_1a(array $pub): float
         return 0.0;
     }
 
-    $esValida = $pub['es_valida'] ?? $pub['es_valido'] ?? 1;
-    if ((string)$esValida === '0') {
+    if (!tec_publicacion_1a_es_puntuable($pub)) {
         return 0.0;
     }
 
-    if (
-        tec_bool($pub['es_divulgacion'] ?? false)
-        || tec_bool($pub['es_docencia'] ?? false)
-        || tec_bool($pub['es_acta_congreso'] ?? false)
-        || tec_bool($pub['es_informe_proyecto'] ?? false)
-    ) {
-        return 0.0;
-    }
-
-    $tipo = tec_lower(tec_str($pub['tipo'] ?? 'articulo'));
-
-    if (!in_array($tipo, ['articulo', 'patente', 'software'], true)) {
-        return 0.0;
-    }
-
-    $base = tec_base_publicacion_1a($pub);
-    if ($base <= 0.0) {
-        return 0.0;
-    }
-
-    if ($tipo === 'patente' || $tipo === 'software') {
-        $factor = tec_bool($pub['liderazgo'] ?? false) ? 1.05 : 1.00;
-        return tec_round($base * $factor);
-    }
-
-    $ordenAlfabetico = tec_bool($pub['orden_alfabetico'] ?? false);
-    $factorPosicion = $ordenAlfabetico
-        ? 1.00
-        : tec_factor_posicion_autor(tec_str($pub['posicion_autor'] ?? 'intermedio'));
-
-    $p = $base
-        * tec_factor_afinidad(tec_str($pub['afinidad'] ?? 'relacionada'))
-        * $factorPosicion
-        * tec_factor_coautoria(tec_to_int($pub['numero_autores'] ?? 1, 1))
-        * tec_factor_citas(
-            tec_to_int($pub['citas'] ?? 0, 0),
-            tec_to_int($pub['anios_desde_publicacion'] ?? 3, 3)
-        );
-
-    if (tec_bool($pub['liderazgo'] ?? false)) {
-        $p *= 1.03;
-    }
-
-    return tec_round($p);
+    return tec_round(tec_base_publicacion_1a($pub));
 }
 
 function calcular_1a_tecnicas(array $publicaciones): float
@@ -342,6 +416,10 @@ function calcular_1a_tecnicas(array $publicaciones): float
 
     foreach ($publicaciones as $pub) {
         $total += tec_puntuar_item_1a($pub);
+
+        if ($total >= 32.0) {
+            return 32.0;
+        }
     }
 
     return tec_round(tec_clamp($total, 0.0, 32.0));

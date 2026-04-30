@@ -25,7 +25,7 @@ if ($port <= 0) {
 
 $dbNameFromEnv = $readEnv(['DB_NAME', 'ACELERADOR_DB_NAME'], '');
 $nameCandidates = [];
-foreach ([$dbNameFromEnv, 'Acelerador', 'acelerador'] as $candidate) {
+foreach ([$dbNameFromEnv, 'Acelerador', 'acelerador_staging_20260406', 'acelerador'] as $candidate) {
     if (!is_string($candidate)) {
         continue;
     }
