@@ -1,0 +1,109 @@
+DATOS GENERALES
+NOMBRE Nora Campos Aranda
+ORCID 1024-2024-3024-4024
+RAMA HUMANIDADES
+PERFIL frontera
+
+Publicación
+TITULO Catalogo de exposicion sin autores claramente identificados.
+NOMBRE Revista sintetica HUMANIDADES
+ISSN 1234-5610
+CALIDAD BASE SJR
+CALIDAD POSICION 
+AÑO 2021
+CALIDAD CITAS 8
+NUMERO AUTORES 2
+POSICION 1
+
+Publicación
+TITULO Texto de divulgacion sin revision por pares ni fecha estable.
+NOMBRE Revista sintetica HUMANIDADES
+ISSN 1234-5611
+CALIDAD BASE SJR
+CALIDAD POSICION 
+AÑO 2022
+CALIDAD CITAS 9
+NUMERO AUTORES 3
+POSICION 2
+
+Publicación
+TITULO Articulo adicional con metrica parcial y cuartil no confirmado.
+NOMBRE Revista sintetica HUMANIDADES
+ISSN 1234-5612
+CALIDAD BASE SJR
+CALIDAD POSICION 
+AÑO 2023
+CALIDAD CITAS 10
+NUMERO AUTORES 4
+POSICION 1
+
+Publicación
+TITULO Articulo sin cuartil informado en la fuente.
+NOMBRE Revista sintetica HUMANIDADES
+ISSN 1234-5613
+CALIDAD BASE SJR
+CALIDAD POSICION 
+AÑO 2024
+CALIDAD CITAS 11
+NUMERO AUTORES 5
+POSICION 2
+
+LIBROS Y CAPITULOS DE LIBRO
+Libros
+TITULO Produccion academica sintetica HUMANIDADES
+EDITORIAL Editorial de prueba
+
+PROYECTOS Y/O CONTRATOS DE INVESTIGACION
+Proyectos
+TITULO Participacion mencionada en comisariado sin acta de cierre.
+ENTIDAD Agencia sintetica de investigacion
+FDESDE 2021-01-01
+FHASTA 2024-12-31
+MESES 36
+GRADO TIPO 10001
+GRADO OTROS IP
+APORTACION Coordinacion cientifica
+DEDICACION XX001
+CONV TIPO 09002
+CONV OTROS Nacional
+
+TRANSFERENCIA TECNOLOGICA
+- Comisariado de exposicion universitaria con catalogo tecnico.
+
+CONGRESOS Y CONFERENCIAS CIENTIFICAS
+Congresos
+TITULO Ponencia en congreso internacional de estudios visuales (2024).
+CONGRESO Evento sintetico 1
+ENTIDAD Sociedad academica sintetica
+LUGAR Madrid
+FCELEBRACION 2024-01-15
+
+ESTANCIAS EN CENTROS ESPAÑOLES Y EXTRANJEROS
+- Estancia de investigacion en museo europeo (2019).
+
+PUESTOS OCUPADOS Y DOCENCIA IMPARTIDA
+Docencia Impartida
+INSTITUCION Universidad sintetica
+ASIGNATURA 120 horas en asignaturas optativas sin coordinacion docente.
+HORAS 120
+ESPECIFICAR grado
+DENOMINACION Profesor contratado doctor
+TIPO ASIGNATURA 15001
+
+Docencia Impartida
+INSTITUCION Universidad sintetica
+ASIGNATURA Docencia suficiente pero heterogenea por cursos.
+HORAS 60
+ESPECIFICAR grado
+DENOMINACION Profesor contratado doctor
+TIPO ASIGNATURA 15001
+
+FORMACION ACADEMICA
+- Doctorado en Historia del Arte (2012).
+- Master en Gestion Cultural (2008).
+
+OTROS MERITOS
+- Coordinacion de ciclo de seminarios de patrimonio inmaterial.
+- PROBLEMA: Publicaciones sin cuartil declarado.
+- PROBLEMA: Campos con puntuacion y separadores heterogeneos.
+

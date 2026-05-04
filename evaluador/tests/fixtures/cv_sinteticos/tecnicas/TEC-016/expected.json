@@ -1,0 +1,21 @@
+{
+    "id_cv": "TEC-016",
+    "rama": "TECNICAS",
+    "perfil": "frontera",
+    "resultado_esperado": "frontera",
+    "orcid_esperado": "1016-2016-3016-4016",
+    "publicaciones_esperadas_total": 3,
+    "publicaciones_relevantes_esperadas": 0,
+    "proyectos_esperados": 1,
+    "docencia_esperada": 2,
+    "congresos_esperados": 1,
+    "estancias_esperadas": 1,
+    "transferencia_esperada": 1,
+    "problemas_intencionados": [
+        "Tabla simulada en texto plano.",
+        "Campos con puntuacion y separadores heterogeneos."
+    ],
+    "observaciones": "Caso sintetico generado automaticamente para validar parser/evaluador.",
+    "nivel_confianza_esperado": "medio",
+    "stress_tag": "tabla_simulada"
+}

@@ -1,0 +1,22 @@
+{
+    "id_cv": "EXP-014",
+    "rama": "EXPERIMENTALES",
+    "perfil": "problematico",
+    "resultado_esperado": "revisar",
+    "orcid_esperado": "1014-2014-3014-4019",
+    "publicaciones_esperadas_total": 3,
+    "publicaciones_relevantes_esperadas": 0,
+    "proyectos_esperados": 1,
+    "docencia_esperada": 1,
+    "congresos_esperados": 2,
+    "estancias_esperadas": 1,
+    "transferencia_esperada": 1,
+    "problemas_intencionados": [
+        "DOI incompleto en una publicacion.",
+        "Requiere revision manual por ambiguedad general del expediente.",
+        "Campos con puntuacion y separadores heterogeneos."
+    ],
+    "observaciones": "Caso sintetico generado automaticamente para validar parser/evaluador.",
+    "nivel_confianza_esperado": "bajo",
+    "stress_tag": "doi_incompleto"
+}

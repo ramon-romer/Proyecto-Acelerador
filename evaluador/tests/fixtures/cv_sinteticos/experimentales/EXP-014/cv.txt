@@ -1,0 +1,39 @@
+id_cv: EXP-014
+rama: EXPERIMENTALES
+perfil: problematico
+nombre_ficticio: Nora Campos Aranda
+orcid_prueba: 1014-2014-3014-4019
+resumen_perfil: Perfil experimental con inconsistencias de metadatos y evidencias incompletas.
+
+formacion_academica:
+- Doctorado en Biologia Molecular (2015).
+- Master en Tecnicas Avanzadas de Laboratorio (2011).
+
+docencia:
+- 48 horas de seminarios puntuales sin evaluacion docente consolidada.
+
+publicaciones:
+- Preprint sin cuartil declarado sobre cultivo celular adaptativo.
+- Articulo con DOI incompleto 10.1234/exp.
+- Registro con DOI incompleto: 10.9999/
+
+proyectos:
+- Colaboracion puntual en proyecto interno sin memoria final cerrada.
+
+congresos:
+- Ponencia oral en congreso internacional de biotecnologia (2024).
+- Poster en simposio de bioquimica aplicada (2023).
+
+estancias:
+- Estancia declarada sin fechas exactas ni carta de acogida.
+
+transferencia_patentes:
+- Sin transferencia formal acreditada.
+
+otros_meritos:
+- Revisora ad hoc de revista experimental indexada.
+
+problemas_intencionados:
+- DOI incompleto en una publicacion.
+- Requiere revision manual por ambiguedad general del expediente.
+- Campos con puntuacion y separadores heterogeneos.

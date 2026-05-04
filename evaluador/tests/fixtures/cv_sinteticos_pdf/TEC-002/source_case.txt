@@ -1,0 +1,6 @@
+source_dataset: evaluador/tests/fixtures/cv_sinteticos
+source_case_path: tecnicas/TEC-002
+source_cv_cvn_like: C:/Users/basil/Documents/GitHub/Proyecto-Acelerador/evaluador/tests/fixtures/cv_sinteticos/tecnicas/TEC-002/cv_cvn_like.txt
+selected_id_cv: TEC-002
+selected_rama: TECNICAS
+selected_perfil: problematico

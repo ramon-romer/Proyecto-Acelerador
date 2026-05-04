@@ -1,0 +1,18 @@
+{
+    "id_cv": "EXP-013",
+    "rama": "EXPERIMENTALES",
+    "perfil": "positivo",
+    "resultado_esperado": "apto",
+    "orcid_esperado": "1013-2013-3013-4013",
+    "publicaciones_esperadas_total": 3,
+    "publicaciones_relevantes_esperadas": 2,
+    "proyectos_esperados": 1,
+    "docencia_esperada": 2,
+    "congresos_esperados": 2,
+    "estancias_esperadas": 1,
+    "transferencia_esperada": 1,
+    "problemas_intencionados": [],
+    "observaciones": "Caso sintetico generado automaticamente para validar parser/evaluador.",
+    "nivel_confianza_esperado": "alto",
+    "stress_tag": "none"
+}

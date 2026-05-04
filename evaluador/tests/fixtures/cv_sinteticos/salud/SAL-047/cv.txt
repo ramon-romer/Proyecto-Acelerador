@@ -1,0 +1,34 @@
+id_cv: SAL-047
+rama: SALUD
+perfil: negativo
+nombre_ficticio: Alex Molina Roman
+orcid_prueba: 
+resumen_perfil: Perfil con buena docencia pero baja investigacion y transferencia.
+
+formacion_academica:
+- Doctorado en Ciencias de la Salud (2017).
+- Master en Epidemiologia Clinica (2013).
+
+docencia:
+- 360 horas docentes con evaluacion excelente, pero investigacion minima.
+
+publicaciones:
+- Sin publicaciones indexadas verificables.
+
+proyectos:
+- Sin proyectos competitivos cerrados.
+
+congresos:
+- Comunicacion oral en congreso nacional de medicina interna (2023).
+
+estancias:
+- Sin estancias acreditadas.
+
+transferencia_patentes:
+- Sin transferencia acreditable.
+
+otros_meritos:
+- Participacion en comision de calidad asistencial universitaria.
+
+problemas_intencionados:
+- ORCID ausente en cabecera.

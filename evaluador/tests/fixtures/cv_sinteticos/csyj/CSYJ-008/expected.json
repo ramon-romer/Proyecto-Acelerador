@@ -1,0 +1,21 @@
+{
+    "id_cv": "CSYJ-008",
+    "rama": "CSYJ",
+    "perfil": "frontera",
+    "resultado_esperado": "frontera",
+    "orcid_esperado": "1008-2008-3008-4008",
+    "publicaciones_esperadas_total": 4,
+    "publicaciones_relevantes_esperadas": 0,
+    "proyectos_esperados": 1,
+    "docencia_esperada": 2,
+    "congresos_esperados": 1,
+    "estancias_esperadas": 1,
+    "transferencia_esperada": 1,
+    "problemas_intencionados": [
+        "Publicaciones duplicadas en listado.",
+        "Campos con puntuacion y separadores heterogeneos."
+    ],
+    "observaciones": "Caso sintetico generado automaticamente para validar parser/evaluador.",
+    "nivel_confianza_esperado": "medio",
+    "stress_tag": "duplicados_publicaciones"
+}

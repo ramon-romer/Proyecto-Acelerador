@@ -1,0 +1,39 @@
+id_cv: HUM-032
+rama: HUMANIDADES
+perfil: frontera
+nombre_ficticio: Nora Iglesias Prado
+orcid_prueba: 1032-2032-3032-4032
+resumen_perfil: Perfil frontera con indicadores mixtos entre investigacion y docencia.
+
+formacion_academica:
+- Doctorado en Historia del Arte (2012).
+- Master en Gestion Cultural (2008).
+
+docencia:
+- 120 horas en asignaturas optativas sin coordinacion docente.
+- Docencia suficiente pero heterogenea por cursos.
+
+publicaciones:
+- Catalogo de exposicion sin autores claramente identificados.
+- Texto de divulgacion sin revision por pares ni fecha estable.
+- Articulo adicional con metrica parcial y cuartil no confirmado.
+
+proyectos:
+- Participacion mencionada en comisariado sin acta de cierre.
+
+congresos:
+- Ponencia en congreso internacional de estudios visuales (2024).
+
+estancias:
+- Estancia de investigacion en museo europeo (2019).
+
+transferencia_patentes:
+- Comisariado de exposicion universitaria con catalogo tecnico.
+
+otros_meritos:
+- Coordinacion de ciclo de seminarios de patrimonio inmaterial.
+- Las secciones aparecen en orden: proyectos, docencia, formacion, publicaciones.
+
+problemas_intencionados:
+- Meritos en orden no convencional.
+- Campos con puntuacion y separadores heterogeneos.

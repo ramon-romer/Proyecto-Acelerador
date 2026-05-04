@@ -1,0 +1,18 @@
+{
+    "id_cv": "CSYJ-001",
+    "rama": "CSYJ",
+    "perfil": "positivo",
+    "resultado_esperado": "apto",
+    "orcid_esperado": "1001-2001-3001-4001",
+    "publicaciones_esperadas_total": 3,
+    "publicaciones_relevantes_esperadas": 1,
+    "proyectos_esperados": 1,
+    "docencia_esperada": 2,
+    "congresos_esperados": 1,
+    "estancias_esperadas": 1,
+    "transferencia_esperada": 1,
+    "problemas_intencionados": [],
+    "observaciones": "Caso sintetico generado automaticamente para validar parser/evaluador.",
+    "nivel_confianza_esperado": "alto",
+    "stress_tag": "none"
+}

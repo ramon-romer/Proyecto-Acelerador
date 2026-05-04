@@ -1,0 +1,35 @@
+id_cv: SAL-013
+rama: SALUD
+perfil: positivo
+nombre_ficticio: Alex Navarro Blasco
+orcid_prueba: 1013-2013-3013-4013
+resumen_perfil: Perfil de ciencias de la salud con articulos biomedicos y proyectos sanitarios.
+
+formacion_academica:
+- Doctorado en Ciencias de la Salud (2017).
+- Master en Epidemiologia Clinica (2013).
+
+docencia:
+- 190 horas en Farmacologia Clinica.
+- Tutorizacion de 2 residentes en metodologia investigadora.
+
+publicaciones:
+- Articulo biomedico Q1 sobre marcadores inflamatorios. DOI:10.3456/salud.2024.301
+- Articulo Q2 en salud publica sobre adherencia terapeutica. DOI:10.3456/salud.2023.188
+
+proyectos:
+- SubIP en proyecto multicentrico de prevencion cardiovascular (ficticio, sin datos reales).
+
+congresos:
+- Comunicacion oral en congreso nacional de medicina interna (2023).
+
+estancias:
+- Estancia de 3 meses en unidad de investigacion traslacional (2022).
+
+transferencia_patentes:
+- Guia de practica clinica institucional (documento tecnico interno).
+
+otros_meritos:
+- Participacion en comision de calidad asistencial universitaria.
+
+problemas_intencionados:

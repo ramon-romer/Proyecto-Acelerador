@@ -1,0 +1,82 @@
+DATOS GENERALES
+NOMBRE Saul Serra Segura
+ORCID 1018-2018-3018-4023
+RAMA SALUD
+PERFIL problematico
+
+Publicación
+TITULO Articulo biomedico Q1 sobre diagnostico molecular sintetico. DOI:10.3456/salud.2025.401
+NOMBRE Revista sintetica SALUD
+ISSN 1234-5610
+CALIDAD BASE SJR
+CALIDAD POSICION Q1
+AÑO 2021
+CALIDAD CITAS 8
+NUMERO AUTORES 2
+POSICION 1
+
+Publicación
+TITULO Articulo Q1 en medicina traslacional con colaboracion multicentrica ficticia. DOI:10.3456/salud.2024.299
+NOMBRE Revista sintetica SALUD
+ISSN 1234-5611
+CALIDAD BASE SJR
+CALIDAD POSICION Q1
+AÑO 2022
+CALIDAD CITAS 9
+NUMERO AUTORES 3
+POSICION 2
+
+LIBROS Y CAPITULOS DE LIBRO
+Libros
+TITULO Produccion academica sintetica SALUD
+EDITORIAL Editorial de prueba
+
+PROYECTOS Y/O CONTRATOS DE INVESTIGACION
+Proyectos
+TITULO Estudio observacional declarado sin protocolo fechado.
+ENTIDAD Agencia sintetica de investigacion
+FDESDE 2021-01-01
+FHASTA 2024-12-31
+MESES 36
+GRADO TIPO 10001
+GRADO OTROS IP
+APORTACION Coordinacion cientifica
+DEDICACION XX001
+CONV TIPO 09002
+CONV OTROS Nacional
+
+TRANSFERENCIA TECNOLOGICA
+- Guia de practica clinica institucional (documento tecnico interno).
+
+CONGRESOS Y CONFERENCIAS CIENTIFICAS
+Congresos
+TITULO Comunicacion oral en congreso nacional de medicina interna (2023).
+CONGRESO Evento sintetico 1
+ENTIDAD Sociedad academica sintetica
+LUGAR Madrid
+FCELEBRACION 2024-01-15
+
+ESTANCIAS EN CENTROS ESPAÑOLES Y EXTRANJEROS
+- Estancia de 3 meses en unidad de investigacion traslacional (2022).
+
+PUESTOS OCUPADOS Y DOCENCIA IMPARTIDA
+Docencia Impartida
+INSTITUCION Universidad sintetica
+ASIGNATURA 36 horas docentes anuales sin continuidad longitudinal.
+HORAS 36
+ESPECIFICAR grado
+DENOMINACION Profesor contratado doctor
+TIPO ASIGNATURA 15001
+
+FORMACION ACADEMICA
+- Doctorado en Ciencias de la Salud (2017).
+- Master en Epidemiologia Clinica (2013).
+
+OTROS MERITOS
+- Participacion en comision de calidad asistencial universitaria.
+- Patron de estres: buena investigacion pero mala docencia.
+- Narrativa extensa: candidata relata logros sin separar evidencias por bloques.
+- PROBLEMA: Bloques narrativos extensos sin estructura clara.
+- PROBLEMA: Requiere revision manual por ambiguedad general del expediente.
+- PROBLEMA: Campos con puntuacion y separadores heterogeneos.
+

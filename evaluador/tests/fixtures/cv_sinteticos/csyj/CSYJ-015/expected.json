@@ -1,0 +1,20 @@
+{
+    "id_cv": "CSYJ-015",
+    "rama": "CSYJ",
+    "perfil": "negativo",
+    "resultado_esperado": "no_apto",
+    "orcid_esperado": "1015-2015-3015-4015",
+    "publicaciones_esperadas_total": 1,
+    "publicaciones_relevantes_esperadas": 1,
+    "proyectos_esperados": 1,
+    "docencia_esperada": 1,
+    "congresos_esperados": 1,
+    "estancias_esperadas": 1,
+    "transferencia_esperada": 1,
+    "problemas_intencionados": [
+        "Secciones con nombres alternativos y no estandar."
+    ],
+    "observaciones": "Caso sintetico generado automaticamente para validar parser/evaluador.",
+    "nivel_confianza_esperado": "alto",
+    "stress_tag": "secciones_alternativas"
+}

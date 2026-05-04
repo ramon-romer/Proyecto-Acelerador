@@ -1,0 +1,21 @@
+{
+    "id_cv": "HUM-020",
+    "rama": "HUMANIDADES",
+    "perfil": "frontera",
+    "resultado_esperado": "frontera",
+    "orcid_esperado": "1020-2020-3020-4020",
+    "publicaciones_esperadas_total": 3,
+    "publicaciones_relevantes_esperadas": 0,
+    "proyectos_esperados": 1,
+    "docencia_esperada": 2,
+    "congresos_esperados": 1,
+    "estancias_esperadas": 1,
+    "transferencia_esperada": 1,
+    "problemas_intencionados": [
+        "Meritos en orden no convencional.",
+        "Campos con puntuacion y separadores heterogeneos."
+    ],
+    "observaciones": "Caso sintetico generado automaticamente para validar parser/evaluador.",
+    "nivel_confianza_esperado": "medio",
+    "stress_tag": "orden_raro_secciones"
+}

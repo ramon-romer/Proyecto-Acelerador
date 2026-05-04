@@ -1,0 +1,22 @@
+{
+    "id_cv": "TEC-010",
+    "rama": "TECNICAS",
+    "perfil": "problematico",
+    "resultado_esperado": "revisar",
+    "orcid_esperado": "1010-2010-3010-4015",
+    "publicaciones_esperadas_total": 2,
+    "publicaciones_relevantes_esperadas": 0,
+    "proyectos_esperados": 1,
+    "docencia_esperada": 1,
+    "congresos_esperados": 1,
+    "estancias_esperadas": 1,
+    "transferencia_esperada": 1,
+    "problemas_intencionados": [
+        "Tabla simulada en texto plano.",
+        "Requiere revision manual por ambiguedad general del expediente.",
+        "Campos con puntuacion y separadores heterogeneos."
+    ],
+    "observaciones": "Caso sintetico generado automaticamente para validar parser/evaluador.",
+    "nivel_confianza_esperado": "bajo",
+    "stress_tag": "tabla_simulada"
+}

@@ -1,0 +1,36 @@
+id_cv: EXP-023
+rama: EXPERIMENTALES
+perfil: negativo
+nombre_ficticio: Nora Iglesias Mendez
+orcid_prueba: 1023-2023-3023-4023
+resumen_perfil: Perfil con buena docencia pero baja investigacion y transferencia.
+
+formacion_academica:
+- Doctorado en Biologia Molecular (2015).
+- Master en Tecnicas Avanzadas de Laboratorio (2011).
+
+docencia:
+- 360 horas docentes con evaluacion excelente, pero investigacion minima.
+
+publicaciones:
+- Sin publicaciones indexadas verificables.
+- Registro con DOI incompleto: 10.9999/
+
+proyectos:
+- Sin proyectos competitivos cerrados.
+
+congresos:
+- Ponencia oral en congreso internacional de biotecnologia (2024).
+- Poster en simposio de bioquimica aplicada (2023).
+
+estancias:
+- Sin estancias acreditadas.
+
+transferencia_patentes:
+- Sin transferencia acreditable.
+
+otros_meritos:
+- Revisora ad hoc de revista experimental indexada.
+
+problemas_intencionados:
+- DOI incompleto en una publicacion.

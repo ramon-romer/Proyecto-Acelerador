@@ -1,0 +1,35 @@
+id_cv: CSYJ-015
+rama: CSYJ
+perfil: negativo
+nombre_ficticio: Izan Cortes Roman
+orcid_prueba: 1015-2015-3015-4015
+resumen_perfil: Perfil con buena docencia pero baja investigacion y transferencia.
+
+formacion_academica:
+- Doctorado en Politicas Publicas (2014).
+- Licenciatura en Derecho (2009).
+
+docencia:
+- 360 horas docentes con evaluacion excelente, pero investigacion minima.
+
+publicaciones:
+- Sin publicaciones indexadas verificables.
+
+proyectos:
+- Sin proyectos competitivos cerrados.
+
+congresos:
+- Ponencia en congreso de ciencias sociales aplicadas (2024).
+
+estancias:
+- Sin estancias acreditadas.
+
+transferencia_patentes:
+- Sin transferencia acreditable.
+
+otros_meritos:
+- Coordinacion de clinica juridica universitaria.
+- Alias de seccion detectado: Produccion Cientifica / Impacto.
+
+problemas_intencionados:
+- Secciones con nombres alternativos y no estandar.

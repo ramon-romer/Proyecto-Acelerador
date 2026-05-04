@@ -1,0 +1,103 @@
+DATOS GENERALES
+NOMBRE Lia Luque Blasco
+ORCID 1021-2021-3021-4021
+RAMA EXPERIMENTALES
+PERFIL positivo
+
+Publicación
+TITULO Articulo JCR Q1: Biomarker dynamics in synthetic cohort. DOI:10.1234/exp.2024.001
+NOMBRE Revista sintetica EXPERIMENTALES
+ISSN 1234-5610
+CALIDAD BASE JCR
+CALIDAD POSICION Q1
+AÑO 2021
+CALIDAD CITAS 8
+NUMERO AUTORES 2
+POSICION 1
+
+Publicación
+TITULO Articulo JCR Q2: Lab protocol benchmark. DOI:10.1234/exp.2023.115
+NOMBRE Revista sintetica EXPERIMENTALES
+ISSN 1234-5611
+CALIDAD BASE JCR
+CALIDAD POSICION Q2
+AÑO 2022
+CALIDAD CITAS 9
+NUMERO AUTORES 3
+POSICION 2
+
+Publicación
+TITULO Articulo Q3 en revista de microbiologia aplicada. DOI:10.1234/exp.2022.220
+NOMBRE Revista sintetica EXPERIMENTALES
+ISSN 1234-5612
+CALIDAD BASE SJR
+CALIDAD POSICION Q3
+AÑO 2023
+CALIDAD CITAS 10
+NUMERO AUTORES 4
+POSICION 1
+
+LIBROS Y CAPITULOS DE LIBRO
+Libros
+TITULO Produccion academica sintetica EXPERIMENTALES
+EDITORIAL Editorial de prueba
+
+PROYECTOS Y/O CONTRATOS DE INVESTIGACION
+Proyectos
+TITULO IP de proyecto competitivo nacional BIO-SYNTH (2023-2026).
+ENTIDAD Agencia sintetica de investigacion
+FDESDE 2021-01-01
+FHASTA 2024-12-31
+MESES 36
+GRADO TIPO 10001
+GRADO OTROS IP
+APORTACION Coordinacion cientifica
+DEDICACION XX001
+CONV TIPO 09002
+CONV OTROS Nacional
+
+TRANSFERENCIA TECNOLOGICA
+- Software de analisis de imagen celular registrado en OTRI (2025).
+
+CONGRESOS Y CONFERENCIAS CIENTIFICAS
+Congresos
+TITULO Ponencia oral en congreso internacional de biotecnologia (2024).
+CONGRESO Evento sintetico 1
+ENTIDAD Sociedad academica sintetica
+LUGAR Madrid
+FCELEBRACION 2024-01-15
+
+Congresos
+TITULO Poster en simposio de bioquimica aplicada (2023).
+CONGRESO Evento sintetico 2
+ENTIDAD Sociedad academica sintetica
+LUGAR Madrid
+FCELEBRACION 2024-02-15
+
+ESTANCIAS EN CENTROS ESPAÑOLES Y EXTRANJEROS
+- Estancia de 4 meses en laboratorio europeo de proteomica (2021).
+
+PUESTOS OCUPADOS Y DOCENCIA IMPARTIDA
+Docencia Impartida
+INSTITUCION Universidad sintetica
+ASIGNATURA 180 horas en Fisiologia Celular (2022-2025).
+HORAS 180
+ESPECIFICAR grado
+DENOMINACION Profesor contratado doctor
+TIPO ASIGNATURA 15001
+
+Docencia Impartida
+INSTITUCION Universidad sintetica
+ASIGNATURA Direccion de 2 TFM en biociencias.
+HORAS 60
+ESPECIFICAR grado
+DENOMINACION Profesor contratado doctor
+TIPO ASIGNATURA 15001
+
+FORMACION ACADEMICA
+- Doctorado en Biologia Molecular (2015).
+- Master en Tecnicas Avanzadas de Laboratorio (2011).
+
+OTROS MERITOS
+- Revisora ad hoc de revista experimental indexada.
+

@@ -1,0 +1,36 @@
+id_cv: TEC-045
+rama: TECNICAS
+perfil: positivo
+nombre_ficticio: Nora Campos Segura
+orcid_prueba: 1045-2045-3045-4045
+resumen_perfil: Perfil tecnico con I+D aplicada, transferencia y patentes/software.
+
+formacion_academica:
+- Doctorado en Ingenieria de Sistemas (2016).
+- Master en Inteligencia Artificial Industrial (2012).
+
+docencia:
+- 240 horas en Arquitectura de Computadores y Sistemas Embebidos.
+- Coordinacion de laboratorio de prototipado.
+
+publicaciones:
+- Articulo tecnico indexado sobre edge AI en manufactura. DOI:10.2345/tec.2024.077
+- Paper en congreso CORE A sobre optimizacion de firmware industrial.
+
+proyectos:
+- IP en proyecto I+D RETECH-PLANTA (2022-2025).
+- Participacion en contrato con empresa automotriz.
+
+congresos:
+- Comunicacion en congreso IEEE de automatizacion (2023).
+
+estancias:
+- Estancia de 2 meses en centro de prototipado europeo (2020).
+
+transferencia_patentes:
+- Patente nacional de sistema de control predictivo (solicitud ficticia).
+
+otros_meritos:
+- Mentoria de equipo de competicion de robotica universitaria.
+
+problemas_intencionados:

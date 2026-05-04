@@ -1,0 +1,38 @@
+id_cv: HUM-006
+rama: HUMANIDADES
+perfil: problematico
+nombre_ficticio: Teo Serra Prado
+orcid_prueba: 1006-2006-3006-4011
+resumen_perfil: Perfil de humanidades con meritos desordenados y ambiguos.
+
+formacion_academica:
+- Doctorado en Historia del Arte (2012).
+- Master en Gestion Cultural (2008).
+
+docencia:
+- 120 horas en asignaturas optativas sin coordinacion docente.
+
+publicaciones:
+- Catalogo de exposicion sin autores claramente identificados.
+- Texto de divulgacion sin revision por pares ni fecha estable.
+- Articulo sin cuartil informado en la fuente.
+
+proyectos:
+- Participacion mencionada en comisariado sin acta de cierre.
+
+congresos:
+- Ponencia en congreso internacional de estudios visuales (2024).
+
+estancias:
+- Estancia de investigacion en museo europeo (2019).
+
+transferencia_patentes:
+- Comisariado de exposicion universitaria con catalogo tecnico.
+
+otros_meritos:
+- Coordinacion de ciclo de seminarios de patrimonio inmaterial.
+
+problemas_intencionados:
+- Publicaciones sin cuartil declarado.
+- Requiere revision manual por ambiguedad general del expediente.
+- Campos con puntuacion y separadores heterogeneos.

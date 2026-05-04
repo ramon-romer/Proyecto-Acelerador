@@ -1,0 +1,184 @@
+{
+    "suite": "synthetic-cv-pdf-pipeline",
+    "timestamp": "2026-05-04T12:08:09+02:00",
+    "subset_manifest": "C:\\Users\\basil\\Documents\\GitHub\\Proyecto-Acelerador\\evaluador\\tests\\fixtures\\cv_sinteticos_pdf\\pdf_subset_manifest.json",
+    "environment": {
+        "pdftotext_disponible": false,
+        "ocr": {
+            "pdftoppm_disponible": true,
+            "tesseract_disponible": false,
+            "pdftoppm_path": "C:\\Users\\basil\\Documents\\GitHub\\Proyecto-Acelerador\\mcp-server\\.tools\\poppler\\poppler-25.07.0\\Library\\bin\\pdftoppm.exe",
+            "tesseract_path": null,
+            "tessdata_prefix": "C:\\Users\\basil\\Documents\\GitHub\\Proyecto-Acelerador\\evaluador\\.tools\\tessdata",
+            "ocr_max_pages": 40,
+            "ocr_dpi": 180
+        }
+    },
+    "summary": {
+        "total_pdfs": 10,
+        "pass": 0,
+        "warn": 0,
+        "fail": 0,
+        "skip_env": 10,
+        "by_branch": {
+            "EXPERIMENTALES": {
+                "total": 2,
+                "pass": 0,
+                "warn": 0,
+                "fail": 0,
+                "skip_env": 2
+            },
+            "TECNICAS": {
+                "total": 2,
+                "pass": 0,
+                "warn": 0,
+                "fail": 0,
+                "skip_env": 2
+            },
+            "CSYJ": {
+                "total": 2,
+                "pass": 0,
+                "warn": 0,
+                "fail": 0,
+                "skip_env": 2
+            },
+            "SALUD": {
+                "total": 2,
+                "pass": 0,
+                "warn": 0,
+                "fail": 0,
+                "skip_env": 2
+            },
+            "HUMANIDADES": {
+                "total": 2,
+                "pass": 0,
+                "warn": 0,
+                "fail": 0,
+                "skip_env": 2
+            }
+        },
+        "duration_ms": 1527
+    },
+    "cases": [
+        {
+            "id_cv": "EXP-001",
+            "rama": "EXPERIMENTALES",
+            "perfil": "positivo",
+            "status": "SKIP_ENV",
+            "resultado_esperado": "apto",
+            "resultado_obtenido": "skip_env",
+            "diferencias": [
+                "No se pudo extraer texto del PDF con pdftotext y el OCR no está disponible. Instala/configura Tesseract y pdftoppm. pdftoppm_disponible=true, tesseract_disponible=false"
+            ],
+            "pipeline_error": "No se pudo extraer texto del PDF con pdftotext y el OCR no está disponible. Instala/configura Tesseract y pdftoppm. pdftoppm_disponible=true, tesseract_disponible=false"
+        },
+        {
+            "id_cv": "EXP-002",
+            "rama": "EXPERIMENTALES",
+            "perfil": "problematico",
+            "status": "SKIP_ENV",
+            "resultado_esperado": "revisar",
+            "resultado_obtenido": "skip_env",
+            "diferencias": [
+                "No se pudo extraer texto del PDF con pdftotext y el OCR no está disponible. Instala/configura Tesseract y pdftoppm. pdftoppm_disponible=true, tesseract_disponible=false"
+            ],
+            "pipeline_error": "No se pudo extraer texto del PDF con pdftotext y el OCR no está disponible. Instala/configura Tesseract y pdftoppm. pdftoppm_disponible=true, tesseract_disponible=false"
+        },
+        {
+            "id_cv": "TEC-001",
+            "rama": "TECNICAS",
+            "perfil": "positivo",
+            "status": "SKIP_ENV",
+            "resultado_esperado": "apto",
+            "resultado_obtenido": "skip_env",
+            "diferencias": [
+                "No se pudo extraer texto del PDF con pdftotext y el OCR no está disponible. Instala/configura Tesseract y pdftoppm. pdftoppm_disponible=true, tesseract_disponible=false"
+            ],
+            "pipeline_error": "No se pudo extraer texto del PDF con pdftotext y el OCR no está disponible. Instala/configura Tesseract y pdftoppm. pdftoppm_disponible=true, tesseract_disponible=false"
+        },
+        {
+            "id_cv": "TEC-002",
+            "rama": "TECNICAS",
+            "perfil": "problematico",
+            "status": "SKIP_ENV",
+            "resultado_esperado": "revisar",
+            "resultado_obtenido": "skip_env",
+            "diferencias": [
+                "No se pudo extraer texto del PDF con pdftotext y el OCR no está disponible. Instala/configura Tesseract y pdftoppm. pdftoppm_disponible=true, tesseract_disponible=false"
+            ],
+            "pipeline_error": "No se pudo extraer texto del PDF con pdftotext y el OCR no está disponible. Instala/configura Tesseract y pdftoppm. pdftoppm_disponible=true, tesseract_disponible=false"
+        },
+        {
+            "id_cv": "CSYJ-001",
+            "rama": "CSYJ",
+            "perfil": "positivo",
+            "status": "SKIP_ENV",
+            "resultado_esperado": "apto",
+            "resultado_obtenido": "skip_env",
+            "diferencias": [
+                "No se pudo extraer texto del PDF con pdftotext y el OCR no está disponible. Instala/configura Tesseract y pdftoppm. pdftoppm_disponible=true, tesseract_disponible=false"
+            ],
+            "pipeline_error": "No se pudo extraer texto del PDF con pdftotext y el OCR no está disponible. Instala/configura Tesseract y pdftoppm. pdftoppm_disponible=true, tesseract_disponible=false"
+        },
+        {
+            "id_cv": "CSYJ-002",
+            "rama": "CSYJ",
+            "perfil": "problematico",
+            "status": "SKIP_ENV",
+            "resultado_esperado": "revisar",
+            "resultado_obtenido": "skip_env",
+            "diferencias": [
+                "No se pudo extraer texto del PDF con pdftotext y el OCR no está disponible. Instala/configura Tesseract y pdftoppm. pdftoppm_disponible=true, tesseract_disponible=false"
+            ],
+            "pipeline_error": "No se pudo extraer texto del PDF con pdftotext y el OCR no está disponible. Instala/configura Tesseract y pdftoppm. pdftoppm_disponible=true, tesseract_disponible=false"
+        },
+        {
+            "id_cv": "SAL-001",
+            "rama": "SALUD",
+            "perfil": "positivo",
+            "status": "SKIP_ENV",
+            "resultado_esperado": "apto",
+            "resultado_obtenido": "skip_env",
+            "diferencias": [
+                "No se pudo extraer texto del PDF con pdftotext y el OCR no está disponible. Instala/configura Tesseract y pdftoppm. pdftoppm_disponible=true, tesseract_disponible=false"
+            ],
+            "pipeline_error": "No se pudo extraer texto del PDF con pdftotext y el OCR no está disponible. Instala/configura Tesseract y pdftoppm. pdftoppm_disponible=true, tesseract_disponible=false"
+        },
+        {
+            "id_cv": "SAL-002",
+            "rama": "SALUD",
+            "perfil": "problematico",
+            "status": "SKIP_ENV",
+            "resultado_esperado": "revisar",
+            "resultado_obtenido": "skip_env",
+            "diferencias": [
+                "No se pudo extraer texto del PDF con pdftotext y el OCR no está disponible. Instala/configura Tesseract y pdftoppm. pdftoppm_disponible=true, tesseract_disponible=false"
+            ],
+            "pipeline_error": "No se pudo extraer texto del PDF con pdftotext y el OCR no está disponible. Instala/configura Tesseract y pdftoppm. pdftoppm_disponible=true, tesseract_disponible=false"
+        },
+        {
+            "id_cv": "HUM-001",
+            "rama": "HUMANIDADES",
+            "perfil": "positivo",
+            "status": "SKIP_ENV",
+            "resultado_esperado": "apto",
+            "resultado_obtenido": "skip_env",
+            "diferencias": [
+                "No se pudo extraer texto del PDF con pdftotext y el OCR no está disponible. Instala/configura Tesseract y pdftoppm. pdftoppm_disponible=true, tesseract_disponible=false"
+            ],
+            "pipeline_error": "No se pudo extraer texto del PDF con pdftotext y el OCR no está disponible. Instala/configura Tesseract y pdftoppm. pdftoppm_disponible=true, tesseract_disponible=false"
+        },
+        {
+            "id_cv": "HUM-002",
+            "rama": "HUMANIDADES",
+            "perfil": "problematico",
+            "status": "SKIP_ENV",
+            "resultado_esperado": "revisar",
+            "resultado_obtenido": "skip_env",
+            "diferencias": [
+                "No se pudo extraer texto del PDF con pdftotext y el OCR no está disponible. Instala/configura Tesseract y pdftoppm. pdftoppm_disponible=true, tesseract_disponible=false"
+            ],
+            "pipeline_error": "No se pudo extraer texto del PDF con pdftotext y el OCR no está disponible. Instala/configura Tesseract y pdftoppm. pdftoppm_disponible=true, tesseract_disponible=false"
+        }
+    ]
+}

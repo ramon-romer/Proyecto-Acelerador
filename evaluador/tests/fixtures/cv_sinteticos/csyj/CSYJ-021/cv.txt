@@ -1,0 +1,36 @@
+id_cv: CSYJ-021
+rama: CSYJ
+perfil: positivo
+nombre_ficticio: Teo Soler Prado
+orcid_prueba: 1021-2021-3021-4021
+resumen_perfil: Perfil CSYJ con equilibrio en investigacion social/juridica y docencia.
+
+formacion_academica:
+- Doctorado en Politicas Publicas (2014).
+- Licenciatura en Derecho (2009).
+
+docencia:
+- 210 horas en Sociologia Juridica y Metodologia de Investigacion.
+- Direccion de 3 TFG.
+
+publicaciones:
+- Articulo indexado en revista de sociologia del derecho (SJR Q2).
+- Capitulo doctrinal en libro colectivo sobre regulacion digital.
+- Comentario jurisprudencial en revista juridica especializada.
+
+proyectos:
+- Investigadora principal en proyecto de inclusion y acceso a justicia (2021-2024).
+
+congresos:
+- Ponencia en congreso de ciencias sociales aplicadas (2024).
+
+estancias:
+- Estancia corta de investigacion en instituto de politicas comparadas.
+
+transferencia_patentes:
+- Informe tecnico para administracion publica sobre normativa digital.
+
+otros_meritos:
+- Coordinacion de clinica juridica universitaria.
+
+problemas_intencionados:

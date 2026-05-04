@@ -1,0 +1,36 @@
+id_cv: EXP-039
+rama: EXPERIMENTALES
+perfil: negativo
+nombre_ficticio: Dario Iglesias Mendez
+orcid_prueba: 1039-2039-3039-4039
+resumen_perfil: Perfil con buena docencia pero baja investigacion y transferencia.
+
+formacion_academica:
+- Doctorado en Biologia Molecular (2015).
+- Master en Tecnicas Avanzadas de Laboratorio (2011).
+
+docencia:
+- 360 horas docentes con evaluacion excelente, pero investigacion minima.
+
+publicaciones:
+- Sin publicaciones indexadas verificables.
+- Articulo sin cuartil informado en la fuente.
+
+proyectos:
+- Sin proyectos competitivos cerrados.
+
+congresos:
+- Ponencia oral en congreso internacional de biotecnologia (2024).
+- Poster en simposio de bioquimica aplicada (2023).
+
+estancias:
+- Sin estancias acreditadas.
+
+transferencia_patentes:
+- Sin transferencia acreditable.
+
+otros_meritos:
+- Revisora ad hoc de revista experimental indexada.
+
+problemas_intencionados:
+- Publicaciones sin cuartil declarado.

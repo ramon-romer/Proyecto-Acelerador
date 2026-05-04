@@ -113,6 +113,17 @@ En modo consola legible, incluir:
 5. Detalle por check con estado, optional/obligatorio y duracion.
 6. Observaciones y errores reales.
 
+## Integracion megatest CV sinteticos
+En niveles `medio|agresivo|extremo` y alcance `evaluador|ANECA`, la bateria incluye un check opcional:
+- `ANECA synthetic CV megatest (50 por rama)`
+- Comando interno: `php evaluador/tests/tools/run_synthetic_cv_megatest.php --nightly --strict`
+- Produce reportes en `reports/test-validation/<timestamp>-synthetic-cv-megatest/`.
+
+## Runner PDF/OCR sintetico (manual y opt-in)
+- Comando: `php evaluador/tests/run_synthetic_cv_pdf_pipeline.php`
+- Dataset: `evaluador/tests/fixtures/cv_sinteticos_pdf/`
+- Este check no se ejecuta por defecto en la bateria general porque depende del entorno (`pdftotext`/OCR) y puede devolver `SKIP_ENV`.
+
 ## Referencia operativa
 Usar la matriz de apoyo:
 `references/matriz-nivel-ventana.md`

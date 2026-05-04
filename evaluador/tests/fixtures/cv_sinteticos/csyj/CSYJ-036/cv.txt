@@ -1,0 +1,39 @@
+id_cv: CSYJ-036
+rama: CSYJ
+perfil: frontera
+nombre_ficticio: Alex Rivas Prado
+orcid_prueba: 1036-2036-3036-4036
+resumen_perfil: Perfil frontera con indicadores mixtos entre investigacion y docencia.
+
+formacion_academica:
+- Doctorado en Politicas Publicas (2014).
+- Licenciatura en Derecho (2009).
+
+docencia:
+- 320 horas de docencia con excelentes encuestas estudiantiles.
+- Docencia suficiente pero heterogenea por cursos.
+
+publicaciones:
+- Monografia anunciada sin ISBN verificable.
+- Articulo juridico sin fecha clara (2023/2024?).
+- Articulo adicional con metrica parcial y cuartil no confirmado.
+
+proyectos:
+- Participacion no acreditada en red tematica regional.
+
+congresos:
+- Ponencia en congreso de ciencias sociales aplicadas (2024).
+
+estancias:
+- Estancia corta de investigacion en instituto de politicas comparadas.
+
+transferencia_patentes:
+- Informe tecnico para administracion publica sobre normativa digital.
+
+otros_meritos:
+- Coordinacion de clinica juridica universitaria.
+- Alias de seccion detectado: Produccion Cientifica / Impacto.
+
+problemas_intencionados:
+- Secciones con nombres alternativos y no estandar.
+- Campos con puntuacion y separadores heterogeneos.

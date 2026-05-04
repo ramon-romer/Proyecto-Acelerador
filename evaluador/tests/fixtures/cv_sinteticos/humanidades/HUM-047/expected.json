@@ -1,0 +1,20 @@
+{
+    "id_cv": "HUM-047",
+    "rama": "HUMANIDADES",
+    "perfil": "negativo",
+    "resultado_esperado": "no_apto",
+    "orcid_esperado": "1047-2047-3047-4047",
+    "publicaciones_esperadas_total": 1,
+    "publicaciones_relevantes_esperadas": 1,
+    "proyectos_esperados": 1,
+    "docencia_esperada": 1,
+    "congresos_esperados": 1,
+    "estancias_esperadas": 1,
+    "transferencia_esperada": 1,
+    "problemas_intencionados": [
+        "Meritos en orden no convencional."
+    ],
+    "observaciones": "Caso sintetico generado automaticamente para validar parser/evaluador.",
+    "nivel_confianza_esperado": "alto",
+    "stress_tag": "orden_raro_secciones"
+}

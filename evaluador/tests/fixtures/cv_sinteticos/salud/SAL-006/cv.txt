@@ -1,0 +1,39 @@
+id_cv: SAL-006
+rama: SALUD
+perfil: problematico
+nombre_ficticio: Mara Pardo Blasco
+orcid_prueba: 1006-2006-3006-4011
+resumen_perfil: Perfil con investigacion biomedica alta, pero docencia insuficiente y trazabilidad irregular.
+
+formacion_academica:
+- Doctorado en Ciencias de la Salud (2017).
+- Master en Epidemiologia Clinica (2013).
+
+docencia:
+- 36 horas docentes anuales sin continuidad longitudinal.
+
+publicaciones:
+- Articulo biomedico Q1 sobre diagnostico molecular sintetico. DOI:10.3456/salud.2025.401
+- Articulo Q1 en medicina traslacional con colaboracion multicentrica ficticia. DOI:10.3456/salud.2024.299
+
+proyectos:
+- Estudio observacional declarado sin protocolo fechado.
+
+congresos:
+- Comunicacion oral en congreso nacional de medicina interna (2023).
+
+estancias:
+- Estancia de 3 meses en unidad de investigacion traslacional (2022).
+
+transferencia_patentes:
+- Guia de practica clinica institucional (documento tecnico interno).
+
+otros_meritos:
+- Participacion en comision de calidad asistencial universitaria.
+- Patron de estres: buena investigacion pero mala docencia.
+- Narrativa extensa: candidata relata logros sin separar evidencias por bloques.
+
+problemas_intencionados:
+- Bloques narrativos extensos sin estructura clara.
+- Requiere revision manual por ambiguedad general del expediente.
+- Campos con puntuacion y separadores heterogeneos.

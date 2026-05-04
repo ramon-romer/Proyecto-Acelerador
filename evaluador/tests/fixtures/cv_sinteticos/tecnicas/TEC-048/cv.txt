@@ -1,0 +1,39 @@
+id_cv: TEC-048
+rama: TECNICAS
+perfil: frontera
+nombre_ficticio: Dario Iglesias Mendez
+orcid_prueba: 1048-2048-3048-4048
+resumen_perfil: Perfil frontera con indicadores mixtos entre investigacion y docencia.
+
+formacion_academica:
+- Doctorado en Ingenieria de Sistemas (2016).
+- Master en Inteligencia Artificial Industrial (2012).
+
+docencia:
+- 400 horas de docencia muy valorada, pero con baja produccion investigadora.
+- Docencia suficiente pero heterogenea por cursos.
+
+publicaciones:
+- Resumen extendido en workshop local sin indexacion.
+- Publicacion duplicada del mismo paper en dos listados internos.
+- Articulo adicional con metrica parcial y cuartil no confirmado.
+- Resumen extendido en workshop local sin indexacion.
+
+proyectos:
+- Proyecto de transferencia cancelado en fase de pruebas.
+
+congresos:
+- Comunicacion en congreso IEEE de automatizacion (2023).
+
+estancias:
+- Estancia de 2 meses en centro de prototipado europeo (2020).
+
+transferencia_patentes:
+- Repositorio software sin licencia clara ni evidencia de adopcion.
+
+otros_meritos:
+- Mentoria de equipo de competicion de robotica universitaria.
+
+problemas_intencionados:
+- Publicaciones duplicadas en listado.
+- Campos con puntuacion y separadores heterogeneos.

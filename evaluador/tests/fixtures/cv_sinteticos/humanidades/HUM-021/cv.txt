@@ -1,0 +1,36 @@
+id_cv: HUM-021
+rama: HUMANIDADES
+perfil: positivo
+nombre_ficticio: Dario Iglesias Cano
+orcid_prueba: 1021-2021-3021-4021
+resumen_perfil: Perfil de humanidades con libros, capitulos y proyectos culturales.
+
+formacion_academica:
+- Doctorado en Historia del Arte (2012).
+- Master en Gestion Cultural (2008).
+
+docencia:
+- 260 horas en Historia del Arte Contemporaneo.
+- Direccion de 4 TFG y 1 TFM.
+
+publicaciones:
+- Libro academico sobre patrimonio visual urbano (ISBN ficticio).
+- Capitulo en volumen internacional de estudios humanisticos.
+- Articulo en revista de historia cultural indexada.
+
+proyectos:
+- IP en proyecto cultural de archivo digital museistico (2020-2024).
+
+congresos:
+- Ponencia en congreso internacional de estudios visuales (2024).
+
+estancias:
+- Estancia de investigacion en museo europeo (2019).
+
+transferencia_patentes:
+- Comisariado de exposicion universitaria con catalogo tecnico.
+
+otros_meritos:
+- Coordinacion de ciclo de seminarios de patrimonio inmaterial.
+
+problemas_intencionados:

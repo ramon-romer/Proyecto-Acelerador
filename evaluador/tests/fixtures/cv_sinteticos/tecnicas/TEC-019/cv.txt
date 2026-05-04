@@ -1,0 +1,35 @@
+id_cv: TEC-019
+rama: TECNICAS
+perfil: negativo
+nombre_ficticio: Noa Rivas Vega
+orcid_prueba: 1019-2019-3019-4019
+resumen_perfil: Perfil con buena docencia pero baja investigacion y transferencia.
+
+formacion_academica:
+- Doctorado en Ingenieria de Sistemas (2016).
+- Master en Inteligencia Artificial Industrial (2012).
+
+docencia:
+- 360 horas docentes con evaluacion excelente, pero investigacion minima.
+
+publicaciones:
+- Sin publicaciones indexadas verificables.
+
+proyectos:
+- Sin proyectos competitivos cerrados.
+
+congresos:
+- Comunicacion en congreso IEEE de automatizacion (2023).
+
+estancias:
+- Sin estancias acreditadas.
+
+transferencia_patentes:
+- Sin transferencia acreditable.
+
+otros_meritos:
+- Mentoria de equipo de competicion de robotica universitaria.
+- Tabla textual: ANO | ITEM | TIPO | INDICIO
+
+problemas_intencionados:
+- Tabla simulada en texto plano.

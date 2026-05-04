@@ -1,0 +1,6 @@
+source_dataset: evaluador/tests/fixtures/cv_sinteticos
+source_case_path: experimentales/EXP-001
+source_cv_cvn_like: C:/Users/basil/Documents/GitHub/Proyecto-Acelerador/evaluador/tests/fixtures/cv_sinteticos/experimentales/EXP-001/cv_cvn_like.txt
+selected_id_cv: EXP-001
+selected_rama: EXPERIMENTALES
+selected_perfil: positivo

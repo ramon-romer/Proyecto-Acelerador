@@ -1,0 +1,35 @@
+id_cv: SAL-043
+rama: SALUD
+perfil: negativo
+nombre_ficticio: Nora Campos Prado
+orcid_prueba: 1043-2043-3043-4043
+resumen_perfil: Perfil con buena docencia pero baja investigacion y transferencia.
+
+formacion_academica:
+- Doctorado en Ciencias de la Salud (2017).
+- Master en Epidemiologia Clinica (2013).
+
+docencia:
+- 360 horas docentes con evaluacion excelente, pero investigacion minima.
+
+publicaciones:
+- Sin publicaciones indexadas verificables.
+- Registro con DOI incompleto: 10.9999/
+
+proyectos:
+- Sin proyectos competitivos cerrados.
+
+congresos:
+- Comunicacion oral en congreso nacional de medicina interna (2023).
+
+estancias:
+- Sin estancias acreditadas.
+
+transferencia_patentes:
+- Sin transferencia acreditable.
+
+otros_meritos:
+- Participacion en comision de calidad asistencial universitaria.
+
+problemas_intencionados:
+- DOI incompleto en una publicacion.

@@ -1,0 +1,21 @@
+{
+    "id_cv": "EXP-032",
+    "rama": "EXPERIMENTALES",
+    "perfil": "frontera",
+    "resultado_esperado": "frontera",
+    "orcid_esperado": "1032-2032-3032-4032",
+    "publicaciones_esperadas_total": 4,
+    "publicaciones_relevantes_esperadas": 0,
+    "proyectos_esperados": 1,
+    "docencia_esperada": 2,
+    "congresos_esperados": 2,
+    "estancias_esperadas": 1,
+    "transferencia_esperada": 1,
+    "problemas_intencionados": [
+        "DOI incompleto en una publicacion.",
+        "Campos con puntuacion y separadores heterogeneos."
+    ],
+    "observaciones": "Caso sintetico generado automaticamente para validar parser/evaluador.",
+    "nivel_confianza_esperado": "medio",
+    "stress_tag": "doi_incompleto"
+}

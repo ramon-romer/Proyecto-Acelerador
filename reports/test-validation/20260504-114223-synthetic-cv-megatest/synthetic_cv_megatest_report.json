@@ -1,0 +1,648 @@
+{
+    "summary": {
+        "suite": "synthetic-cv-megatest",
+        "timestamp": "2026-05-04T11:42:23+02:00",
+        "dataset_dir": "C:\\Users\\basil\\Documents\\GitHub\\Proyecto-Acelerador\\evaluador\\tests\\fixtures\\cv_sinteticos",
+        "generated": true,
+        "per_rama": 5,
+        "seed": 20260504,
+        "strict": false,
+        "total_cases": 25,
+        "resultado_match": 12,
+        "resultado_match_rate": 0.48,
+        "full_match": 3,
+        "full_match_rate": 0.12,
+        "field_match_rate": 0.905,
+        "duration_ms": 222,
+        "by_branch": {
+            "EXPERIMENTALES": {
+                "total": 5,
+                "resultado_match": 2,
+                "full_match": 0
+            },
+            "TECNICAS": {
+                "total": 5,
+                "resultado_match": 3,
+                "full_match": 0
+            },
+            "CSYJ": {
+                "total": 5,
+                "resultado_match": 2,
+                "full_match": 0
+            },
+            "SALUD": {
+                "total": 5,
+                "resultado_match": 3,
+                "full_match": 3
+            },
+            "HUMANIDADES": {
+                "total": 5,
+                "resultado_match": 2,
+                "full_match": 0
+            }
+        },
+        "by_profile": {
+            "positivo": {
+                "total": 10,
+                "resultado_match": 10,
+                "full_match": 2
+            },
+            "problematico": {
+                "total": 5,
+                "resultado_match": 2,
+                "full_match": 1
+            },
+            "negativo": {
+                "total": 5,
+                "resultado_match": 0,
+                "full_match": 0
+            },
+            "frontera": {
+                "total": 5,
+                "resultado_match": 0,
+                "full_match": 0
+            }
+        }
+    },
+    "cases": [
+        {
+            "id_cv": "EXP-001",
+            "rama": "EXPERIMENTALES",
+            "perfil": "positivo",
+            "resultado_esperado": "apto",
+            "resultado_obtenido": "apto",
+            "resultado_match": true,
+            "full_match": false,
+            "mismatches": [
+                "publicaciones_relevantes_esperadas: esperado=2 obtenido=3"
+            ],
+            "obtained": {
+                "orcid_obtenido": "1001-2001-3001-4001",
+                "publicaciones_esperadas_total": 3,
+                "publicaciones_relevantes_esperadas": 3,
+                "proyectos_esperados": 1,
+                "docencia_esperada": 2,
+                "congresos_esperados": 2,
+                "estancias_esperadas": 1,
+                "transferencia_esperada": 1,
+                "resultado_obtenido": "apto"
+            }
+        },
+        {
+            "id_cv": "EXP-002",
+            "rama": "EXPERIMENTALES",
+            "perfil": "problematico",
+            "resultado_esperado": "revisar",
+            "resultado_obtenido": "apto",
+            "resultado_match": false,
+            "full_match": false,
+            "mismatches": [
+                "publicaciones_relevantes_esperadas: esperado=0 obtenido=3",
+                "resultado_esperado: esperado=revisar obtenido=apto"
+            ],
+            "obtained": {
+                "orcid_obtenido": "1002-2002-3002-4007",
+                "publicaciones_esperadas_total": 3,
+                "publicaciones_relevantes_esperadas": 3,
+                "proyectos_esperados": 1,
+                "docencia_esperada": 1,
+                "congresos_esperados": 2,
+                "estancias_esperadas": 1,
+                "transferencia_esperada": 1,
+                "resultado_obtenido": "apto"
+            }
+        },
+        {
+            "id_cv": "EXP-003",
+            "rama": "EXPERIMENTALES",
+            "perfil": "negativo",
+            "resultado_esperado": "no_apto",
+            "resultado_obtenido": "apto",
+            "resultado_match": false,
+            "full_match": false,
+            "mismatches": [
+                "publicaciones_relevantes_esperadas: esperado=1 obtenido=2",
+                "resultado_esperado: esperado=no_apto obtenido=apto"
+            ],
+            "obtained": {
+                "orcid_obtenido": "1003-2003-3003-4003",
+                "publicaciones_esperadas_total": 2,
+                "publicaciones_relevantes_esperadas": 2,
+                "proyectos_esperados": 1,
+                "docencia_esperada": 1,
+                "congresos_esperados": 2,
+                "estancias_esperadas": 1,
+                "transferencia_esperada": 1,
+                "resultado_obtenido": "apto"
+            }
+        },
+        {
+            "id_cv": "EXP-004",
+            "rama": "EXPERIMENTALES",
+            "perfil": "frontera",
+            "resultado_esperado": "frontera",
+            "resultado_obtenido": "apto",
+            "resultado_match": false,
+            "full_match": false,
+            "mismatches": [
+                "publicaciones_relevantes_esperadas: esperado=0 obtenido=3",
+                "resultado_esperado: esperado=frontera obtenido=apto"
+            ],
+            "obtained": {
+                "orcid_obtenido": "1004-2004-3004-4004",
+                "publicaciones_esperadas_total": 3,
+                "publicaciones_relevantes_esperadas": 3,
+                "proyectos_esperados": 1,
+                "docencia_esperada": 2,
+                "congresos_esperados": 2,
+                "estancias_esperadas": 1,
+                "transferencia_esperada": 1,
+                "resultado_obtenido": "apto"
+            }
+        },
+        {
+            "id_cv": "EXP-005",
+            "rama": "EXPERIMENTALES",
+            "perfil": "positivo",
+            "resultado_esperado": "apto",
+            "resultado_obtenido": "apto",
+            "resultado_match": true,
+            "full_match": false,
+            "mismatches": [
+                "publicaciones_relevantes_esperadas: esperado=2 obtenido=3"
+            ],
+            "obtained": {
+                "orcid_obtenido": "1005-2005-3005-4005",
+                "publicaciones_esperadas_total": 3,
+                "publicaciones_relevantes_esperadas": 3,
+                "proyectos_esperados": 1,
+                "docencia_esperada": 2,
+                "congresos_esperados": 2,
+                "estancias_esperadas": 1,
+                "transferencia_esperada": 1,
+                "resultado_obtenido": "apto"
+            }
+        },
+        {
+            "id_cv": "TEC-001",
+            "rama": "TECNICAS",
+            "perfil": "positivo",
+            "resultado_esperado": "apto",
+            "resultado_obtenido": "apto",
+            "resultado_match": true,
+            "full_match": false,
+            "mismatches": [
+                "publicaciones_relevantes_esperadas: esperado=0 obtenido=2"
+            ],
+            "obtained": {
+                "orcid_obtenido": "1001-2001-3001-4001",
+                "publicaciones_esperadas_total": 2,
+                "publicaciones_relevantes_esperadas": 2,
+                "proyectos_esperados": 2,
+                "docencia_esperada": 2,
+                "congresos_esperados": 1,
+                "estancias_esperadas": 1,
+                "transferencia_esperada": 1,
+                "resultado_obtenido": "apto"
+            }
+        },
+        {
+            "id_cv": "TEC-002",
+            "rama": "TECNICAS",
+            "perfil": "problematico",
+            "resultado_esperado": "revisar",
+            "resultado_obtenido": "revisar",
+            "resultado_match": true,
+            "full_match": false,
+            "mismatches": [
+                "publicaciones_relevantes_esperadas: esperado=0 obtenido=2"
+            ],
+            "obtained": {
+                "orcid_obtenido": "0000-1111-22X2",
+                "publicaciones_esperadas_total": 2,
+                "publicaciones_relevantes_esperadas": 2,
+                "proyectos_esperados": 1,
+                "docencia_esperada": 1,
+                "congresos_esperados": 1,
+                "estancias_esperadas": 1,
+                "transferencia_esperada": 1,
+                "resultado_obtenido": "revisar"
+            }
+        },
+        {
+            "id_cv": "TEC-003",
+            "rama": "TECNICAS",
+            "perfil": "negativo",
+            "resultado_esperado": "no_apto",
+            "resultado_obtenido": "apto",
+            "resultado_match": false,
+            "full_match": false,
+            "mismatches": [
+                "resultado_esperado: esperado=no_apto obtenido=apto"
+            ],
+            "obtained": {
+                "orcid_obtenido": "1003-2003-3003-4003",
+                "publicaciones_esperadas_total": 2,
+                "publicaciones_relevantes_esperadas": 2,
+                "proyectos_esperados": 1,
+                "docencia_esperada": 1,
+                "congresos_esperados": 1,
+                "estancias_esperadas": 1,
+                "transferencia_esperada": 1,
+                "resultado_obtenido": "apto"
+            }
+        },
+        {
+            "id_cv": "TEC-004",
+            "rama": "TECNICAS",
+            "perfil": "frontera",
+            "resultado_esperado": "frontera",
+            "resultado_obtenido": "apto",
+            "resultado_match": false,
+            "full_match": false,
+            "mismatches": [
+                "publicaciones_relevantes_esperadas: esperado=0 obtenido=3",
+                "resultado_esperado: esperado=frontera obtenido=apto"
+            ],
+            "obtained": {
+                "orcid_obtenido": "1004-2004-3004-4004",
+                "publicaciones_esperadas_total": 3,
+                "publicaciones_relevantes_esperadas": 3,
+                "proyectos_esperados": 1,
+                "docencia_esperada": 2,
+                "congresos_esperados": 1,
+                "estancias_esperadas": 1,
+                "transferencia_esperada": 1,
+                "resultado_obtenido": "apto"
+            }
+        },
+        {
+            "id_cv": "TEC-005",
+            "rama": "TECNICAS",
+            "perfil": "positivo",
+            "resultado_esperado": "apto",
+            "resultado_obtenido": "apto",
+            "resultado_match": true,
+            "full_match": false,
+            "mismatches": [
+                "publicaciones_relevantes_esperadas: esperado=0 obtenido=2"
+            ],
+            "obtained": {
+                "orcid_obtenido": "1005-2005-3005-4005",
+                "publicaciones_esperadas_total": 2,
+                "publicaciones_relevantes_esperadas": 2,
+                "proyectos_esperados": 2,
+                "docencia_esperada": 2,
+                "congresos_esperados": 1,
+                "estancias_esperadas": 1,
+                "transferencia_esperada": 1,
+                "resultado_obtenido": "apto"
+            }
+        },
+        {
+            "id_cv": "CSYJ-001",
+            "rama": "CSYJ",
+            "perfil": "positivo",
+            "resultado_esperado": "apto",
+            "resultado_obtenido": "apto",
+            "resultado_match": true,
+            "full_match": false,
+            "mismatches": [
+                "publicaciones_relevantes_esperadas: esperado=1 obtenido=3"
+            ],
+            "obtained": {
+                "orcid_obtenido": "1001-2001-3001-4001",
+                "publicaciones_esperadas_total": 3,
+                "publicaciones_relevantes_esperadas": 3,
+                "proyectos_esperados": 1,
+                "docencia_esperada": 2,
+                "congresos_esperados": 1,
+                "estancias_esperadas": 1,
+                "transferencia_esperada": 1,
+                "resultado_obtenido": "apto"
+            }
+        },
+        {
+            "id_cv": "CSYJ-002",
+            "rama": "CSYJ",
+            "perfil": "problematico",
+            "resultado_esperado": "revisar",
+            "resultado_obtenido": "apto",
+            "resultado_match": false,
+            "full_match": false,
+            "mismatches": [
+                "publicaciones_relevantes_esperadas: esperado=0 obtenido=3",
+                "resultado_esperado: esperado=revisar obtenido=apto"
+            ],
+            "obtained": {
+                "orcid_obtenido": "1002-2002-3002-4007",
+                "publicaciones_esperadas_total": 3,
+                "publicaciones_relevantes_esperadas": 3,
+                "proyectos_esperados": 1,
+                "docencia_esperada": 1,
+                "congresos_esperados": 1,
+                "estancias_esperadas": 1,
+                "transferencia_esperada": 1,
+                "resultado_obtenido": "apto"
+            }
+        },
+        {
+            "id_cv": "CSYJ-003",
+            "rama": "CSYJ",
+            "perfil": "negativo",
+            "resultado_esperado": "no_apto",
+            "resultado_obtenido": "frontera",
+            "resultado_match": false,
+            "full_match": false,
+            "mismatches": [
+                "resultado_esperado: esperado=no_apto obtenido=frontera"
+            ],
+            "obtained": {
+                "orcid_obtenido": "1003-2003-3003-4003",
+                "publicaciones_esperadas_total": 1,
+                "publicaciones_relevantes_esperadas": 1,
+                "proyectos_esperados": 1,
+                "docencia_esperada": 1,
+                "congresos_esperados": 1,
+                "estancias_esperadas": 1,
+                "transferencia_esperada": 1,
+                "resultado_obtenido": "frontera"
+            }
+        },
+        {
+            "id_cv": "CSYJ-004",
+            "rama": "CSYJ",
+            "perfil": "frontera",
+            "resultado_esperado": "frontera",
+            "resultado_obtenido": "apto",
+            "resultado_match": false,
+            "full_match": false,
+            "mismatches": [
+                "publicaciones_relevantes_esperadas: esperado=0 obtenido=3",
+                "resultado_esperado: esperado=frontera obtenido=apto"
+            ],
+            "obtained": {
+                "orcid_obtenido": "1004-2004-3004-4004",
+                "publicaciones_esperadas_total": 3,
+                "publicaciones_relevantes_esperadas": 3,
+                "proyectos_esperados": 1,
+                "docencia_esperada": 2,
+                "congresos_esperados": 1,
+                "estancias_esperadas": 1,
+                "transferencia_esperada": 1,
+                "resultado_obtenido": "apto"
+            }
+        },
+        {
+            "id_cv": "CSYJ-005",
+            "rama": "CSYJ",
+            "perfil": "positivo",
+            "resultado_esperado": "apto",
+            "resultado_obtenido": "apto",
+            "resultado_match": true,
+            "full_match": false,
+            "mismatches": [
+                "publicaciones_relevantes_esperadas: esperado=1 obtenido=3"
+            ],
+            "obtained": {
+                "orcid_obtenido": "1005-2005-3005-4005",
+                "publicaciones_esperadas_total": 3,
+                "publicaciones_relevantes_esperadas": 3,
+                "proyectos_esperados": 1,
+                "docencia_esperada": 2,
+                "congresos_esperados": 1,
+                "estancias_esperadas": 1,
+                "transferencia_esperada": 1,
+                "resultado_obtenido": "apto"
+            }
+        },
+        {
+            "id_cv": "SAL-001",
+            "rama": "SALUD",
+            "perfil": "positivo",
+            "resultado_esperado": "apto",
+            "resultado_obtenido": "apto",
+            "resultado_match": true,
+            "full_match": true,
+            "mismatches": [],
+            "obtained": {
+                "orcid_obtenido": "1001-2001-3001-4001",
+                "publicaciones_esperadas_total": 2,
+                "publicaciones_relevantes_esperadas": 2,
+                "proyectos_esperados": 1,
+                "docencia_esperada": 2,
+                "congresos_esperados": 1,
+                "estancias_esperadas": 1,
+                "transferencia_esperada": 1,
+                "resultado_obtenido": "apto"
+            }
+        },
+        {
+            "id_cv": "SAL-002",
+            "rama": "SALUD",
+            "perfil": "problematico",
+            "resultado_esperado": "revisar",
+            "resultado_obtenido": "revisar",
+            "resultado_match": true,
+            "full_match": true,
+            "mismatches": [],
+            "obtained": {
+                "orcid_obtenido": null,
+                "publicaciones_esperadas_total": 2,
+                "publicaciones_relevantes_esperadas": 2,
+                "proyectos_esperados": 1,
+                "docencia_esperada": 1,
+                "congresos_esperados": 1,
+                "estancias_esperadas": 1,
+                "transferencia_esperada": 1,
+                "resultado_obtenido": "revisar"
+            }
+        },
+        {
+            "id_cv": "SAL-003",
+            "rama": "SALUD",
+            "perfil": "negativo",
+            "resultado_esperado": "no_apto",
+            "resultado_obtenido": "frontera",
+            "resultado_match": false,
+            "full_match": false,
+            "mismatches": [
+                "resultado_esperado: esperado=no_apto obtenido=frontera"
+            ],
+            "obtained": {
+                "orcid_obtenido": "1003-2003-3003-4003",
+                "publicaciones_esperadas_total": 1,
+                "publicaciones_relevantes_esperadas": 1,
+                "proyectos_esperados": 1,
+                "docencia_esperada": 1,
+                "congresos_esperados": 1,
+                "estancias_esperadas": 1,
+                "transferencia_esperada": 1,
+                "resultado_obtenido": "frontera"
+            }
+        },
+        {
+            "id_cv": "SAL-004",
+            "rama": "SALUD",
+            "perfil": "frontera",
+            "resultado_esperado": "frontera",
+            "resultado_obtenido": "apto",
+            "resultado_match": false,
+            "full_match": false,
+            "mismatches": [
+                "publicaciones_relevantes_esperadas: esperado=0 obtenido=4",
+                "resultado_esperado: esperado=frontera obtenido=apto"
+            ],
+            "obtained": {
+                "orcid_obtenido": "1004-2004-3004-4004",
+                "publicaciones_esperadas_total": 4,
+                "publicaciones_relevantes_esperadas": 4,
+                "proyectos_esperados": 1,
+                "docencia_esperada": 2,
+                "congresos_esperados": 1,
+                "estancias_esperadas": 1,
+                "transferencia_esperada": 1,
+                "resultado_obtenido": "apto"
+            }
+        },
+        {
+            "id_cv": "SAL-005",
+            "rama": "SALUD",
+            "perfil": "positivo",
+            "resultado_esperado": "apto",
+            "resultado_obtenido": "apto",
+            "resultado_match": true,
+            "full_match": true,
+            "mismatches": [],
+            "obtained": {
+                "orcid_obtenido": "1005-2005-3005-4005",
+                "publicaciones_esperadas_total": 2,
+                "publicaciones_relevantes_esperadas": 2,
+                "proyectos_esperados": 1,
+                "docencia_esperada": 2,
+                "congresos_esperados": 1,
+                "estancias_esperadas": 1,
+                "transferencia_esperada": 1,
+                "resultado_obtenido": "apto"
+            }
+        },
+        {
+            "id_cv": "HUM-001",
+            "rama": "HUMANIDADES",
+            "perfil": "positivo",
+            "resultado_esperado": "apto",
+            "resultado_obtenido": "apto",
+            "resultado_match": true,
+            "full_match": false,
+            "mismatches": [
+                "publicaciones_relevantes_esperadas: esperado=1 obtenido=3"
+            ],
+            "obtained": {
+                "orcid_obtenido": "1001-2001-3001-4001",
+                "publicaciones_esperadas_total": 3,
+                "publicaciones_relevantes_esperadas": 3,
+                "proyectos_esperados": 1,
+                "docencia_esperada": 2,
+                "congresos_esperados": 1,
+                "estancias_esperadas": 1,
+                "transferencia_esperada": 1,
+                "resultado_obtenido": "apto"
+            }
+        },
+        {
+            "id_cv": "HUM-002",
+            "rama": "HUMANIDADES",
+            "perfil": "problematico",
+            "resultado_esperado": "revisar",
+            "resultado_obtenido": "apto",
+            "resultado_match": false,
+            "full_match": false,
+            "mismatches": [
+                "publicaciones_relevantes_esperadas: esperado=0 obtenido=2",
+                "resultado_esperado: esperado=revisar obtenido=apto"
+            ],
+            "obtained": {
+                "orcid_obtenido": "1002-2002-3002-4007",
+                "publicaciones_esperadas_total": 2,
+                "publicaciones_relevantes_esperadas": 2,
+                "proyectos_esperados": 1,
+                "docencia_esperada": 1,
+                "congresos_esperados": 1,
+                "estancias_esperadas": 1,
+                "transferencia_esperada": 1,
+                "resultado_obtenido": "apto"
+            }
+        },
+        {
+            "id_cv": "HUM-003",
+            "rama": "HUMANIDADES",
+            "perfil": "negativo",
+            "resultado_esperado": "no_apto",
+            "resultado_obtenido": "apto",
+            "resultado_match": false,
+            "full_match": false,
+            "mismatches": [
+                "publicaciones_relevantes_esperadas: esperado=1 obtenido=2",
+                "resultado_esperado: esperado=no_apto obtenido=apto"
+            ],
+            "obtained": {
+                "orcid_obtenido": "1003-2003-3003-4003",
+                "publicaciones_esperadas_total": 2,
+                "publicaciones_relevantes_esperadas": 2,
+                "proyectos_esperados": 1,
+                "docencia_esperada": 1,
+                "congresos_esperados": 1,
+                "estancias_esperadas": 1,
+                "transferencia_esperada": 1,
+                "resultado_obtenido": "apto"
+            }
+        },
+        {
+            "id_cv": "HUM-004",
+            "rama": "HUMANIDADES",
+            "perfil": "frontera",
+            "resultado_esperado": "frontera",
+            "resultado_obtenido": "apto",
+            "resultado_match": false,
+            "full_match": false,
+            "mismatches": [
+                "publicaciones_relevantes_esperadas: esperado=0 obtenido=3",
+                "resultado_esperado: esperado=frontera obtenido=apto"
+            ],
+            "obtained": {
+                "orcid_obtenido": "1004-2004-3004-4004",
+                "publicaciones_esperadas_total": 3,
+                "publicaciones_relevantes_esperadas": 3,
+                "proyectos_esperados": 1,
+                "docencia_esperada": 2,
+                "congresos_esperados": 1,
+                "estancias_esperadas": 1,
+                "transferencia_esperada": 1,
+                "resultado_obtenido": "apto"
+            }
+        },
+        {
+            "id_cv": "HUM-005",
+            "rama": "HUMANIDADES",
+            "perfil": "positivo",
+            "resultado_esperado": "apto",
+            "resultado_obtenido": "apto",
+            "resultado_match": true,
+            "full_match": false,
+            "mismatches": [
+                "publicaciones_relevantes_esperadas: esperado=1 obtenido=3"
+            ],
+            "obtained": {
+                "orcid_obtenido": "1005-2005-3005-4005",
+                "publicaciones_esperadas_total": 3,
+                "publicaciones_relevantes_esperadas": 3,
+                "proyectos_esperados": 1,
+                "docencia_esperada": 2,
+                "congresos_esperados": 1,
+                "estancias_esperadas": 1,
+                "transferencia_esperada": 1,
+                "resultado_obtenido": "apto"
+            }
+        }
+    ]
+}

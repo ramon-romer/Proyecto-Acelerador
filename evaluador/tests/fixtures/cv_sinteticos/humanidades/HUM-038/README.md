@@ -1,0 +1,14 @@
+# Caso HUM-038
+
+- rama: `HUMANIDADES`
+- perfil: `problematico`
+- nombre_ficticio: `Lia Cortes Blasco`
+- orcid_prueba: `1038-2038-3038-4043`
+
+## Resumen
+Perfil de humanidades con meritos desordenados y ambiguos.
+
+## Archivos
+- `cv.txt`: curriculo sintetico en texto plano.
+- `cv_cvn_like.txt`: variante estructurada para extractor/pipeline.
+- `expected.json`: expectativas para validaciones del evaluador.

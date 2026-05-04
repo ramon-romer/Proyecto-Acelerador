@@ -1,0 +1,39 @@
+id_cv: TEC-034
+rama: TECNICAS
+perfil: problematico
+nombre_ficticio: Alex Navarro Blasco
+orcid_prueba: 1034-2034-3034-4039
+resumen_perfil: Perfil con docencia fuerte y produccion investigadora insuficiente para rama tecnica.
+
+formacion_academica:
+- Doctorado en Ingenieria de Sistemas (2016).
+- Master en Inteligencia Artificial Industrial (2012).
+
+docencia:
+- 400 horas de docencia muy valorada, pero con baja produccion investigadora.
+
+publicaciones:
+- Resumen extendido en workshop local sin indexacion.
+- Publicacion duplicada del mismo paper en dos listados internos.
+
+proyectos:
+- Proyecto de transferencia cancelado en fase de pruebas.
+
+congresos:
+- Comunicacion en congreso IEEE de automatizacion (2023).
+
+estancias:
+- Estancia de 2 meses en centro de prototipado europeo (2020).
+
+transferencia_patentes:
+- Repositorio software sin licencia clara ni evidencia de adopcion.
+
+otros_meritos:
+- Mentoria de equipo de competicion de robotica universitaria.
+- Patron de estres: buena docencia pero investigacion limitada.
+- Tabla textual: ANO | ITEM | TIPO | INDICIO
+
+problemas_intencionados:
+- Tabla simulada en texto plano.
+- Requiere revision manual por ambiguedad general del expediente.
+- Campos con puntuacion y separadores heterogeneos.

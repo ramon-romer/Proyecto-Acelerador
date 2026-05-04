@@ -1,0 +1,6 @@
+source_dataset: evaluador/tests/fixtures/cv_sinteticos
+source_case_path: csyj/CSYJ-002
+source_cv_cvn_like: C:/Users/basil/Documents/GitHub/Proyecto-Acelerador/evaluador/tests/fixtures/cv_sinteticos/csyj/CSYJ-002/cv_cvn_like.txt
+selected_id_cv: CSYJ-002
+selected_rama: CSYJ
+selected_perfil: problematico

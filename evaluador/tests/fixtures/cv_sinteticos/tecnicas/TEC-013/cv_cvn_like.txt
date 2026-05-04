@@ -1,0 +1,98 @@
+DATOS GENERALES
+NOMBRE Mara Soler Segura
+ORCID 1013-2013-3013-4013
+RAMA TECNICAS
+PERFIL positivo
+
+Publicación
+TITULO Articulo tecnico indexado sobre edge AI en manufactura. DOI:10.2345/tec.2024.077
+NOMBRE Revista sintetica TECNICAS
+ISSN 1234-5610
+CALIDAD BASE SJR
+CALIDAD POSICION 
+AÑO 2021
+CALIDAD CITAS 8
+NUMERO AUTORES 2
+POSICION 1
+
+Publicación
+TITULO Paper en congreso CORE A sobre optimizacion de firmware industrial.
+NOMBRE Revista sintetica TECNICAS
+ISSN 1234-5611
+CALIDAD BASE SJR
+CALIDAD POSICION 
+AÑO 2022
+CALIDAD CITAS 9
+NUMERO AUTORES 3
+POSICION 2
+
+LIBROS Y CAPITULOS DE LIBRO
+Libros
+TITULO Produccion academica sintetica TECNICAS
+EDITORIAL Editorial de prueba
+
+PROYECTOS Y/O CONTRATOS DE INVESTIGACION
+Proyectos
+TITULO IP en proyecto I+D RETECH-PLANTA (2022-2025).
+ENTIDAD Agencia sintetica de investigacion
+FDESDE 2021-01-01
+FHASTA 2024-12-31
+MESES 36
+GRADO TIPO 10001
+GRADO OTROS IP
+APORTACION Coordinacion cientifica
+DEDICACION XX001
+CONV TIPO 09002
+CONV OTROS Nacional
+
+Proyectos
+TITULO Participacion en contrato con empresa automotriz.
+ENTIDAD Agencia sintetica de investigacion
+FDESDE 2021-01-01
+FHASTA 2024-12-31
+MESES 36
+GRADO TIPO 10001
+GRADO OTROS IP
+APORTACION Coordinacion cientifica
+DEDICACION XX001
+CONV TIPO 09002
+CONV OTROS Nacional
+
+TRANSFERENCIA TECNOLOGICA
+- Patente nacional de sistema de control predictivo (solicitud ficticia).
+
+CONGRESOS Y CONFERENCIAS CIENTIFICAS
+Congresos
+TITULO Comunicacion en congreso IEEE de automatizacion (2023).
+CONGRESO Evento sintetico 1
+ENTIDAD Sociedad academica sintetica
+LUGAR Madrid
+FCELEBRACION 2024-01-15
+
+ESTANCIAS EN CENTROS ESPAÑOLES Y EXTRANJEROS
+- Estancia de 2 meses en centro de prototipado europeo (2020).
+
+PUESTOS OCUPADOS Y DOCENCIA IMPARTIDA
+Docencia Impartida
+INSTITUCION Universidad sintetica
+ASIGNATURA 240 horas en Arquitectura de Computadores y Sistemas Embebidos.
+HORAS 240
+ESPECIFICAR grado
+DENOMINACION Profesor contratado doctor
+TIPO ASIGNATURA 15001
+
+Docencia Impartida
+INSTITUCION Universidad sintetica
+ASIGNATURA Coordinacion de laboratorio de prototipado.
+HORAS 60
+ESPECIFICAR grado
+DENOMINACION Profesor contratado doctor
+TIPO ASIGNATURA 15001
+
+FORMACION ACADEMICA
+- Doctorado en Ingenieria de Sistemas (2016).
+- Master en Inteligencia Artificial Industrial (2012).
+
+OTROS MERITOS
+- Mentoria de equipo de competicion de robotica universitaria.
+

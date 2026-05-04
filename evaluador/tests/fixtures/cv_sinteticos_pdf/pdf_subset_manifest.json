@@ -1,0 +1,118 @@
+{
+    "dataset_id": "aneca_cv_sinteticos_pdf_subset_v1",
+    "version": "1.0.0",
+    "generated_at": "2026-05-04T12:02:49+02:00",
+    "generator": "evaluador/tests/tools/generate_synthetic_cv_pdf_subset.php",
+    "source_dataset_manifest": "C:/Users/basil/Documents/GitHub/Proyecto-Acelerador/evaluador/tests/fixtures/cv_sinteticos/dataset_manifest.json",
+    "selection_policy": "2_por_rama: primero_positivo + primero_problematico_frontera_negativo",
+    "total_cases": 10,
+    "ramas_canonicas": [
+        "EXPERIMENTALES",
+        "TECNICAS",
+        "CSYJ",
+        "SALUD",
+        "HUMANIDADES"
+    ],
+    "cases": [
+        {
+            "id_cv": "EXP-001",
+            "rama": "EXPERIMENTALES",
+            "perfil": "positivo",
+            "source_case_path": "experimentales/EXP-001",
+            "path": "EXP-001",
+            "pdf": "EXP-001/cv.pdf",
+            "expected": "EXP-001/expected.json",
+            "source_case_txt": "EXP-001/source_case.txt"
+        },
+        {
+            "id_cv": "EXP-002",
+            "rama": "EXPERIMENTALES",
+            "perfil": "problematico",
+            "source_case_path": "experimentales/EXP-002",
+            "path": "EXP-002",
+            "pdf": "EXP-002/cv.pdf",
+            "expected": "EXP-002/expected.json",
+            "source_case_txt": "EXP-002/source_case.txt"
+        },
+        {
+            "id_cv": "TEC-001",
+            "rama": "TECNICAS",
+            "perfil": "positivo",
+            "source_case_path": "tecnicas/TEC-001",
+            "path": "TEC-001",
+            "pdf": "TEC-001/cv.pdf",
+            "expected": "TEC-001/expected.json",
+            "source_case_txt": "TEC-001/source_case.txt"
+        },
+        {
+            "id_cv": "TEC-002",
+            "rama": "TECNICAS",
+            "perfil": "problematico",
+            "source_case_path": "tecnicas/TEC-002",
+            "path": "TEC-002",
+            "pdf": "TEC-002/cv.pdf",
+            "expected": "TEC-002/expected.json",
+            "source_case_txt": "TEC-002/source_case.txt"
+        },
+        {
+            "id_cv": "CSYJ-001",
+            "rama": "CSYJ",
+            "perfil": "positivo",
+            "source_case_path": "csyj/CSYJ-001",
+            "path": "CSYJ-001",
+            "pdf": "CSYJ-001/cv.pdf",
+            "expected": "CSYJ-001/expected.json",
+            "source_case_txt": "CSYJ-001/source_case.txt"
+        },
+        {
+            "id_cv": "CSYJ-002",
+            "rama": "CSYJ",
+            "perfil": "problematico",
+            "source_case_path": "csyj/CSYJ-002",
+            "path": "CSYJ-002",
+            "pdf": "CSYJ-002/cv.pdf",
+            "expected": "CSYJ-002/expected.json",
+            "source_case_txt": "CSYJ-002/source_case.txt"
+        },
+        {
+            "id_cv": "SAL-001",
+            "rama": "SALUD",
+            "perfil": "positivo",
+            "source_case_path": "salud/SAL-001",
+            "path": "SAL-001",
+            "pdf": "SAL-001/cv.pdf",
+            "expected": "SAL-001/expected.json",
+            "source_case_txt": "SAL-001/source_case.txt"
+        },
+        {
+            "id_cv": "SAL-002",
+            "rama": "SALUD",
+            "perfil": "problematico",
+            "source_case_path": "salud/SAL-002",
+            "path": "SAL-002",
+            "pdf": "SAL-002/cv.pdf",
+            "expected": "SAL-002/expected.json",
+            "source_case_txt": "SAL-002/source_case.txt"
+        },
+        {
+            "id_cv": "HUM-001",
+            "rama": "HUMANIDADES",
+            "perfil": "positivo",
+            "source_case_path": "humanidades/HUM-001",
+            "path": "HUM-001",
+            "pdf": "HUM-001/cv.pdf",
+            "expected": "HUM-001/expected.json",
+            "source_case_txt": "HUM-001/source_case.txt"
+        },
+        {
+            "id_cv": "HUM-002",
+            "rama": "HUMANIDADES",
+            "perfil": "problematico",
+            "source_case_path": "humanidades/HUM-002",
+            "path": "HUM-002",
+            "pdf": "HUM-002/cv.pdf",
+            "expected": "HUM-002/expected.json",
+            "source_case_txt": "HUM-002/source_case.txt"
+        }
+    ]
+}

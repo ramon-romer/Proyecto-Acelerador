@@ -1,0 +1,21 @@
+{
+    "id_cv": "SAL-048",
+    "rama": "SALUD",
+    "perfil": "frontera",
+    "resultado_esperado": "frontera",
+    "orcid_esperado": "1048-2048-3048-4048",
+    "publicaciones_esperadas_total": 3,
+    "publicaciones_relevantes_esperadas": 0,
+    "proyectos_esperados": 1,
+    "docencia_esperada": 2,
+    "congresos_esperados": 1,
+    "estancias_esperadas": 1,
+    "transferencia_esperada": 1,
+    "problemas_intencionados": [
+        "Bloques narrativos extensos sin estructura clara.",
+        "Campos con puntuacion y separadores heterogeneos."
+    ],
+    "observaciones": "Caso sintetico generado automaticamente para validar parser/evaluador.",
+    "nivel_confianza_esperado": "medio",
+    "stress_tag": "texto_narrativo_extenso"
+}

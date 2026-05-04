@@ -1,0 +1,40 @@
+id_cv: EXP-048
+rama: EXPERIMENTALES
+perfil: frontera
+nombre_ficticio: Nora Campos Mendez
+orcid_prueba: 1048-2048-3048-4048
+resumen_perfil: Perfil frontera con indicadores mixtos entre investigacion y docencia.
+
+formacion_academica:
+- Doctorado en Biologia Molecular (2015).
+- Master en Tecnicas Avanzadas de Laboratorio (2011).
+
+docencia:
+- 48 horas de seminarios puntuales sin evaluacion docente consolidada.
+- Docencia suficiente pero heterogenea por cursos.
+
+publicaciones:
+- Preprint sin cuartil declarado sobre cultivo celular adaptativo.
+- Articulo con DOI incompleto 10.1234/exp.
+- Articulo adicional con metrica parcial y cuartil no confirmado.
+- Articulo sin cuartil informado en la fuente.
+
+proyectos:
+- Colaboracion puntual en proyecto interno sin memoria final cerrada.
+
+congresos:
+- Ponencia oral en congreso internacional de biotecnologia (2024).
+- Poster en simposio de bioquimica aplicada (2023).
+
+estancias:
+- Estancia declarada sin fechas exactas ni carta de acogida.
+
+transferencia_patentes:
+- Sin transferencia formal acreditada.
+
+otros_meritos:
+- Revisora ad hoc de revista experimental indexada.
+
+problemas_intencionados:
+- Publicaciones sin cuartil declarado.
+- Campos con puntuacion y separadores heterogeneos.

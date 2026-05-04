@@ -1,0 +1,35 @@
+id_cv: HUM-011
+rama: HUMANIDADES
+perfil: negativo
+nombre_ficticio: Lia Campos Blasco
+orcid_prueba: 1011-2011-3011-4011
+resumen_perfil: Perfil con buena docencia pero baja investigacion y transferencia.
+
+formacion_academica:
+- Doctorado en Historia del Arte (2012).
+- Master en Gestion Cultural (2008).
+
+docencia:
+- 360 horas docentes con evaluacion excelente, pero investigacion minima.
+
+publicaciones:
+- Sin publicaciones indexadas verificables.
+
+proyectos:
+- Sin proyectos competitivos cerrados.
+
+congresos:
+- Ponencia en congreso internacional de estudios visuales (2024).
+
+estancias:
+- Sin estancias acreditadas.
+
+transferencia_patentes:
+- Sin transferencia acreditable.
+
+otros_meritos:
+- Coordinacion de ciclo de seminarios de patrimonio inmaterial.
+- Las secciones aparecen en orden: proyectos, docencia, formacion, publicaciones.
+
+problemas_intencionados:
+- Meritos en orden no convencional.

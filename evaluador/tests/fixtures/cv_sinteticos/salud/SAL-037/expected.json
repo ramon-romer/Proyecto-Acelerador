@@ -1,0 +1,18 @@
+{
+    "id_cv": "SAL-037",
+    "rama": "SALUD",
+    "perfil": "positivo",
+    "resultado_esperado": "apto",
+    "orcid_esperado": "1037-2037-3037-4037",
+    "publicaciones_esperadas_total": 2,
+    "publicaciones_relevantes_esperadas": 2,
+    "proyectos_esperados": 1,
+    "docencia_esperada": 2,
+    "congresos_esperados": 1,
+    "estancias_esperadas": 1,
+    "transferencia_esperada": 1,
+    "problemas_intencionados": [],
+    "observaciones": "Caso sintetico generado automaticamente para validar parser/evaluador.",
+    "nivel_confianza_esperado": "alto",
+    "stress_tag": "none"
+}

@@ -1,0 +1,38 @@
+id_cv: CSYJ-046
+rama: CSYJ
+perfil: problematico
+nombre_ficticio: Ines Soler Prado
+orcid_prueba: 1046-2046-3046-4051
+resumen_perfil: Perfil CSYJ con peso docente y evidencia investigadora ambigua.
+
+formacion_academica:
+- Doctorado en Politicas Publicas (2014).
+- Licenciatura en Derecho (2009).
+
+docencia:
+- 320 horas de docencia con excelentes encuestas estudiantiles.
+
+publicaciones:
+- Monografia anunciada sin ISBN verificable.
+- Articulo juridico sin fecha clara (2023/2024?).
+
+proyectos:
+- Participacion no acreditada en red tematica regional.
+
+congresos:
+- Ponencia en congreso de ciencias sociales aplicadas (2024).
+
+estancias:
+- Estancia corta de investigacion en instituto de politicas comparadas.
+
+transferencia_patentes:
+- Informe tecnico para administracion publica sobre normativa digital.
+
+otros_meritos:
+- Coordinacion de clinica juridica universitaria.
+- Cronologia declarada como: 2022, 03/2023, curso 23-24.
+
+problemas_intencionados:
+- Fechas mezcladas en formatos YYYY, YYYY-MM y texto libre.
+- Requiere revision manual por ambiguedad general del expediente.
+- Campos con puntuacion y separadores heterogeneos.

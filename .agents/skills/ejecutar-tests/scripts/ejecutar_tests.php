@@ -574,6 +574,21 @@ function buildBaseChecks(string $repositoryRoot, string $nivel, bool $hasAnecaUn
         ];
     }
 
+    $syntheticMegatestPath = $repositoryRoot . DIRECTORY_SEPARATOR . 'evaluador' . DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR . 'tools' . DIRECTORY_SEPARATOR . 'run_synthetic_cv_megatest.php';
+    if ($nivel !== 'standard' && is_file($syntheticMegatestPath)) {
+        $checks[] = [
+            'id' => 'aneca-synthetic-cv-megatest',
+            'name' => 'ANECA synthetic CV megatest (50 por rama)',
+            'command' => escapeshellarg(PHP_BINARY) . ' '
+                . escapeshellarg($syntheticMegatestPath)
+                . ' --nightly --strict',
+            'optional' => true,
+            'category' => 'integracion',
+            'strategy' => 'single',
+            'scopes' => ['aneca', 'evaluador'],
+        ];
+    }
+
     if ($nivel !== 'standard') {
         $checks[] = [
             'id' => 'inspect-schema',

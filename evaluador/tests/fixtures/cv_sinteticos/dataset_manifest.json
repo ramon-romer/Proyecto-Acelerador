@@ -1,0 +1,1544 @@
+{
+    "dataset_id": "aneca_cv_sinteticos_v1",
+    "version": "1.0.0",
+    "generated_at": "2026-05-04T11:44:55+02:00",
+    "generator": "evaluador/tests/tools/generate_synthetic_cv_dataset.php",
+    "seed": 20260504,
+    "target_objetivo_por_rama": 20,
+    "casos_generados_por_rama": 50,
+    "ramas_canonicas": [
+        "EXPERIMENTALES",
+        "TECNICAS",
+        "CSYJ",
+        "SALUD",
+        "HUMANIDADES"
+    ],
+    "mapeo_ramas_solicitadas": {
+        "EXPERIMENTALES": [
+            "Experimentales"
+        ],
+        "TECNICAS": [
+            "Tecnicas"
+        ],
+        "CSYJ": [
+            "Sociales",
+            "Juridicas"
+        ],
+        "SALUD": [
+            "Salud",
+            "Biomedicas",
+            "Ciencias de la Salud"
+        ],
+        "HUMANIDADES": [
+            "Arte y Humanidades"
+        ]
+    },
+    "perfiles_soportados": [
+        "positivo",
+        "negativo",
+        "frontera",
+        "problematico"
+    ],
+    "cases": [
+        {
+            "id_cv": "EXP-001",
+            "rama": "EXPERIMENTALES",
+            "perfil": "positivo",
+            "path": "experimentales/EXP-001"
+        },
+        {
+            "id_cv": "EXP-002",
+            "rama": "EXPERIMENTALES",
+            "perfil": "problematico",
+            "path": "experimentales/EXP-002"
+        },
+        {
+            "id_cv": "EXP-003",
+            "rama": "EXPERIMENTALES",
+            "perfil": "negativo",
+            "path": "experimentales/EXP-003"
+        },
+        {
+            "id_cv": "EXP-004",
+            "rama": "EXPERIMENTALES",
+            "perfil": "frontera",
+            "path": "experimentales/EXP-004"
+        },
+        {
+            "id_cv": "EXP-005",
+            "rama": "EXPERIMENTALES",
+            "perfil": "positivo",
+            "path": "experimentales/EXP-005"
+        },
+        {
+            "id_cv": "EXP-006",
+            "rama": "EXPERIMENTALES",
+            "perfil": "problematico",
+            "path": "experimentales/EXP-006"
+        },
+        {
+            "id_cv": "EXP-007",
+            "rama": "EXPERIMENTALES",
+            "perfil": "negativo",
+            "path": "experimentales/EXP-007"
+        },
+        {
+            "id_cv": "EXP-008",
+            "rama": "EXPERIMENTALES",
+            "perfil": "frontera",
+            "path": "experimentales/EXP-008"
+        },
+        {
+            "id_cv": "EXP-009",
+            "rama": "EXPERIMENTALES",
+            "perfil": "positivo",
+            "path": "experimentales/EXP-009"
+        },
+        {
+            "id_cv": "EXP-010",
+            "rama": "EXPERIMENTALES",
+            "perfil": "problematico",
+            "path": "experimentales/EXP-010"
+        },
+        {
+            "id_cv": "EXP-011",
+            "rama": "EXPERIMENTALES",
+            "perfil": "negativo",
+            "path": "experimentales/EXP-011"
+        },
+        {
+            "id_cv": "EXP-012",
+            "rama": "EXPERIMENTALES",
+            "perfil": "frontera",
+            "path": "experimentales/EXP-012"
+        },
+        {
+            "id_cv": "EXP-013",
+            "rama": "EXPERIMENTALES",
+            "perfil": "positivo",
+            "path": "experimentales/EXP-013"
+        },
+        {
+            "id_cv": "EXP-014",
+            "rama": "EXPERIMENTALES",
+            "perfil": "problematico",
+            "path": "experimentales/EXP-014"
+        },
+        {
+            "id_cv": "EXP-015",
+            "rama": "EXPERIMENTALES",
+            "perfil": "negativo",
+            "path": "experimentales/EXP-015"
+        },
+        {
+            "id_cv": "EXP-016",
+            "rama": "EXPERIMENTALES",
+            "perfil": "frontera",
+            "path": "experimentales/EXP-016"
+        },
+        {
+            "id_cv": "EXP-017",
+            "rama": "EXPERIMENTALES",
+            "perfil": "positivo",
+            "path": "experimentales/EXP-017"
+        },
+        {
+            "id_cv": "EXP-018",
+            "rama": "EXPERIMENTALES",
+            "perfil": "problematico",
+            "path": "experimentales/EXP-018"
+        },
+        {
+            "id_cv": "EXP-019",
+            "rama": "EXPERIMENTALES",
+            "perfil": "negativo",
+            "path": "experimentales/EXP-019"
+        },
+        {
+            "id_cv": "EXP-020",
+            "rama": "EXPERIMENTALES",
+            "perfil": "frontera",
+            "path": "experimentales/EXP-020"
+        },
+        {
+            "id_cv": "EXP-021",
+            "rama": "EXPERIMENTALES",
+            "perfil": "positivo",
+            "path": "experimentales/EXP-021"
+        },
+        {
+            "id_cv": "EXP-022",
+            "rama": "EXPERIMENTALES",
+            "perfil": "problematico",
+            "path": "experimentales/EXP-022"
+        },
+        {
+            "id_cv": "EXP-023",
+            "rama": "EXPERIMENTALES",
+            "perfil": "negativo",
+            "path": "experimentales/EXP-023"
+        },
+        {
+            "id_cv": "EXP-024",
+            "rama": "EXPERIMENTALES",
+            "perfil": "frontera",
+            "path": "experimentales/EXP-024"
+        },
+        {
+            "id_cv": "EXP-025",
+            "rama": "EXPERIMENTALES",
+            "perfil": "positivo",
+            "path": "experimentales/EXP-025"
+        },
+        {
+            "id_cv": "EXP-026",
+            "rama": "EXPERIMENTALES",
+            "perfil": "problematico",
+            "path": "experimentales/EXP-026"
+        },
+        {
+            "id_cv": "EXP-027",
+            "rama": "EXPERIMENTALES",
+            "perfil": "negativo",
+            "path": "experimentales/EXP-027"
+        },
+        {
+            "id_cv": "EXP-028",
+            "rama": "EXPERIMENTALES",
+            "perfil": "frontera",
+            "path": "experimentales/EXP-028"
+        },
+        {
+            "id_cv": "EXP-029",
+            "rama": "EXPERIMENTALES",
+            "perfil": "positivo",
+            "path": "experimentales/EXP-029"
+        },
+        {
+            "id_cv": "EXP-030",
+            "rama": "EXPERIMENTALES",
+            "perfil": "problematico",
+            "path": "experimentales/EXP-030"
+        },
+        {
+            "id_cv": "EXP-031",
+            "rama": "EXPERIMENTALES",
+            "perfil": "negativo",
+            "path": "experimentales/EXP-031"
+        },
+        {
+            "id_cv": "EXP-032",
+            "rama": "EXPERIMENTALES",
+            "perfil": "frontera",
+            "path": "experimentales/EXP-032"
+        },
+        {
+            "id_cv": "EXP-033",
+            "rama": "EXPERIMENTALES",
+            "perfil": "positivo",
+            "path": "experimentales/EXP-033"
+        },
+        {
+            "id_cv": "EXP-034",
+            "rama": "EXPERIMENTALES",
+            "perfil": "problematico",
+            "path": "experimentales/EXP-034"
+        },
+        {
+            "id_cv": "EXP-035",
+            "rama": "EXPERIMENTALES",
+            "perfil": "negativo",
+            "path": "experimentales/EXP-035"
+        },
+        {
+            "id_cv": "EXP-036",
+            "rama": "EXPERIMENTALES",
+            "perfil": "frontera",
+            "path": "experimentales/EXP-036"
+        },
+        {
+            "id_cv": "EXP-037",
+            "rama": "EXPERIMENTALES",
+            "perfil": "positivo",
+            "path": "experimentales/EXP-037"
+        },
+        {
+            "id_cv": "EXP-038",
+            "rama": "EXPERIMENTALES",
+            "perfil": "problematico",
+            "path": "experimentales/EXP-038"
+        },
+        {
+            "id_cv": "EXP-039",
+            "rama": "EXPERIMENTALES",
+            "perfil": "negativo",
+            "path": "experimentales/EXP-039"
+        },
+        {
+            "id_cv": "EXP-040",
+            "rama": "EXPERIMENTALES",
+            "perfil": "frontera",
+            "path": "experimentales/EXP-040"
+        },
+        {
+            "id_cv": "EXP-041",
+            "rama": "EXPERIMENTALES",
+            "perfil": "positivo",
+            "path": "experimentales/EXP-041"
+        },
+        {
+            "id_cv": "EXP-042",
+            "rama": "EXPERIMENTALES",
+            "perfil": "problematico",
+            "path": "experimentales/EXP-042"
+        },
+        {
+            "id_cv": "EXP-043",
+            "rama": "EXPERIMENTALES",
+            "perfil": "negativo",
+            "path": "experimentales/EXP-043"
+        },
+        {
+            "id_cv": "EXP-044",
+            "rama": "EXPERIMENTALES",
+            "perfil": "frontera",
+            "path": "experimentales/EXP-044"
+        },
+        {
+            "id_cv": "EXP-045",
+            "rama": "EXPERIMENTALES",
+            "perfil": "positivo",
+            "path": "experimentales/EXP-045"
+        },
+        {
+            "id_cv": "EXP-046",
+            "rama": "EXPERIMENTALES",
+            "perfil": "problematico",
+            "path": "experimentales/EXP-046"
+        },
+        {
+            "id_cv": "EXP-047",
+            "rama": "EXPERIMENTALES",
+            "perfil": "negativo",
+            "path": "experimentales/EXP-047"
+        },
+        {
+            "id_cv": "EXP-048",
+            "rama": "EXPERIMENTALES",
+            "perfil": "frontera",
+            "path": "experimentales/EXP-048"
+        },
+        {
+            "id_cv": "EXP-049",
+            "rama": "EXPERIMENTALES",
+            "perfil": "positivo",
+            "path": "experimentales/EXP-049"
+        },
+        {
+            "id_cv": "EXP-050",
+            "rama": "EXPERIMENTALES",
+            "perfil": "problematico",
+            "path": "experimentales/EXP-050"
+        },
+        {
+            "id_cv": "TEC-001",
+            "rama": "TECNICAS",
+            "perfil": "positivo",
+            "path": "tecnicas/TEC-001"
+        },
+        {
+            "id_cv": "TEC-002",
+            "rama": "TECNICAS",
+            "perfil": "problematico",
+            "path": "tecnicas/TEC-002"
+        },
+        {
+            "id_cv": "TEC-003",
+            "rama": "TECNICAS",
+            "perfil": "negativo",
+            "path": "tecnicas/TEC-003"
+        },
+        {
+            "id_cv": "TEC-004",
+            "rama": "TECNICAS",
+            "perfil": "frontera",
+            "path": "tecnicas/TEC-004"
+        },
+        {
+            "id_cv": "TEC-005",
+            "rama": "TECNICAS",
+            "perfil": "positivo",
+            "path": "tecnicas/TEC-005"
+        },
+        {
+            "id_cv": "TEC-006",
+            "rama": "TECNICAS",
+            "perfil": "problematico",
+            "path": "tecnicas/TEC-006"
+        },
+        {
+            "id_cv": "TEC-007",
+            "rama": "TECNICAS",
+            "perfil": "negativo",
+            "path": "tecnicas/TEC-007"
+        },
+        {
+            "id_cv": "TEC-008",
+            "rama": "TECNICAS",
+            "perfil": "frontera",
+            "path": "tecnicas/TEC-008"
+        },
+        {
+            "id_cv": "TEC-009",
+            "rama": "TECNICAS",
+            "perfil": "positivo",
+            "path": "tecnicas/TEC-009"
+        },
+        {
+            "id_cv": "TEC-010",
+            "rama": "TECNICAS",
+            "perfil": "problematico",
+            "path": "tecnicas/TEC-010"
+        },
+        {
+            "id_cv": "TEC-011",
+            "rama": "TECNICAS",
+            "perfil": "negativo",
+            "path": "tecnicas/TEC-011"
+        },
+        {
+            "id_cv": "TEC-012",
+            "rama": "TECNICAS",
+            "perfil": "frontera",
+            "path": "tecnicas/TEC-012"
+        },
+        {
+            "id_cv": "TEC-013",
+            "rama": "TECNICAS",
+            "perfil": "positivo",
+            "path": "tecnicas/TEC-013"
+        },
+        {
+            "id_cv": "TEC-014",
+            "rama": "TECNICAS",
+            "perfil": "problematico",
+            "path": "tecnicas/TEC-014"
+        },
+        {
+            "id_cv": "TEC-015",
+            "rama": "TECNICAS",
+            "perfil": "negativo",
+            "path": "tecnicas/TEC-015"
+        },
+        {
+            "id_cv": "TEC-016",
+            "rama": "TECNICAS",
+            "perfil": "frontera",
+            "path": "tecnicas/TEC-016"
+        },
+        {
+            "id_cv": "TEC-017",
+            "rama": "TECNICAS",
+            "perfil": "positivo",
+            "path": "tecnicas/TEC-017"
+        },
+        {
+            "id_cv": "TEC-018",
+            "rama": "TECNICAS",
+            "perfil": "problematico",
+            "path": "tecnicas/TEC-018"
+        },
+        {
+            "id_cv": "TEC-019",
+            "rama": "TECNICAS",
+            "perfil": "negativo",
+            "path": "tecnicas/TEC-019"
+        },
+        {
+            "id_cv": "TEC-020",
+            "rama": "TECNICAS",
+            "perfil": "frontera",
+            "path": "tecnicas/TEC-020"
+        },
+        {
+            "id_cv": "TEC-021",
+            "rama": "TECNICAS",
+            "perfil": "positivo",
+            "path": "tecnicas/TEC-021"
+        },
+        {
+            "id_cv": "TEC-022",
+            "rama": "TECNICAS",
+            "perfil": "problematico",
+            "path": "tecnicas/TEC-022"
+        },
+        {
+            "id_cv": "TEC-023",
+            "rama": "TECNICAS",
+            "perfil": "negativo",
+            "path": "tecnicas/TEC-023"
+        },
+        {
+            "id_cv": "TEC-024",
+            "rama": "TECNICAS",
+            "perfil": "frontera",
+            "path": "tecnicas/TEC-024"
+        },
+        {
+            "id_cv": "TEC-025",
+            "rama": "TECNICAS",
+            "perfil": "positivo",
+            "path": "tecnicas/TEC-025"
+        },
+        {
+            "id_cv": "TEC-026",
+            "rama": "TECNICAS",
+            "perfil": "problematico",
+            "path": "tecnicas/TEC-026"
+        },
+        {
+            "id_cv": "TEC-027",
+            "rama": "TECNICAS",
+            "perfil": "negativo",
+            "path": "tecnicas/TEC-027"
+        },
+        {
+            "id_cv": "TEC-028",
+            "rama": "TECNICAS",
+            "perfil": "frontera",
+            "path": "tecnicas/TEC-028"
+        },
+        {
+            "id_cv": "TEC-029",
+            "rama": "TECNICAS",
+            "perfil": "positivo",
+            "path": "tecnicas/TEC-029"
+        },
+        {
+            "id_cv": "TEC-030",
+            "rama": "TECNICAS",
+            "perfil": "problematico",
+            "path": "tecnicas/TEC-030"
+        },
+        {
+            "id_cv": "TEC-031",
+            "rama": "TECNICAS",
+            "perfil": "negativo",
+            "path": "tecnicas/TEC-031"
+        },
+        {
+            "id_cv": "TEC-032",
+            "rama": "TECNICAS",
+            "perfil": "frontera",
+            "path": "tecnicas/TEC-032"
+        },
+        {
+            "id_cv": "TEC-033",
+            "rama": "TECNICAS",
+            "perfil": "positivo",
+            "path": "tecnicas/TEC-033"
+        },
+        {
+            "id_cv": "TEC-034",
+            "rama": "TECNICAS",
+            "perfil": "problematico",
+            "path": "tecnicas/TEC-034"
+        },
+        {
+            "id_cv": "TEC-035",
+            "rama": "TECNICAS",
+            "perfil": "negativo",
+            "path": "tecnicas/TEC-035"
+        },
+        {
+            "id_cv": "TEC-036",
+            "rama": "TECNICAS",
+            "perfil": "frontera",
+            "path": "tecnicas/TEC-036"
+        },
+        {
+            "id_cv": "TEC-037",
+            "rama": "TECNICAS",
+            "perfil": "positivo",
+            "path": "tecnicas/TEC-037"
+        },
+        {
+            "id_cv": "TEC-038",
+            "rama": "TECNICAS",
+            "perfil": "problematico",
+            "path": "tecnicas/TEC-038"
+        },
+        {
+            "id_cv": "TEC-039",
+            "rama": "TECNICAS",
+            "perfil": "negativo",
+            "path": "tecnicas/TEC-039"
+        },
+        {
+            "id_cv": "TEC-040",
+            "rama": "TECNICAS",
+            "perfil": "frontera",
+            "path": "tecnicas/TEC-040"
+        },
+        {
+            "id_cv": "TEC-041",
+            "rama": "TECNICAS",
+            "perfil": "positivo",
+            "path": "tecnicas/TEC-041"
+        },
+        {
+            "id_cv": "TEC-042",
+            "rama": "TECNICAS",
+            "perfil": "problematico",
+            "path": "tecnicas/TEC-042"
+        },
+        {
+            "id_cv": "TEC-043",
+            "rama": "TECNICAS",
+            "perfil": "negativo",
+            "path": "tecnicas/TEC-043"
+        },
+        {
+            "id_cv": "TEC-044",
+            "rama": "TECNICAS",
+            "perfil": "frontera",
+            "path": "tecnicas/TEC-044"
+        },
+        {
+            "id_cv": "TEC-045",
+            "rama": "TECNICAS",
+            "perfil": "positivo",
+            "path": "tecnicas/TEC-045"
+        },
+        {
+            "id_cv": "TEC-046",
+            "rama": "TECNICAS",
+            "perfil": "problematico",
+            "path": "tecnicas/TEC-046"
+        },
+        {
+            "id_cv": "TEC-047",
+            "rama": "TECNICAS",
+            "perfil": "negativo",
+            "path": "tecnicas/TEC-047"
+        },
+        {
+            "id_cv": "TEC-048",
+            "rama": "TECNICAS",
+            "perfil": "frontera",
+            "path": "tecnicas/TEC-048"
+        },
+        {
+            "id_cv": "TEC-049",
+            "rama": "TECNICAS",
+            "perfil": "positivo",
+            "path": "tecnicas/TEC-049"
+        },
+        {
+            "id_cv": "TEC-050",
+            "rama": "TECNICAS",
+            "perfil": "problematico",
+            "path": "tecnicas/TEC-050"
+        },
+        {
+            "id_cv": "CSYJ-001",
+            "rama": "CSYJ",
+            "perfil": "positivo",
+            "path": "csyj/CSYJ-001"
+        },
+        {
+            "id_cv": "CSYJ-002",
+            "rama": "CSYJ",
+            "perfil": "problematico",
+            "path": "csyj/CSYJ-002"
+        },
+        {
+            "id_cv": "CSYJ-003",
+            "rama": "CSYJ",
+            "perfil": "negativo",
+            "path": "csyj/CSYJ-003"
+        },
+        {
+            "id_cv": "CSYJ-004",
+            "rama": "CSYJ",
+            "perfil": "frontera",
+            "path": "csyj/CSYJ-004"
+        },
+        {
+            "id_cv": "CSYJ-005",
+            "rama": "CSYJ",
+            "perfil": "positivo",
+            "path": "csyj/CSYJ-005"
+        },
+        {
+            "id_cv": "CSYJ-006",
+            "rama": "CSYJ",
+            "perfil": "problematico",
+            "path": "csyj/CSYJ-006"
+        },
+        {
+            "id_cv": "CSYJ-007",
+            "rama": "CSYJ",
+            "perfil": "negativo",
+            "path": "csyj/CSYJ-007"
+        },
+        {
+            "id_cv": "CSYJ-008",
+            "rama": "CSYJ",
+            "perfil": "frontera",
+            "path": "csyj/CSYJ-008"
+        },
+        {
+            "id_cv": "CSYJ-009",
+            "rama": "CSYJ",
+            "perfil": "positivo",
+            "path": "csyj/CSYJ-009"
+        },
+        {
+            "id_cv": "CSYJ-010",
+            "rama": "CSYJ",
+            "perfil": "problematico",
+            "path": "csyj/CSYJ-010"
+        },
+        {
+            "id_cv": "CSYJ-011",
+            "rama": "CSYJ",
+            "perfil": "negativo",
+            "path": "csyj/CSYJ-011"
+        },
+        {
+            "id_cv": "CSYJ-012",
+            "rama": "CSYJ",
+            "perfil": "frontera",
+            "path": "csyj/CSYJ-012"
+        },
+        {
+            "id_cv": "CSYJ-013",
+            "rama": "CSYJ",
+            "perfil": "positivo",
+            "path": "csyj/CSYJ-013"
+        },
+        {
+            "id_cv": "CSYJ-014",
+            "rama": "CSYJ",
+            "perfil": "problematico",
+            "path": "csyj/CSYJ-014"
+        },
+        {
+            "id_cv": "CSYJ-015",
+            "rama": "CSYJ",
+            "perfil": "negativo",
+            "path": "csyj/CSYJ-015"
+        },
+        {
+            "id_cv": "CSYJ-016",
+            "rama": "CSYJ",
+            "perfil": "frontera",
+            "path": "csyj/CSYJ-016"
+        },
+        {
+            "id_cv": "CSYJ-017",
+            "rama": "CSYJ",
+            "perfil": "positivo",
+            "path": "csyj/CSYJ-017"
+        },
+        {
+            "id_cv": "CSYJ-018",
+            "rama": "CSYJ",
+            "perfil": "problematico",
+            "path": "csyj/CSYJ-018"
+        },
+        {
+            "id_cv": "CSYJ-019",
+            "rama": "CSYJ",
+            "perfil": "negativo",
+            "path": "csyj/CSYJ-019"
+        },
+        {
+            "id_cv": "CSYJ-020",
+            "rama": "CSYJ",
+            "perfil": "frontera",
+            "path": "csyj/CSYJ-020"
+        },
+        {
+            "id_cv": "CSYJ-021",
+            "rama": "CSYJ",
+            "perfil": "positivo",
+            "path": "csyj/CSYJ-021"
+        },
+        {
+            "id_cv": "CSYJ-022",
+            "rama": "CSYJ",
+            "perfil": "problematico",
+            "path": "csyj/CSYJ-022"
+        },
+        {
+            "id_cv": "CSYJ-023",
+            "rama": "CSYJ",
+            "perfil": "negativo",
+            "path": "csyj/CSYJ-023"
+        },
+        {
+            "id_cv": "CSYJ-024",
+            "rama": "CSYJ",
+            "perfil": "frontera",
+            "path": "csyj/CSYJ-024"
+        },
+        {
+            "id_cv": "CSYJ-025",
+            "rama": "CSYJ",
+            "perfil": "positivo",
+            "path": "csyj/CSYJ-025"
+        },
+        {
+            "id_cv": "CSYJ-026",
+            "rama": "CSYJ",
+            "perfil": "problematico",
+            "path": "csyj/CSYJ-026"
+        },
+        {
+            "id_cv": "CSYJ-027",
+            "rama": "CSYJ",
+            "perfil": "negativo",
+            "path": "csyj/CSYJ-027"
+        },
+        {
+            "id_cv": "CSYJ-028",
+            "rama": "CSYJ",
+            "perfil": "frontera",
+            "path": "csyj/CSYJ-028"
+        },
+        {
+            "id_cv": "CSYJ-029",
+            "rama": "CSYJ",
+            "perfil": "positivo",
+            "path": "csyj/CSYJ-029"
+        },
+        {
+            "id_cv": "CSYJ-030",
+            "rama": "CSYJ",
+            "perfil": "problematico",
+            "path": "csyj/CSYJ-030"
+        },
+        {
+            "id_cv": "CSYJ-031",
+            "rama": "CSYJ",
+            "perfil": "negativo",
+            "path": "csyj/CSYJ-031"
+        },
+        {
+            "id_cv": "CSYJ-032",
+            "rama": "CSYJ",
+            "perfil": "frontera",
+            "path": "csyj/CSYJ-032"
+        },
+        {
+            "id_cv": "CSYJ-033",
+            "rama": "CSYJ",
+            "perfil": "positivo",
+            "path": "csyj/CSYJ-033"
+        },
+        {
+            "id_cv": "CSYJ-034",
+            "rama": "CSYJ",
+            "perfil": "problematico",
+            "path": "csyj/CSYJ-034"
+        },
+        {
+            "id_cv": "CSYJ-035",
+            "rama": "CSYJ",
+            "perfil": "negativo",
+            "path": "csyj/CSYJ-035"
+        },
+        {
+            "id_cv": "CSYJ-036",
+            "rama": "CSYJ",
+            "perfil": "frontera",
+            "path": "csyj/CSYJ-036"
+        },
+        {
+            "id_cv": "CSYJ-037",
+            "rama": "CSYJ",
+            "perfil": "positivo",
+            "path": "csyj/CSYJ-037"
+        },
+        {
+            "id_cv": "CSYJ-038",
+            "rama": "CSYJ",
+            "perfil": "problematico",
+            "path": "csyj/CSYJ-038"
+        },
+        {
+            "id_cv": "CSYJ-039",
+            "rama": "CSYJ",
+            "perfil": "negativo",
+            "path": "csyj/CSYJ-039"
+        },
+        {
+            "id_cv": "CSYJ-040",
+            "rama": "CSYJ",
+            "perfil": "frontera",
+            "path": "csyj/CSYJ-040"
+        },
+        {
+            "id_cv": "CSYJ-041",
+            "rama": "CSYJ",
+            "perfil": "positivo",
+            "path": "csyj/CSYJ-041"
+        },
+        {
+            "id_cv": "CSYJ-042",
+            "rama": "CSYJ",
+            "perfil": "problematico",
+            "path": "csyj/CSYJ-042"
+        },
+        {
+            "id_cv": "CSYJ-043",
+            "rama": "CSYJ",
+            "perfil": "negativo",
+            "path": "csyj/CSYJ-043"
+        },
+        {
+            "id_cv": "CSYJ-044",
+            "rama": "CSYJ",
+            "perfil": "frontera",
+            "path": "csyj/CSYJ-044"
+        },
+        {
+            "id_cv": "CSYJ-045",
+            "rama": "CSYJ",
+            "perfil": "positivo",
+            "path": "csyj/CSYJ-045"
+        },
+        {
+            "id_cv": "CSYJ-046",
+            "rama": "CSYJ",
+            "perfil": "problematico",
+            "path": "csyj/CSYJ-046"
+        },
+        {
+            "id_cv": "CSYJ-047",
+            "rama": "CSYJ",
+            "perfil": "negativo",
+            "path": "csyj/CSYJ-047"
+        },
+        {
+            "id_cv": "CSYJ-048",
+            "rama": "CSYJ",
+            "perfil": "frontera",
+            "path": "csyj/CSYJ-048"
+        },
+        {
+            "id_cv": "CSYJ-049",
+            "rama": "CSYJ",
+            "perfil": "positivo",
+            "path": "csyj/CSYJ-049"
+        },
+        {
+            "id_cv": "CSYJ-050",
+            "rama": "CSYJ",
+            "perfil": "problematico",
+            "path": "csyj/CSYJ-050"
+        },
+        {
+            "id_cv": "SAL-001",
+            "rama": "SALUD",
+            "perfil": "positivo",
+            "path": "salud/SAL-001"
+        },
+        {
+            "id_cv": "SAL-002",
+            "rama": "SALUD",
+            "perfil": "problematico",
+            "path": "salud/SAL-002"
+        },
+        {
+            "id_cv": "SAL-003",
+            "rama": "SALUD",
+            "perfil": "negativo",
+            "path": "salud/SAL-003"
+        },
+        {
+            "id_cv": "SAL-004",
+            "rama": "SALUD",
+            "perfil": "frontera",
+            "path": "salud/SAL-004"
+        },
+        {
+            "id_cv": "SAL-005",
+            "rama": "SALUD",
+            "perfil": "positivo",
+            "path": "salud/SAL-005"
+        },
+        {
+            "id_cv": "SAL-006",
+            "rama": "SALUD",
+            "perfil": "problematico",
+            "path": "salud/SAL-006"
+        },
+        {
+            "id_cv": "SAL-007",
+            "rama": "SALUD",
+            "perfil": "negativo",
+            "path": "salud/SAL-007"
+        },
+        {
+            "id_cv": "SAL-008",
+            "rama": "SALUD",
+            "perfil": "frontera",
+            "path": "salud/SAL-008"
+        },
+        {
+            "id_cv": "SAL-009",
+            "rama": "SALUD",
+            "perfil": "positivo",
+            "path": "salud/SAL-009"
+        },
+        {
+            "id_cv": "SAL-010",
+            "rama": "SALUD",
+            "perfil": "problematico",
+            "path": "salud/SAL-010"
+        },
+        {
+            "id_cv": "SAL-011",
+            "rama": "SALUD",
+            "perfil": "negativo",
+            "path": "salud/SAL-011"
+        },
+        {
+            "id_cv": "SAL-012",
+            "rama": "SALUD",
+            "perfil": "frontera",
+            "path": "salud/SAL-012"
+        },
+        {
+            "id_cv": "SAL-013",
+            "rama": "SALUD",
+            "perfil": "positivo",
+            "path": "salud/SAL-013"
+        },
+        {
+            "id_cv": "SAL-014",
+            "rama": "SALUD",
+            "perfil": "problematico",
+            "path": "salud/SAL-014"
+        },
+        {
+            "id_cv": "SAL-015",
+            "rama": "SALUD",
+            "perfil": "negativo",
+            "path": "salud/SAL-015"
+        },
+        {
+            "id_cv": "SAL-016",
+            "rama": "SALUD",
+            "perfil": "frontera",
+            "path": "salud/SAL-016"
+        },
+        {
+            "id_cv": "SAL-017",
+            "rama": "SALUD",
+            "perfil": "positivo",
+            "path": "salud/SAL-017"
+        },
+        {
+            "id_cv": "SAL-018",
+            "rama": "SALUD",
+            "perfil": "problematico",
+            "path": "salud/SAL-018"
+        },
+        {
+            "id_cv": "SAL-019",
+            "rama": "SALUD",
+            "perfil": "negativo",
+            "path": "salud/SAL-019"
+        },
+        {
+            "id_cv": "SAL-020",
+            "rama": "SALUD",
+            "perfil": "frontera",
+            "path": "salud/SAL-020"
+        },
+        {
+            "id_cv": "SAL-021",
+            "rama": "SALUD",
+            "perfil": "positivo",
+            "path": "salud/SAL-021"
+        },
+        {
+            "id_cv": "SAL-022",
+            "rama": "SALUD",
+            "perfil": "problematico",
+            "path": "salud/SAL-022"
+        },
+        {
+            "id_cv": "SAL-023",
+            "rama": "SALUD",
+            "perfil": "negativo",
+            "path": "salud/SAL-023"
+        },
+        {
+            "id_cv": "SAL-024",
+            "rama": "SALUD",
+            "perfil": "frontera",
+            "path": "salud/SAL-024"
+        },
+        {
+            "id_cv": "SAL-025",
+            "rama": "SALUD",
+            "perfil": "positivo",
+            "path": "salud/SAL-025"
+        },
+        {
+            "id_cv": "SAL-026",
+            "rama": "SALUD",
+            "perfil": "problematico",
+            "path": "salud/SAL-026"
+        },
+        {
+            "id_cv": "SAL-027",
+            "rama": "SALUD",
+            "perfil": "negativo",
+            "path": "salud/SAL-027"
+        },
+        {
+            "id_cv": "SAL-028",
+            "rama": "SALUD",
+            "perfil": "frontera",
+            "path": "salud/SAL-028"
+        },
+        {
+            "id_cv": "SAL-029",
+            "rama": "SALUD",
+            "perfil": "positivo",
+            "path": "salud/SAL-029"
+        },
+        {
+            "id_cv": "SAL-030",
+            "rama": "SALUD",
+            "perfil": "problematico",
+            "path": "salud/SAL-030"
+        },
+        {
+            "id_cv": "SAL-031",
+            "rama": "SALUD",
+            "perfil": "negativo",
+            "path": "salud/SAL-031"
+        },
+        {
+            "id_cv": "SAL-032",
+            "rama": "SALUD",
+            "perfil": "frontera",
+            "path": "salud/SAL-032"
+        },
+        {
+            "id_cv": "SAL-033",
+            "rama": "SALUD",
+            "perfil": "positivo",
+            "path": "salud/SAL-033"
+        },
+        {
+            "id_cv": "SAL-034",
+            "rama": "SALUD",
+            "perfil": "problematico",
+            "path": "salud/SAL-034"
+        },
+        {
+            "id_cv": "SAL-035",
+            "rama": "SALUD",
+            "perfil": "negativo",
+            "path": "salud/SAL-035"
+        },
+        {
+            "id_cv": "SAL-036",
+            "rama": "SALUD",
+            "perfil": "frontera",
+            "path": "salud/SAL-036"
+        },
+        {
+            "id_cv": "SAL-037",
+            "rama": "SALUD",
+            "perfil": "positivo",
+            "path": "salud/SAL-037"
+        },
+        {
+            "id_cv": "SAL-038",
+            "rama": "SALUD",
+            "perfil": "problematico",
+            "path": "salud/SAL-038"
+        },
+        {
+            "id_cv": "SAL-039",
+            "rama": "SALUD",
+            "perfil": "negativo",
+            "path": "salud/SAL-039"
+        },
+        {
+            "id_cv": "SAL-040",
+            "rama": "SALUD",
+            "perfil": "frontera",
+            "path": "salud/SAL-040"
+        },
+        {
+            "id_cv": "SAL-041",
+            "rama": "SALUD",
+            "perfil": "positivo",
+            "path": "salud/SAL-041"
+        },
+        {
+            "id_cv": "SAL-042",
+            "rama": "SALUD",
+            "perfil": "problematico",
+            "path": "salud/SAL-042"
+        },
+        {
+            "id_cv": "SAL-043",
+            "rama": "SALUD",
+            "perfil": "negativo",
+            "path": "salud/SAL-043"
+        },
+        {
+            "id_cv": "SAL-044",
+            "rama": "SALUD",
+            "perfil": "frontera",
+            "path": "salud/SAL-044"
+        },
+        {
+            "id_cv": "SAL-045",
+            "rama": "SALUD",
+            "perfil": "positivo",
+            "path": "salud/SAL-045"
+        },
+        {
+            "id_cv": "SAL-046",
+            "rama": "SALUD",
+            "perfil": "problematico",
+            "path": "salud/SAL-046"
+        },
+        {
+            "id_cv": "SAL-047",
+            "rama": "SALUD",
+            "perfil": "negativo",
+            "path": "salud/SAL-047"
+        },
+        {
+            "id_cv": "SAL-048",
+            "rama": "SALUD",
+            "perfil": "frontera",
+            "path": "salud/SAL-048"
+        },
+        {
+            "id_cv": "SAL-049",
+            "rama": "SALUD",
+            "perfil": "positivo",
+            "path": "salud/SAL-049"
+        },
+        {
+            "id_cv": "SAL-050",
+            "rama": "SALUD",
+            "perfil": "problematico",
+            "path": "salud/SAL-050"
+        },
+        {
+            "id_cv": "HUM-001",
+            "rama": "HUMANIDADES",
+            "perfil": "positivo",
+            "path": "humanidades/HUM-001"
+        },
+        {
+            "id_cv": "HUM-002",
+            "rama": "HUMANIDADES",
+            "perfil": "problematico",
+            "path": "humanidades/HUM-002"
+        },
+        {
+            "id_cv": "HUM-003",
+            "rama": "HUMANIDADES",
+            "perfil": "negativo",
+            "path": "humanidades/HUM-003"
+        },
+        {
+            "id_cv": "HUM-004",
+            "rama": "HUMANIDADES",
+            "perfil": "frontera",
+            "path": "humanidades/HUM-004"
+        },
+        {
+            "id_cv": "HUM-005",
+            "rama": "HUMANIDADES",
+            "perfil": "positivo",
+            "path": "humanidades/HUM-005"
+        },
+        {
+            "id_cv": "HUM-006",
+            "rama": "HUMANIDADES",
+            "perfil": "problematico",
+            "path": "humanidades/HUM-006"
+        },
+        {
+            "id_cv": "HUM-007",
+            "rama": "HUMANIDADES",
+            "perfil": "negativo",
+            "path": "humanidades/HUM-007"
+        },
+        {
+            "id_cv": "HUM-008",
+            "rama": "HUMANIDADES",
+            "perfil": "frontera",
+            "path": "humanidades/HUM-008"
+        },
+        {
+            "id_cv": "HUM-009",
+            "rama": "HUMANIDADES",
+            "perfil": "positivo",
+            "path": "humanidades/HUM-009"
+        },
+        {
+            "id_cv": "HUM-010",
+            "rama": "HUMANIDADES",
+            "perfil": "problematico",
+            "path": "humanidades/HUM-010"
+        },
+        {
+            "id_cv": "HUM-011",
+            "rama": "HUMANIDADES",
+            "perfil": "negativo",
+            "path": "humanidades/HUM-011"
+        },
+        {
+            "id_cv": "HUM-012",
+            "rama": "HUMANIDADES",
+            "perfil": "frontera",
+            "path": "humanidades/HUM-012"
+        },
+        {
+            "id_cv": "HUM-013",
+            "rama": "HUMANIDADES",
+            "perfil": "positivo",
+            "path": "humanidades/HUM-013"
+        },
+        {
+            "id_cv": "HUM-014",
+            "rama": "HUMANIDADES",
+            "perfil": "problematico",
+            "path": "humanidades/HUM-014"
+        },
+        {
+            "id_cv": "HUM-015",
+            "rama": "HUMANIDADES",
+            "perfil": "negativo",
+            "path": "humanidades/HUM-015"
+        },
+        {
+            "id_cv": "HUM-016",
+            "rama": "HUMANIDADES",
+            "perfil": "frontera",
+            "path": "humanidades/HUM-016"
+        },
+        {
+            "id_cv": "HUM-017",
+            "rama": "HUMANIDADES",
+            "perfil": "positivo",
+            "path": "humanidades/HUM-017"
+        },
+        {
+            "id_cv": "HUM-018",
+            "rama": "HUMANIDADES",
+            "perfil": "problematico",
+            "path": "humanidades/HUM-018"
+        },
+        {
+            "id_cv": "HUM-019",
+            "rama": "HUMANIDADES",
+            "perfil": "negativo",
+            "path": "humanidades/HUM-019"
+        },
+        {
+            "id_cv": "HUM-020",
+            "rama": "HUMANIDADES",
+            "perfil": "frontera",
+            "path": "humanidades/HUM-020"
+        },
+        {
+            "id_cv": "HUM-021",
+            "rama": "HUMANIDADES",
+            "perfil": "positivo",
+            "path": "humanidades/HUM-021"
+        },
+        {
+            "id_cv": "HUM-022",
+            "rama": "HUMANIDADES",
+            "perfil": "problematico",
+            "path": "humanidades/HUM-022"
+        },
+        {
+            "id_cv": "HUM-023",
+            "rama": "HUMANIDADES",
+            "perfil": "negativo",
+            "path": "humanidades/HUM-023"
+        },
+        {
+            "id_cv": "HUM-024",
+            "rama": "HUMANIDADES",
+            "perfil": "frontera",
+            "path": "humanidades/HUM-024"
+        },
+        {
+            "id_cv": "HUM-025",
+            "rama": "HUMANIDADES",
+            "perfil": "positivo",
+            "path": "humanidades/HUM-025"
+        },
+        {
+            "id_cv": "HUM-026",
+            "rama": "HUMANIDADES",
+            "perfil": "problematico",
+            "path": "humanidades/HUM-026"
+        },
+        {
+            "id_cv": "HUM-027",
+            "rama": "HUMANIDADES",
+            "perfil": "negativo",
+            "path": "humanidades/HUM-027"
+        },
+        {
+            "id_cv": "HUM-028",
+            "rama": "HUMANIDADES",
+            "perfil": "frontera",
+            "path": "humanidades/HUM-028"
+        },
+        {
+            "id_cv": "HUM-029",
+            "rama": "HUMANIDADES",
+            "perfil": "positivo",
+            "path": "humanidades/HUM-029"
+        },
+        {
+            "id_cv": "HUM-030",
+            "rama": "HUMANIDADES",
+            "perfil": "problematico",
+            "path": "humanidades/HUM-030"
+        },
+        {
+            "id_cv": "HUM-031",
+            "rama": "HUMANIDADES",
+            "perfil": "negativo",
+            "path": "humanidades/HUM-031"
+        },
+        {
+            "id_cv": "HUM-032",
+            "rama": "HUMANIDADES",
+            "perfil": "frontera",
+            "path": "humanidades/HUM-032"
+        },
+        {
+            "id_cv": "HUM-033",
+            "rama": "HUMANIDADES",
+            "perfil": "positivo",
+            "path": "humanidades/HUM-033"
+        },
+        {
+            "id_cv": "HUM-034",
+            "rama": "HUMANIDADES",
+            "perfil": "problematico",
+            "path": "humanidades/HUM-034"
+        },
+        {
+            "id_cv": "HUM-035",
+            "rama": "HUMANIDADES",
+            "perfil": "negativo",
+            "path": "humanidades/HUM-035"
+        },
+        {
+            "id_cv": "HUM-036",
+            "rama": "HUMANIDADES",
+            "perfil": "frontera",
+            "path": "humanidades/HUM-036"
+        },
+        {
+            "id_cv": "HUM-037",
+            "rama": "HUMANIDADES",
+            "perfil": "positivo",
+            "path": "humanidades/HUM-037"
+        },
+        {
+            "id_cv": "HUM-038",
+            "rama": "HUMANIDADES",
+            "perfil": "problematico",
+            "path": "humanidades/HUM-038"
+        },
+        {
+            "id_cv": "HUM-039",
+            "rama": "HUMANIDADES",
+            "perfil": "negativo",
+            "path": "humanidades/HUM-039"
+        },
+        {
+            "id_cv": "HUM-040",
+            "rama": "HUMANIDADES",
+            "perfil": "frontera",
+            "path": "humanidades/HUM-040"
+        },
+        {
+            "id_cv": "HUM-041",
+            "rama": "HUMANIDADES",
+            "perfil": "positivo",
+            "path": "humanidades/HUM-041"
+        },
+        {
+            "id_cv": "HUM-042",
+            "rama": "HUMANIDADES",
+            "perfil": "problematico",
+            "path": "humanidades/HUM-042"
+        },
+        {
+            "id_cv": "HUM-043",
+            "rama": "HUMANIDADES",
+            "perfil": "negativo",
+            "path": "humanidades/HUM-043"
+        },
+        {
+            "id_cv": "HUM-044",
+            "rama": "HUMANIDADES",
+            "perfil": "frontera",
+            "path": "humanidades/HUM-044"
+        },
+        {
+            "id_cv": "HUM-045",
+            "rama": "HUMANIDADES",
+            "perfil": "positivo",
+            "path": "humanidades/HUM-045"
+        },
+        {
+            "id_cv": "HUM-046",
+            "rama": "HUMANIDADES",
+            "perfil": "problematico",
+            "path": "humanidades/HUM-046"
+        },
+        {
+            "id_cv": "HUM-047",
+            "rama": "HUMANIDADES",
+            "perfil": "negativo",
+            "path": "humanidades/HUM-047"
+        },
+        {
+            "id_cv": "HUM-048",
+            "rama": "HUMANIDADES",
+            "perfil": "frontera",
+            "path": "humanidades/HUM-048"
+        },
+        {
+            "id_cv": "HUM-049",
+            "rama": "HUMANIDADES",
+            "perfil": "positivo",
+            "path": "humanidades/HUM-049"
+        },
+        {
+            "id_cv": "HUM-050",
+            "rama": "HUMANIDADES",
+            "perfil": "problematico",
+            "path": "humanidades/HUM-050"
+        }
+    ]
+}

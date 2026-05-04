@@ -1,0 +1,38 @@
+id_cv: HUM-014
+rama: HUMANIDADES
+perfil: problematico
+nombre_ficticio: Saul Pardo Aranda
+orcid_prueba: 1014-2014-3014-4019
+resumen_perfil: Perfil de humanidades con meritos desordenados y ambiguos.
+
+formacion_academica:
+- Doctorado en Historia del Arte (2012).
+- Master en Gestion Cultural (2008).
+
+docencia:
+- 120 horas en asignaturas optativas sin coordinacion docente.
+
+publicaciones:
+- Catalogo de exposicion sin autores claramente identificados.
+- Texto de divulgacion sin revision por pares ni fecha estable.
+
+proyectos:
+- Participacion mencionada en comisariado sin acta de cierre.
+
+congresos:
+- Ponencia en congreso internacional de estudios visuales (2024).
+
+estancias:
+- Estancia de investigacion en museo europeo (2019).
+
+transferencia_patentes:
+- Comisariado de exposicion universitaria con catalogo tecnico.
+
+otros_meritos:
+- Coordinacion de ciclo de seminarios de patrimonio inmaterial.
+- Las secciones aparecen en orden: proyectos, docencia, formacion, publicaciones.
+
+problemas_intencionados:
+- Meritos en orden no convencional.
+- Requiere revision manual por ambiguedad general del expediente.
+- Campos con puntuacion y separadores heterogeneos.

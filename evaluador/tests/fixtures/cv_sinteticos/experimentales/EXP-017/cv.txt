@@ -1,0 +1,37 @@
+id_cv: EXP-017
+rama: EXPERIMENTALES
+perfil: positivo
+nombre_ficticio: Lia Luque Nieto
+orcid_prueba: 1017-2017-3017-4017
+resumen_perfil: Perfil de investigacion experimental con articulos JCR y proyectos competitivos.
+
+formacion_academica:
+- Doctorado en Biologia Molecular (2015).
+- Master en Tecnicas Avanzadas de Laboratorio (2011).
+
+docencia:
+- 180 horas en Fisiologia Celular (2022-2025).
+- Direccion de 2 TFM en biociencias.
+
+publicaciones:
+- Articulo JCR Q1: Biomarker dynamics in synthetic cohort. DOI:10.1234/exp.2024.001
+- Articulo JCR Q2: Lab protocol benchmark. DOI:10.1234/exp.2023.115
+- Articulo Q3 en revista de microbiologia aplicada. DOI:10.1234/exp.2022.220
+
+proyectos:
+- IP de proyecto competitivo nacional BIO-SYNTH (2023-2026).
+
+congresos:
+- Ponencia oral en congreso internacional de biotecnologia (2024).
+- Poster en simposio de bioquimica aplicada (2023).
+
+estancias:
+- Estancia de 4 meses en laboratorio europeo de proteomica (2021).
+
+transferencia_patentes:
+- Software de analisis de imagen celular registrado en OTRI (2025).
+
+otros_meritos:
+- Revisora ad hoc de revista experimental indexada.
+
+problemas_intencionados:

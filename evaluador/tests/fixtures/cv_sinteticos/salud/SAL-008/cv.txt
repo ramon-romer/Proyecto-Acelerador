@@ -1,0 +1,38 @@
+id_cv: SAL-008
+rama: SALUD
+perfil: frontera
+nombre_ficticio: Saul Iglesias Prado
+orcid_prueba: 
+resumen_perfil: Perfil frontera con indicadores mixtos entre investigacion y docencia.
+
+formacion_academica:
+- Doctorado en Ciencias de la Salud (2017).
+- Master en Epidemiologia Clinica (2013).
+
+docencia:
+- 50 horas de docencia aislada con gran carga asistencial.
+- Docencia suficiente pero heterogenea por cursos.
+
+publicaciones:
+- Serie narrativa de casos clinicos ficticios sin estructuracion formal.
+- Publicacion con autores repetidos y DOI incompleto 10.3456/salud.
+- Articulo adicional con metrica parcial y cuartil no confirmado.
+
+proyectos:
+- Estudio observacional declarado sin protocolo fechado.
+
+congresos:
+- Comunicacion oral en congreso nacional de medicina interna (2023).
+
+estancias:
+- Estancia de 3 meses en unidad de investigacion traslacional (2022).
+
+transferencia_patentes:
+- Guia de practica clinica institucional (documento tecnico interno).
+
+otros_meritos:
+- Participacion en comision de calidad asistencial universitaria.
+
+problemas_intencionados:
+- ORCID ausente en cabecera.
+- Campos con puntuacion y separadores heterogeneos.
