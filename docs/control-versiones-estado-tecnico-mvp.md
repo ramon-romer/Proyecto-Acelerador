@@ -1,6 +1,6 @@
 ﻿# Control de Versiones - estado-tecnico-mvp
 
-Ultima actualizacion: 2026-04-29
+Ultima actualizacion: 2026-05-04
 
 ## Versiones registradas
 
@@ -9,6 +9,16 @@ Ultima actualizacion: 2026-04-29
 | v0.1-baseline | 2026-03-24 | `docs/estado-tecnico-mvp.md` | baseline historico |
 | v0.2-snapshot | 2026-03-26 | `docs/estado-tecnico-mvp-2026-03-26.md` | snapshot actualizado |
 | v0.3-cierre-pre-mvp | 2026-04-29 | `docs/cierre-pre-mvp-2026-04-29.md` | cierre pre-MVP |
+| v0.3.1-validacion-intensiva-pre-mvp | 2026-05-04 | `docs/cierre-pre-mvp-2026-04-29.md` (seccion "Validacion intensiva pre-MVP 2026-05-04") | actualizacion operativa |
+
+## Actualizacion breve 2026-05-04 (pre-MVP intensiva)
+
+- Estado consolidado: `LISTO CON PENDIENTES OPERATIVOS`.
+- Bateria intensiva ejecutada con `ejecutar-tests` (`--nivel=agresivo --ventana=1h --scope=toda-app`) en ~`3601s`.
+- Sin bloqueantes reales de codigo/runtime en la ventana intensiva.
+- ANECA canonico validado en `PASS 132/132`.
+- Pendientes operativos vigentes: verificacion runtime de migracion ORCID y validacion OCR en Docker/CI (local con `ocr_ready=false` por entorno).
+- Politica de versionado: no incluir logs/reportes brutos de test en commits por defecto.
 
 ## Comparativa v0.1 -> v0.2
 

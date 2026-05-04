@@ -166,3 +166,26 @@ La reintroduccion de MCP-first no debe modificar contratos ni desplazar el flujo
 El cierre pre-MVP queda documentado como estable con pendientes operativos acotados.
 
 No hay bloqueantes tecnicos de codigo conocidos dentro del alcance actual, dejando MCP-first fuera de alcance inmediato. El foco antes de MVP es operativo: migracion ORCID en runtime, suite MVP corta, confirmacion OCR segun entorno y preparacion de demo sin depender de MCP-first.
+
+## Validacion intensiva pre-MVP 2026-05-04
+
+Estado final: `LISTO CON PENDIENTES OPERATIVOS`.
+
+Resumen ejecutivo:
+
+- Duracion de la bateria intensiva: `3601s`.
+- Alcance ejecutado: `toda-app`.
+- Resultado global: sin bloqueantes reales de codigo/runtime detectados.
+- Validacion canonica ANECA confirmada: `PASS 132/132`.
+- Primera invocacion de la skill sin `--scope` fallo por uso CLI; la ejecucion corregida con `--scope=toda-app` paso.
+
+Pendientes operativos abiertos:
+
+- OCR local reporta `ocr_ready=false` por entorno (faltan binarios `pdftoppm` y `tesseract`).
+- OCR en Docker queda pendiente operativo por no disponibilidad del CLI/daemon en este entorno.
+- Migracion ORCID existente, pendiente de aplicar/verificar en BD runtime si no se ha verificado ya.
+
+Control de artefactos:
+
+- Los reportes y logs brutos de ejecucion no se deben versionar por defecto.
+- Quedan fuera de commit los logs/resultados de `reports/test-validation/...` y los outputs tecnicos de `meritos/scraping/output/...`, salvo decision explicita del equipo.
