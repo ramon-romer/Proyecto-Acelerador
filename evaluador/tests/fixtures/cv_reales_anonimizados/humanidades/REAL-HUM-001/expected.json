@@ -1,0 +1,17 @@
+{
+    "id_case": "REAL-HUM-001",
+    "rama": "HUMANIDADES",
+    "perfil": "docente",
+    "estado_anonimizacion": "ANON_OK",
+    "fuente_original": "3111-1111-1111-1113_HUMANIDADES_2026-04-16_115720.txt",
+    "checks_minimos": {
+        "contiene_publicaciones": true,
+        "contiene_proyectos": true,
+        "contiene_docencia": true,
+        "contiene_congresos": true,
+        "contiene_estancias": false
+    },
+    "pii_residual_detectado": [],
+    "apto_para_commit": true,
+    "observaciones": "Anonimizado con chequeos basicos sin PII residual detectada."
+}

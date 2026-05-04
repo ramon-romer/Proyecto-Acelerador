@@ -1,0 +1,17 @@
+{
+    "id_case": "REAL-TEC-001",
+    "rama": "TECNICAS",
+    "perfil": "investigador",
+    "estado_anonimizacion": "ANON_OK",
+    "fuente_original": "0100-1111-2202-2225_TECNICA_2026-04-27_100302.txt",
+    "checks_minimos": {
+        "contiene_publicaciones": true,
+        "contiene_proyectos": true,
+        "contiene_docencia": true,
+        "contiene_congresos": true,
+        "contiene_estancias": true
+    },
+    "pii_residual_detectado": [],
+    "apto_para_commit": true,
+    "observaciones": "Anonimizado con chequeos basicos sin PII residual detectada."
+}

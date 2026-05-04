@@ -1,0 +1,17 @@
+{
+    "id_case": "REAL-CSYJ-001",
+    "rama": "CSYJ",
+    "perfil": "investigador",
+    "estado_anonimizacion": "ANON_OK",
+    "fuente_original": "3111-1111-1111-1113_CSYJ_2026-04-17_132836.txt",
+    "checks_minimos": {
+        "contiene_publicaciones": true,
+        "contiene_proyectos": true,
+        "contiene_docencia": true,
+        "contiene_congresos": true,
+        "contiene_estancias": true
+    },
+    "pii_residual_detectado": [],
+    "apto_para_commit": true,
+    "observaciones": "Anonimizado con chequeos basicos sin PII residual detectada."
+}

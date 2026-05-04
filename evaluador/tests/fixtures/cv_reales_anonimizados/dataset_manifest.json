@@ -1,0 +1,59 @@
+{
+    "dataset_id": "cv_reales_anonimizados_v1",
+    "generated_at": "2026-05-04T12:21:38+02:00",
+    "generator": "evaluador/tests/tools/create_anonymized_real_cv_fixtures.php",
+    "source_dir": "C:\\Users\\basil\\Documents\\GitHub\\Proyecto-Acelerador\\evaluador\\output\\txt",
+    "target_dir": "C:\\Users\\basil\\Documents\\GitHub\\Proyecto-Acelerador\\evaluador\\tests\\fixtures\\cv_reales_anonimizados",
+    "total_cases_final": 4,
+    "cases": [
+        {
+            "id_case": "REAL-EXP-001",
+            "rama": "EXPERIMENTALES",
+            "perfil": "investigador",
+            "path": "experimentales/REAL-EXP-001",
+            "source": "3111-1111-1111-1113_EXPERIMENTALES_2026-04-27_101754.txt"
+        },
+        {
+            "id_case": "REAL-TEC-001",
+            "rama": "TECNICAS",
+            "perfil": "investigador",
+            "path": "tecnicas/REAL-TEC-001",
+            "source": "0100-1111-2202-2225_TECNICA_2026-04-27_100302.txt"
+        },
+        {
+            "id_case": "REAL-CSYJ-001",
+            "rama": "CSYJ",
+            "perfil": "investigador",
+            "path": "csyj/REAL-CSYJ-001",
+            "source": "3111-1111-1111-1113_CSYJ_2026-04-17_132836.txt"
+        },
+        {
+            "id_case": "REAL-HUM-001",
+            "rama": "HUMANIDADES",
+            "perfil": "docente",
+            "path": "humanidades/REAL-HUM-001",
+            "source": "3111-1111-1111-1113_HUMANIDADES_2026-04-16_115720.txt"
+        }
+    ],
+    "manual_review_cases": [
+        {
+            "source": "3111-1111-1111-1113_HUMANIDADES_2026-04-14_112021.txt",
+            "estado": "REVISION_MANUAL",
+            "motivo": "OCR ruidoso o riesgo alto de PII residual.",
+            "incluido_en_dataset_final": false
+        }
+    ],
+    "pii_sustituciones": [
+        "[ORCID_ANONIMIZADO]",
+        "[RESEARCHERID_ANONIMIZADO]",
+        "[CODIGO_PERSONAL_ANONIMIZADO]",
+        "[FIRMA_ANONIMIZADA]",
+        "[TELEFONO_ANONIMIZADO]",
+        "[PERSONA_ANONIMIZADA]",
+        "[LINEA_ANONIMIZADA]",
+        "[EMAIL_ANONIMIZADO]",
+        "[DNI_ANONIMIZADO]"
+    ],
+    "apto_para_commit_dataset_final": true,
+    "manual_review_pending": true
+}
