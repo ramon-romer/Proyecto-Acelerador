@@ -2,6 +2,6 @@
 
 - rama: EXPERIMENTALES
 - perfil: investigador
-- fuente_original: `3111-1111-1111-1113_EXPERIMENTALES_2026-04-27_101754.txt`
+- source_ref: `SRC-EXP-001`
 - estado_anonimizacion: `ANON_OK`
 - apto_para_commit: `true`

@@ -45,7 +45,7 @@ Correo electrónico:
 [DNI_ANONIMIZADO]
 03/05/2005
 Hombre
-(34) 673494145
+[TELEFONO_ANONIMIZADO]
 [EMAIL_ANONIMIZADO]
 
 Situación profesional actual

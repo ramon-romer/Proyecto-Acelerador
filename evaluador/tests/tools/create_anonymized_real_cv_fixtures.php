@@ -15,10 +15,10 @@ final class RealCvAnonymizer
         $this->targetDir = $repoRoot . DIRECTORY_SEPARATOR . 'evaluador' . DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR . 'cv_reales_anonimizados';
 
         $this->sourceCases = [
-            ['id' => 'REAL-EXP-001', 'rama' => 'EXPERIMENTALES', 'perfil' => 'investigador', 'source' => '3111-1111-1111-1113_EXPERIMENTALES_2026-04-27_101754.txt'],
-            ['id' => 'REAL-TEC-001', 'rama' => 'TECNICAS', 'perfil' => 'investigador', 'source' => '0100-1111-2202-2225_TECNICA_2026-04-27_100302.txt'],
-            ['id' => 'REAL-CSYJ-001', 'rama' => 'CSYJ', 'perfil' => 'investigador', 'source' => '3111-1111-1111-1113_CSYJ_2026-04-17_132836.txt'],
-            ['id' => 'REAL-HUM-001', 'rama' => 'HUMANIDADES', 'perfil' => 'docente', 'source' => '3111-1111-1111-1113_HUMANIDADES_2026-04-16_115720.txt'],
+            ['id' => 'REAL-EXP-001', 'rama' => 'EXPERIMENTALES', 'perfil' => 'investigador', 'source' => '3111-1111-1111-1113_EXPERIMENTALES_2026-04-27_101754.txt', 'source_ref' => 'SRC-EXP-001'],
+            ['id' => 'REAL-TEC-001', 'rama' => 'TECNICAS', 'perfil' => 'investigador', 'source' => '0100-1111-2202-2225_TECNICA_2026-04-27_100302.txt', 'source_ref' => 'SRC-TEC-001'],
+            ['id' => 'REAL-CSYJ-001', 'rama' => 'CSYJ', 'perfil' => 'investigador', 'source' => '3111-1111-1111-1113_CSYJ_2026-04-17_132836.txt', 'source_ref' => 'SRC-CSYJ-001'],
+            ['id' => 'REAL-HUM-001', 'rama' => 'HUMANIDADES', 'perfil' => 'docente', 'source' => '3111-1111-1111-1113_HUMANIDADES_2026-04-16_115720.txt', 'source_ref' => 'SRC-HUM-001'],
         ];
 
         $this->manualReviewSources = [
@@ -58,7 +58,7 @@ final class RealCvAnonymizer
                 'rama' => $case['rama'],
                 'perfil' => $case['perfil'],
                 'estado_anonimizacion' => $status,
-                'fuente_original' => $case['source'],
+                'source_ref' => $case['source_ref'],
                 'checks_minimos' => [
                     'contiene_publicaciones' => stripos($anon, 'publica') !== false,
                     'contiene_proyectos' => stripos($anon, 'proyecto') !== false,
@@ -78,7 +78,7 @@ final class RealCvAnonymizer
                 . PHP_EOL
                 . '- rama: ' . $case['rama'] . PHP_EOL
                 . '- perfil: ' . $case['perfil'] . PHP_EOL
-                . '- fuente_original: `' . $case['source'] . '`' . PHP_EOL
+                . '- source_ref: `' . $case['source_ref'] . '`' . PHP_EOL
                 . '- estado_anonimizacion: `' . $status . '`' . PHP_EOL
                 . '- apto_para_commit: `' . ($status === 'ANON_OK' ? 'true' : 'false') . '`' . PHP_EOL
             );
@@ -89,15 +89,15 @@ final class RealCvAnonymizer
                     'rama' => $case['rama'],
                     'perfil' => $case['perfil'],
                     'path' => strtolower($case['rama']) . '/' . $case['id'],
-                    'source' => $case['source'],
+                    'source_ref' => $case['source_ref'],
                 ];
             }
         }
 
         $manualReview = [];
-        foreach ($this->manualReviewSources as $sourceName) {
+        foreach ($this->manualReviewSources as $idx => $sourceName) {
             $manualReview[] = [
-                'source' => $sourceName,
+                'source_ref' => 'SRC-MANUAL-' . (string)($idx ?? 0),
                 'estado' => 'REVISION_MANUAL',
                 'motivo' => 'OCR ruidoso o riesgo alto de PII residual.',
                 'incluido_en_dataset_final' => false,
@@ -107,10 +107,16 @@ final class RealCvAnonymizer
         $this->writeFile(
             $this->targetDir . DIRECTORY_SEPARATOR . 'README.md',
             "# CV reales anonimizados\n\n"
-            . "Copias anonimizadas de CVs reales de prueba.\n\n"
+            . "Dataset derivado de salidas reales anonimizadas para pruebas internas del evaluador.\n\n"
+            . "## Reglas de privacidad\n"
             . "- No contiene archivos originales.\n"
-            . "- Si hay duda de reidentificacion, marcar REVISION_MANUAL.\n"
-            . "- No mezclar con cv_sinteticos.\n"
+            . "- No debe contener datos personales reales conocidos.\n"
+            . "- Si hay duda de reidentificacion, marcar REVISION_MANUAL y excluir del dataset final.\n"
+            . "- No mezclar con cv_sinteticos.\n\n"
+            . "## Uso y limites\n"
+            . "- Util para regresion funcional de parseo/extraccion.\n"
+            . "- Requiere revision manual antes de ampliar con nuevos casos.\n"
+            . "- No sirve para inferencia estadistica real ni para conclusiones poblacionales.\n"
         );
 
         $this->writeFile(
@@ -128,13 +134,13 @@ final class RealCvAnonymizer
             'dataset_id' => 'cv_reales_anonimizados_v1',
             'generated_at' => date('c'),
             'generator' => 'evaluador/tests/tools/create_anonymized_real_cv_fixtures.php',
-            'source_dir' => str_replace('\\\\', '/', $this->sourceDir),
-            'target_dir' => str_replace('\\\\', '/', $this->targetDir),
+            'source_origin' => 'salidas_reales_anonimizadas',
+            'target_dir_rel' => 'evaluador/tests/fixtures/cv_reales_anonimizados',
             'total_cases_final' => count($manifestCases),
             'cases' => $manifestCases,
             'manual_review_cases' => $manualReview,
             'pii_sustituciones' => array_values(array_unique($globalSubs)),
-            'apto_para_commit_dataset_final' => true,
+            'apto_para_commit_dataset_final' => count($manifestCases) > 0,
             'manual_review_pending' => count($manualReview) > 0,
         ];
         $this->writeJson($this->targetDir . DIRECTORY_SEPARATOR . 'dataset_manifest.json', $manifest);
@@ -159,6 +165,10 @@ final class RealCvAnonymizer
             '/\\b[0-9a-f]{32}\\b/i' => '[CODIGO_PERSONAL_ANONIMIZADO]',
             '/^(?:.*firma.*)$/miu' => '[FIRMA_ANONIMIZADA]',
             '/\\+?\\d{1,3}[\\s.-]?\\(?\\d{2,4}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{3}[\\s.-]?\\d{3}/u' => '[TELEFONO_ANONIMIZADO]',
+            '/\\(\\s*34\\s*\\)\\s*[6789]\\d{8}\\b/u' => '[TELEFONO_ANONIMIZADO]',
+            '/^(\\s*ScopusID\\s*:\\s*)\\d{6,20}\\s*$/miu' => '$1[SCOPUS_ID_ANONIMIZADO]',
+            '/(\\bScopusID\\s*:\\s*\\R)\\s*\\d{6,20}\\b/iu' => '$1[SCOPUS_ID_ANONIMIZADO]',
+            '/\\b(?<!\\[)\\d{10,16}\\b(?!\\])/u' => '[SCOPUS_ID_ANONIMIZADO]',
         ];
 
         foreach ($regexMap as $regex => $replacement) {
@@ -224,6 +234,11 @@ final class RealCvAnonymizer
             'dni' => '/\\b\\d{8}[A-Z]\\b/u',
             'nie' => '/\\b[XYZ]\\d{7}[A-Z]\\b/u',
             'orcid' => '/\\b\\d{4}-\\d{4}-\\d{4}-\\d{4}\\b/u',
+            'telefono' => '/(?:\\+34\\s*)?[6789]\\d{8}\\b|\\(\\s*34\\s*\\)\\s*[6789]\\d{8}\\b/u',
+            'researcherid' => '/\\b[A-Z]{1,3}-\\d{4}-\\d{4}\\b/u',
+            'scopusid' => '/(?:ScopusID\\s*:\\s*\\d{6,20})|\\b\\d{10,16}\\b/u',
+            'path_windows' => '/[A-Za-z]:\\\\[^\\s]+/u',
+            'path_unix' => '#/(?:home|Users|var|tmp)/[^\\s]+#u',
         ];
         foreach ($checks as $label => $regex) {
             if (preg_match($regex, $text) === 1) {

@@ -3,7 +3,7 @@
     "rama": "CSYJ",
     "perfil": "investigador",
     "estado_anonimizacion": "ANON_OK",
-    "fuente_original": "3111-1111-1111-1113_CSYJ_2026-04-17_132836.txt",
+    "source_ref": "SRC-CSYJ-001",
     "checks_minimos": {
         "contiene_publicaciones": true,
         "contiene_proyectos": true,
