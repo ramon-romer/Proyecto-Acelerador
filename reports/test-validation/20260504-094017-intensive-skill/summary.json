@@ -1,0 +1,7 @@
+﻿{
+    "Command":  "php .agents/skills/ejecutar-tests/scripts/ejecutar_tests.php --json --nivel=agresivo --ventana=1h",
+    "ExitCode":  1,
+    "DurationSec":  0.06,
+    "Log":  "reports\\test-validation\\20260504-094017-intensive-skill\\intensive_skill.log",
+    "OutDir":  "reports\\test-validation\\20260504-094017-intensive-skill"
+}

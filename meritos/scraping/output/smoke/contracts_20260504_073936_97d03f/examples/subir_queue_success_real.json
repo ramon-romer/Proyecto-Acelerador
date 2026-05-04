@@ -1,0 +1,16 @@
+{
+    "ok": true,
+    "message": "CV encolado para procesamiento asincrono.",
+    "job_id": "job_20260504_073936_cb4d6770",
+    "estado": "pendiente",
+    "progreso_porcentaje": 0,
+    "fase_actual": "pendiente",
+    "es_pesado": false,
+    "umbral_pesado_bytes": 3145728,
+    "aneca_canonical_ready": false,
+    "aneca_canonical_validation_status": null,
+    "endpoints": {
+        "estado": "\/api\/cv\/procesar\/job_20260504_073936_cb4d6770\/estado",
+        "resultado": "\/api\/cv\/procesar\/job_20260504_073936_cb4d6770\/resultado"
+    }
+}

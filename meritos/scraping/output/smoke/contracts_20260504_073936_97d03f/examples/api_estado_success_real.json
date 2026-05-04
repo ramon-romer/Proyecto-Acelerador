@@ -1,0 +1,15 @@
+{
+    "ok": true,
+    "job_id": "job_20260504_073936_cb4d6770",
+    "estado": "error_parcial",
+    "progreso_porcentaje": 100,
+    "fase_actual": "error_parcial",
+    "error_parcial": true,
+    "error_mensaje": "Proceso finalizado con observaciones status=valido_con_advertencias warnings=resultado_con_campos_extraidos_parciales criterio=aneca_operativo formato=aneca.",
+    "fecha_creacion": "2026-05-04T07:39:36+00:00",
+    "fecha_inicio": "2026-05-04T07:39:36+00:00",
+    "fecha_fin": "2026-05-04T07:39:36+00:00",
+    "tiempo_total_ms": 500.22,
+    "aneca_canonical_ready": true,
+    "aneca_canonical_validation_status": "valido_con_advertencias"
+}

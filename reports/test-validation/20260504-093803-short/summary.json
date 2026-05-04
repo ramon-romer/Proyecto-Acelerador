@@ -1,0 +1,58 @@
+﻿[
+    {
+        "Order":  1,
+        "Command":  "php evaluador/tests/validate_canonical_schema.php",
+        "ExitCode":  0,
+        "DurationSec":  0.21,
+        "Log":  "reports\\test-validation\\20260504-093803-short\\01.log"
+    },
+    {
+        "Order":  2,
+        "Command":  "php mcp-server/tests/unit_extract_pdf.php",
+        "ExitCode":  0,
+        "DurationSec":  0.28,
+        "Log":  "reports\\test-validation\\20260504-093803-short\\02.log"
+    },
+    {
+        "Order":  3,
+        "Command":  "php acelerador_panel/backend/tests/run_usecases_smoke.php",
+        "ExitCode":  0,
+        "DurationSec":  0.06,
+        "Log":  "reports\\test-validation\\20260504-093803-short\\03.log"
+    },
+    {
+        "Order":  4,
+        "Command":  "php acelerador_panel/backend/tests/run_aggressive_battery.php --duration-seconds=30",
+        "ExitCode":  0,
+        "DurationSec":  30.07,
+        "Log":  "reports\\test-validation\\20260504-093803-short\\04.log"
+    },
+    {
+        "Order":  5,
+        "Command":  "php meritos/scraping/tools/smoke_jobs_queue.php",
+        "ExitCode":  1,
+        "DurationSec":  0.06,
+        "Log":  "reports\\test-validation\\20260504-093803-short\\05.log"
+    },
+    {
+        "Order":  6,
+        "Command":  "php meritos/scraping/tools/validate_scraping_technical_contracts.php",
+        "ExitCode":  1,
+        "DurationSec":  0.06,
+        "Log":  "reports\\test-validation\\20260504-093803-short\\06.log"
+    },
+    {
+        "Order":  7,
+        "Command":  "php meritos/scraping/tools/validate_aneca_canonical_adapter.php",
+        "ExitCode":  1,
+        "DurationSec":  0.06,
+        "Log":  "reports\\test-validation\\20260504-093803-short\\07.log"
+    },
+    {
+        "Order":  8,
+        "Command":  "php meritos/scraping/tools/check_ocr_environment.php",
+        "ExitCode":  0,
+        "DurationSec":  0.17,
+        "Log":  "reports\\test-validation\\20260504-093803-short\\08.log"
+    }
+]
