@@ -1,0 +1,8766 @@
+CURRICULUM
+DATOS PERSONALES
+APELLIDO1
+APELLIDO2
+NOMBRE
+FNACIMIENTO
+SEXO
+NACIONALIDAD
+TIPO DOCUMENTO
+DOCUMENTO TIPO
+DOCUMENTO
+PAIS DIRECCION
+DIRECCION1
+DIRECCION2
+CIUDAD
+CPOSTAL
+PROVINCIA
+AUTONOMIA
+TELEFONO
+TELEFONO MOVIL
+FAX
+CORREO ELECTRONICO
+
+CARVAJAL
+ZAERA
+ENRIQUE SALVADOR
+1972-01-07
+V
+E
+01001
+27313910F
+E
+C/ HISPANO AVIACIÓN, 6. BLOQUE 4, 3ºD
+SEVILLA
+41011
+SEVILLA
+COMUNIDAD AUTÓNOMA DE ANDALUCÍA
+639366276
+
+enriquecarvajalzaera@gmail.com
+
+AUTOEVALUACION
+Soy licenciado en Ciencias Económicas y Empresariales por la US (1997). Asimismo,
+obtuve el doctorado en el Programa de Doctorado en Comunicación Audiovisual,
+Publicidad y Relaciones Públicas (2015) con la tesis La fidelidad del consumidor
+en la distribución detallista, dirigida por J. L. Galán González y M. Domínguez de
+la Concha-Castañeda. Complementariamente, cuento con formación de posgrado:
+MBA en el Instituto de Empresa (1999), Global Senior Management Program en
+University of Chicago GSB (2006) y Máster Universitario en Estudios Europeos (2013).
+Inicié mi labor docente en el año 2007 en escuelas de negocio acumulando 7.145
+h. He impartido docencia en 6 universidades #US, CEU, UF3, UPO, UEM, UHU y
+Universidad Nebrija# y, además, en centros/escuelas de negocio como Instituto de
+Empresa, EOI, ESIC, EAE Business School, Instituto de Estudios Cajasol y Cámara de
+Comercio de Sevilla. Mis asignaturas se han concentrado en áreas como marketing,
+marketing digital, investigación de mercados, planificación y gestión de medios,
+estrategia y gestión empresarial, emprendimiento y transformación digital, entre otras.
+He impartido 4.293 h en Grado y 2.852 h en Máster/Posgrado, combinando docencia
+presencial con docencia en programas online (aprox. 913 h). Además, he ofrecido
+300 h en inglés en materias específicas (Tourism Marketing y Market research for
+tourism). Además de la formación no reglada en las diferentes escuelas de negocios.
+Paralelamente, he participado como IP en 1 proyecto de innovación docente, centrado
+en la realización de planes de marketing con empresas reales dentro de la asignatura
+Plan de Marketing (2021#23). Asimismo, he dirigido 3 TFM y 2 TFG, fomentando
+el desarrollo de investigaciones aplicadas y sólidas. Las encuestas de evaluación
+docente registradas reflejan calificaciones altas, con una valoración media de 8,47/10.
+En el ámbito investigador, he publicado 6 artículos en revistas con índice de impacto
+y 6 capítulos/libros. He asistido a 6 congresos, destacando CUICIID (2024), CICS
+(2024) y COMRED (2025), además de labores de organización en COMUSOC (2025).
+En relación con proyectos de investigación, participo en 2: #Eficiencia, tecnología,
+dignidad y derechos humanos ¿Quo vadis, humanidad, en la era de la IA?# y en
+#La Securitización de la lucha contra la inmigración irregular en el Mediterráneo por
+parte de la UE y España: Un enfoque multidisciplinar#. Por otro lado, participo en
+dos grupos de investigación (UF3RISD e IMPACTA). Asimismo, he dirigido más de
+20 proyectos de transmisión del conocimiento desarrollados con distintos tipos de
+organizaciones y en diversos sectores. A ello se suma, finalmente, una experiencia
+profesional contrastada de más de 25 años en multinacionales, empresas privadas y
+como empresario emprendedor.
+
+EXPERIENCIA INVESTIGADORA
+PUBLICACIONES CIENTIFICAS
+Título
+
+Año
+
+Estudio de los métodos de fidelización Análisis y comparativa de métodos en 2015
+España
+Valor, satisfacción y fidelidad en el sector minorista Un enfoque teórico de la 2023
+fidelización
+Influencia de la inteligencia artificial en la comunicación en la salud
+
+2024
+
+Influencia de los tatuajes y sus diferentes estilos en la formación de primeras 2024
+impresiones
+Live shooping: uso en la compra de ropa de segunda mano
+
+2026
+
+Satisfacción y Fidelización del Cliente El Papel de la Interacción y el 2025
+Neuromarketing
+
+Publicación
+AUTORES
+
+E. Carvajal Zaera; M. Domínguez de la Concha-Castañeda
+
+NUMERO AUTORES
+
+2
+
+POSICION
+
+2
+
+TITULO
+
+Estudio de los métodos de fidelización Análisis y comparativa de
+métodos en España
+
+CLAVE
+
+07001
+
+NOMBRE
+
+Creatividad y sociedad revista de la Asociación para la Creatividad
+VOLUMEN
+
+23
+
+PAG DESDE
+
+229
+
+PAG HASTA
+
+248
+
+PAIS
+
+E
+
+AÑO
+
+2015
+
+ISSN
+
+1578-214X
+
+CALIDAD CITAS
+
+2
+
+CALIDAD OTROS
+
+Miar: DIALNET (Universidad de la Rioja).
+
+Publicación
+AUTORES
+
+E. Carvajal Zaera; J. R. Paredes-Paredes; M. Domínguez de la Concha
+Castañeda; J. L. Galán González
+
+NUMERO AUTORES
+
+4
+
+POSICION
+
+1
+
+TITULO
+
+Valor, satisfacción y fidelidad en el sector minorista Un enfoque teórico
+de la fidelización
+
+CLAVE
+
+07001
+
+NOMBRE
+
+ESIC Digital Economy & Innovation Journal
+
+VOLUMEN
+
+2(1)
+
+PAG DESDE
+
+1
+
+PAG HASTA
+
+20
+
+PAIS
+
+E
+
+AÑO
+
+2023
+
+ISSN
+
+2792-8721
+
+CALIDAD OTROS
+
+DOI: 10.55234/edeij-2-056; Miar: DIALNET (Universidad de la Rioja)
+
+Publicación
+AUTORES
+
+E. Carvajal Zaera
+
+NUMERO AUTORES
+
+1
+
+POSICION
+
+1
+
+TITULO
+
+Influencia de la inteligencia artificial en la comunicación en la salud
+
+CLAVE
+
+07001
+
+NOMBRE
+
+European Public and Social Innovation Review
+VOLUMEN
+
+9
+
+PAG DESDE
+
+1
+
+PAG HASTA
+
+19
+
+EDITORIAL
+
+HISIN (History of Information Systems)
+
+PAIS
+
+E
+
+AÑO
+
+2024
+
+ISSN
+
+2529-9824
+
+CALIDAD IMPACTO
+
+,171
+
+CALIDAD POSICION
+
+Q3
+
+CALIDAD CITAS
+
+6
+
+CALIDAD OTROS
+
+DOI: 10.31637/epsir-2024-312; Miar: Scopus (ELSEVIER), DIALNET
+(Universidad de la Rioja), DOAJ, LATINDEX. Catálogo v2.0 (2018 - )
+(Universidad Nacional Autónoma de México), Directory of Open Access
+Journals, ERIHPlus (Norwegian Directorate for Higher Education and
+Skills), JUFO Portal - Levels 1, 2, 3 (Federation of Finnish Learned
+Societies); Citas: 4 Scopus, 2 GS
+
+CALIDAD AREA
+
+Sociology and Political Scienc
+
+CALIDAD BASE
+
+SJR
+
+CALIDAD AÑO
+
+2024
+
+Publicación
+AUTORES
+
+E. Carvajal Zaera
+
+NUMERO AUTORES
+
+1
+
+POSICION
+
+1
+
+TITULO
+
+Influencia de los tatuajes y sus diferentes estilos en la formación de
+primeras impresiones
+
+CLAVE
+
+07001
+
+NOMBRE
+
+Revista de Comunicación de la SEECI
+
+VOLUMEN
+
+57
+
+PAG DESDE
+
+1
+
+PAG HASTA
+
+29
+
+PAIS
+
+E
+
+AÑO
+
+2024
+ISSN
+
+2695-5156
+
+CALIDAD IMPACTO
+
+,7
+
+CALIDAD POSICION
+
+154/227
+
+CALIDAD CITAS
+
+3
+
+CALIDAD OTROS
+
+DOI: 10.15198/seeci.2024.57.e866; Dialnet Métricas 2024: 0,69 Q1
+Comunicación (7/63). Miar: Academic Search Ultimate (EBSCO), Fuente
+Academica Plus (EBSCO), DIALNET (Universidad de la Rioja), DOAJ,
+MLA - Modern Language Association Database (Modern Language
+Association of America), LATINDEX. Catálogo v2.0 (2018 - ) (Universidad
+Nacional Autónoma de México), Sello de calidad FECYT (renovado
+hasta 2027), CARHUS Plus+ 2025, Directory of Open Access Journals,
+ERIHPlus (Norwegian Directorate for Higher Education and Skills).
+
+CALIDAD AREA
+
+COMMUNICATION
+
+CALIDAD BASE
+
+Q3 ESCI-WoS
+
+CALIDAD AÑO
+
+2024
+
+Publicación
+AUTORES
+
+E. Carvajal Zaera; A. Mayorgas; L. Villar Fidalgo
+
+NUMERO AUTORES
+
+3
+
+POSICION
+
+1
+
+TITULO
+
+Live shooping: uso en la compra de ropa de segunda mano
+
+CLAVE
+
+07001
+
+NOMBRE
+
+VISUAL Review. International Visual Culture Review / Revista
+Internacional de Cultura
+
+EDITORIAL
+
+VisualCOM Scientific Publications
+
+PAIS
+
+E
+
+AÑO
+
+2026
+
+ISSN
+
+2695-9631
+
+CALIDAD IMPACTO
+
+,6
+
+CALIDAD POSICION
+
+Q1
+
+CALIDAD OTROS
+
+Miar: Scopus (ELSEVIER), Academic Search Ultimate (EBSCO), Fuente
+Academica Plus (EBSCO), DIALNET (Universidad de la Rioja)
+
+CALIDAD AREA
+
+Visual Arts and Performing Art
+
+CALIDAD BASE
+
+SJR
+
+CALIDAD AÑO
+
+2024
+Publicación
+AUTORES
+
+A. Barrientos-Báez; E. Carvajal-Zaera; D. Caldevilla-Domínguez
+
+NUMERO AUTORES
+
+3
+
+POSICION
+
+2
+
+TITULO
+
+Satisfacción y Fidelización del Cliente El Papel de la Interacción y el
+Neuromarketing
+
+CLAVE
+
+07001
+
+NOMBRE
+
+VISUAL REVIEW: International Visual Culture Review / Revista
+Internacional de Cultura Visual
+
+VOLUMEN
+
+17(3)
+
+PAG DESDE
+
+279
+
+PAG HASTA
+
+305
+
+EDITORIAL
+
+VisualCOM Scientific Publications
+
+PAIS
+
+E
+
+AÑO
+
+2025
+
+ISSN
+
+2695-9631
+
+CALIDAD IMPACTO
+
+,6
+
+CALIDAD POSICION
+
+Q1
+
+CALIDAD CITAS
+
+3
+
+CALIDAD OTROS
+
+DOI: 10.62161/revvisual.v17.5817; Miar: Scopus (ELSEVIER), Academic
+Search Ultimate (EBSCO), Fuente Academica Plus (EBSCO), DIALNET
+(Universidad de la Rioja; Citas: 1 Scopus, 2 GS.
+
+CALIDAD AREA
+
+Visual Arts and Performing Art
+
+CALIDAD BASE
+
+SJR
+
+CALIDAD AÑO
+
+2024
+
+LIBROS
+Título
+
+Año
+Publicado
+
+No decidas guiado por la primera impresión, en El arte de emprender. 2011
+Soluciones desde la prudencia. Comentarios al arte de la prudencia de
+Baltasar Gracián
+Título
+
+Año
+Publicado
+
+Capítulo VII Comportamiento post compra del paciente en odontología. 2024
+Variables que afectan a la fidelización, en Comunicación y salud: avances,
+inteligencia artificial y nuevos métodos
+Capítulo IX Gamification como herramienta del marketing digital. Satisfacción 2024
+del usuario en el aprendizaje, en Neurocomunicación y neuromarketing:
+nuevos desarrollos y avances en el siglo XXI
+Capítulo, en New Interdisciplinary Horizons in Communication and Marketing 2026
+La variable humana en la transformación digital de las organizaciones y sus 2024
+herramientas principales. Personas y tecnología, en IV Informe Función de
+RRHH y Retos en la Gestión del Talento
+Aplicación del Business Model Canvas (BMC) para el análisis del modelo de 2026
+negocio de las mafias de migrantes en el Mediterráneo
+
+Libros
+AUTORES
+
+Enrique Carvajal Zaera
+
+NUMERO AUTORES
+
+1
+
+POSICION
+
+1
+
+TITULO
+
+No decidas guiado por la primera impresión, en El arte de emprender.
+Soluciones desde la prudencia. Comentarios al arte de la prudencia de
+Baltasar Gracián
+
+CLAVE
+
+08002
+
+PAG DESDE
+
+210
+
+PAG HASTA
+
+211
+
+EDITORIAL
+
+Escuela de Organización Industrial
+
+PAIS
+
+E
+
+AÑO PUBLIC
+
+2011
+
+ISBN
+
+978-84-15061-08-3
+
+Libros
+AUTORES
+
+Enrique Carvajal Zaera;Victoria Bonilla Represa
+
+NUMERO AUTORES
+
+2
+
+POSICION
+
+1
+
+TITULO
+
+Capítulo VII Comportamiento post compra del paciente en odontología.
+Variables que afectan a la fidelización, en Comunicación y salud:
+avances, inteligencia artificial y nuevos métodos
+CLAVE
+
+08002
+
+PAG DESDE
+
+113
+
+PAG HASTA
+
+128
+
+EDITORIAL
+
+Editorial Fragua
+
+PAIS
+
+E
+
+AÑO PUBLIC
+
+2024
+
+ISBN
+
+978-84-128539-7-1
+
+Libros
+AUTORES
+
+Enrique Carvajal Zaera.
+
+NUMERO AUTORES
+
+1
+
+POSICION
+
+1
+
+TITULO
+
+Capítulo IX Gamification como herramienta del marketing digital.
+Satisfacción del usuario en el aprendizaje, en Neurocomunicación y
+neuromarketing: nuevos desarrollos y avances en el siglo XXI
+
+CLAVE
+
+08002
+
+PAG DESDE
+
+143
+
+PAG HASTA
+
+158
+
+EDITORIAL
+
+Editorial Fragua
+
+PAIS
+
+E
+
+AÑO PUBLIC
+
+2024
+
+ISBN
+
+978-84-128539-1-9
+
+Libros
+AUTORES
+
+Enrique Carvajal Zaera
+
+NUMERO AUTORES
+
+1
+
+POSICION
+
+1
+
+TITULO
+
+Capítulo, en New Interdisciplinary Horizons in Communication and
+Marketing
+
+CLAVE
+
+08002
+
+EDITORIAL
+
+Palgrave Macmillan (Springer Nature)
+
+PAIS
+
+GB
+
+AÑO PUBLIC
+
+2026
+Libros
+AUTORES
+
+Enrique Carvajal Zaera; Luis Villar Fidalgo
+
+NUMERO AUTORES
+
+2
+
+POSICION
+
+1
+
+TITULO
+
+La variable humana en la transformación digital de las organizaciones
+y sus herramientas principales. Personas y tecnología, en IV Informe
+Función de RRHH y Retos en la Gestión del Talento
+
+CLAVE
+
+08002
+
+PAG DESDE
+
+64
+
+PAG HASTA
+
+69
+
+EDITORIAL
+
+The Adecco Group Intitute
+
+PAIS
+
+E
+
+AÑO PUBLIC
+
+2024
+
+Libros
+AUTORES
+
+Enrique Carvajal Zaera
+
+NUMERO AUTORES
+
+1
+
+POSICION
+
+1
+
+TITULO
+
+Aplicación del Business Model Canvas (BMC) para el análisis del
+modelo de negocio de las mafias de migrantes en el Mediterráneo
+
+CLAVE
+
+08002
+
+EDITORIAL
+
+Aranzadi
+
+PAIS
+
+E
+
+AÑO PUBLIC
+
+2026
+
+PROYECTOS Y/O CONTRATOS DE INVESTIGACION
+Título
+
+Fdesde
+
+Eficiencia Tecnológica, Dignidad y Derechos Humanos. ¿QUO VADIS, 2025-01-23
+Humanidad, en la era de la IA?
+La Securitización de la lucha contra la inmigración irregular en el Mediterráneo 2025-06-25
+por parte de la UE y España: Un enfoque multidisciplinar
+
+Proyectos
+TITULO
+
+Eficiencia Tecnológica, Dignidad y Derechos Humanos. ¿QUO VADIS,
+Humanidad, en la era de la IA?
+ENTIDAD
+
+Universidad CEU Fernando III
+
+CONV TIPO
+
+09000
+
+CONV OTROS
+
+Universidad CEU Fernando III
+
+ENTIDADES
+
+Universidad CEU Fernando III
+
+FDESDE
+
+2025-01-23
+
+FHASTA
+
+2026-02-18
+
+MESES
+
+13
+
+IP
+
+D. Pablo Gutiérrez de Cabiedes
+
+INVESTIGADORES
+
+9
+
+APORTACION
+
+Investigador Colaborador
+
+GRADO TIPO
+
+10002
+
+DEDICACION
+
+XX001
+
+Proyectos
+TITULO
+
+La Securitización de la lucha contra la inmigración irregular en el
+Mediterráneo por parte de la UE y España: Un enfoque multidisciplinar
+
+ENTIDAD
+
+Universidad CEU Fernando III
+
+CONV TIPO
+
+09000
+
+CONV OTROS
+
+Universidad CEU Fernando III
+
+ENTIDADES
+
+Universidad CEU Fernando III
+
+FDESDE
+
+2025-06-25
+
+FHASTA
+
+2026-02-18
+
+MESES
+
+13
+
+IP
+
+Carlos Espaliú Berdud
+
+INVESTIGADORES
+
+18
+
+APORTACION
+
+Investigador Colaborador
+
+GRADO TIPO
+
+10002
+
+DEDICACION
+
+XX001
+
+CONGRESOS Y CONFERENCIAS CIENTIFICAS
+Título
+
+Fcelebración
+
+Comité organizador en I Congreso Internacional de Comunicación, Sociedad 2025-10-30
+y Organizaciones (COMUSOC)
+Conectando con el cliente: Interacción, Emoción y Neuromarketing para la 2025-03-19
+lealtad de Marca
+Influencia de la inteligencia artificial en la comunicación en la salud
+
+2024-10-16
+
+Comportamiento post compra del paciente en odontología. Variables que 2024-04-25
+afectan a la fidelización
+Gamificación como herramienta del marketing digital. Satisfacción del usuario 2023-11-16
+en el aprendizaje
+Influencia de los tatuajes y sus diferentes estilos en la formación de primeras 2023-11-16
+impresiones
+Branded podcast; un nuevo canal de comunicación
+
+2022-12-14
+
+Desarrollo de estrategia de fidelización para gasolineras lowcost. Caso 2022-12-14
+Pretroprix
+La construcción de la arquitectura popular en Almonte
+
+2004-07-16
+
+Congresos
+AUTORES
+
+Enrique Carvajal Zaera
+
+TITULO
+
+Comité organizador en I Congreso Internacional de Comunicación,
+Sociedad y Organizaciones (COMUSOC)
+
+ENTIDAD
+
+COMUSOC; UE
+
+CONGRESO
+
+I Congreso Internacional de Comunicación, Sociedad y Organizaciones
+(COMUSOC)
+
+TIPO
+
+13004
+
+LUGAR
+
+Villaviciosa de Odón (Madrid)
+
+FCELEBRACION
+
+2025-10-30
+
+Congresos
+AUTORES
+
+Enrique Carvajal Zaera
+
+TITULO
+
+Conectando con el cliente: Interacción, Emoción y Neuromarketing para
+la lealtad de Marca
+
+ENTIDAD
+
+ICONO14; Universidad de Sevilla
+
+CONGRESO
+
+VI Congreso Internacional COMRED
+
+TIPO
+
+13001
+
+LUGAR
+
+Sevilla
+FCELEBRACION
+
+2025-03-19
+
+Congresos
+AUTORES
+
+Enrique Carvajal Zaera
+
+TITULO
+
+Influencia de la inteligencia artificial en la comunicación en la salud
+
+ENTIDAD
+
+Grupo de Investigación en Comunicación Complutense Concilium;
+Fórum XXI; SEECI
+
+CONGRESO
+
+CUICIID 2024
+
+TIPO
+
+13001
+
+ISSN ISBN
+
+978-84-09-59704-8
+
+LUGAR
+
+Madrid
+
+FCELEBRACION
+
+2024-10-16
+
+Congresos
+AUTORES
+
+Enrique Carvajal Zaera;Victoria Bonilla
+
+TITULO
+
+Comportamiento post compra del paciente en odontología. Variables
+que afectan a la fidelización
+
+ENTIDAD
+
+Cátedra de Comunicación y Salud (UCM-AbbVie); Real Colegio
+Complutense en Harvard
+
+CONGRESO
+
+III Congreso Internacional de Comunicación y Salud (CICyS)
+
+TIPO
+
+13001
+
+ISSN ISBN
+
+978-84-09-59702-4
+
+DESDE
+
+32
+
+HASTA
+
+32
+
+LUGAR
+
+Madrid; on-line
+
+FCELEBRACION
+
+2024-04-25
+
+Congresos
+AUTORES
+
+Enrique Carvajal Zaera
+
+TITULO
+
+Gamificación como herramienta del marketing digital. Satisfacción del
+usuario en el aprendizaje
+
+ENTIDAD
+
+Cátedra UCM/Campofrío ShopperLab Neuromarketing Insights for the
+Perfect Experience; UCM; URJC
+
+CONGRESO
+
+II Congreso Internacional de Neurocomunicación y Neuromarketing
+
+TIPO
+
+13001
+ISSN ISBN
+
+978-84-09-48184-2
+
+DESDE
+
+14
+
+HASTA
+
+14
+
+LUGAR
+
+Madrid
+
+FCELEBRACION
+
+2023-11-16
+
+Congresos
+AUTORES
+
+Enrique Carvajal Zaera
+
+TITULO
+
+Influencia de los tatuajes y sus diferentes estilos en la formación de
+primeras impresiones
+
+ENTIDAD
+
+Cátedra UCM/Campofrío ShopperLab Neuromarketing Insights for the
+Perfect Experience; UCM
+
+CONGRESO
+
+II Congreso Internacional de Neurocomunicación y Neuromarketing
+
+TIPO
+
+13001
+
+LUGAR
+
+Madrid
+
+FCELEBRACION
+
+2023-11-16
+
+Congresos
+AUTORES
+
+Carmen Fernández Cárdenas; Enrique Carvajal Zaera
+
+TITULO
+
+Branded podcast; un nuevo canal de comunicación
+
+ENTIDAD
+
+AJICEDE; Universidad de Loyola
+
+CONGRESO
+
+V Congreso Iberoamericano de Jóvenes Investigadores en Ciencias
+Económicas y Dirección de Empresas
+
+TIPO
+
+13001
+
+LUGAR
+
+Córdoba
+
+FCELEBRACION
+
+2022-12-14
+
+Congresos
+AUTORES
+
+Marta Godoy Melguizo; Enrique Carvajal Zaera
+
+TITULO
+
+Desarrollo de estrategia de fidelización para gasolineras lowcost. Caso
+Pretroprix
+
+ENTIDAD
+
+AJICEDE
+
+CONGRESO
+
+V Congreso Iberoamericano de Jóvenes Investigadores en Ciencias
+Económicas y Dirección de Empresas
+
+TIPO
+
+13001
+LUGAR
+
+Córdoba
+
+FCELEBRACION
+
+2022-12-14
+
+Congresos
+AUTORES
+
+Enrique Carvajal Zaera
+
+TITULO
+
+La construcción de la arquitectura popular en Almonte
+
+ENTIDAD
+
+CICOP
+
+CONGRESO
+
+VII Congreso Internacional
+Arquitectónico y Edificación
+
+TIPO
+
+13001
+
+LUGAR
+
+Yaiza (Las Palmas)
+
+FCELEBRACION
+
+2004-07-16
+
+de
+
+Rehabilitación
+
+del
+
+Patrimonio
+
+OTROS MERITOS DE INVESTIGACION
+Otros Méritos Investigación
+OTROS MERITOS
+
+(1) GRUPOS DE INVESTIGACIÓN: 2025 miembro del grupo de
+Investigación del Proyecto #La Securitización de la lucha contra
+la inmigración irregular en el Mediterráneo por parte de la UE y
+España: Un enfoque multidisciplinar#, CEU Universidad Fernando
+III; 2024-25 miembro del Grupo de Investigación UF3 Relaciones
+Internacionales, Seguridad y defensa (UF3RISD), Universidad CEU
+Fernando III; 2022-26 [IMPACTA] miembro del Grupo de Investigación
+Comunicación, sociedad y organizaciones, UEM;
+
+EXPERIENCIA DOCENTE
+PUESTOS OCUPADOS Y DOCENCIA IMPARTIDA
+Título
+Máster Propio en Executive Master in Business Administration (EMBA) (II Edición) US
+Máster Propio en Business Administration (Full MBA) (I Edición) US
+Marketing y Comercialización (Inteligencia de los negocios) CEU UNIVERSIDAD
+FERNANDO III
+Introducción al marketing (Marketing y Gestión Comercial) CEU UNIVERSIDAD
+FERNANDO III
+Fundamentos de marketing (Introducción al marketing) CEU UNIVERSIDAD FERNANDO III
+Comportamiento del Consumidor (Inteligencia de los negocios) CEU UNIVERSIDAD
+FERNANDO III
+Título
+Estrategias de Marketing (Marketing y Gestión Comercial) CEU UNIVERSIDAD FERNANDO
+III
+Comportamiento del Consumidor (IMarketing y Gestión Comercial) CEU UNIVERSIDAD
+FERNANDO III
+Responsabilidad Social Empresarial en el Mundo Digital (Máster Universitario en Derecho
+Tecnológico y Digital) CEU UNIVERSIDAD FERNANDO III
+Innovación, desarrollo y marketing de experiencias (Master in Business Administration
+Executive 2012/13 (Módulo Dirección Comercial)
+Marketing 2.0 (Master in Business Administration Executive 2012/13 (Módulo Dirección
+Comercial))
+Plan de Marketing (Grado en Comunicación y Doble Grado en Comunicación y
+Comunicación Digital) UPO
+Marketing (Publicidad y Relaciones Públicas) US
+Planificación y gestión de medios publicitarios (Publicidad y Relaciones Públicas) US
+Planificación y gestión de medios publicitarios (Planning and management of advertising
+media) (Publicidad y Relaciones Públicas) US
+Marketing Turístico (Publicidad y Relaciones Públicas) US
+Marketing Turístico (Tourism Marketing) (Publicidad y Relaciones Públicas) US
+Publicidad y promoción comercial de turismo (Turismo) US
+Investigación de mercados turísticos (market research for tourism) (Turismo) US
+Gestión del Diseño (Diseño Gráfico y Diseño de Moda) CEADE LEONARDO / San Isidoro
+Centro Universitario/ UPO
+Dirección Comercial II (Administración y Dirección de Empresas) San Isidoro Centro
+Universitario/ UPO
+Marketing On-line (Comunicación Digital y doble grado en Comunicación y Comunicación
+Digital) San Isidoro Centro Universitario/ UPO
+Plan de Marketing (Comunicación) San Isidoro Centro Universitario/ UPO
+Módulo 6: Dirección comercial (Máster Universitario en Dirección de Empresas MBA. Online)
+UEM
+4.Marketing digital (Máster Universitario en Negocios Digitales. Online) UEM
+Trabajo Fin de Máster (Máster Universitario en Negocios Digitales. Online) UEM
+Trabajo de Fin de Máster (Máster Universitario en Marketing. Online) UEM
+Módulo 10. Trabajo Fin de Máster (Máster Universitario en Marketing. Online) UEM
+Competencias Generales UEM I: Eficacia personal y profesional (Grado en Marketing.
+Online) UEM
+Título
+Gestión de la empresa (Grado en Marketing. Online) UEM
+Liderazgo emprendedor (Grado en Relaciones Laborales y Recursos Humanos. Online)
+UEM
+Digitalización de las organizaciones (Máster de Formación Permanente en Product
+Management y Estrategia Digital. Online) UEM
+MODULO 2. Transformación digital y nuevos modelos de negocio (Máster Universitario en
+Dirección de Comercio Electrónico. Online) UEM
+Trabajo Fin de Grado (Grado en Administración y Dirección de Empresas. Online) UEM
+Fundamentos Económicos (Complementos de Formación del Máster Universitario en
+Dirección y Gestión de Recursos Humanos: Fundamentos Económicos de la Empresa) UEM
+Estrategia empresarial (Máster Univ. en Dirección de Empresas (MBA)) Universidad Nebrija
+Gestión de Marketing Estratégico (Máster Univ. en Dirección de Empresas (MBA)
+Universidad Nebrija
+Emprendimiento e innovación disruptiva (Experto en Datos y Tecnología) Universidad
+Nebrija
+Marketing digital (Máster Universitario en Administración de Empresas/Master in Business
+Administration-Tech) Universidad Nebrija
+Creación y financiación de startups y scaleups (Experto en Gestión de la Tecnología)
+Universidad Nebrija
+Gestión Comercial y Marketing (Dirección Gestión de Empresas - Part Time) EAE
+Técnicas de Ventas (Máster Dirección Comercial y Gestión de Ventas) EAE
+Estrategias comerciales (Máster en Dirección de Marketing) EAE
+Dirección de Ventas. De la Concepción Estratégica al Resultado Operativo (Máster en
+Dirección de Marketing) EAE
+Dirección Comercial (Posgrado en Dirección y Gestión de Empresas) EAE
+Trabajo Fin de Máster (Tutorías) (Máster en Dirección Comercial y Gestión de Ventas) EAE
+Satisfacción y fidelización de Clientes (Máster Universitario en Administración, Dirección y
+Organización de Empresas) EAE
+Negociación comercial (Máster Universitario en Comercialización e Internacionalización de
+Productos y Servicios) EAE
+Gestión comercial (Máster Universitario en Administración, Dirección de Empresas) EAE
+
+Docencia Impartida
+DENOMINACION
+
+Docente
+
+DEPARTAMENTO
+
+-
+CENTRO
+
+Centre de Formación Permanente
+
+INSTITUCION
+
+UNIVERSIDAD DE SEVILLA
+
+LOCALIDAD
+
+Sevilla
+
+PAIS
+
+E
+
+TIPO
+
+14004
+
+ESPECIFICAR
+
+Máster Propio en Executive Master in Business Administration (EMBA)
+(II Edición)
+
+ASIGNATURA
+
+Máster Propio en Executive Master in Business Administration (EMBA)
+(II Edición) US
+
+CURSO
+
+1
+
+TIPO ASIGNATURA
+
+15002
+
+TIPO DOCENCIA
+
+16003
+
+HORAS
+
+7
+
+Periodo
+DESDE
+
+01/09/10
+
+HASTA
+
+31/08/11
+
+Docencia Impartida
+DENOMINACION
+
+Docente
+
+DEPARTAMENTO
+
+-
+
+CENTRO
+
+Centro de Formación Permanente
+
+INSTITUCION
+
+UNIVERSIDAD DE SEVILLA
+
+LOCALIDAD
+
+Sevilla
+
+PAIS
+
+E
+
+TIPO
+
+14004
+
+ESPECIFICAR
+
+Máster Propio en Business Administration (Full MBA) (I Edición)
+
+ASIGNATURA
+
+Máster Propio en Business Administration (Full MBA) (I Edición) US
+
+CURSO
+
+1
+
+TIPO ASIGNATURA
+
+15002
+
+TIPO DOCENCIA
+
+16003
+
+HORAS
+
+8
+Periodo
+DESDE
+
+01/09/12
+
+HASTA
+
+31/08/12
+
+Docencia Impartida
+DENOMINACION
+
+Docente
+
+DEPARTAMENTO
+
+-
+
+CENTRO
+
+Facultad de Ciencias Empresariales y Jurídicas
+
+INSTITUCION
+
+CEU UNIVERSIDAD FERNANDO III
+
+LOCALIDAD
+
+Bormujos (Sevilla)
+
+PAIS
+
+E
+
+TIPO
+
+14006
+
+ESPECIFICAR
+
+Inteligencia de los negocios
+
+ASIGNATURA
+
+Marketing y Comercialización (Inteligencia de los negocios) CEU
+UNIVERSIDAD FERNANDO III
+
+CURSO
+
+1
+
+TIPO ASIGNATURA
+
+15002
+
+TIPO DOCENCIA
+
+16003
+
+HORAS
+
+120
+
+Periodo
+DESDE
+
+01/09/24
+
+HASTA
+
+31/08/25
+
+CALIFIC
+
+10
+
+CALIFIC MAX
+
+10
+
+Periodo
+DESDE
+
+01/09/25
+
+HASTA
+
+26/01/26
+
+Docencia Impartida
+DENOMINACION
+
+Docente
+
+DEPARTAMENTO
+
+-
+
+CENTRO
+
+Facultad de Ciencias Empresariales y Jurídicas
+INSTITUCION
+
+CEU UNIVERSIDAD FERNANDO III
+
+LOCALIDAD
+
+Bormujos (Sevilla)
+
+PAIS
+
+E
+
+TIPO
+
+14006
+
+ESPECIFICAR
+
+Marketing y Gestión Comercial
+
+ASIGNATURA
+
+Introducción al marketing (Marketing y Gestión Comercial) CEU
+UNIVERSIDAD FERNANDO III
+
+CURSO
+
+1
+
+TIPO ASIGNATURA
+
+15002
+
+TIPO DOCENCIA
+
+16003
+
+HORAS
+
+60
+
+Periodo
+DESDE
+
+01/09/24
+
+HASTA
+
+31/08/25
+
+Docencia Impartida
+DENOMINACION
+
+Docente
+
+DEPARTAMENTO
+
+-
+
+CENTRO
+
+Facultad de Ciencias Empresariales y Jurídicas
+
+INSTITUCION
+
+CEU UNIVERSIDAD FERNANDO III
+
+LOCALIDAD
+
+Bormujos (Sevilla)
+
+PAIS
+
+E
+
+TIPO
+
+14006
+
+ESPECIFICAR
+
+Administración y Dirección de Empresas
+
+ASIGNATURA
+
+Fundamentos de marketing
+UNIVERSIDAD FERNANDO III
+
+CURSO
+
+1
+
+TIPO ASIGNATURA
+
+15002
+
+TIPO DOCENCIA
+
+16003
+
+HORAS
+
+60
+
+Periodo
+DESDE
+
+01/09/24
+
+19
+
+(Introducción
+
+al
+
+marketing)
+
+CEU
+
+HASTA
+
+31/08/25
+
+Docencia Impartida
+DENOMINACION
+
+Docente
+
+DEPARTAMENTO
+
+-
+
+CENTRO
+
+Facultad de Ciencias Empresariales y Jurídicas
+
+INSTITUCION
+
+CEU UNIVERSIDAD FERNANDO III
+
+LOCALIDAD
+
+Bormujos (Sevilla)
+
+PAIS
+
+E
+
+TIPO
+
+14006
+
+ESPECIFICAR
+
+Inteligencia de los negocios
+
+ASIGNATURA
+
+Comportamiento del Consumidor (Inteligencia de los negocios) CEU
+UNIVERSIDAD FERNANDO III
+
+CURSO
+
+1
+
+TIPO ASIGNATURA
+
+15002
+
+TIPO DOCENCIA
+
+16003
+
+HORAS
+
+60
+
+Periodo
+DESDE
+
+01/09/24
+
+HASTA
+
+31/08/25
+
+CALIFIC
+
+8.50
+
+CALIFIC MAX
+
+10
+
+TIPO
+
+17001
+
+Docencia Impartida
+DENOMINACION
+
+Docente
+
+DEPARTAMENTO
+
+-
+
+CENTRO
+
+Facultad de Ciencias Empresariales y Jurídicas
+
+INSTITUCION
+
+CEU UNIVERSIDAD FERNANDO III
+
+LOCALIDAD
+
+Bormujos (Sevilla)
+
+PAIS
+
+E
+
+TIPO
+
+14006
+ESPECIFICAR
+
+Marketing y Gestión Comercial
+
+ASIGNATURA
+
+Estrategias de Marketing (Marketing y Gestión Comercial) CEU
+UNIVERSIDAD FERNANDO III
+
+CURSO
+
+1
+
+TIPO ASIGNATURA
+
+15002
+
+TIPO DOCENCIA
+
+16003
+
+HORAS
+
+60
+
+Periodo
+DESDE
+
+01/09/24
+
+HASTA
+
+31/08/25
+
+Docencia Impartida
+DENOMINACION
+
+Docente
+
+DEPARTAMENTO
+
+-
+
+CENTRO
+
+Facultad de Ciencias Empresariales y Jurídicas
+
+INSTITUCION
+
+CEU UNIVERSIDAD FERNANDO III
+
+LOCALIDAD
+
+Bormujos (Sevilla)
+
+PAIS
+
+E
+
+TIPO
+
+14006
+
+ESPECIFICAR
+
+Marketing y Gestión Comercial
+
+ASIGNATURA
+
+Comportamiento del Consumidor (IMarketing y Gestión Comercial) CEU
+UNIVERSIDAD FERNANDO III
+
+CURSO
+
+2
+
+TIPO ASIGNATURA
+
+15002
+
+TIPO DOCENCIA
+
+16003
+
+HORAS
+
+60
+
+Periodo
+DESDE
+
+01/09/25
+
+HASTA
+
+26/01/26
+
+Docencia Impartida
+DENOMINACION
+
+Docente
+
+DEPARTAMENTO
+
+-
+CENTRO
+
+Facultad de Ciencias Económicas, Empresariales y de la Comunicación
+
+INSTITUCION
+
+CEU UNIVERSIDAD FERNANDO III
+
+LOCALIDAD
+
+Bormujos (Sevilla)
+
+PAIS
+
+E
+
+TIPO
+
+14005
+
+ESPECIFICAR
+
+Máster Universitario en Derecho Tecnológico y Digital
+
+ASIGNATURA
+
+Responsabilidad Social Empresarial en el Mundo Digital (Máster
+Universitario en Derecho Tecnológico y Digital) CEU UNIVERSIDAD
+FERNANDO III
+
+CURSO
+
+1
+
+TIPO ASIGNATURA
+
+15002
+
+TIPO DOCENCIA
+
+16003
+
+HORAS
+
+10
+
+Periodo
+DESDE
+
+01/09/24
+
+HASTA
+
+31/08/25
+
+CALIFIC
+
+10
+
+CALIFIC MAX
+
+10
+
+TIPO
+
+17001
+
+Docencia Impartida
+DENOMINACION
+
+Docente
+
+DEPARTAMENTO
+
+-
+
+CENTRO
+
+Instituto de Estudios Cajasol S.L.U.
+
+INSTITUCION
+
+Instituto de Estudios Cajasol S.L.U.
+
+LOCALIDAD
+
+Sevilla
+
+PAIS
+
+E
+
+TIPO
+
+14005
+
+ESPECIFICAR
+
+Master in Business Administration Executive 2012/13 (Módulo Dirección
+Comercial)
+
+ASIGNATURA
+
+Innovación, desarrollo y marketing de experiencias (Master in Business
+Administration Executive 2012/13 (Módulo Dirección Comercial)
+CURSO
+
+5
+
+TIPO ASIGNATURA
+
+15002
+
+TIPO DOCENCIA
+
+16003
+
+HORAS
+
+5
+
+Periodo
+DESDE
+
+01/09/12
+
+HASTA
+
+31/08/13
+
+Docencia Impartida
+DENOMINACION
+
+Docente
+
+DEPARTAMENTO
+
+-
+
+CENTRO
+
+Instituto de Estudios Cajasol S.L.U.
+
+INSTITUCION
+
+Instituto de Estudios Cajasol S.L.U.
+
+LOCALIDAD
+
+Sevilla
+
+PAIS
+
+E
+
+TIPO
+
+14005
+
+ESPECIFICAR
+
+Master in Business Administration Executive 2012/13 (Módulo Dirección
+Comercial)
+
+ASIGNATURA
+
+Marketing 2.0 (Master in Business Administration Executive 2012/13
+(Módulo Dirección Comercial))
+
+CURSO
+
+5
+
+TIPO ASIGNATURA
+
+15002
+
+TIPO DOCENCIA
+
+16003
+
+HORAS
+
+5
+
+Periodo
+DESDE
+
+01/09/12
+
+HASTA
+
+31/08/13
+
+Docencia Impartida
+DENOMINACION
+
+Profesor
+
+DEPARTAMENTO
+
+Área Departamental de Ciencias Sociales y de la Salud
+
+CENTRO
+
+Centro Universitario San Isidoro
+
+INSTITUCION
+
+UNIVERSIDAD PABLO DE OLAVIDE (UPO)
+LOCALIDAD
+
+Sevilla
+
+PAIS
+
+E
+
+TIPO
+
+14006
+
+ESPECIFICAR
+
+Grado en Comunicación y Doble Grado en Comunicación y
+Comunicación Digital
+
+ASIGNATURA
+
+Plan de Marketing (Grado en Comunicación y Doble Grado en
+Comunicación y Comunicación Digital) UPO
+
+CURSO
+
+3
+
+TIPO ASIGNATURA
+
+15002
+
+TIPO DOCENCIA
+
+16003
+
+HORAS
+
+45
+
+Periodo
+DESDE
+
+01/09/22
+
+HASTA
+
+31/08/23
+
+Docencia Impartida
+DENOMINACION
+
+Docente
+
+DEPARTAMENTO
+
+-
+
+CENTRO
+
+Centro Universitario EUSA
+
+INSTITUCION
+
+UNIVERSIDAD DE SEVILLA
+
+LOCALIDAD
+
+Sevilla
+
+PAIS
+
+E
+
+TIPO
+
+14006
+
+ESPECIFICAR
+
+Publicidad y Relaciones Públicas
+
+ASIGNATURA
+
+Marketing (Publicidad y Relaciones Públicas) US
+
+CURSO
+
+1
+
+TIPO ASIGNATURA
+
+15001
+
+TIPO DOCENCIA
+
+16003
+
+HORAS
+
+60
+
+Periodo
+DESDE
+
+01/09/23
+
+HASTA
+
+31/08/24
+Docencia Impartida
+DENOMINACION
+
+Docente
+
+DEPARTAMENTO
+
+-
+
+CENTRO
+
+Centro Universitario EUSA
+
+INSTITUCION
+
+UNIVERSIDAD DE SEVILLA
+
+LOCALIDAD
+
+Sevilla
+
+PAIS
+
+E
+
+TIPO
+
+14006
+
+ESPECIFICAR
+
+Publicidad y Relaciones Públicas
+
+ASIGNATURA
+
+Planificación y gestión de medios publicitarios (Publicidad y Relaciones
+Públicas) US
+
+CURSO
+
+3
+
+TIPO ASIGNATURA
+
+15002
+
+TIPO DOCENCIA
+
+16003
+
+HORAS
+
+112
+
+Periodo
+DESDE
+
+01/09/22
+
+HASTA
+
+31/08/23
+
+CALIFIC
+
+4.60
+
+CALIFIC MAX
+
+5
+
+TIPO
+
+17001
+
+Periodo
+DESDE
+
+01/09/23
+
+HASTA
+
+31/08/24
+
+CALIFIC
+
+7.59
+
+CALIFIC MAX
+
+10
+
+TIPO
+
+17001
+
+Docencia Impartida
+DENOMINACION
+
+Docente
+
+DEPARTAMENTO
+
+-
+CENTRO
+
+Centro Universitario EUSA
+
+INSTITUCION
+
+UNIVERSIDAD DE SEVILLA
+
+LOCALIDAD
+
+Sevilla
+
+PAIS
+
+E
+
+TIPO
+
+14006
+
+ESPECIFICAR
+
+Publicidad y Relaciones Públicas
+
+ASIGNATURA
+
+Planificación y gestión de medios publicitarios (Planning and
+management of advertising media) (Publicidad y Relaciones Públicas)
+US
+
+CURSO
+
+3
+
+TIPO ASIGNATURA
+
+15002
+
+TIPO DOCENCIA
+
+16003
+
+HORAS
+
+120
+
+Periodo
+DESDE
+
+01/09/22
+
+HASTA
+
+31/08/23
+
+CALIFIC
+
+3.71
+
+CALIFIC MAX
+
+5
+
+Periodo
+DESDE
+
+01/09/23
+
+HASTA
+
+31/08/24
+
+CALIFIC
+
+5.70
+
+CALIFIC MAX
+
+10
+
+Docencia Impartida
+DENOMINACION
+
+Docente
+
+DEPARTAMENTO
+
+-
+
+CENTRO
+
+Centro Universitario EUSA
+
+INSTITUCION
+
+UNIVERSIDAD DE SEVILLA
+
+LOCALIDAD
+
+Sevilla
+
+PAIS
+
+E
+
+TIPO
+
+14006
+ESPECIFICAR
+
+Turismo
+
+ASIGNATURA
+
+Marketing Turístico (Publicidad y Relaciones Públicas) US
+
+CURSO
+
+1
+
+TIPO ASIGNATURA
+
+15002
+
+TIPO DOCENCIA
+
+16003
+
+HORAS
+
+60
+
+Periodo
+DESDE
+
+01/09/23
+
+HASTA
+
+31/08/24
+
+CALIFIC
+
+9
+
+CALIFIC MAX
+
+10
+
+TIPO
+
+17001
+
+Docencia Impartida
+DENOMINACION
+
+Docente
+
+DEPARTAMENTO
+
+-
+
+CENTRO
+
+Centro Universitario EUSA
+
+INSTITUCION
+
+UNIVERSIDAD DE SEVILLA
+
+LOCALIDAD
+
+Sevilla
+
+PAIS
+
+E
+
+TIPO
+
+14006
+
+ESPECIFICAR
+
+Turismo
+
+ASIGNATURA
+
+Marketing Turístico (Tourism Marketing) (Publicidad y Relaciones
+Públicas) US
+
+CURSO
+
+1
+
+TIPO ASIGNATURA
+
+15002
+
+TIPO DOCENCIA
+
+16003
+
+HORAS
+
+60
+
+Periodo
+DESDE
+
+01/09/21
+
+HASTA
+
+31/08/22
+CALIFIC
+
+5
+
+CALIFIC MAX
+
+5
+
+Docencia Impartida
+DENOMINACION
+
+Docente
+
+DEPARTAMENTO
+
+-
+
+CENTRO
+
+Centro Universitario EUSA
+
+INSTITUCION
+
+UNIVERSIDAD DE SEVILLA
+
+LOCALIDAD
+
+Sevilla
+
+PAIS
+
+E
+
+TIPO
+
+14006
+
+ESPECIFICAR
+
+Turismo
+
+ASIGNATURA
+
+Publicidad y promoción comercial de turismo (Turismo) US
+
+CURSO
+
+3
+
+TIPO ASIGNATURA
+
+15003
+
+TIPO DOCENCIA
+
+16003
+
+HORAS
+
+120
+
+Periodo
+DESDE
+
+01/09/22
+
+HASTA
+
+31/08/23
+
+CALIFIC
+
+3.50
+
+CALIFIC MAX
+
+5
+
+TIPO
+
+17001
+
+Periodo
+DESDE
+
+01/09/23
+
+HASTA
+
+31/08/24
+
+Docencia Impartida
+DENOMINACION
+
+Docente
+
+DEPARTAMENTO
+
+-
+
+CENTRO
+
+Centro Universitario EUSA
+
+INSTITUCION
+
+UNIVERSIDAD DE SEVILLA
+LOCALIDAD
+
+Sevilla
+
+PAIS
+
+E
+
+TIPO
+
+14006
+
+ESPECIFICAR
+
+Turismo
+
+ASIGNATURA
+
+Investigación de mercados turísticos (market research for tourism)
+(Turismo) US
+
+CURSO
+
+3
+
+TIPO ASIGNATURA
+
+15002
+
+TIPO DOCENCIA
+
+16003
+
+HORAS
+
+120
+
+Periodo
+DESDE
+
+01/09/22
+
+HASTA
+
+31/08/23
+
+Periodo
+DESDE
+
+01/09/23
+
+HASTA
+
+31/08/24
+
+CALIFIC
+
+8.40
+
+CALIFIC MAX
+
+10
+
+Docencia Impartida
+DENOMINACION
+
+Profesor
+
+DEPARTAMENTO
+
+-
+
+CENTRO
+
+-
+
+INSTITUCION
+
+CEADE LEONARDO
+
+LOCALIDAD
+
+Sevilla
+
+PAIS
+
+E
+
+TIPO
+
+14006
+
+ESPECIFICAR
+
+Diseño Gráfico y Diseño de Moda
+
+ASIGNATURA
+
+Gestión del Diseño (Diseño Gráfico y Diseño de Moda) CEADE
+LEONARDO / San Isidoro Centro Universitario/ UPO
+
+CURSO
+
+3
+
+TIPO ASIGNATURA
+
+15002
+TIPO DOCENCIA
+
+16003
+
+HORAS
+
+270
+
+Periodo
+DESDE
+
+01/09/16
+
+HASTA
+
+31/08/17
+
+Periodo
+DESDE
+
+01/09/17
+
+HASTA
+
+31/08/18
+
+Periodo
+DESDE
+
+01/09/18
+
+HASTA
+
+31/08/19
+
+Docencia Impartida
+DENOMINACION
+
+Profesor
+
+DEPARTAMENTO
+
+Área Departamental de Ciencias Sociales y de la Salud
+
+CENTRO
+
+San Isidoro Centro Universitario
+
+INSTITUCION
+
+UNIVERSIDAD PABLO DE OLAVIDE (UPO)
+
+LOCALIDAD
+
+Sevilla
+
+PAIS
+
+E
+
+TIPO
+
+14006
+
+ESPECIFICAR
+
+Administración y Dirección de Empresas
+
+ASIGNATURA
+
+Dirección Comercial II (Administración y Dirección de Empresas) San
+Isidoro Centro Universitario/ UPO
+
+CURSO
+
+3
+
+TIPO ASIGNATURA
+
+15002
+
+TIPO DOCENCIA
+
+16003
+
+HORAS
+
+45
+
+Periodo
+DESDE
+
+01/09/16
+
+HASTA
+
+31/08/17
+
+Periodo
+DESDE
+
+01/09/22
+HASTA
+
+31/08/23
+
+CALIFIC
+
+4.62
+
+CALIFIC MAX
+
+5
+
+TIPO
+
+17001
+
+Docencia Impartida
+DENOMINACION
+
+Profesor
+
+DEPARTAMENTO
+
+Área Departamental de Ciencias Sociales y de la Salud
+
+CENTRO
+
+San Isidoro Centro Universitario
+
+INSTITUCION
+
+UNIVERSIDAD PABLO DE OLAVIDE (UPO)
+
+LOCALIDAD
+
+Sevilla
+
+PAIS
+
+E
+
+TIPO
+
+14006
+
+ESPECIFICAR
+
+Comunicación Digital y doble grado en Comunicación y Comunicación
+Digital
+
+ASIGNATURA
+
+Marketing On-line (Comunicación Digital y doble grado en
+Comunicación y Comunicación Digital) San Isidoro Centro Universitario/
+UPO
+
+CURSO
+
+3
+
+TIPO ASIGNATURA
+
+15002
+
+TIPO DOCENCIA
+
+16003
+
+HORAS
+
+135
+
+Periodo
+DESDE
+
+01/09/18
+
+HASTA
+
+31/08/19
+
+Periodo
+DESDE
+
+01/09/16
+
+HASTA
+
+31/08/17
+
+Periodo
+DESDE
+
+01/09/17
+
+HASTA
+
+31/08/18
+Docencia Impartida
+DENOMINACION
+
+Profesor
+
+DEPARTAMENTO
+
+Área Departamental de Ciencias Sociales y de la Salud
+
+CENTRO
+
+San Isidoro Centro Universitario
+
+INSTITUCION
+
+UNIVERSIDAD PABLO DE OLAVIDE (UPO)
+
+LOCALIDAD
+
+Sevilla
+
+PAIS
+
+E
+
+TIPO
+
+14006
+
+ESPECIFICAR
+
+Grado en Comunicación
+
+ASIGNATURA
+
+Plan de Marketing (Comunicación) San Isidoro Centro Universitario/
+UPO
+
+CURSO
+
+3
+
+TIPO ASIGNATURA
+
+15002
+
+TIPO DOCENCIA
+
+16003
+
+HORAS
+
+180
+
+Periodo
+DESDE
+
+01/09/18
+
+HASTA
+
+31/08/19
+
+Periodo
+DESDE
+
+01/09/19
+
+HASTA
+
+31/08/20
+
+Periodo
+DESDE
+
+01/09/16
+
+HASTA
+
+31/08/17
+
+Periodo
+DESDE
+
+01/09/17
+
+HASTA
+
+31/08/18
+
+Periodo
+DESDE
+
+01/09/22
+
+HASTA
+
+31/08/23
+
+CALIFIC
+
+4.79
+CALIFIC MAX
+
+5
+
+TIPO
+
+17001
+
+Docencia Impartida
+DENOMINACION
+
+Nivel IV a)
+
+DEPARTAMENTO
+
+-
+
+CENTRO
+
+Facultad de Ciencias Económicas, Empresariales y de la Comunicación
+
+INSTITUCION
+
+UNIVERSIDAD EUROPEA DE MADRID
+
+LOCALIDAD
+
+Villaviciosa de Odón (Madrid)
+
+PAIS
+
+E
+
+TIPO
+
+14004
+
+ESPECIFICAR
+
+Máster Universitario en Dirección de Empresas MBA. Online
+
+ASIGNATURA
+
+Módulo 6: Dirección comercial (Máster Universitario en Dirección de
+Empresas MBA. Online) UEM
+
+CURSO
+
+1
+
+TIPO ASIGNATURA
+
+15002
+
+TIPO DOCENCIA
+
+16003
+
+HORAS
+
+96
+
+Periodo
+DESDE
+
+01/09/22
+
+HASTA
+
+31/08/23
+
+CALIFIC
+
+3
+
+CALIFIC MAX
+
+5
+
+TIPO
+
+17001
+
+Docencia Impartida
+DENOMINACION
+
+Nivel IV a)
+
+DEPARTAMENTO
+
+-
+
+CENTRO
+
+Facultad de Ciencias Económicas, Empresariales y de la Comunicación
+
+INSTITUCION
+
+UNIVERSIDAD EUROPEA DE MADRID
+
+LOCALIDAD
+
+Villaviciosa de Odón (Madrid)
+
+PAIS
+
+E
+TIPO
+
+14004
+
+ESPECIFICAR
+
+Máster Universitario en Negocios Digitales. Online
+
+ASIGNATURA
+
+4.Marketing digital (Máster Universitario en Negocios Digitales. Online)
+UEM
+
+CURSO
+
+1
+
+TIPO ASIGNATURA
+
+15002
+
+TIPO DOCENCIA
+
+16003
+
+HORAS
+
+96
+
+Periodo
+DESDE
+
+01/09/22
+
+HASTA
+
+31/08/23
+
+CALIFIC
+
+4
+
+CALIFIC MAX
+
+5
+
+TIPO
+
+17001
+
+Periodo
+DESDE
+
+01/09/23
+
+HASTA
+
+31/08/24
+
+CALIFIC
+
+3.58
+
+CALIFIC MAX
+
+5
+
+TIPO
+
+17001
+
+Docencia Impartida
+DENOMINACION
+
+Nivel IV a)
+
+DEPARTAMENTO
+
+-
+
+CENTRO
+
+Facultad de Ciencias Económicas, Empresariales y de la Comunicación
+
+INSTITUCION
+
+UNIVERSIDAD EUROPEA DE MADRID
+
+LOCALIDAD
+
+Villaviciosa de Odón (Madrid)
+
+PAIS
+
+E
+
+TIPO
+
+14004
+
+ESPECIFICAR
+
+Máster Universitario en Negocios Digitales. Online
+
+ASIGNATURA
+
+Trabajo Fin de Máster (Máster Universitario en Negocios Digitales.
+Online) UEM
+CURSO
+
+1
+
+TIPO ASIGNATURA
+
+15002
+
+TIPO DOCENCIA
+
+16001
+
+HORAS
+
+21
+
+Periodo
+DESDE
+
+01/09/23
+
+HASTA
+
+31/08/24
+
+Periodo
+DESDE
+
+01/09/25
+
+HASTA
+
+27/01/26
+
+Docencia Impartida
+DENOMINACION
+
+Nivel IV a)
+
+DEPARTAMENTO
+
+-
+
+CENTRO
+
+Facultad de Ciencias Económicas, Empresariales y de la Comunicación
+
+INSTITUCION
+
+UNIVERSIDAD EUROPEA DE MADRID
+
+LOCALIDAD
+
+Villaviciosa de Odón (Madrid)
+
+PAIS
+
+E
+
+TIPO
+
+14004
+
+ESPECIFICAR
+
+Máster Universitario en Marketing. Online
+
+ASIGNATURA
+
+Trabajo de Fin de Máster (Máster Universitario en Marketing. Online)
+UEM
+
+CURSO
+
+1
+
+TIPO ASIGNATURA
+
+15002
+
+TIPO DOCENCIA
+
+16003
+
+HORAS
+
+80
+
+Docencia Impartida
+DENOMINACION
+
+Nivel IV a)
+
+DEPARTAMENTO
+
+-
+
+CENTRO
+
+Facultad de Ciencias Económicas, Empresariales y de la Comunicación
+
+INSTITUCION
+
+UNIVERSIDAD EUROPEA DE MADRID
+LOCALIDAD
+
+Villaviciosa de Odón (Madrid)
+
+PAIS
+
+E
+
+TIPO
+
+14004
+
+ESPECIFICAR
+
+Máster Universitario en Marketing. Online
+
+ASIGNATURA
+
+Módulo 10. Trabajo Fin de Máster (Máster Universitario en Marketing.
+Online) UEM
+
+CURSO
+
+1
+
+TIPO ASIGNATURA
+
+15002
+
+TIPO DOCENCIA
+
+16003
+
+HORAS
+
+80
+
+Periodo
+DESDE
+
+01/09/24
+
+HASTA
+
+31/08/25
+
+Docencia Impartida
+DENOMINACION
+
+Nivel IV a)
+
+DEPARTAMENTO
+
+-
+
+CENTRO
+
+Facultad de Ciencias Económicas, Empresariales y de la Comunicación
+
+INSTITUCION
+
+UNIVERSIDAD EUROPEA DE MADRID
+
+LOCALIDAD
+
+Villaviciosa de Odón (Madrid)
+
+PAIS
+
+E
+
+TIPO
+
+14006
+
+ESPECIFICAR
+
+Grado en Marketing. Online
+
+ASIGNATURA
+
+Competencias Generales UEM I: Eficacia personal y profesional (Grado
+en Marketing. Online) UEM
+
+CURSO
+
+1
+
+TIPO ASIGNATURA
+
+15002
+
+TIPO DOCENCIA
+
+16003
+
+HORAS
+
+36
+
+Periodo
+DESDE
+
+01/09/24
+
+HASTA
+
+31/08/25
+CALIFIC
+
+4.88
+
+CALIFIC MAX
+
+5
+
+TIPO
+
+17001
+
+Docencia Impartida
+DENOMINACION
+
+Nivel IV a)
+
+DEPARTAMENTO
+
+-
+
+CENTRO
+
+Facultad de Ciencias Económicas, Empresariales y de la Comunicación
+
+INSTITUCION
+
+UNIVERSIDAD EUROPEA DE MADRID
+
+LOCALIDAD
+
+Villaviciosa de Odón (Madrid)
+
+PAIS
+
+E
+
+TIPO
+
+14006
+
+ESPECIFICAR
+
+Grado en Marketing. Online
+
+ASIGNATURA
+
+Gestión de la empresa (Grado en Marketing. Online) UEM
+
+CURSO
+
+1
+
+TIPO ASIGNATURA
+
+15002
+
+TIPO DOCENCIA
+
+16003
+
+HORAS
+
+130
+
+Periodo
+DESDE
+
+01/09/25
+
+HASTA
+
+27/01/26
+
+Periodo
+DESDE
+
+01/09/24
+
+HASTA
+
+31/08/25
+
+CALIFIC
+
+4.73
+
+CALIFIC MAX
+
+5
+
+TIPO
+
+17001
+
+Docencia Impartida
+DENOMINACION
+
+Nivel IV a)
+
+DEPARTAMENTO
+
+-
+
+CENTRO
+
+Facultad de Ciencias Económicas, Empresariales y de la Comunicación
+INSTITUCION
+
+UNIVERSIDAD EUROPEA DE MADRID
+
+LOCALIDAD
+
+Villaviciosa de Odón (Madrid)
+
+PAIS
+
+E
+
+TIPO
+
+14006
+
+ESPECIFICAR
+
+Grado en Relaciones Laborales y Recursos Humanos. Online
+
+ASIGNATURA
+
+Liderazgo emprendedor (Grado en Relaciones Laborales y Recursos
+Humanos. Online) UEM
+
+CURSO
+
+1
+
+TIPO ASIGNATURA
+
+15002
+
+TIPO DOCENCIA
+
+16003
+
+HORAS
+
+47
+
+Periodo
+DESDE
+
+01/09/24
+
+HASTA
+
+31/08/25
+
+CALIFIC
+
+5
+
+CALIFIC MAX
+
+5
+
+TIPO
+
+17001
+
+Docencia Impartida
+DENOMINACION
+
+Nivel IV a)
+
+DEPARTAMENTO
+
+-
+
+CENTRO
+
+Facultad de Ciencias Económicas, Empresariales y de la Comunicación
+
+INSTITUCION
+
+UNIVERSIDAD EUROPEA DE MADRID
+
+LOCALIDAD
+
+Villaviciosa de Odón (Madrid)
+
+PAIS
+
+E
+
+TIPO
+
+14004
+
+ESPECIFICAR
+
+Máster de Formación Permanente en Product Management y Estrategia
+Digital. Online
+
+ASIGNATURA
+
+Digitalización de las organizaciones (Máster de Formación Permanente
+en Product Management y Estrategia Digital. Online) UEM
+
+CURSO
+
+1
+
+TIPO ASIGNATURA
+
+15002
+TIPO DOCENCIA
+
+16003
+
+HORAS
+
+8
+
+Periodo
+DESDE
+
+01/09/25
+
+HASTA
+
+27/01/26
+
+Docencia Impartida
+DENOMINACION
+
+Nivel IV a)
+
+DEPARTAMENTO
+
+-
+
+CENTRO
+
+Facultad de Ciencias Económicas, Empresariales y de la Comunicación
+
+INSTITUCION
+
+UNIVERSIDAD EUROPEA DE MADRID
+
+LOCALIDAD
+
+Villaviciosa de Odón (Madrid)
+
+PAIS
+
+E
+
+TIPO
+
+14004
+
+ESPECIFICAR
+
+Máster Universitario en Dirección de Comercio Electrónico. Online
+
+ASIGNATURA
+
+MODULO 2. Transformación digital y nuevos modelos de negocio
+(Máster Universitario en Dirección de Comercio Electrónico. Online)
+UEM
+
+CURSO
+
+1
+
+TIPO ASIGNATURA
+
+15002
+
+TIPO DOCENCIA
+
+16003
+
+HORAS
+
+44
+
+Periodo
+DESDE
+
+01/09/25
+
+HASTA
+
+27/01/26
+
+Docencia Impartida
+DENOMINACION
+
+Nivel IV a)
+
+DEPARTAMENTO
+
+-
+
+CENTRO
+
+Facultad de Ciencias Económicas, Empresariales y de la Comunicación
+
+INSTITUCION
+
+UNIVERSIDAD EUROPEA DE MADRID
+
+LOCALIDAD
+
+Villaviciosa de Odón (Madrid)
+
+PAIS
+
+E
+TIPO
+
+14006
+
+ESPECIFICAR
+
+Grado en Administración y Dirección de Empresas. Online
+
+ASIGNATURA
+
+Trabajo Fin de Grado (Grado en Administración y Dirección de
+Empresas. Online) UEM
+
+CURSO
+
+1
+
+TIPO ASIGNATURA
+
+15002
+
+TIPO DOCENCIA
+
+16003
+
+HORAS
+
+36
+
+Periodo
+DESDE
+
+01/09/25
+
+HASTA
+
+27/01/26
+
+Docencia Impartida
+DENOMINACION
+
+Nivel IV a)
+
+DEPARTAMENTO
+
+-
+
+CENTRO
+
+Facultad de Ciencias Económicas, Empresariales y de la Comunicación
+
+INSTITUCION
+
+UNIVERSIDAD EUROPEA DE MADRID
+
+LOCALIDAD
+
+Villaviciosa de Odón (Madrid)
+
+PAIS
+
+E
+
+TIPO
+
+14004
+
+ESPECIFICAR
+
+Complementos de Formación del Máster Universitario en Dirección
+y Gestión de Recursos Humanos: Fundamentos Económicos de la
+Empresa
+
+ASIGNATURA
+
+Fundamentos Económicos (Complementos de Formación del Máster
+Universitario en Dirección y Gestión de Recursos Humanos:
+Fundamentos Económicos de la Empresa) UEM
+
+CURSO
+
+1
+
+TIPO ASIGNATURA
+
+15002
+
+TIPO DOCENCIA
+
+16003
+
+HORAS
+
+48
+
+Periodo
+DESDE
+
+01/09/25
+
+HASTA
+
+27/01/26
+Docencia Impartida
+DENOMINACION
+
+Profesor
+
+DEPARTAMENTO
+
+-
+
+CENTRO
+
+-
+
+INSTITUCION
+
+UNIVERSIDAD NEBRIJA
+
+LOCALIDAD
+
+Madrid
+
+PAIS
+
+E
+
+TIPO
+
+14004
+
+ESPECIFICAR
+
+Máster Univ. en Dirección de Empresas (MBA)
+
+ASIGNATURA
+
+Estrategia empresarial (Máster Univ. en Dirección de Empresas (MBA))
+Universidad Nebrija
+
+CURSO
+
+1
+
+TIPO ASIGNATURA
+
+15002
+
+TIPO DOCENCIA
+
+16003
+
+HORAS
+
+45
+
+Periodo
+DESDE
+
+01/09/22
+
+HASTA
+
+31/08/23
+
+Docencia Impartida
+DENOMINACION
+
+Profesor
+
+DEPARTAMENTO
+
+-
+
+CENTRO
+
+-
+
+INSTITUCION
+
+UNIVERSIDAD NEBRIJA
+
+LOCALIDAD
+
+Madrid
+
+PAIS
+
+E
+
+TIPO
+
+14004
+
+ESPECIFICAR
+
+Máster Univ. en Dirección de Empresas (MBA)
+
+ASIGNATURA
+
+Gestión de Marketing Estratégico (Máster Univ. en Dirección de
+Empresas (MBA) Universidad Nebrija
+
+CURSO
+
+1
+
+TIPO ASIGNATURA
+
+15002
+TIPO DOCENCIA
+
+16003
+
+HORAS
+
+79
+
+Periodo
+DESDE
+
+01/09/22
+
+HASTA
+
+31/08/23
+
+Docencia Impartida
+DENOMINACION
+
+Profesor
+
+DEPARTAMENTO
+
+-
+
+CENTRO
+
+-
+
+INSTITUCION
+
+UNIVERSIDAD NEBRIJA
+
+LOCALIDAD
+
+Madrid
+
+PAIS
+
+E
+
+TIPO
+
+14005
+
+ESPECIFICAR
+
+Experto en Datos y Tecnología
+
+ASIGNATURA
+
+Emprendimiento e innovación disruptiva (Experto en Datos y
+Tecnología) Universidad Nebrija
+
+CURSO
+
+1
+
+TIPO ASIGNATURA
+
+15002
+
+TIPO DOCENCIA
+
+16003
+
+HORAS
+
+80
+
+Periodo
+DESDE
+
+01/09/22
+
+HASTA
+
+31/08/23
+
+Docencia Impartida
+DENOMINACION
+
+Profesor
+
+DEPARTAMENTO
+
+-
+
+CENTRO
+
+-
+
+INSTITUCION
+
+UNIVERSIDAD EUROPEA DE MADRID
+
+LOCALIDAD
+
+Madrid
+
+PAIS
+
+E
+TIPO
+
+14004
+
+ESPECIFICAR
+
+Máster Universitario en Administración de Empresas/Master in
+Business Administration-Tech
+
+ASIGNATURA
+
+Marketing digital (Máster Universitario en Administración de Empresas/
+Master in Business Administration-Tech) Universidad Nebrija
+
+CURSO
+
+1
+
+TIPO ASIGNATURA
+
+15002
+
+TIPO DOCENCIA
+
+16003
+
+HORAS
+
+120
+
+Periodo
+DESDE
+
+01/09/23
+
+HASTA
+
+31/08/24
+
+Periodo
+DESDE
+
+01/09/24
+
+HASTA
+
+31/08/25
+
+Docencia Impartida
+DENOMINACION
+
+Profesor
+
+DEPARTAMENTO
+
+-
+
+CENTRO
+
+-
+
+INSTITUCION
+
+UNIVERSIDAD NEBRIJA
+
+LOCALIDAD
+
+Madrid
+
+PAIS
+
+E
+
+TIPO
+
+14005
+
+ESPECIFICAR
+
+Experto en Gestión de la Tecnología
+
+ASIGNATURA
+
+Creación y financiación de startups y scaleups (Experto en Gestión de
+la Tecnología) Universidad Nebrija
+
+CURSO
+
+1
+
+TIPO ASIGNATURA
+
+15002
+
+TIPO DOCENCIA
+
+16003
+
+HORAS
+
+40
+Periodo
+DESDE
+
+01/09/23
+
+HASTA
+
+31/08/24
+
+Docencia Impartida
+DENOMINACION
+
+Profesor colaborador externo
+
+DEPARTAMENTO
+
+-
+
+CENTRO
+
+Centro de Educación Superior EAE Madrid
+
+INSTITUCION
+
+EAE Business School
+
+LOCALIDAD
+
+Madrid
+
+PAIS
+
+E
+
+TIPO
+
+14004
+
+ESPECIFICAR
+
+Dirección Gestión de Empresas - Part Time
+
+ASIGNATURA
+
+Gestión Comercial y Marketing (Dirección Gestión de Empresas - Part
+Time) EAE
+
+CURSO
+
+1
+
+TIPO ASIGNATURA
+
+15002
+
+TIPO DOCENCIA
+
+16003
+
+HORAS
+
+15
+
+Periodo
+DESDE
+
+01/09/10
+
+HASTA
+
+31/08/11
+
+Docencia Impartida
+DENOMINACION
+
+Profesor colaborador externo
+
+DEPARTAMENTO
+
+-
+
+CENTRO
+
+Centro de Educación Superior EAE Madrid
+
+INSTITUCION
+
+EAE Business School
+
+LOCALIDAD
+
+Madrid
+
+PAIS
+
+E
+
+TIPO
+
+14004
+
+ESPECIFICAR
+
+Máster Dirección Comercial y Gestión de Ventas
+ASIGNATURA
+
+Técnicas de Ventas (Máster Dirección Comercial y Gestión de Ventas)
+EAE
+
+CURSO
+
+1
+
+TIPO ASIGNATURA
+
+15002
+
+TIPO DOCENCIA
+
+16003
+
+HORAS
+
+41
+
+Periodo
+DESDE
+
+01/09/10
+
+HASTA
+
+31/08/11
+
+Periodo
+DESDE
+
+01/09/11
+
+HASTA
+
+31/08/12
+
+Docencia Impartida
+DENOMINACION
+
+Profesor colaborador externo
+
+DEPARTAMENTO
+
+-
+
+CENTRO
+
+Centro de Educación Superior EAE Madrid
+
+INSTITUCION
+
+EAE Business School
+
+LOCALIDAD
+
+Madrid
+
+PAIS
+
+E
+
+TIPO
+
+14004
+
+ESPECIFICAR
+
+Máster en Dirección de Marketing
+
+ASIGNATURA
+
+Estrategias comerciales (Máster en Dirección de Marketing) EAE
+
+CURSO
+
+1
+
+TIPO ASIGNATURA
+
+15002
+
+TIPO DOCENCIA
+
+16003
+
+HORAS
+
+102
+
+Periodo
+DESDE
+
+01/09/11
+
+HASTA
+
+31/08/12
+Periodo
+DESDE
+
+01/09/12
+
+HASTA
+
+31/08/13
+
+Periodo
+DESDE
+
+01/09/13
+
+HASTA
+
+31/08/14
+
+Periodo
+DESDE
+
+01/09/14
+
+HASTA
+
+31/08/15
+
+Docencia Impartida
+DENOMINACION
+
+Profesor colaborador externo
+
+DEPARTAMENTO
+
+-
+
+CENTRO
+
+Centro de Educación Superior EAE Madrid
+
+INSTITUCION
+
+EAE Business School
+
+LOCALIDAD
+
+Madrid
+
+PAIS
+
+E
+
+TIPO
+
+14004
+
+ESPECIFICAR
+
+Máster en Dirección de Marketing
+
+ASIGNATURA
+
+Dirección de Ventas. De la Concepción Estratégica al Resultado
+Operativo (Máster en Dirección de Marketing) EAE
+
+CURSO
+
+1
+
+TIPO ASIGNATURA
+
+15002
+
+TIPO DOCENCIA
+
+16003
+
+HORAS
+
+30
+
+Periodo
+DESDE
+
+01/09/12
+
+HASTA
+
+31/08/13
+
+Periodo
+DESDE
+
+01/09/13
+
+HASTA
+
+31/08/14
+Periodo
+DESDE
+
+01/09/14
+
+HASTA
+
+31/08/15
+
+Docencia Impartida
+DENOMINACION
+
+Profesor colaborador externo
+
+DEPARTAMENTO
+
+-
+
+CENTRO
+
+Centro de Educación Superior EAE Madrid
+
+INSTITUCION
+
+EAE Business School
+
+LOCALIDAD
+
+Madrid
+
+PAIS
+
+E
+
+TIPO
+
+14005
+
+ESPECIFICAR
+
+Posgrado en Dirección y Gestión de Empresas
+
+ASIGNATURA
+
+Dirección Comercial (Posgrado en Dirección y Gestión de Empresas)
+EAE
+
+CURSO
+
+1
+
+TIPO ASIGNATURA
+
+15002
+
+TIPO DOCENCIA
+
+16003
+
+HORAS
+
+123
+
+Periodo
+DESDE
+
+01/09/13
+
+HASTA
+
+31/08/14
+
+Periodo
+DESDE
+
+01/09/14
+
+HASTA
+
+31/08/15
+
+Periodo
+DESDE
+
+01/09/11
+
+HASTA
+
+31/08/12
+
+Periodo
+DESDE
+
+01/09/12
+
+HASTA
+
+31/08/13
+Docencia Impartida
+DENOMINACION
+
+Profesor colaborador externo
+
+DEPARTAMENTO
+
+-
+
+CENTRO
+
+Centro de Educación Superior EAE Madrid
+
+INSTITUCION
+
+EAE Business School
+
+LOCALIDAD
+
+Madrid
+
+PAIS
+
+E
+
+TIPO
+
+14005
+
+ESPECIFICAR
+
+Máster en Dirección Comercial y Gestión de Ventas
+
+ASIGNATURA
+
+Trabajo Fin de Máster (Tutorías) (Máster en Dirección Comercial y
+Gestión de Ventas) EAE
+
+CURSO
+
+1
+
+TIPO ASIGNATURA
+
+15002
+
+TIPO DOCENCIA
+
+16003
+
+HORAS
+
+5
+
+Periodo
+DESDE
+
+01/09/11
+
+HASTA
+
+31/08/12
+
+Docencia Impartida
+DENOMINACION
+
+Profesor colaborador externo
+
+DEPARTAMENTO
+
+-
+
+CENTRO
+
+Centro de Educación Superior EAE Madrid
+
+INSTITUCION
+
+EAE Business School
+
+LOCALIDAD
+
+Madrid
+
+PAIS
+
+E
+
+TIPO
+
+14004
+
+ESPECIFICAR
+
+Máster Universitario en Administración, Dirección y Organización de
+Empresas
+
+ASIGNATURA
+
+Satisfacción y fidelización de Clientes (Máster Universitario en
+Administración, Dirección y Organización de Empresas) EAE
+
+CURSO
+
+1
+TIPO ASIGNATURA
+
+15002
+
+TIPO DOCENCIA
+
+16003
+
+HORAS
+
+26
+
+Periodo
+DESDE
+
+01/09/10
+
+HASTA
+
+31/08/11
+
+Docencia Impartida
+DENOMINACION
+
+Profesor colaborador externo
+
+DEPARTAMENTO
+
+-
+
+CENTRO
+
+Centro de Educación Superior EAE Madrid
+
+INSTITUCION
+
+EAE Business School
+
+LOCALIDAD
+
+Madrid
+
+PAIS
+
+E
+
+TIPO
+
+14004
+
+ESPECIFICAR
+
+Máster Universitario en Comercialización e Internacionalización de
+Productos y Servicios
+
+ASIGNATURA
+
+Negociación comercial (Máster Universitario en Comercialización e
+Internacionalización de Productos y Servicios) EAE
+
+CURSO
+
+1
+
+TIPO ASIGNATURA
+
+15002
+
+TIPO DOCENCIA
+
+16003
+
+HORAS
+
+9
+
+Periodo
+DESDE
+
+01/09/10
+
+HASTA
+
+31/08/11
+
+Docencia Impartida
+DENOMINACION
+
+Profesor colaborador externo
+
+DEPARTAMENTO
+
+-
+
+CENTRO
+
+Centro de Educación Superior EAE Madrid
+
+INSTITUCION
+
+EAE Business School
+
+LOCALIDAD
+
+Madrid
+PAIS
+
+E
+
+TIPO
+
+14004
+
+ESPECIFICAR
+
+Máster Universitario en Administración, Dirección de Empresas
+
+ASIGNATURA
+
+Gestión comercial (Máster Universitario en Administración, Dirección
+de Empresas) EAE
+
+CURSO
+
+1
+
+TIPO ASIGNATURA
+
+15002
+
+TIPO DOCENCIA
+
+16003
+
+HORAS
+
+154
+
+Periodo
+DESDE
+
+01/09/11
+
+HASTA
+
+31/08/12
+
+Periodo
+DESDE
+
+01/09/12
+
+HASTA
+
+31/08/13
+
+Periodo
+DESDE
+
+01/09/13
+
+HASTA
+
+31/08/14
+
+Periodo
+DESDE
+
+01/09/14
+
+HASTA
+
+31/08/15
+
+CURSOS Y SEMINARIOS IMPARTIDOS
+Título
+
+Fecha
+
+Estrategias de acompañamiento al estudiante
+
+2024-09-30
+
+Competencias del tutor en el espacio de Educación Superior
+
+2024-09-23
+
+Programa Mentor de Mentores
+
+2025-07-10
+
+Evaluación de proyectos de innovación educativa
+
+2025-06-26
+
+Hackathon Sevilla
+
+2025-02-19
+
+SIGMA Academic - Gestión de Actas y Campus Docente
+
+2025-01-13
+
+EQUIPOS DE EMERGENCIA UF3
+
+2024-12-16
+Título
+
+Fecha
+
+Ciberseguridad en la era digital
+
+2024-09-26
+
+PRL para Personal de Oficina
+
+2024-09-25
+
+Actualización del RGPD
+
+2024-09-25
+
+#Ser CEU
+
+2024-09-19
+
+Bienvenida CEU
+
+2024-09-26
+
+Introducción al Gestor Académico #SIGMA# para PDI
+
+2024-09-11
+
+Como trabajar en Equipo con agilidad en entornos complejos
+
+2023-11-15
+
+Inteligencia Emocional
+
+2023-10-02
+
+Gestión de Proyectos. Project Management (SCRUM)
+
+2022-09-27
+
+Gestión del Tiempo. Un gran paso para la Productividad (2ª edición)
+
+2022-05-23
+
+Introducción al Marketing
+
+2019-01-14
+
+Marketing y gestión comercial (FPE Programa Ocupados Almería)
+
+2012-09-20
+
+Marketing y gestión
+UNIVERSITARIO)
+
+comercial
+
+(
+
+FSE/AND/CÁDIZ/EMPRENDEDOR 2012-11-11
+
+Marketing y gestión comercial (FSE-1/01-AND/GRANADA/AE/EMPRENDOR 2012-12-12
+UNIVERSITARIO)
+Marketing y gestión comercial
+INTERNACIONAL DE LA PYME)
+
+(FSE/AND/MÁLAGA/EOI)GESTIÓN 2011-02-02
+
+Marketing y gestión comercial (Curso de consolidación de empresas)
+
+2011-03-03
+
+Marketing y gestión comercial (emprendedor universitario, Granada)
+
+2011-04-03
+
+Marketing y gestión comercial (emprendedor universitario, Málaga)
+
+2011-03-07
+
+Marketing y gestión comercial (Consolidación de Empresas, Badajoz)
+
+2011-03-12
+
+Programa Postgrado en el Sector Comercial TI. Ed. IX. Arahal
+
+2011-02-22
+
+Marketing y gestión comercial (Emprendedor Universitario, Córdoba)
+
+2010-12-12
+
+Marketing y gestión comercial (Emprendedor Universitario, Córdoba)
+
+2010-12-12
+
+Marketing y gestión comercial (Consolidación de Empresas, Huelva)
+
+2010-11-15
+
+Marketing y gestión comercial (Consolidación de Empresas, Llerena)
+
+2012-04-03
+
+Marketing y gestión comercial (Miajadas, Consolidación de Empresas Inn)
+
+2010-11-21
+
+Marketing y gestión comercial (Programa post. de especialización gestión 2010-12-11
+comercial sector TIC)
+Marketing y gestión comercial (Seminario de Técnicas de Comercialización)
+
+2009-11-03
+
+Marketing y gestión comercial (Seminario de Técnicas de Comercialización)
+
+2009-11-03
+Título
+Marketing y
+Universitarios)
+
+Fecha
+gestión
+
+comercial
+
+(Córdoba,
+
+Curso
+
+Emprendedores 2009-04-04
+
+Marketing y gestión comercial (Sevilla, Seminario la Función Empresarial)
+
+2009-05-14
+
+Marketing y gestión comercial (Gines, Creación de Empresas)
+
+2009-05-07
+
+Marketing y gestión comercial (Granada, Creación de Empresas)
+
+2009-01-06
+
+Marketing y gestión comercial (Albolote, Consolidación de empresas)
+
+2009-05-05
+
+Marketing y gestión comercial (Cádiz, Consolidación de Empresas)
+
+2009-02-02
+
+Marketing y gestión comercial (Sevilla Global, Innova Empresa - Creación de 2009-06-05
+Empresa)
+Marketing y gestión comercial (Programa de especialización comercial sector 2009-06-16
+TIC vodafone 09)
+Marketing y gestión comercial (Programa Postgrado de especialización 2008-05-08
+comercial)
+Marketing y gestión comercial (Sevilla, Seminario la Función Empresarial)
+
+2008-03-08
+
+Marketing y gestión comercial (Programa post. de Especialización Gestión 2008-06-07
+Comercial Sector TIC)
+Marketing y gestión comercial (Vodafone Prog. Postg. Especialización en 2008-03-30
+Gestión Comercial Sector TIC II)
+Sesiones formativas In Company IE Business School
+
+2014-01-09
+
+Estrategias y operativa de e-marketing
+
+2010-04-13
+
+Marketing en redes sociales in compny para ed. Hispalis
+
+2010-05-05
+
+Sesión Máster Dir. Comercial y MK
+
+2010-06-20
+
+E-Marketing: marketing en Internet y Comercio Electrónico
+
+2010-12-09
+
+Redes Sociales-Máster Dir. Comercial y MK (avanzado)
+
+2011-07-13
+
+Marketing Operativo (avanzado)
+
+2011-10-06
+
+Redes Sociales
+
+2011-11-06
+
+El valor estratégico del marketing: el plan de marketing
+
+2011-12-19
+
+Estrategia operativa del marketing: el plan de marketing
+
+2011-12-19
+
+Marketing Operacional y Marketing Mix
+
+2012-04-16
+
+El plan de marketing
+
+2012-11-14
+
+Casos del programa. Teoría
+
+2012-11-21
+
+Dir. Estratégica del MK on-line
+
+2012-11-22
+
+Comercio electrónico y utilización de BBDD
+
+2013-01-17
+Título
+
+Fecha
+
+La estrategia de ventas. Captación y fidelización de clientes
+
+2013-04-25
+
+CRM. Gestión de las bases de datos
+
+2013-04-30
+
+Marketing Operativo. Introducción
+
+2013-05-02
+
+El valor de los principios del marketing
+
+2013-11-20
+
+El valor de los principios del marketing (II)
+
+2013-11-21
+
+Marketing operativo
+
+2014-04-14
+
+CRM. Gestión de las bases de datos
+
+2014-03-18
+
+La estrategia de ventas: captación y fidelización de clientes
+
+2014-04-08
+
+El valor de los principios del marketing
+
+2014-11-19
+
+Marketing Estratégico y su Planificación
+
+2015-10-02
+
+Investigación de mercado, DAFO y Business Intelligence
+
+2016-03-03
+
+Investigación de Mercado, DAFO y Business Intelligence
+
+2017-02-07
+
+Business Intelligence y el Comportamiento de la compra
+
+2018-04-08
+
+Business Intelligence y el Comportamiento de la compra
+
+2019-06-06
+
+Cursos Impartidos
+TITULO
+
+Estrategias de acompañamiento al estudiante
+
+OBJETIVOS
+
+Estrategias de acompañamiento al estudiante
+
+PERFIL DEST
+
+PDI
+
+HORAS
+
+2
+
+ENTIDAD ORG
+
+Fundación Universitaria Fernando III El Santo
+
+TIPO PARTICIPA
+
+13001
+
+LUGAR CELEBRA
+
+Sevilla
+
+FECHA
+
+2024-09-30
+
+Cursos Impartidos
+TITULO
+
+Competencias del tutor en el espacio de Educación Superior
+
+OBJETIVOS
+
+Competencias del tutor en el espacio de Educación Superior
+
+PERFIL DEST
+
+PDI
+
+HORAS
+
+2
+
+ENTIDAD ORG
+
+Fundación Universitaria Fernando III El Santo
+TIPO PARTICIPA
+
+13001
+
+LUGAR CELEBRA
+
+Sevilla
+
+FECHA
+
+2024-09-23
+
+Cursos Impartidos
+TITULO
+
+Programa Mentor de Mentores
+
+OBJETIVOS
+
+Programa Mentor de Mentores
+
+PERFIL DEST
+
+PDI
+
+HORAS
+
+12
+
+ENTIDAD ORG
+
+Fundación Universitaria Fernando III El Santo
+
+TIPO PARTICIPA
+
+13001
+
+LUGAR CELEBRA
+
+Sevilla
+
+FECHA
+
+2025-07-10
+
+Cursos Impartidos
+TITULO
+
+Evaluación de proyectos de innovación educativa
+
+OBJETIVOS
+
+Evaluación de proyectos de innovación educativa
+
+PERFIL DEST
+
+PDI
+
+HORAS
+
+3
+
+ENTIDAD ORG
+
+Fundación Universitaria Fernando III El Santo
+
+TIPO PARTICIPA
+
+13001
+
+LUGAR CELEBRA
+
+Sevilla
+
+FECHA
+
+2025-06-26
+
+Cursos Impartidos
+TITULO
+
+Hackathon Sevilla
+
+OBJETIVOS
+
+Hackathon Sevilla
+
+PERFIL DEST
+
+PDI
+
+HORAS
+
+15
+
+ENTIDAD ORG
+
+Fundación Universitaria Fernando III El Santo
+
+TIPO PARTICIPA
+
+13001
+
+LUGAR CELEBRA
+
+Sevilla
+
+FECHA
+
+2025-02-19
+Cursos Impartidos
+TITULO
+
+SIGMA Academic - Gestión de Actas y Campus Docente
+
+OBJETIVOS
+
+SIGMA Academic - Gestión de Actas y Campus Docente
+
+PERFIL DEST
+
+PDI
+
+HORAS
+
+2
+
+ENTIDAD ORG
+
+Fundación Universitaria Fernando III El Santo
+
+TIPO PARTICIPA
+
+13001
+
+LUGAR CELEBRA
+
+Sevilla
+
+FECHA
+
+2025-01-13
+
+Cursos Impartidos
+TITULO
+
+EQUIPOS DE EMERGENCIA UF3
+
+OBJETIVOS
+
+EQUIPOS DE EMERGENCIA UF3
+
+PERFIL DEST
+
+PDI
+
+HORAS
+
+1
+
+ENTIDAD ORG
+
+Fundación Universitaria Fernando III El Santo
+
+TIPO PARTICIPA
+
+13001
+
+LUGAR CELEBRA
+
+Sevilla
+
+FECHA
+
+2024-12-16
+
+Cursos Impartidos
+TITULO
+
+Ciberseguridad en la era digital
+
+OBJETIVOS
+
+Ciberseguridad en la era digital
+
+PERFIL DEST
+
+PDI
+
+HORAS
+
+1
+
+ENTIDAD ORG
+
+Fundación Universitaria Fernando III El Santo
+
+TIPO PARTICIPA
+
+13001
+
+LUGAR CELEBRA
+
+on-line
+
+FECHA
+
+2024-09-26
+
+Cursos Impartidos
+TITULO
+
+PRL para Personal de Oficina
+
+OBJETIVOS
+
+PRL para Personal de Oficina
+PERFIL DEST
+
+PDI
+
+HORAS
+
+1
+
+ENTIDAD ORG
+
+Fundación Universitaria Fernando III El Santo
+
+TIPO PARTICIPA
+
+13001
+
+LUGAR CELEBRA
+
+on-line
+
+FECHA
+
+2024-09-25
+
+Cursos Impartidos
+TITULO
+
+Actualización del RGPD
+
+OBJETIVOS
+
+Actualización del RGPD
+
+PERFIL DEST
+
+PDI
+
+HORAS
+
+1
+
+ENTIDAD ORG
+
+Fundación Universitaria Fernando III El Santo
+
+TIPO PARTICIPA
+
+13001
+
+LUGAR CELEBRA
+
+on-line
+
+FECHA
+
+2024-09-25
+
+Cursos Impartidos
+TITULO
+
+#Ser CEU
+
+OBJETIVOS
+
+#Ser CEU
+
+PERFIL DEST
+
+PDI
+
+HORAS
+
+1
+
+ENTIDAD ORG
+
+Fundación Universitaria Fernando III El Santo
+
+TIPO PARTICIPA
+
+13001
+
+LUGAR CELEBRA
+
+on-line
+
+FECHA
+
+2024-09-19
+
+Cursos Impartidos
+TITULO
+
+Bienvenida CEU
+
+OBJETIVOS
+
+Bienvenida CEU
+
+PERFIL DEST
+
+PDI
+
+HORAS
+
+1
+
+ENTIDAD ORG
+
+Fundación Universitaria Fernando III El Santo
+TIPO PARTICIPA
+
+13001
+
+LUGAR CELEBRA
+
+on-line
+
+FECHA
+
+2024-09-26
+
+Cursos Impartidos
+TITULO
+
+Introducción al Gestor Académico #SIGMA# para PDI
+
+OBJETIVOS
+
+Introducción al Gestor Académico #SIGMA# para PDI
+
+PERFIL DEST
+
+PDI
+
+HORAS
+
+2
+
+ENTIDAD ORG
+
+Fundación Universitaria Fernando III El Santo
+
+TIPO PARTICIPA
+
+13001
+
+LUGAR CELEBRA
+
+Sevilla
+
+FECHA
+
+2024-09-11
+
+Cursos Impartidos
+TITULO
+
+Como trabajar en Equipo con agilidad en entornos complejos
+
+OBJETIVOS
+
+Como trabajar en Equipo con agilidad en entornos complejos
+
+PERFIL DEST
+
+alumnado; PDI
+
+HORAS
+
+20
+
+ENTIDAD ORG
+
+Cámara de cuentas de Andalucía
+
+TIPO PARTICIPA
+
+13001
+
+LUGAR CELEBRA
+
+Sevilla
+
+FECHA
+
+2023-11-15
+
+Cursos Impartidos
+TITULO
+
+Inteligencia Emocional
+
+OBJETIVOS
+
+Inteligencia Emocional
+
+PERFIL DEST
+
+alumnado; PDI
+
+HORAS
+
+20
+
+ENTIDAD ORG
+
+Cámara de cuentas de Andalucía
+
+TIPO PARTICIPA
+
+13001
+
+LUGAR CELEBRA
+
+Sevilla
+
+FECHA
+
+2023-10-02
+Cursos Impartidos
+TITULO
+
+Gestión de Proyectos. Project Management (SCRUM)
+
+OBJETIVOS
+
+Gestión de Proyectos. Project Management (SCRUM)
+
+PERFIL DEST
+
+alumnado; PDI
+
+HORAS
+
+22
+
+ENTIDAD ORG
+
+Cámara de Cuentas de Andalucía
+
+TIPO PARTICIPA
+
+13001
+
+LUGAR CELEBRA
+
+Sevilla
+
+FECHA
+
+2022-09-27
+
+Cursos Impartidos
+TITULO
+
+Gestión del Tiempo. Un gran paso para la Productividad (2ª edición)
+
+OBJETIVOS
+
+Gestión del Tiempo. Un gran paso para la Productividad (2ª edición)
+
+PERFIL DEST
+
+alumnado; PDI
+
+HORAS
+
+16
+
+ENTIDAD ORG
+
+Cámara de Cuentas de Andalucía
+
+TIPO PARTICIPA
+
+13001
+
+LUGAR CELEBRA
+
+Sevilla
+
+FECHA
+
+2022-05-23
+
+Cursos Impartidos
+TITULO
+
+Introducción al Marketing
+
+OBJETIVOS
+
+Curso de Introducción al Marketing organizado para la Universidad de
+North Carolina State (Carolina del Norte)
+
+PERFIL DEST
+
+alumnado; PDI
+
+HORAS
+
+30
+
+ENTIDAD ORG
+
+CINECU
+
+TIPO PARTICIPA
+
+13001
+
+LUGAR CELEBRA
+
+Sevilla
+
+FECHA
+
+2019-01-14
+
+Cursos Impartidos
+TITULO
+
+Marketing y gestión comercial (FPE Programa Ocupados Almería)
+OBJETIVOS
+
+Marketing y gestión comercial (FPE Programa Ocupados Almería)
+
+PERFIL DEST
+
+alumnado
+
+HORAS
+
+50
+
+ENTIDAD ORG
+
+Escuela de Organización Industrial (EOI)
+
+TIPO PARTICIPA
+
+13001
+
+LUGAR CELEBRA
+
+Madrid
+
+FECHA
+
+2012-09-20
+
+Cursos Impartidos
+TITULO
+
+Marketing y gestión comercial ( FSE/AND/CÁDIZ/EMPRENDEDOR
+UNIVERSITARIO)
+
+OBJETIVOS
+
+Marketing y gestión comercial ( FSE/AND/CÁDIZ/EMPRENDEDOR
+UNIVERSITARIO)
+
+PERFIL DEST
+
+alumnado
+
+HORAS
+
+10
+
+ENTIDAD ORG
+
+Escuela de Organización Industrial (EOI)
+
+TIPO PARTICIPA
+
+13001
+
+LUGAR CELEBRA
+
+Madrid
+
+FECHA
+
+2012-11-11
+
+Cursos Impartidos
+TITULO
+
+Marketing y gestión comercial
+EMPRENDOR UNIVERSITARIO)
+
+OBJETIVOS
+
+Marketing y gestión comercial
+
+PERFIL DEST
+
+alumnado
+
+HORAS
+
+10
+
+ENTIDAD ORG
+
+Escuela de Organización Industrial (EOI)
+
+TIPO PARTICIPA
+
+13001
+
+LUGAR CELEBRA
+
+Madrid
+
+FECHA
+
+2012-12-12
+
+(FSE-1/01-AND/GRANADA/AE/
+
+Cursos Impartidos
+TITULO
+
+Marketing y gestión comercial
+INTERNACIONAL DE LA PYME)
+
+OBJETIVOS
+
+Marketing y gestión comercial
+
+59
+
+(FSE/AND/MÁLAGA/EOI)GESTIÓN
+
+PERFIL DEST
+
+alumnado
+
+HORAS
+
+20
+
+ENTIDAD ORG
+
+Escuela de Organización Industrial (EOI)
+
+TIPO PARTICIPA
+
+13001
+
+FECHA
+
+2011-02-02
+
+Cursos Impartidos
+TITULO
+
+Marketing y gestión comercial (Curso de consolidación de empresas)
+
+OBJETIVOS
+
+Marketing y gestión comercial
+
+PERFIL DEST
+
+alumnado
+
+HORAS
+
+10
+
+ENTIDAD ORG
+
+Escuela de Organización Industrial (EOI)
+
+TIPO PARTICIPA
+
+13001
+
+FECHA
+
+2011-03-03
+
+Cursos Impartidos
+TITULO
+
+Marketing y gestión comercial (emprendedor universitario, Granada)
+
+OBJETIVOS
+
+Marketing y gestión comercial
+
+PERFIL DEST
+
+alumnado
+
+HORAS
+
+5
+
+ENTIDAD ORG
+
+Escuela de Organización Industrial (EOI)
+
+TIPO PARTICIPA
+
+13001
+
+LUGAR CELEBRA
+
+Madrid
+
+FECHA
+
+2011-04-03
+
+Cursos Impartidos
+TITULO
+
+Marketing y gestión comercial (emprendedor universitario, Málaga)
+
+OBJETIVOS
+
+Marketing y gestión comercial
+
+PERFIL DEST
+
+alumnado
+
+HORAS
+
+5
+
+ENTIDAD ORG
+
+Escuela de Organización Industrial (EOI)
+
+TIPO PARTICIPA
+
+13001
+
+FECHA
+
+2011-03-07
+Cursos Impartidos
+TITULO
+
+Marketing y gestión comercial (Consolidación de Empresas, Badajoz)
+
+OBJETIVOS
+
+Marketing y gestión comercial
+
+PERFIL DEST
+
+alumnado
+
+HORAS
+
+10
+
+ENTIDAD ORG
+
+Escuela de Organización Industrial (EOI)
+
+TIPO PARTICIPA
+
+13001
+
+FECHA
+
+2011-03-12
+
+Cursos Impartidos
+TITULO
+
+Programa Postgrado en el Sector Comercial TI. Ed. IX. Arahal
+
+OBJETIVOS
+
+Programa Postgrado en el Sector Comercial TI. Ed. IX. Arahal
+
+PERFIL DEST
+
+alumnado
+
+HORAS
+
+35
+
+ENTIDAD ORG
+
+Escuela de Organización Industrial (EOI)
+
+TIPO PARTICIPA
+
+13001
+
+FECHA
+
+2011-02-22
+
+Cursos Impartidos
+TITULO
+
+Marketing y gestión comercial (Emprendedor Universitario, Córdoba)
+
+OBJETIVOS
+
+Marketing y gestión comercial (Emprendedor Universitario, Córdoba)
+
+PERFIL DEST
+
+alumnado, PDI
+
+HORAS
+
+8
+
+ENTIDAD ORG
+
+Escuela de Organización Industrial (EOI)
+
+TIPO PARTICIPA
+
+13001
+
+FECHA
+
+2010-12-12
+
+Cursos Impartidos
+TITULO
+
+Marketing y gestión comercial (Emprendedor Universitario, Córdoba)
+
+OBJETIVOS
+
+Marketing y gestión comercial (Emprendedor Universitario, Córdoba)
+
+PERFIL DEST
+
+alumnado, PDI
+
+HORAS
+
+8
+
+ENTIDAD ORG
+
+Escuela de Organización Industrial (EOI)
+TIPO PARTICIPA
+
+13001
+
+FECHA
+
+2010-12-12
+
+Cursos Impartidos
+TITULO
+
+Marketing y gestión comercial (Consolidación de Empresas, Huelva)
+
+OBJETIVOS
+
+Marketing y gestión comercial (Consolidación de Empresas, Huelva)
+
+PERFIL DEST
+
+alumnado
+
+HORAS
+
+32
+
+ENTIDAD ORG
+
+Escuela de Organización Industrial (EOI)
+
+TIPO PARTICIPA
+
+13001
+
+FECHA
+
+2010-11-15
+
+Cursos Impartidos
+TITULO
+
+Marketing y gestión comercial (Consolidación de Empresas, Llerena)
+
+OBJETIVOS
+
+Marketing y gestión comercial
+
+PERFIL DEST
+
+alumnado
+
+HORAS
+
+32
+
+ENTIDAD ORG
+
+Escuela de Organización Industrial (EOI)
+
+TIPO PARTICIPA
+
+13001
+
+FECHA
+
+2012-04-03
+
+Cursos Impartidos
+TITULO
+
+Marketing y gestión comercial (Miajadas, Consolidación de Empresas
+Inn)
+
+OBJETIVOS
+
+Marketing y gestión comercial
+
+PERFIL DEST
+
+alumnado
+
+HORAS
+
+32
+
+ENTIDAD ORG
+
+Escuela de Organización Industrial (EOI)
+
+TIPO PARTICIPA
+
+13001
+
+FECHA
+
+2010-11-21
+
+Cursos Impartidos
+TITULO
+
+Marketing y gestión comercial (Programa post. de especialización
+gestión comercial sector TIC)
+OBJETIVOS
+
+Marketing y gestión comercial (Programa post. de especialización
+gestión comercial sector TIC)
+
+PERFIL DEST
+
+alumnado
+
+HORAS
+
+59
+
+ENTIDAD ORG
+
+Escuela de Organización Industrial (EOI)
+
+TIPO PARTICIPA
+
+13001
+
+FECHA
+
+2010-12-11
+
+Cursos Impartidos
+TITULO
+
+Marketing y gestión
+Comercialización)
+
+comercial
+
+(Seminario
+
+OBJETIVOS
+
+Marketing y gestión comercial
+
+PERFIL DEST
+
+alumnado
+
+HORAS
+
+81
+
+ENTIDAD ORG
+
+Escuela de Organización Industrial (EOI)
+
+TIPO PARTICIPA
+
+13001
+
+FECHA
+
+2009-11-03
+
+de
+
+Técnicas
+
+de
+
+de
+
+Técnicas
+
+de
+
+Cursos Impartidos
+TITULO
+
+Marketing y gestión
+Comercialización)
+
+comercial
+
+(Seminario
+
+OBJETIVOS
+
+Marketing y gestión comercial
+
+PERFIL DEST
+
+alumnado
+
+HORAS
+
+81
+
+ENTIDAD ORG
+
+Escuela de Organización Industrial (EOI)
+
+TIPO PARTICIPA
+
+13001
+
+FECHA
+
+2009-11-03
+
+Cursos Impartidos
+TITULO
+
+Marketing y gestión comercial (Córdoba, Curso Emprendedores
+Universitarios)
+
+OBJETIVOS
+
+Marketing y gestión comercial
+
+PERFIL DEST
+
+alumnado
+
+HORAS
+
+8
+
+ENTIDAD ORG
+
+Escuela de Organización Industrial (EOI)
+TIPO PARTICIPA
+
+13001
+
+FECHA
+
+2009-04-04
+
+Cursos Impartidos
+TITULO
+
+Marketing y gestión comercial (Sevilla, Seminario la Función
+Empresarial)
+
+OBJETIVOS
+
+Marketing y gestión comercial (Sevilla, Seminario la Función
+Empresarial)
+
+PERFIL DEST
+
+alumnado
+
+HORAS
+
+9
+
+ENTIDAD ORG
+
+Escuela de Organización Industrial (EOI)
+
+TIPO PARTICIPA
+
+13001
+
+FECHA
+
+2009-05-14
+
+Cursos Impartidos
+TITULO
+
+Marketing y gestión comercial (Gines, Creación de Empresas)
+
+OBJETIVOS
+
+Marketing y gestión comercial
+
+PERFIL DEST
+
+alumnado
+
+HORAS
+
+42
+
+ENTIDAD ORG
+
+Escuela de Organización Industrial (EOI)
+
+TIPO PARTICIPA
+
+13001
+
+FECHA
+
+2009-05-07
+
+Cursos Impartidos
+TITULO
+
+Marketing y gestión comercial (Granada, Creación de Empresas)
+
+OBJETIVOS
+
+Marketing y gestión comercial
+
+PERFIL DEST
+
+alumnado
+
+HORAS
+
+42
+
+ENTIDAD ORG
+
+Escuela de Organización Industrial (EOI)
+
+TIPO PARTICIPA
+
+13001
+
+FECHA
+
+2009-01-06
+
+Cursos Impartidos
+TITULO
+
+Marketing y gestión comercial (Albolote, Consolidación de empresas)
+
+OBJETIVOS
+
+Marketing y gestión comercial
+PERFIL DEST
+
+alumnado
+
+HORAS
+
+34
+
+ENTIDAD ORG
+
+Escuela de Organización Industrial (EOI)
+
+TIPO PARTICIPA
+
+13001
+
+FECHA
+
+2009-05-05
+
+Cursos Impartidos
+TITULO
+
+Marketing y gestión comercial (Cádiz, Consolidación de Empresas)
+
+OBJETIVOS
+
+Marketing y gestión comercial
+
+PERFIL DEST
+
+alumnado
+
+HORAS
+
+34
+
+ENTIDAD ORG
+
+Escuela de Organización Industrial (EOI)
+
+TIPO PARTICIPA
+
+13001
+
+FECHA
+
+2009-02-02
+
+Cursos Impartidos
+TITULO
+
+Marketing y gestión comercial (Sevilla Global, Innova Empresa Creación de Empresa)
+
+OBJETIVOS
+
+Marketing y gestión comercial
+
+PERFIL DEST
+
+alumnado
+
+HORAS
+
+8
+
+ENTIDAD ORG
+
+Escuela de Organización Industrial (EOI)
+
+TIPO PARTICIPA
+
+13001
+
+FECHA
+
+2009-06-05
+
+Cursos Impartidos
+TITULO
+
+Marketing y gestión comercial (Programa de especialización comercial
+sector TIC vodafone 09)
+
+OBJETIVOS
+
+Marketing y gestión comercial
+
+PERFIL DEST
+
+alumnado
+
+HORAS
+
+22
+
+ENTIDAD ORG
+
+Escuela de Organización Industrial (EOI)
+
+TIPO PARTICIPA
+
+13001
+
+FECHA
+
+2009-06-16
+Cursos Impartidos
+TITULO
+
+Marketing y gestión comercial (Programa Postgrado de especialización
+comercial)
+
+OBJETIVOS
+
+Marketing y gestión comercial
+
+PERFIL DEST
+
+alumnado
+
+HORAS
+
+35
+
+ENTIDAD ORG
+
+Escuela de Organización Industrial (EOI)
+
+TIPO PARTICIPA
+
+13001
+
+FECHA
+
+2008-05-08
+
+Cursos Impartidos
+TITULO
+
+Marketing y gestión comercial (Sevilla, Seminario la Función
+Empresarial)
+
+OBJETIVOS
+
+Marketing y gestión comercial
+
+PERFIL DEST
+
+alumnado
+
+HORAS
+
+9
+
+ENTIDAD ORG
+
+Escuela de Organización Industrial (EOI)
+
+TIPO PARTICIPA
+
+13001
+
+FECHA
+
+2008-03-08
+
+Cursos Impartidos
+TITULO
+
+Marketing y gestión comercial (Programa post. de Especialización
+Gestión Comercial Sector TIC)
+
+OBJETIVOS
+
+Marketing y gestión comercial
+
+PERFIL DEST
+
+alumnado
+
+HORAS
+
+25
+
+ENTIDAD ORG
+
+Escuela de Organización Industrial (EOI)
+
+TIPO PARTICIPA
+
+13001
+
+FECHA
+
+2008-06-07
+
+Cursos Impartidos
+TITULO
+
+Marketing y gestión comercial (Vodafone Prog. Postg. Especialización
+en Gestión Comercial Sector TIC II)
+
+OBJETIVOS
+
+Marketing y gestión comercial
+
+PERFIL DEST
+
+alumnado
+HORAS
+
+8
+
+ENTIDAD ORG
+
+Escuela de Organización Industrial (EOI)
+
+TIPO PARTICIPA
+
+13001
+
+FECHA
+
+2008-03-30
+
+Cursos Impartidos
+TITULO
+
+Sesiones formativas In Company IE Business School
+
+OBJETIVOS
+
+Realización de 14 sesiones formativas de noventa minutos de duración
+cada una dentro de la formación In Company (IE Business School,
+Madrid)
+
+PERFIL DEST
+
+alumnado
+
+HORAS
+
+126
+
+ENTIDAD ORG
+
+IE Business School
+
+TIPO PARTICIPA
+
+13001
+
+FECHA
+
+2014-01-09
+
+Cursos Impartidos
+TITULO
+
+Estrategias y operativa de e-marketing
+
+OBJETIVOS
+
+Estrategias y operativa de e-marketing
+
+PERFIL DEST
+
+alumnado; PDI
+
+HORAS
+
+20
+
+ENTIDAD ORG
+
+Cámara Oficial de Comercio, Industria, Servicios y Navegación de
+Sevilla
+
+TIPO PARTICIPA
+
+13001
+
+LUGAR CELEBRA
+
+Sevilla
+
+FECHA
+
+2010-04-13
+
+Cursos Impartidos
+TITULO
+
+Marketing en redes sociales in compny para ed. Hispalis
+
+OBJETIVOS
+
+Marketing en redes sociales in compny para ed. Hispalis
+
+PERFIL DEST
+
+alumnado; PDI
+
+HORAS
+
+12
+
+ENTIDAD ORG
+
+Cámara Oficial de Comercio, Industria, Servicios y Navegación de
+Sevilla
+
+TIPO PARTICIPA
+
+13001
+LUGAR CELEBRA
+
+Sevilla
+
+FECHA
+
+2010-05-05
+
+Cursos Impartidos
+TITULO
+
+Sesión Máster Dir. Comercial y MK
+
+OBJETIVOS
+
+Máster Dir. Comercial y MK
+
+PERFIL DEST
+
+alumnado; PDI
+
+HORAS
+
+5
+
+ENTIDAD ORG
+
+Cámara Oficial de Comercio, Industria, Servicios y Navegación de
+Sevilla
+
+TIPO PARTICIPA
+
+13001
+
+LUGAR CELEBRA
+
+Sevilla
+
+FECHA
+
+2010-06-20
+
+Cursos Impartidos
+TITULO
+
+E-Marketing: marketing en Internet y Comercio Electrónico
+
+OBJETIVOS
+
+E-Marketing: marketing en Internet y Comercio Electrónico
+
+PERFIL DEST
+
+alumnado; PDI
+
+HORAS
+
+4
+
+ENTIDAD ORG
+
+Cámara Oficial de Comercio, Industria, Servicios y Navegación de
+Sevilla
+
+TIPO PARTICIPA
+
+13001
+
+LUGAR CELEBRA
+
+Sevilla
+
+FECHA
+
+2010-12-09
+
+Cursos Impartidos
+TITULO
+
+Redes Sociales-Máster Dir. Comercial y MK (avanzado)
+
+OBJETIVOS
+
+Redes Sociales-Máster Dir. Comercial y MK (avanzado)
+
+PERFIL DEST
+
+PDI; alumnado
+
+HORAS
+
+5
+
+ENTIDAD ORG
+
+Cámara Oficial de Comercio, Industria, Servicios y Navegación de
+Sevilla
+
+TIPO PARTICIPA
+
+13001
+
+LUGAR CELEBRA
+
+Sevilla
+FECHA
+
+2011-07-13
+
+Cursos Impartidos
+TITULO
+
+Marketing Operativo (avanzado)
+
+OBJETIVOS
+
+Marketing Operativo (avanzado)
+
+PERFIL DEST
+
+alumnado, PDI
+
+HORAS
+
+4
+
+ENTIDAD ORG
+
+Cámara Oficial de Comercio, Industria, Servicios y Navegación de
+Sevilla
+
+TIPO PARTICIPA
+
+13001
+
+LUGAR CELEBRA
+
+Sevilla
+
+FECHA
+
+2011-10-06
+
+Cursos Impartidos
+TITULO
+
+Redes Sociales
+
+OBJETIVOS
+
+Redes Sociales
+
+PERFIL DEST
+
+alumnado; PDI
+
+HORAS
+
+5
+
+ENTIDAD ORG
+
+Cámara Oficial de Comercio, Industria, Servicios y Navegación de
+Sevilla
+
+TIPO PARTICIPA
+
+13001
+
+LUGAR CELEBRA
+
+Sevilla
+
+FECHA
+
+2011-11-06
+
+Cursos Impartidos
+TITULO
+
+El valor estratégico del marketing: el plan de marketing
+
+OBJETIVOS
+
+El valor estratégico del marketing: el plan de marketing
+
+PERFIL DEST
+
+alumnado; PDI
+
+HORAS
+
+20
+
+ENTIDAD ORG
+
+Cámara Oficial de Comercio, Industria, Servicios y Navegación de
+Sevilla
+
+TIPO PARTICIPA
+
+13001
+
+LUGAR CELEBRA
+
+Sevilla
+
+FECHA
+
+2011-12-19
+Cursos Impartidos
+TITULO
+
+Estrategia operativa del marketing: el plan de marketing
+
+OBJETIVOS
+
+Estrategia operativa del marketing: el plan de marketing
+
+PERFIL DEST
+
+PDI; alumnado
+
+HORAS
+
+8
+
+ENTIDAD ORG
+
+Cámara Oficial de Comercio, Industria, Servicios y Navegación de
+Sevilla
+
+TIPO PARTICIPA
+
+13001
+
+LUGAR CELEBRA
+
+Sevilla
+
+FECHA
+
+2011-12-19
+
+Cursos Impartidos
+TITULO
+
+Marketing Operacional y Marketing Mix
+
+OBJETIVOS
+
+Marketing Operacional y Marketing Mix
+
+PERFIL DEST
+
+alumnado; PDI
+
+HORAS
+
+4
+
+ENTIDAD ORG
+
+Cámara Oficial de Comercio, Industria, Servicios y Navegación de
+Sevilla
+
+TIPO PARTICIPA
+
+13001
+
+LUGAR CELEBRA
+
+Sevilla
+
+FECHA
+
+2012-04-16
+
+Cursos Impartidos
+TITULO
+
+El plan de marketing
+
+OBJETIVOS
+
+El plan de marketing
+
+PERFIL DEST
+
+alumnado; PDI
+
+HORAS
+
+4
+
+ENTIDAD ORG
+
+Cámara Oficial de Comercio, Industria, Servicios y Navegación de
+Sevilla
+
+TIPO PARTICIPA
+
+13001
+
+LUGAR CELEBRA
+
+Sevilla
+
+FECHA
+
+2012-11-14
+Cursos Impartidos
+TITULO
+
+Casos del programa. Teoría
+
+OBJETIVOS
+
+Casos del programa. Teoría
+
+PERFIL DEST
+
+alumnado; PDI
+
+HORAS
+
+4
+
+ENTIDAD ORG
+
+Cámara Oficial de Comercio, Industria, Servicios y Navegación de
+Sevilla
+
+TIPO PARTICIPA
+
+13001
+
+LUGAR CELEBRA
+
+Sevilla
+
+FECHA
+
+2012-11-21
+
+Cursos Impartidos
+TITULO
+
+Dir. Estratégica del MK on-line
+
+OBJETIVOS
+
+Dir. Estratégica del MK (edición on-line)
+
+PERFIL DEST
+
+alumnado; PDI
+
+HORAS
+
+8
+
+ENTIDAD ORG
+
+Cámara Oficial de Comercio, Industria, Servicios y Navegación de
+Sevilla
+
+TIPO PARTICIPA
+
+13001
+
+LUGAR CELEBRA
+
+Sevilla
+
+FECHA
+
+2012-11-22
+
+Cursos Impartidos
+TITULO
+
+Comercio electrónico y utilización de BBDD
+
+OBJETIVOS
+
+Comercio electrónico y utilización de BBDD
+
+PERFIL DEST
+
+alumnado; PDI
+
+HORAS
+
+4
+
+ENTIDAD ORG
+
+Cámara Oficial de Comercio, Industria, Servicios y Navegación de
+Sevilla
+
+TIPO PARTICIPA
+
+13001
+
+LUGAR CELEBRA
+
+Sevilla
+
+FECHA
+
+2013-01-17
+Cursos Impartidos
+TITULO
+
+La estrategia de ventas. Captación y fidelización de clientes
+
+OBJETIVOS
+
+La estrategia de ventas. Captación y fidelización de clientes
+
+PERFIL DEST
+
+alumnado; PDI
+
+HORAS
+
+4
+
+ENTIDAD ORG
+
+Cámara Oficial de Comercio, Industria, Servicios y Navegación de
+Sevilla
+
+TIPO PARTICIPA
+
+13001
+
+LUGAR CELEBRA
+
+Sevilla
+
+FECHA
+
+2013-04-25
+
+Cursos Impartidos
+TITULO
+
+CRM. Gestión de las bases de datos
+
+OBJETIVOS
+
+CRM. Gestión de las bases de datos
+
+PERFIL DEST
+
+alumnado; PDI
+
+HORAS
+
+4
+
+ENTIDAD ORG
+
+Cámara Oficial de Comercio, Industria, Servicios y Navegación de
+Sevilla
+
+TIPO PARTICIPA
+
+13001
+
+LUGAR CELEBRA
+
+Sevilla
+
+FECHA
+
+2013-04-30
+
+Cursos Impartidos
+TITULO
+
+Marketing Operativo. Introducción
+
+OBJETIVOS
+
+Marketing Operativo. Introducción
+
+PERFIL DEST
+
+alumnado; PDI
+
+HORAS
+
+4
+
+ENTIDAD ORG
+
+Cámara Oficial de Comercio, Industria, Servicios y Navegación de
+Sevilla
+
+TIPO PARTICIPA
+
+13001
+
+LUGAR CELEBRA
+
+Sevilla
+
+FECHA
+
+2013-05-02
+Cursos Impartidos
+TITULO
+
+El valor de los principios del marketing
+
+OBJETIVOS
+
+El valor de los principios del marketing
+
+PERFIL DEST
+
+alumnado; PDI
+
+HORAS
+
+4
+
+ENTIDAD ORG
+
+Cámara Oficial de Comercio, Industria, Servicios y Navegación de
+Sevilla
+
+TIPO PARTICIPA
+
+13001
+
+LUGAR CELEBRA
+
+Sevilla
+
+FECHA
+
+2013-11-20
+
+Cursos Impartidos
+TITULO
+
+El valor de los principios del marketing (II)
+
+OBJETIVOS
+
+El valor de los principios del marketing
+
+PERFIL DEST
+
+alumnado; PDI
+
+HORAS
+
+4
+
+ENTIDAD ORG
+
+Cámara Oficial de Comercio, Industria, Servicios y Navegación de
+Sevilla
+
+TIPO PARTICIPA
+
+13001
+
+LUGAR CELEBRA
+
+Sevilla
+
+FECHA
+
+2013-11-21
+
+Cursos Impartidos
+TITULO
+
+Marketing operativo
+
+OBJETIVOS
+
+Marketing operativo
+
+PERFIL DEST
+
+alumnado; PDI
+
+HORAS
+
+8
+
+ENTIDAD ORG
+
+Cámara Oficial de Comercio, Industria, Servicios y Navegación de
+Sevilla
+
+TIPO PARTICIPA
+
+13001
+
+LUGAR CELEBRA
+
+Sevilla
+
+FECHA
+
+2014-04-14
+Cursos Impartidos
+TITULO
+
+CRM. Gestión de las bases de datos
+
+OBJETIVOS
+
+CRM. Gestión de las bases de datos
+
+PERFIL DEST
+
+alumnado; PDI
+
+HORAS
+
+4
+
+ENTIDAD ORG
+
+Cámara Oficial de Comercio, Industria, Servicios y Navegación de
+Sevilla
+
+TIPO PARTICIPA
+
+13001
+
+LUGAR CELEBRA
+
+Sevilla
+
+FECHA
+
+2014-03-18
+
+Cursos Impartidos
+TITULO
+
+La estrategia de ventas: captación y fidelización de clientes
+
+OBJETIVOS
+
+La estrategia de ventas: captación y fidelización de clientes
+
+PERFIL DEST
+
+alumnado; PDI
+
+HORAS
+
+4
+
+ENTIDAD ORG
+
+Cámara Oficial de Comercio, Industria, Servicios y Navegación de
+Sevilla
+
+TIPO PARTICIPA
+
+13001
+
+LUGAR CELEBRA
+
+Sevilla
+
+FECHA
+
+2014-04-08
+
+Cursos Impartidos
+TITULO
+
+El valor de los principios del marketing
+
+OBJETIVOS
+
+El valor de los principios del marketing
+
+PERFIL DEST
+
+alumnado; PDI
+
+HORAS
+
+4
+
+ENTIDAD ORG
+
+Cámara Oficial de Comercio, Industria, Servicios y Navegación de
+Sevilla
+
+TIPO PARTICIPA
+
+13001
+
+LUGAR CELEBRA
+
+Sevilla
+
+FECHA
+
+2014-11-19
+Cursos Impartidos
+TITULO
+
+Marketing Estratégico y su Planificación
+
+OBJETIVOS
+
+Marketing Estratégico y su Planificación dentro de la formación Máster
+en Marketing y Comunicación Digital 4a Promoción
+
+PERFIL DEST
+
+alumnado
+
+HORAS
+
+5
+
+ENTIDAD ORG
+
+KUHNEL Escuela de Negocios
+
+TIPO PARTICIPA
+
+13001
+
+LUGAR CELEBRA
+
+Zaragoza
+
+FECHA
+
+2015-10-02
+
+Cursos Impartidos
+TITULO
+
+Investigación de mercado, DAFO y Business Intelligence
+
+OBJETIVOS
+
+Investigación de mercado, DAFO y Business Intelligence dentro del
+Máster en Marketing y Comunicación Digital 4a promoción
+
+PERFIL DEST
+
+alumnado
+
+HORAS
+
+5
+
+ENTIDAD ORG
+
+KUHNEL Escuela de Negocios
+
+TIPO PARTICIPA
+
+13001
+
+LUGAR CELEBRA
+
+Zaragoza
+
+FECHA
+
+2016-03-03
+
+Cursos Impartidos
+TITULO
+
+Investigación de Mercado, DAFO y Business Intelligence
+
+OBJETIVOS
+
+Investigación de Mercado, DAFO y Business Intelligence dentro del
+Máster en Marketing y Comunicación Digital 8º Promoción
+
+PERFIL DEST
+
+alumnado
+
+HORAS
+
+5
+
+ENTIDAD ORG
+
+KUHNEL Escuela de Negocios
+
+TIPO PARTICIPA
+
+13001
+
+LUGAR CELEBRA
+
+Zaragoza
+
+FECHA
+
+2017-02-07
+Cursos Impartidos
+TITULO
+
+Business Intelligence y el Comportamiento de la compra
+
+OBJETIVOS
+
+Business Intelligence y el Comportamiento de la compra dentro del
+Máster en Marketing y Comunicación Digital 8a Promoción
+
+PERFIL DEST
+
+alumnado
+
+HORAS
+
+10
+
+ENTIDAD ORG
+
+KUHNEL Escuela de Negocios
+
+TIPO PARTICIPA
+
+13001
+
+LUGAR CELEBRA
+
+Zaragoza
+
+FECHA
+
+2018-04-08
+
+Cursos Impartidos
+TITULO
+
+Business Intelligence y el Comportamiento de la compra
+
+OBJETIVOS
+
+Business Intelligence y el Comportamiento de la compra dentro del
+Máster en Marketing y Comunicación Digital 9a Promoción
+
+PERFIL DEST
+
+alumnado
+
+HORAS
+
+10
+
+ENTIDAD ORG
+
+KUHNEL Escuela de Negocios
+
+TIPO PARTICIPA
+
+13001
+
+LUGAR CELEBRA
+
+Zaragoza
+
+FECHA
+
+2019-06-06
+
+CURSOS Y SEMINARIOS RECIBIDOS
+Título
+
+Horas
+
+ESP- Inteligencia emocional para docentes
+
+6
+
+Creación de pruebas de evaluación con Canvas
+
+16
+
+Iniciación a las competencias digitales docentes
+
+16
+
+Introducción a las competencias digitales docentes
+
+10
+
+Realización de clases virtuales II
+
+8
+
+Realización de clases virtuales (I)
+
+8
+
+Creación de pruebas de evaluación con Canvas
+
+16
+
+Evaluación y mejora de los resultados de aprendizaje en tu asignatura/módulo 2
+- Nivel 1
+Título
+
+Horas
+
+Iniciación a las competencias digitales docentes
+
+16
+
+Introducción a las herramientas digitales docentes
+
+10
+
+Cursos Recibidos
+TITULO
+
+ESP- Inteligencia emocional para docentes
+
+OBJETIVOS
+
+ESP- Inteligencia emocional para docentes
+
+PERFIL
+
+PDI
+
+FDESDE
+
+2025-03-19
+
+FHASTA
+
+2025-07-23
+
+HORAS
+
+6
+
+ENTIDAD
+
+UEM
+
+LUGAR
+
+Villaviciosa de Odón (Madrid)
+
+FECHA
+
+2025-03-19
+
+Cursos Recibidos
+TITULO
+
+Creación de pruebas de evaluación con Canvas
+
+OBJETIVOS
+
+Creación de pruebas de evaluación con Canvas
+
+PERFIL
+
+PDI
+
+FDESDE
+
+2025-07-29
+
+FHASTA
+
+2025-07-29
+
+HORAS
+
+16
+
+ENTIDAD
+
+UEM
+
+LUGAR
+
+VIllaviciosa de Odón (Madrid)
+
+FECHA
+
+2025-07-29
+
+Cursos Recibidos
+TITULO
+
+Iniciación a las competencias digitales docentes
+
+OBJETIVOS
+
+Iniciación a las competencias digitales docentes
+
+PERFIL
+
+PDI
+
+FDESDE
+
+2025-07-29
+
+FHASTA
+
+2025-07-29
+
+HORAS
+
+16
+ENTIDAD
+
+UEM
+
+LUGAR
+
+Villaviciosa de Odón (Madrid)
+
+FECHA
+
+2025-07-29
+
+Cursos Recibidos
+TITULO
+
+Introducción a las competencias digitales docentes
+
+OBJETIVOS
+
+Introducción a las competencias digitales docentes
+
+PERFIL
+
+PDI
+
+FDESDE
+
+2025-07-29
+
+FHASTA
+
+2025-07-30
+
+HORAS
+
+10
+
+ENTIDAD
+
+UEM
+
+LUGAR
+
+Villaviciosa de Odón (Madrid)
+
+FECHA
+
+2025-07-29
+
+Cursos Recibidos
+TITULO
+
+Realización de clases virtuales II
+
+OBJETIVOS
+
+Realización de clases virtuales
+
+PERFIL
+
+PDI
+
+FDESDE
+
+2025-07-29
+
+FHASTA
+
+2025-07-29
+
+HORAS
+
+8
+
+ENTIDAD
+
+UEM
+
+LUGAR
+
+Villaviciosa de Odón (Madrid)
+
+FECHA
+
+2025-07-29
+
+Cursos Recibidos
+TITULO
+
+Realización de clases virtuales (I)
+
+OBJETIVOS
+
+Realización de clases virtuales (I)
+
+PERFIL
+
+PDI
+
+FDESDE
+
+2024-12-12
+
+FHASTA
+
+2024-12-12
+
+HORAS
+
+8
+ENTIDAD
+
+UEM
+
+LUGAR
+
+Villaviciosa de Odón (Madrid)
+
+FECHA
+
+2024-12-12
+
+Cursos Recibidos
+TITULO
+
+Creación de pruebas de evaluación con Canvas
+
+OBJETIVOS
+
+Creación de pruebas de evaluación con Canvas
+
+PERFIL
+
+PDI
+
+FDESDE
+
+2023-11-03
+
+FHASTA
+
+2024-12-12
+
+HORAS
+
+16
+
+ENTIDAD
+
+UEM
+
+LUGAR
+
+Villaviciosa de Odón (Madrid)
+
+FECHA
+
+2023-11-03
+
+Cursos Recibidos
+TITULO
+
+Evaluación y mejora de los resultados de aprendizaje en tu asignatura/
+módulo - Nivel 1
+
+OBJETIVOS
+
+Evaluación y mejora de los resultados de aprendizaje en tu asignatura/
+módulo - Nivel 1
+
+PERFIL
+
+PDI
+
+FDESDE
+
+2023-11-03
+
+FHASTA
+
+2024-12-12
+
+HORAS
+
+2
+
+ENTIDAD
+
+UEM
+
+LUGAR
+
+Villaviciosa de Odón (Madrid)
+
+FECHA
+
+2023-11-03
+
+Cursos Recibidos
+TITULO
+
+Iniciación a las competencias digitales docentes
+
+OBJETIVOS
+
+Iniciación a las competencias digitales docentes
+
+PERFIL
+
+PDI
+
+FDESDE
+
+2023-11-03
+
+FHASTA
+
+2024-07-26
+HORAS
+
+16
+
+ENTIDAD
+
+UEM
+
+LUGAR
+
+Villaviciosa de Odón (Madrid)
+
+FECHA
+
+2023-11-03
+
+Cursos Recibidos
+TITULO
+
+Introducción a las herramientas digitales docentes
+
+OBJETIVOS
+
+Introducción a las herramientas digitales docentes
+
+PERFIL
+
+PDI
+
+FDESDE
+
+2023-11-03
+
+FHASTA
+
+2023-11-21
+
+HORAS
+
+10
+
+ENTIDAD
+
+UEM
+
+LUGAR
+
+Villaviciosa de Odón (Madrid)
+
+FECHA
+
+2023-11-03
+
+ELABORACION DE MATERIAL DOCENTE
+Título
+Elaboración de los contenidos de la materia Marketing Digital del Máster Universitario en
+Negocios Digitales/Digital Business e Innovación de la Facultad de Ciencias Sociales y de
+la Comunicación del proyecto Educación Digital
+Apuntes de la materia Investigación de Mercado, Social Media Listening
+
+Material Docente
+AUTORES
+
+Enrique Carvajal Zaera
+
+NUMERO AUTORES
+
+1
+
+POSICION
+
+1
+
+TITULO
+
+Elaboración de los contenidos de la materia Marketing Digital del Máster
+Universitario en Negocios Digitales/Digital Business e Innovación de
+la Facultad de Ciencias Sociales y de la Comunicación del proyecto
+Educación Digital
+
+RECO CODIGO CLAVE 18006
+CALFAPAIS
+
+E
+JUSTIFICACION
+
+Apuntes de la materia Marketing Digital del Máster Universitario en
+Negocios Digitales/Digital Business e Innovación de la Facultad de
+Ciencias Sociales y de la Comunicación del proyecto Educación Digital
+
+DESTINATARIOS
+
+alumnado
+
+AÑO PUBLIC
+
+2024
+
+Material Docente
+AUTORES
+
+Enrique Carvajal Zaera
+
+NUMERO AUTORES
+
+1
+
+POSICION
+
+1
+
+TITULO
+
+Apuntes de la materia Investigación de Mercado, Social Media Listening
+
+RECO CODIGO CLAVE 18006
+CALFAPAIS
+
+E
+
+JUSTIFICACION
+
+Apuntes de la materia Investigación de Mercado, Social Media Listening
+para el Master de Marketing Digital
+
+DESTINATARIOS
+
+alumnado de la materia Investigación de Mercado, Social Media
+Listening
+
+AÑO PUBLIC
+
+2024
+
+PROYECTOS DE INNOVACION DOCENTE
+Título
+
+Fdesde
+
+Realización de Plan de Marketing para Empresas Reales y Acercamiento a la 2021-07-14
+Realidad Empresarial
+
+Proyecto Docente
+TITULO
+
+Realización de Plan de Marketing para Empresas Reales y Acercamiento
+a la Realidad Empresarial
+
+ENTIDAD
+
+-
+
+TIPO
+
+09000
+
+TIPO OTROS
+
+-
+
+ENTIDADES
+
+Universidad Pablo Olavide; San Isidoro Centro Universitario
+
+FDESDE
+
+2021-07-14
+
+FHASTA
+
+2022-07-14
+
+MESES
+
+12
+
+IP
+
+Enrique Carvajal Zaera
+APORTACION
+
+Realización de Plan de Marketing para Empresas Reales y Acercamiento
+a la Realidad Empresarial, dentro de la asignatura Plan de Marketing
+correspondiente al plan de estudios del Doble Grado en Comunicación
+por la Universidad Pablo Olavide.
+
+RESPONSABILIDAD
+
+19001
+
+DEDICACION
+
+XX001
+
+OTROS MERITOS DOCENTES
+Otros Docencia
+OTROS MERITOS
+
+(1) PREMIOS Y RECONOCIMIENTOS: 2013-14 Reconocimiento a la
+excelencia docente Executive Education, IE Business School; (2)
+DIRECCIÓN DE TFG 2025 dirección de 2 TFG, UEM; (3) DIRECCIÓN DE
+TRABAJOS AVANZADOS 2025 dirección de 3 TFM, Master universitario
+en dirección Marketing online. UEM; (4) TRIBUNAL TRABAJOS
+AVANZADOS: 2025 tribunal de 2 TFM, Master universitario de dirección
+Marketing, UEM; 2022-24 tribunal de 4 TFM, Postgrado EIG Education,
+Esic University; (5) TUTORIZACIÓN TRABAJOS AVANZADOS: 2022-24
+tutorización de 1 TFM, Postgrado EIG Education, Esic University;
+(6) CARGOS DE GESTIÓN: 2024-26 tutor académico 1º Grado en
+Marketing y Gestión, Facultad de Ciencias Económicas y Jurídicas, CEU
+Universidad Fernando III. //
+
+FORMACION ACADEMICA
+TITULACION UNIVERSITARIA
+Titulación
+
+Ftitulación
+
+21075
+
+1997-04-14
+
+Titulación
+CICLO
+
+22002
+
+TITULACION
+
+21075
+
+UNIVERSIDAD
+
+017
+
+FTITULACION
+
+1997-04-14
+
+HOMOLOGADO
+
+N
+
+DOCTORADO
+Programa
+
+Fdoctorado
+
+Programa de Doctorado en Comunicación Audiovisual, Publicidad y 2015-07-01
+Relaciones Públicas
+Doctorado
+PROGRAMA
+
+Programa de Doctorado en Comunicación Audiovisual, Publicidad y
+Relaciones Públicas
+
+EUROPEO
+
+S
+
+MENCION
+
+S
+
+UNIVERSIDAD
+
+010
+
+FDOCTORADO
+
+2015-07-01
+
+HOMOLOGADO
+
+N
+
+DIRECTOR
+
+Domínguez de la Concha-Castañeda, Marta; Galán González, José Luis
+
+TITULO
+
+La fidelidad del consumidor en la distribución detallista
+
+CALIFICACION
+
+20005
+
+OTROS TITULOS DE POSTGRADO
+Título
+
+Fecha
+
+Máster en Dirección de Empresas (M.B.A.)
+
+1999-10-15
+
+Global Senior Management Program
+
+2006-07-25
+
+Máster Universitario en Estudios Europeos
+
+2013-02-22
+
+Otros Títulos
+TITULO
+
+Máster en Dirección de Empresas (M.B.A.)
+
+INSTITUCION
+
+INSTITUTO DE EMPRESA
+
+FECHA
+
+1999-10-15
+
+CENTRO
+
+Madrid
+
+Otros Títulos
+TITULO
+
+Global Senior Management Program
+
+INSTITUCION
+
+University of Chicago GSB
+
+FECHA
+
+2006-07-25
+
+Otros Títulos
+TITULO
+
+Máster Universitario en Estudios Europeos
+
+INSTITUCION
+
+Universidad de Sevilla
+
+FECHA
+
+2013-02-22
+
+CENTRO
+
+SEVILLA
+CURSOS Y SEMINARIOS DE ESPECIALIZACION
+Título
+
+Fecha
+
+III Encuentro de emprendedores
+
+1992-12-01
+
+V Congreso Iberoamericano de Jóvenes Investigadores en Ciencias 2022-12-14
+Económicas y Dirección de Empresas
+Influencia de la Inteligencia Artificial en la comunicación en la salud
+
+2024-10-16
+
+Comportamiento post compra del paciente en odontología. Variables que 2024-04-25
+afectan a la fidelización
+
+Cursos Especialización
+TITULO
+
+III Encuentro de emprendedores
+
+FDESDE
+
+1992-12-01
+
+FHASTA
+
+1992-12-01
+
+NUM HORAS
+
+5
+
+ORGANISMO
+
+Facultad de Ciencias Económicas y Empresariales; Universidad de
+Sevilla
+
+OBJETIVOS
+
+III Encuentro de emprendedores
+
+LUGAR
+
+Sevilla
+
+FECHA
+
+1992-12-01
+
+Cursos Especialización
+TITULO
+
+V Congreso Iberoamericano de Jóvenes Investigadores en Ciencias
+Económicas y Dirección de Empresas
+
+FDESDE
+
+2022-12-14
+
+FHASTA
+
+2022-12-16
+
+NUM HORAS
+
+30
+
+ORGANISMO
+
+AJICEDE; Universidad Loyola
+
+OBJETIVOS
+
+V Congreso Iberoamericano de Jóvenes Investigadores en Ciencias
+Económicas y Dirección de Empresas
+
+LUGAR
+
+Córdoba
+
+FECHA
+
+2022-12-14
+
+Cursos Especialización
+TITULO
+
+Influencia de la Inteligencia Artificial en la comunicación en la salud
+
+FDESDE
+
+2024-10-16
+FHASTA
+
+2024-10-18
+
+NUM HORAS
+
+27
+
+ORGANISMO
+
+Grupo de Investigación en Comunicación Complutense Concilium;
+Fórum XXI; SEECI
+
+OBJETIVOS
+
+Influencia de la Inteligencia Artificial en la comunicación en la salud
+
+LUGAR
+
+Madrid
+
+FECHA
+
+2024-10-16
+
+Cursos Especialización
+TITULO
+
+Comportamiento post compra del paciente en odontología. Variables
+que afectan a la fidelización
+
+FDESDE
+
+2024-04-25
+
+FHASTA
+
+2024-04-26
+
+NUM HORAS
+
+22
+
+ORGANISMO
+
+Cátedra de Comunicación y Salud (UCM-AbbVie); Real Colegio
+Complutense en Harvard
+
+OBJETIVOS
+
+Comportamiento post compra del paciente en odontología. Variables
+que afectan a la fidelización
+
+LUGAR
+
+Madrid; on-line
+
+FECHA
+
+2024-04-25
+
+EXPERIENCIA LABORAL
+ACTIVIDADES DE CARACTER PROFESIONAL
+Institución
+
+Desde
+
+BP ENERGÍA ESPAÑA, S.A
+
+2000-04-25
+
+AUTÓNOMO
+
+2008-10-01
+
+UNIVERSITAS NEBRISSENSIS, S.A
+
+2022-11-30
+
+UNIVERSIDAD EUROPEA DE MADRID S.A.U
+
+2023-01-24
+
+FUNDACIÓN UNIVERSITARIA FERNANDO III EL SANTO
+
+2024-09-01
+
+ESTUDIOS UNIVERSITARIOS Y SUPERIORES
+
+2022-09-01
+
+DIFUSIONES TECNOLÓGICAS DE MERCADO, S.L
+
+2006-09-18
+
+Profesional
+INSTITUCION
+
+BP ENERGÍA ESPAÑA, S.A
+CATEGORIA
+
+-
+
+DESDE
+
+2000-04-25
+
+HASTA
+
+2005-04-17
+
+MESES
+
+60
+
+Profesional
+INSTITUCION
+
+AUTÓNOMO
+
+CATEGORIA
+
+autónomo
+
+DESDE
+
+2008-10-01
+
+HASTA
+
+2022-01-15
+
+MESES
+
+159
+
+Profesional
+INSTITUCION
+
+UNIVERSITAS NEBRISSENSIS, S.A
+
+CATEGORIA
+
+Personal Docente e Investigador
+
+ACTIVIDAD
+
+Docencia, Investigación y Gestión
+
+DESDE
+
+2022-11-30
+
+HASTA
+
+2023-06-28
+
+MESES
+
+2
+
+Profesional
+INSTITUCION
+
+UNIVERSIDAD EUROPEA DE MADRID S.A.U
+
+CATEGORIA
+
+Personal Docente e Investigador
+
+ACTIVIDAD
+
+Docencia, Investigación y Gestión
+
+DESDE
+
+2023-01-24
+
+HASTA
+
+2026-01-26
+
+MESES
+
+11
+
+Profesional
+INSTITUCION
+
+FUNDACIÓN UNIVERSITARIA FERNANDO III EL SANTO
+
+CATEGORIA
+
+Personal Docente e Investigador
+
+ACTIVIDAD
+
+Docencia, Investigación y Gestión en la Facultad de Ciencias
+Empresariales y Jurídicas
+
+DESDE
+
+2024-09-01
+HASTA
+
+2026-01-26
+
+MESES
+
+16
+
+Profesional
+INSTITUCION
+
+ESTUDIOS UNIVERSITARIOS Y SUPERIORES
+
+CATEGORIA
+
+Docencia
+
+ACTIVIDAD
+
+Docencia
+
+DESDE
+
+2022-09-01
+
+HASTA
+
+2024-08-31
+
+MESES
+
+12
+
+Profesional
+INSTITUCION
+
+DIFUSIONES TECNOLÓGICAS DE MERCADO, S.L
+
+CATEGORIA
+
+-
+
+DESDE
+
+2006-09-18
+
+HASTA
+
+2007-11-30
+
+MESES
+
+15
+
+OTRAS ACTIVIDADES DE CARACTER PROFESIONAL
+Otros Profesional
+OTROS MERITOS
+
+2022 profesor en el Máster de Marketing Digital/Master in Digital
+Marketing, ESIC, Business and Marketing School (Campus Madrid y
+Sevilla); 2015-2019 profesor colaborador docente en el área de Postgrad,
+Business and Marketing School (ESIC); 2012-13 profesor colaborador
+docente en el Máster in Business Administration (UHU). //
+
+OTROS MERITOS RELEVANTES
+(1) TRANSFERENCIA: 2005-22 Trabajos de consultoría (Sizet experience)
+en las siguientes empresas: Grupo Avisa (2017), Fitoplacton (2017-19),
+Nestwork (2014-16), Klinger (2019-22), El caballo (2010-12), WallMart México
+82010-11), Daymler México (2009-12), Cecofar (2008); Hefame (2009-10),
+Decathlon España (2013), Grand Home México (2013-14), Cartier México
+(2014), Diario El Economista (2008), Flipper (2010-12), Grupaje Sevilla
+(2015-16), Nutrofar (2016-17), Laboratorio Bioserum (2020-21), Farmacias
+Trébol (2017), Quilosa España (2013-15), Cámara de Comercio de Sevilla
+(2009-2012), EOI Latam (2009-15), Soya Colombia (2011-2013), Pintuco
+Colombia (2012-2015), EAE México(2010-15), Dermalgae 2019-2022), Evolufarma
+(2013), Universidad Anahua México (2009-2016); (2) OTROS: 2023 Reservista
+Voluntario, Ejército de Tierra, alferez; 2021 Global CEFR Level C, Aptis
+General, British Council Spain, 1988 participación en el programa Catequesis:
+Organización, contenidos y Técnicas (25h), Facultad de Teología, UNAV.//
+
+88
