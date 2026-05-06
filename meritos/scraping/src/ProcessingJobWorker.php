@@ -1,11 +1,11 @@
 <?php
 
-require_once __DIR__ . '/Pipeline.php';
 require_once __DIR__ . '/ProcessingJobQueue.php';
 require_once __DIR__ . '/ProcessingCache.php';
 require_once __DIR__ . '/LegacyPipelineResultValidator.php';
 require_once __DIR__ . '/AnecaCanonicalResultValidator.php';
 require_once __DIR__ . '/OperationalArtifactDecisionResolver.php';
+require_once __DIR__ . '/Evaluation/EvaluationOrchestrator.php';
 
 class ProcessingJobWorker
 {
@@ -14,14 +14,20 @@ class ProcessingJobWorker
     private $logsDir;
     private $legacyResultValidator;
     private $anecaCanonicalValidator;
+    private $evaluationOrchestrator;
 
-    public function __construct(?ProcessingJobQueue $queue = null, ?ProcessingCache $cache = null)
+    public function __construct(
+        ?ProcessingJobQueue $queue = null,
+        ?ProcessingCache $cache = null,
+        ?EvaluationOrchestrator $evaluationOrchestrator = null
+    )
     {
         $this->queue = $queue ?? new ProcessingJobQueue();
         $this->cache = $cache ?? new ProcessingCache();
         $this->logsDir = __DIR__ . '/../output/logs';
         $this->legacyResultValidator = new LegacyPipelineResultValidator();
         $this->anecaCanonicalValidator = new AnecaCanonicalResultValidator();
+        $this->evaluationOrchestrator = $evaluationOrchestrator ?? new EvaluationOrchestrator();
     }
 
     public function processNextPendingJob(): ?array
@@ -183,7 +189,6 @@ class ProcessingJobWorker
 
             $this->queue->appendLog($jobId, 'inicio_worker hash_pdf=' . $hashPdf . ' pdf=' . basename($pdfPath));
 
-            $pipeline = new Pipeline();
             $phaseCallback = function (string $estado, int $progreso, string $fase, array $context = []) use ($jobId): void {
                 $this->queue->setPhase($jobId, $estado, $progreso, $fase);
 
@@ -201,7 +206,7 @@ class ProcessingJobWorker
                 );
             };
 
-            $resultado = $pipeline->procesar($pdfPath, $phaseCallback);
+            $resultado = $this->evaluationOrchestrator->evaluate($pdfPath, $phaseCallback);
 
             $this->queue->setPhase($jobId, 'calculando_puntuacion', 90, 'calculando_puntuacion');
             $this->queue->appendLog($jobId, 'fase_calculando_puntuacion placeholder');
