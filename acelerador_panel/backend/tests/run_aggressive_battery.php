@@ -77,6 +77,50 @@ final class InMemoryProfesorRepository implements ProfesorRepositoryInterface
     }
 
     /**
+     * @return array<int, ProfesorAsignado>
+     */
+    public function listForMatching(int $limit, ?string $search = null): array
+    {
+        $limit = max(1, $limit);
+        $items = array_values($this->items);
+
+        if ($search !== null && trim($search) !== '') {
+            $needle = mb_strtolower(trim($search));
+            $items = array_values(array_filter(
+                $items,
+                static function (ProfesorAsignado $profesor) use ($needle): bool {
+                    $haystack = mb_strtolower(
+                        $profesor->nombreCompleto()
+                        . ' '
+                        . (string) $profesor->orcid
+                        . ' '
+                        . (string) $profesor->departamento
+                        . ' '
+                        . (string) $profesor->correo
+                    );
+                    return str_contains($haystack, $needle);
+                }
+            ));
+        }
+
+        usort($items, static function (ProfesorAsignado $a, ProfesorAsignado $b): int {
+            $cmpNombre = strcmp($a->nombre, $b->nombre);
+            if ($cmpNombre !== 0) {
+                return $cmpNombre;
+            }
+
+            $cmpApellidos = strcmp($a->apellidos, $b->apellidos);
+            if ($cmpApellidos !== 0) {
+                return $cmpApellidos;
+            }
+
+            return $a->id <=> $b->id;
+        });
+
+        return array_slice($items, 0, $limit);
+    }
+
+    /**
      * @return array<int, int>
      */
     public function allIds(): array
