@@ -83,6 +83,13 @@ foreach ($defaultsBloque3 as $key) {
  * ========================================================= */
 $resultado = evaluar_expediente($jsonEntrada);
 
+/*
+ * Guardamos también el cálculo dentro del JSON para que la pantalla
+ * ver_evaluacion.php pueda mostrar diagnóstico y asesor orientativo
+ * con el mismo aspecto que Experimentales.
+ */
+$jsonEntrada['resultado_calculo'] = $resultado;
+
 $jsonNormalizado = json_encode($jsonEntrada, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
 if ($jsonNormalizado === false) {
     die('No se pudo codificar el JSON de entrada.');

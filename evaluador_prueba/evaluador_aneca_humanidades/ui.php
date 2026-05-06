@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-function h(mixed $value): string
+function hum_h(mixed $value): string
 {
     return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
 }
@@ -28,7 +28,7 @@ function hum_render_layout_start(string $title, string $subtitle = '', array $br
     echo '<head>';
     echo '<meta charset="UTF-8">';
     echo '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
-    echo '<title>' . h($title) . '</title>';
+    echo '<title>' . hum_h($title) . '</title>';
     echo '<style>
         :root {
             --azul-900: #173a77;
@@ -122,12 +122,12 @@ function hum_render_layout_start(string $title, string $subtitle = '', array $br
             color: var(--gris-900);
         }
         .toolbar { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
-
         .bloque {
             background: var(--blanco);
             border: 1px solid var(--gris-200);
             border-radius: 18px;
             padding: 18px;
+            margin-bottom: 18px;
         }
         .bloque h2 { margin-top: 0; }
         .bloque p.hint { margin-top: -4px; color: var(--gris-700); }
@@ -173,7 +173,7 @@ function hum_render_layout_start(string $title, string $subtitle = '', array $br
             transition: transform .12s ease, background .12s ease;
         }
         .btn:hover, button:hover, input[type="submit"]:hover { transform: translateY(-1px); background: var(--azul-700); text-decoration: none; }
-        .btn.secondary, .secondary { background: #344054; }
+        .btn.secondary, .secondary, .btn-sec { background: #344054; }
         .btn.light { background: rgba(255,255,255,.16); border: 1px solid rgba(255,255,255,.25); }
         .btn.light:hover { background: rgba(255,255,255,.22); }
         .btn.outline {
@@ -231,11 +231,7 @@ function hum_render_layout_start(string $title, string $subtitle = '', array $br
             background: var(--gris-100);
             overflow: hidden;
         }
-        summary {
-            cursor: pointer;
-            padding: 14px 16px;
-            font-weight: bold;
-        }
+        summary { cursor: pointer; padding: 14px 16px; font-weight: bold; }
         pre {
             margin: 0;
             padding: 16px;
@@ -243,33 +239,18 @@ function hum_render_layout_start(string $title, string $subtitle = '', array $br
             background: #101828;
             color: #d0d5dd;
             font-size: 13px;
+            white-space: pre-wrap;
+            word-break: break-word;
         }
         ul, ol { padding-left: 20px; }
-        .split {
-            display: grid;
-            grid-template-columns: 1.2fr .8fr;
-            gap: 18px;
-        }
-        .kpis {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 12px;
-        }
-        .kpi {
-            border: 1px solid var(--gris-200);
-            background: linear-gradient(180deg, #fff 0%, #f9fbff 100%);
-            border-radius: 16px;
-            padding: 14px;
-        }
+        .split { display: grid; grid-template-columns: 1.2fr .8fr; gap: 18px; }
+        .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
+        .kpi { border: 1px solid var(--gris-200); background: linear-gradient(180deg, #fff 0%, #f9fbff 100%); border-radius: 16px; padding: 14px; }
         .kpi strong { display: block; font-size: 24px; margin-top: 6px; }
-        @media (max-width: 900px) {
-            .split { grid-template-columns: 1fr; }
-        }
-        @media (max-width: 700px) {
-            .shell { padding: 16px; }
-            .hero { padding: 18px; }
-            .hero h1 { font-size: 26px; }
-        }
+        .resumen { margin: 0; padding: 0; background: transparent; border: none; }
+        .resumen .num { width: 120px; text-align: center; }
+        @media (max-width: 900px) { .split { grid-template-columns: 1fr; } }
+        @media (max-width: 700px) { .shell { padding: 16px; } .hero { padding: 18px; } .hero h1 { font-size: 26px; } }
     </style>';
     echo '</head><body><div class="shell">';
     echo '<header class="hero">';
@@ -277,13 +258,11 @@ function hum_render_layout_start(string $title, string $subtitle = '', array $br
         echo '<nav class="breadcrumbs">';
         $lastIndex = count($breadcrumbs) - 1;
         foreach ($breadcrumbs as $index => $crumb) {
-            if ($index > 0) {
-                echo '<span>/</span>';
-            }
-            $label = h($crumb['label'] ?? '');
+            if ($index > 0) { echo '<span>/</span>'; }
+            $label = hum_h($crumb['label'] ?? '');
             $url = $crumb['url'] ?? null;
             if ($url !== null && $index !== $lastIndex) {
-                echo '<a href="' . h((string)$url) . '">' . $label . '</a>';
+                echo '<a href="' . hum_h((string)$url) . '">' . $label . '</a>';
             } else {
                 echo '<span>' . $label . '</span>';
             }
@@ -291,17 +270,15 @@ function hum_render_layout_start(string $title, string $subtitle = '', array $br
         echo '</nav>';
     }
     echo '<div class="hero-top">';
-    echo '<div><h1>' . h($title) . '</h1>';
-    if ($subtitle !== '') {
-        echo '<p>' . h($subtitle) . '</p>';
-    }
+    echo '<div><h1>' . hum_h($title) . '</h1>';
+    if ($subtitle !== '') { echo '<p>' . hum_h($subtitle) . '</p>'; }
     echo '</div>';
     if ($actions !== []) {
         echo '<div class="hero-actions">';
         foreach ($actions as $action) {
-            $label = h($action['label'] ?? 'Acción');
-            $url = h((string)($action['url'] ?? '#'));
-            $class = 'btn ' . h((string)($action['class'] ?? 'light'));
+            $label = hum_h($action['label'] ?? 'Acción');
+            $url = hum_h((string)($action['url'] ?? '#'));
+            $class = 'btn ' . hum_h((string)($action['class'] ?? 'light'));
             echo '<a class="' . $class . '" href="' . $url . '">' . $label . '</a>';
         }
         echo '</div>';
@@ -317,12 +294,12 @@ function hum_render_layout_end(): void
 function hum_render_result_badge(string $resultado): string
 {
     $texto = strtoupper($resultado);
-    if (str_contains($texto, 'NO APTO') || $texto === 'NO') {
+    if (str_contains($texto, 'NO APTO') || str_contains($texto, 'NEGATIVA') || $texto === 'NO') {
         $clase = 'danger';
-    } elseif (str_contains($texto, 'APTO') || $texto === 'SI' || $texto === 'SÍ') {
+    } elseif (str_contains($texto, 'APTO') || str_contains($texto, 'POSITIVA') || $texto === 'SI' || $texto === 'SÍ') {
         $clase = 'success';
     } else {
         $clase = 'neutral';
     }
-    return '<span class="badge ' . $clase . '">' . h($resultado) . '</span>';
+    return '<span class="badge ' . $clase . '">' . hum_h($resultado) . '</span>';
 }

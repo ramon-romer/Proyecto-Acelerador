@@ -37,7 +37,7 @@ hum_render_layout_start(
             <div class="form-actions">
                 <button type="submit" name="formato_cv" value="aneca">Procesar PDF</button>
                 <button type="submit" name="formato_cv" value="cvn_fecyt" class="secondary">Procesar CVN (FECYT)</button>
-                <a class="btn outline" href="<?= h(hum_listado_url()) ?>">Abrir listado</a>
+                <a class="btn outline" href="<?= hum_h(hum_listado_url()) ?>">Abrir listado</a>
             </div>
         </form>
     </section>
@@ -55,8 +55,8 @@ hum_render_layout_start(
         <section class="card">
             <h3>Accesos rápidos</h3>
             <div class="toolbar">
-                <a class="btn outline" href="<?= h(hum_portal_url()) ?>">Portal principal</a>
-                <a class="btn outline" href="<?= h(hum_listado_url()) ?>">Histórico de evaluaciones</a>
+                <a class="btn outline" href="<?= hum_h(hum_portal_url()) ?>">Portal principal</a>
+                <a class="btn outline" href="<?= hum_h(hum_listado_url()) ?>">Histórico de evaluaciones</a>
             </div>
         </section>
     </aside>
