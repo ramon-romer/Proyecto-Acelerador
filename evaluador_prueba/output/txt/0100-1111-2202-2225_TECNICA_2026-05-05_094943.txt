@@ -1,0 +1,2159 @@
+CURRICULUM
+DATOS PERSONALES
+APELLIDO1
+APELLIDO2
+NOMBRE
+FNACIMIENTO
+SEXO
+NACIONALIDAD
+TIPO DOCUMENTO
+DOCUMENTO TIPO
+DOCUMENTO
+PAIS DIRECCION
+DIRECCION1
+DIRECCION2
+CIUDAD
+CPOSTAL
+PROVINCIA
+AUTONOMIA
+TELEFONO
+TELEFONO MOVIL
+FAX
+CORREO ELECTRONICO
+
+AUTOEVALUACION
+Durante la etapa predoctoral he publicado 8 artículos de investigación en revistas de
+alto impacto, 4 de ellos en posición Q1 según el JIF del ranking JCR, y los otros en Q2.
+He sido ponente en 5 conferencias internacionales donde he publicado 4 proceedings
+en total. Desde mayo de 2024, me encuentro trabajando como Investigador Doctor
+en la Universidad Politécnica de Cartagena, vinculado al proyecto de investigación
+europeo #Capacitation of Quantum-Entangled NV-Center Sensing# concedido por
+#COMMISSION OF THE EUROPEAN COMUNITIES# con una cuantía de 3 millones
+de euros, cuyo investigador principal es Javier Cerrillo. También participo en el equipo
+de trabajo del proyecto nacional concedido por el Ministerio de Ciencia e Innovación
+con referencia administrativa PID2022-138144NB-I00. He sido miembro del equipo
+de trabajo del proyecto nacional concedido por el Ministerio de Ciencia, Innovación y
+Universidades con referencia administrativa PGC2018-097831-B-I00. En el ámbito de
+la docencia, he impartido un total de 165 horas en un total de 6 asignaturas distintas.
+Empecé mi carrera investigadora en 2017 como alumno interno en el Departamento
+de Física Atómica, Molecular y Nuclear de la Universidad de Sevilla, donde realicé
+estudios avanzados en Métodos Matemáticos aplicados a la Física con el Profesor
+Antonio Prados Montaño. En 2018 obtuve una Beca de Colaboración de 1 año
+para continuar dichos estudios y abordar un nuevo tema, la Integral de Caminos en
+Física. Al año siguiente realicé el Máster Universitario de Física y Matemáticas en la
+Universidad de Granada (UGR), y en 2020 el Ministerio de Universidades me concedió
+una beca FPU para realizar estudios de Doctorado y trabajar como Investigador
+Predoctoral en Formación dentro de la UGR.
+
+EXPERIENCIA INVESTIGADORA
+PUBLICACIONES CIENTIFICAS
+Título
+
+Año
+
+Role of mixed permutation symmetry sectors in the thermodynamic limit of 2021
+critical three-level Lipkin-Meshkov-Glick atom models
+Entanglement and U(D)-spin squeezing in symmetric multi-quDit systems and 2021
+applications to quantum phase transitions in Lipkin-Meshkov-Glick D-level
+atom models
+Information diagrams in the study of entanglement in symmetric multi-quDit 2022
+systems and applications to quantum phase transitions in Lipkin-MeshkovGlick D-level atom models
+Hilbert Space Structure of the Low Energy Sector of U(N) Quantum Hall 2022
+Ferromagnets and Their Classical Limit
+Localization measures of parity adapted U(D)-spin coherent states applied to 2023
+the phase space analysis of the D-level Lipkin-Meshkov-Glick model
+Schmidt decomposition of parity adapted coherent states for symmetric multi- 2023
+quDits
+Faraday rotation and transmittance as markers of topological phase transitions 2024
+in 2D materials
+Quantum revivals in HgTe/CdTe quantum wells and topological phase 2024
+transitions
+
+Publicación
+AUTORES
+
+Manuel Calixto ;Alberto Mayorgas;Julio Guerrero
+
+NUMERO AUTORES
+
+3
+
+POSICION
+
+2
+
+TITULO
+
+Role of mixed permutation symmetry sectors in the thermodynamic limit
+of critical three-level Lipkin-Meshkov-Glick atom models
+
+CLAVE
+
+07001
+
+NOMBRE
+
+Physical Review E
+
+VOLUMEN
+
+103
+
+EDITORIAL
+
+APS
+
+PAIS
+
+E
+AÑO
+
+2021
+
+ISSN
+
+2470-0045
+
+CALIDAD IMPACTO
+
+2,707
+
+CALIDAD POSICION
+
+10/56 Q1
+
+CALIDAD CITAS
+
+14
+
+CALIDAD AREA
+
+PHYSICAL, MATHEMATICAL
+
+CALIDAD BASE
+
+JCR
+
+CALIDAD AÑO
+
+2021
+
+Publicación
+AUTORES
+
+Manuel Calixto ;Alberto Mayorgas;Julio Guerrero
+
+NUMERO AUTORES
+
+3
+
+POSICION
+
+2
+
+TITULO
+
+Entanglement and U(D)-spin squeezing in symmetric multi-quDit
+systems and applications to quantum phase transitions in LipkinMeshkov-Glick D-level atom models
+
+CLAVE
+
+07001
+
+NOMBRE
+
+Quantum Information Processing
+
+VOLUMEN
+
+20
+
+EDITORIAL
+
+Springer
+
+PAIS
+
+E
+
+AÑO
+
+2021
+
+ISSN
+
+1570-0755
+
+CALIDAD IMPACTO
+
+1,965
+
+CALIDAD POSICION
+
+18/56 Q2
+
+CALIDAD CITAS
+
+16
+
+CALIDAD AREA
+
+PHYSICS, MATHEMATICAL
+
+CALIDAD BASE
+
+JCR
+
+CALIDAD AÑO
+
+2021
+
+Publicación
+AUTORES
+
+Julio Guerrero;Alberto Mayorgas;Manuel Calixto
+
+NUMERO AUTORES
+
+3
+POSICION
+
+2
+
+TITULO
+
+Information diagrams in the study of entanglement in symmetric multiquDit systems and applications to quantum phase transitions in LipkinMeshkov-Glick D-level atom models
+
+CLAVE
+
+07001
+
+NOMBRE
+
+Quantum Information Processing
+
+VOLUMEN
+
+21
+
+EDITORIAL
+
+Springer
+
+PAIS
+
+E
+
+AÑO
+
+2022
+
+ISSN
+
+1570-0755
+
+CALIDAD IMPACTO
+
+2,5
+
+CALIDAD POSICION
+
+10/56 Q1
+
+CALIDAD CITAS
+
+4
+
+CALIDAD AREA
+
+PHYSICS, MATHEMATICAL
+
+CALIDAD BASE
+
+JCR
+
+CALIDAD AÑO
+
+2022
+
+Publicación
+AUTORES
+
+Manuel Calixto;Alberto Mayorgas;Julio Guerrero
+
+NUMERO AUTORES
+
+3
+
+POSICION
+
+2
+
+TITULO
+
+Hilbert Space Structure of the Low Energy Sector of U(N) Quantum Hall
+Ferromagnets and Their Classical Limit
+
+CLAVE
+
+07001
+
+NOMBRE
+
+Symmetry
+
+VOLUMEN
+
+14
+
+EDITORIAL
+
+MDPI
+
+PAIS
+
+E
+
+AÑO
+
+2022
+
+ISSN
+
+2073-8994
+
+CALIDAD IMPACTO
+
+2,7
+CALIDAD POSICION
+
+36/73 Q2
+
+CALIDAD CITAS
+
+2
+
+CALIDAD AREA
+
+MULTIDISCIPLINARY SCIENCES
+
+CALIDAD BASE
+
+JCR
+
+CALIDAD AÑO
+
+2022
+
+Publicación
+AUTORES
+
+Alberto Mayorgas ;Julio Guerrero;Manuel Calixto
+
+NUMERO AUTORES
+
+3
+
+POSICION
+
+1
+
+TITULO
+
+Localization measures of parity adapted U(D)-spin coherent states
+applied to the phase space analysis of the D-level Lipkin-Meshkov-Glick
+model
+
+CLAVE
+
+07001
+
+NOMBRE
+
+Physical Review E
+
+VOLUMEN
+
+108
+
+EDITORIAL
+
+APS
+
+PAIS
+
+E
+
+AÑO
+
+2023
+
+ISSN
+
+2470-0045
+
+CALIDAD IMPACTO
+
+2,2
+
+CALIDAD POSICION
+
+12/60 Q1
+
+CALIDAD AREA
+
+PHYSICS, MATHEMATICAL
+
+CALIDAD BASE
+
+JCR
+
+CALIDAD AÑO
+
+2023
+
+Publicación
+AUTORES
+
+Julio Guerrero;Antonio Sojo;Alberto Mayorgas;Manuel Calixto
+
+NUMERO AUTORES
+
+4
+
+POSICION
+
+3
+
+TITULO
+
+Schmidt decomposition of parity adapted coherent states for symmetric
+multi-quDits
+
+CLAVE
+
+07001
+NOMBRE
+
+Journal of Physics A: Mathematical and Theoretical
+
+VOLUMEN
+
+56
+
+EDITORIAL
+
+IOP Science
+
+PAIS
+
+E
+
+AÑO
+
+2023
+
+ISSN
+
+1751-8121
+
+CALIDAD IMPACTO
+
+2
+
+CALIDAD POSICION
+
+18/60 Q2
+
+CALIDAD CITAS
+
+3
+
+CALIDAD AREA
+
+PHYSICS, MATHEMATICAL
+
+CALIDAD BASE
+
+JCR
+
+CALIDAD AÑO
+
+2023
+
+Publicación
+AUTORES
+
+Manuel
+Calixto;Alberto
+Romera;Octavio Castaños
+
+NUMERO AUTORES
+
+5
+
+POSICION
+
+2
+
+TITULO
+
+Faraday rotation and transmittance as markers of topological phase
+transitions in 2D materials
+
+CLAVE
+
+07001
+
+NOMBRE
+
+SciPost Physics
+
+VOLUMEN
+
+16
+
+EDITORIAL
+
+SciPost
+
+PAIS
+
+E
+
+AÑO
+
+2024
+
+ISSN
+
+2542-4653
+
+CALIDAD IMPACTO
+
+4,6
+
+CALIDAD POSICION
+
+20/110 Q1
+
+CALIDAD CITAS
+
+1
+
+CALIDAD AREA
+
+PHYSICS, MULTIDISCIPLINARY
+
+6
+
+Mayorgas;Nicolás
+
+A.
+
+Cordero;Elvira
+
+CALIDAD BASE
+
+JCR
+
+CALIDAD AÑO
+
+2023
+
+Publicación
+AUTORES
+
+Alberto
+Mayorgas;Manuel
+Romera;Octavio Castaños
+
+Calixto;Nicolás
+
+A.
+
+Cordero;Elvira
+
+NUMERO AUTORES
+
+5
+
+POSICION
+
+1
+
+TITULO
+
+Quantum revivals in HgTe/CdTe quantum wells and topological phase
+transitions
+
+CLAVE
+
+07001
+
+NOMBRE
+
+SciPost Physics Core
+
+VOLUMEN
+
+7
+
+EDITORIAL
+
+SciPost
+
+PAIS
+
+E
+
+AÑO
+
+2024
+
+ISSN
+
+2666-9366
+
+CALIDAD IMPACTO
+
+2,6
+
+CALIDAD POSICION
+
+36/110 Q2
+
+CALIDAD AREA
+
+PHYSICS, MULTIDISCIPLINARY
+
+CALIDAD BASE
+
+JCR
+
+CALIDAD AÑO
+
+2023
+
+PROYECTOS Y/O CONTRATOS DE INVESTIGACION
+Título
+
+Fdesde
+
+Capacitation of Quantum-Entangled NV-Center Sensing (Proyecto en curso 2024-01-01
+hasta 31/12/2027)
+PID2022-138144NB-I00 (Proyecto en curso hasta 31/08/2026)
+
+2023-09-01
+
+PGC2018-097831-B-I00
+
+2019-01-01
+
+Proyectos
+TITULO
+
+Capacitation of Quantum-Entangled NV-Center Sensing (Proyecto en
+curso hasta 31/12/2027)
+
+ENTIDAD
+
+COMMISSION OF THE EUROPEAN COMUNITIES
+CONV TIPO
+
+09001
+
+CONV OTROS
+
+Proyecto en curso: Convocatoria HORIZON CL4 2023 DIGITAL
+EMERGING 01 CNECT
+
+ENTIDADES
+
+UNIVERSIDAD POLITECNICA DE CARTAGENA UNIVERSITEIT
+HASSELT UNIVERSITAET ULM UNIVERSITY OF STUTTGART USTAV
+ORGANICKE CHEMIE A BIOCHEMIE, AV CR, V.V.I.
+
+FDESDE
+
+2024-01-01
+
+FHASTA
+
+2024-07-25
+
+MESES
+
+48
+
+IP
+
+Javier Cerrillo Moreno
+
+APORTACION
+
+Participación como Investigador Doctor contratado el día 23 de mayo
+de 2024 por la UPCT. La contribución principal al proyecto es el estudio
+teórico de protocolos de sensores cuánticos con NV centres, destinado
+a avanzar en el campo de la detección cuántica. Proyecto en curso hasta
+31/12/2027.
+
+GRADO TIPO
+
+10000
+
+GRADO OTROS
+
+Investigador Doctor
+
+DEDICACION
+
+XX002
+
+Proyectos
+TITULO
+
+PID2022-138144NB-I00 (Proyecto en curso hasta 31/08/2026)
+
+ENTIDAD
+
+Ministerio de Ciencia e Innovación
+
+CONV TIPO
+
+09002
+
+ENTIDADES
+
+Universidad de Jaén
+
+FDESDE
+
+2023-09-01
+
+FHASTA
+
+2024-07-25
+
+MESES
+
+36
+
+IP
+
+Julio Guerrero García
+
+APORTACION
+
+Aportación de técnicas de análisis numérico y simbólico en el softawre
+Mathematica, MatLab y Python, aplicado al estudio de las transiciones
+de fase cuánticas de sistemas multi-quDit. Proyecto en curso hasta
+31/08/2026.
+
+GRADO TIPO
+
+10000
+
+GRADO OTROS
+
+Equipo de trabajo
+
+DEDICACION
+
+XX002
+Proyectos
+TITULO
+
+PGC2018-097831-B-I00
+
+ENTIDAD
+
+MINISTERIO DE CIENCIA, INNOVACIÓN Y UNIVERSIDADES
+
+CONV TIPO
+
+09002
+
+ENTIDADES
+
+INSTITUTO CARLOS I DE FISICA TEORICA Y COMPUTACIONAL,
+Universidad de Granada
+
+FDESDE
+
+2019-01-01
+
+FHASTA
+
+2022-09-30
+
+MESES
+
+45
+
+IP
+
+Elvira Romera Gutiérrez
+
+APORTACION
+
+Colaborador en el proyecto como investigador predoctoral desde el
+01/09/2020 hasta el 30/09/2022. Aportación de técnicas de análisis
+numérico y simbólico en el softawre Mathematica, MatLab y Python,
+aplicado al estudio de las transiciones de fase cuánticas de sistemas
+multi-quDit.
+
+GRADO TIPO
+
+10000
+
+GRADO OTROS
+
+Colaborador
+
+DEDICACION
+
+XX002
+
+CONGRESOS Y CONFERENCIAS CIENTIFICAS
+Título
+
+Fcelebración
+
+Entanglement and U(D)-spin squeezing as quantum phase transitions 2024-07-15
+indicators in symmetric multi-quDit systems
+Parity adapted U(D)-spin coherent states and localization measures applied to 2024-04-25
+the phase space analysis of the D-level Lipkin- Meshkov-Glick model
+Phase space analysis of the 3-level Lipkin-Meshkov-Glick model using parity 2023-11-08
+adapted U(D)-spin coherent states
+Phase space analysis of the 3-level Lipkin-Meshkov-Glick model using parity 2023-07-24
+adapted U(D)-spin coherent states
+Mixed permutation symmetry quantum phase transitions of critical three-level 2022-07-18
+atom models
+Young diagrams applications: Flavour Physics classification of quarks and 2021-12-03
+hadrons in SU(3), SU(4) and SU(6)
+Young diagrams of Lie groups. Flavour Physics classification of quarks and 2021-11-25
+hadrons in SU(3) and SU(4)
+Congresos
+AUTORES
+
+Alberto Mayorgas
+
+TITULO
+
+Entanglement and U(D)-spin squeezing as quantum phase transitions
+indicators in symmetric multi-quDit systems
+
+ENTIDAD
+
+University of Abomey-Calavi
+
+CONGRESO
+
+33rd/35th International Colloquium on Group Theoretical Methods in
+Physics
+
+TIPO
+
+13001
+
+LUGAR
+
+Cotonou, Benin
+
+FCELEBRACION
+
+2024-07-15
+
+Congresos
+AUTORES
+
+Alberto Mayorgas
+
+TITULO
+
+Parity adapted U(D)-spin coherent states and localization measures
+applied to the phase space analysis of the D-level Lipkin- Meshkov-Glick
+model
+
+ENTIDAD
+
+Universidad de Huelva
+
+CONGRESO
+
+VI Workshop on Quantum Phase Transitions Focus on Quantum
+Computing
+
+TIPO
+
+13001
+
+LUGAR
+
+Huelva, España
+
+FCELEBRACION
+
+2024-04-25
+
+Congresos
+AUTORES
+
+Alberto Mayorgas
+
+TITULO
+
+Phase space analysis of the 3-level Lipkin-Meshkov-Glick model using
+parity adapted U(D)-spin coherent states
+
+ENTIDAD
+
+Instituto Politécnico Nacional
+
+CONGRESO
+
+Quantum and electromagnetic phenomena conferences, from theory to
+advances technology
+
+TIPO
+
+13001
+
+LUGAR
+
+Ciudad de México
+
+FCELEBRACION
+
+2023-11-08
+
+Congresos
+AUTORES
+
+Alberto Mayorgas
+TITULO
+
+Phase space analysis of the 3-level Lipkin-Meshkov-Glick model using
+parity adapted U(D)-spin coherent states
+
+ENTIDAD
+
+Czech Technical University
+
+CONGRESO
+
+XII.International Symposium on Quantum Theory and Symmetries
+
+TIPO
+
+13001
+
+ISSN ISBN
+
+1742-6596
+
+VOLUMEN
+
+2667
+
+LUGAR
+
+Prague
+
+FCELEBRACION
+
+2023-07-24
+
+Congresos
+AUTORES
+
+Alberto Mayorgas
+
+TITULO
+
+Mixed permutation symmetry quantum phase transitions of critical
+three-level atom models
+
+ENTIDAD
+
+Université de Strasbourg
+
+CONGRESO
+
+34th International Colloquium on Group Theoretical Methods in Physics
+
+TIPO
+
+13001
+
+ISSN ISBN
+
+2666-4003
+
+VOLUMEN
+
+14
+
+LUGAR
+
+Strasbourg
+
+FCELEBRACION
+
+2022-07-18
+
+Congresos
+AUTORES
+
+Alberto Mayorgas
+
+TITULO
+
+Young diagrams applications: Flavour Physics classification of quarks
+and hadrons in SU(3), SU(4) and SU(6)
+
+ENTIDAD
+
+Programa de doctorado Fisymat, Universidad de Granada
+
+CONGRESO
+
+Quantum Journal Club
+
+TIPO
+
+13001
+
+LUGAR
+
+Facultad de Ciencias, Universidad de Granada
+
+FCELEBRACION
+
+2021-12-03
+
+Congresos
+AUTORES
+
+Alberto Mayorgas
+TITULO
+
+Young diagrams of Lie groups. Flavour Physics classification of quarks
+and hadrons in SU(3) and SU(4)
+
+ENTIDAD
+
+Institute of Mathematics of the University of Granada
+
+CONGRESO
+
+Seminario de Jóvenes Investigadores del IMAG
+
+TIPO
+
+13001
+
+LUGAR
+
+IMAG, Universidad de Granada
+
+FCELEBRACION
+
+2021-11-25
+
+EXPERIENCIA DOCENTE
+PUESTOS OCUPADOS Y DOCENCIA IMPARTIDA
+Título
+Fundamentos Matemáticos en la Arquitectura 2
+Matemáticas
+Matemáticas II
+Matemáticas
+Fundamentos Matemáticos en la Arquitectura 2
+Matemáticas
+Métodos Numéricos II
+
+Docencia Impartida
+DENOMINACION
+
+Investigador Predoctoral en Formación (FPU)
+
+DEPARTAMENTO
+
+Matemática Aplicada
+
+CENTRO
+
+Facultad de Ciencias
+
+INSTITUCION
+
+Universidad de Granada
+
+LOCALIDAD
+
+Granada
+
+PAIS
+
+E
+
+TIPO
+
+14006
+
+ESPECIFICAR
+
+Grado en Estudios de Arquitectura
+
+ASIGNATURA
+
+Fundamentos Matemáticos en la Arquitectura 2
+
+CURSO
+
+2
+
+TIPO ASIGNATURA
+
+15002
+
+TIPO DOCENCIA
+
+16002
+HORAS
+
+20
+
+Periodo
+DESDE
+
+2022-10-03
+
+HASTA
+
+2023-01-16
+
+Docencia Impartida
+DENOMINACION
+
+Investigador Predoctoral en Formción (FPU)
+
+DEPARTAMENTO
+
+Matemática Aplicada
+
+CENTRO
+
+Facultad de Ciencias
+
+INSTITUCION
+
+Universidad de Granada
+
+LOCALIDAD
+
+Granada
+
+PAIS
+
+E
+
+TIPO
+
+14006
+
+ESPECIFICAR
+
+Grado en Edificación y Administración y Dirección de Empresas
+
+ASIGNATURA
+
+Matemáticas
+
+CURSO
+
+1
+
+TIPO ASIGNATURA
+
+15001
+
+TIPO DOCENCIA
+
+16003
+
+HORAS
+
+40
+
+Periodo
+DESDE
+
+2021-10-04
+
+HASTA
+
+2022-01-03
+
+Docencia Impartida
+DENOMINACION
+
+Investigador Predoctoral en Formación (FPU)
+
+DEPARTAMENTO
+
+Matemática Aplicada
+
+CENTRO
+
+Facultad de Ciencias
+
+INSTITUCION
+
+Universidad de Granada
+
+LOCALIDAD
+
+Granada
+
+PAIS
+
+E
+
+TIPO
+
+14006
+
+ESPECIFICAR
+
+Grado en Química
+ASIGNATURA
+
+Matemáticas II
+
+CURSO
+
+1
+
+TIPO ASIGNATURA
+
+15001
+
+TIPO DOCENCIA
+
+16002
+
+HORAS
+
+20
+
+Periodo
+DESDE
+
+2022-01-24
+
+HASTA
+
+2022-07-11
+
+Docencia Impartida
+DENOMINACION
+
+Investigador Predoctoral en Formación (FPU)
+
+DEPARTAMENTO
+
+Matemática Aplicada
+
+CENTRO
+
+Facultad de Ciencias
+
+INSTITUCION
+
+Universidad de Granada
+
+LOCALIDAD
+
+Granada
+
+PAIS
+
+E
+
+TIPO
+
+14006
+
+ESPECIFICAR
+
+Grado en Administración y Dirección de Empresas
+
+ASIGNATURA
+
+Matemáticas
+
+CURSO
+
+1
+
+TIPO ASIGNATURA
+
+15001
+
+TIPO DOCENCIA
+
+16003
+
+HORAS
+
+35
+
+Periodo
+DESDE
+
+2022-10-03
+
+HASTA
+
+2023-01-02
+
+Docencia Impartida
+DENOMINACION
+
+Investigador Predoctoral en Formación (FPU)
+
+DEPARTAMENTO
+
+Matemática Aplicada
+
+CENTRO
+
+Facultad de Ciencias
+
+INSTITUCION
+
+Universidad de Granada
+LOCALIDAD
+
+Granada
+
+PAIS
+
+E
+
+TIPO
+
+14006
+
+ESPECIFICAR
+
+Grado en Estudios de Arquitectura
+
+ASIGNATURA
+
+Fundamentos Matemáticos en la Arquitectura 2
+
+CURSO
+
+2
+
+TIPO ASIGNATURA
+
+15002
+
+TIPO DOCENCIA
+
+16002
+
+HORAS
+
+30
+
+Periodo
+DESDE
+
+2023-10-02
+
+HASTA
+
+2024-01-08
+
+Docencia Impartida
+DENOMINACION
+
+Investigador Predoctoral en Formación (FPU)
+
+DEPARTAMENTO
+
+Matemática Aplicada
+
+CENTRO
+
+Facultad de Ciencias
+
+INSTITUCION
+
+Universidad de Granada
+
+LOCALIDAD
+
+Granada
+
+PAIS
+
+E
+
+TIPO
+
+14006
+
+ESPECIFICAR
+
+Grado en Biología
+
+ASIGNATURA
+
+Matemáticas
+
+CURSO
+
+1
+
+TIPO ASIGNATURA
+
+15001
+
+TIPO DOCENCIA
+
+16002
+
+HORAS
+
+10
+
+Periodo
+DESDE
+
+2023-10-02
+
+HASTA
+
+2024-01-08
+Docencia Impartida
+DENOMINACION
+
+Investigador Predoctoral en Formación (FPU)
+
+DEPARTAMENTO
+
+Matemática Aplicada
+
+CENTRO
+
+Facultad de CIencias
+
+INSTITUCION
+
+Universidad de Granada
+
+LOCALIDAD
+
+Granada
+
+PAIS
+
+E
+
+TIPO
+
+14006
+
+ESPECIFICAR
+
+Grado en Ingeniería Informática y Matemáticas
+
+ASIGNATURA
+
+Métodos Numéricos II
+
+CURSO
+
+3
+
+TIPO ASIGNATURA
+
+15002
+
+TIPO DOCENCIA
+
+16002
+
+HORAS
+
+10
+
+Periodo
+DESDE
+
+2024-02-05
+
+HASTA
+
+2024-04-29
+
+CURSOS Y SEMINARIOS RECIBIDOS
+Título
+
+Horas
+
+V JORNADAS DE INICIACIÓN A LA DOCENCIA UNIVERSITARIA PARA 20
+CONTRATADOS/AS PREDOCTORALES FPU Y FPI
+Uso profesional de la voz
+
+2
+
+Cursos Recibidos
+TITULO
+
+V JORNADAS DE INICIACIÓN A LA DOCENCIA UNIVERSITARIA PARA
+CONTRATADOS/AS PREDOCTORALES FPU Y FPI
+
+OBJETIVOS
+
+-Ofrecer información básica que permita conocer el proyecto
+institucional y la estructura organizativa de la UGR. -Orientar sobre los
+recursos organizativos, personales y materiales que la UGR pone a
+disposición del personal docente y de investigación. -Asesorar sobre
+los procesos, planes y programas de formación e innovación docentes
+inicial y coninuada. -Favorecer el desarrollo profesional docente de
+contratados/as FPU y FPI de la Universidad de Granada.
+PERFIL
+
+Dirigido para contratados/as predoctorales FPU y FPI de la Universidad
+de Granada
+
+FDESDE
+
+2020-12-17
+
+FHASTA
+
+2020-12-18
+
+HORAS
+
+20
+
+ENTIDAD
+
+Unidad de Calidad, Innovación Docente y Prospectiva de la Universidad
+de Granada
+
+LUGAR
+
+Online
+
+FECHA
+
+2020-12-17
+
+Cursos Recibidos
+TITULO
+
+Uso profesional de la voz
+
+OBJETIVOS
+
+Conceptos básicos: conociendo el aparato fonador Funcionamiento de
+la voz Uso profesional de la voz Pautas genéricas de cuidado vocal
+Buenas prácticas en el uso de la voz proyectada
+
+PERFIL
+
+Personal investigador y docente de la Universidad de Granada
+
+FDESDE
+
+2022-10-19
+
+FHASTA
+
+2022-10-19
+
+HORAS
+
+2
+
+ENTIDAD
+
+FREMAP, Mutua Colaboradora con la Seguridad Social nº61
+
+LUGAR
+
+Online
+
+FECHA
+
+2022-10-19
+
+OTROS MERITOS DOCENTES
+Otros Docencia
+OTROS MERITOS
+
+MENTORIZACIÓN DE TFM Apellidos y nombre: López García, Iván DNI/
+Pasaporte/Tarjeta de residencia: 76594606Y Nacionalidad: Española
+Titulación del/de la estudiante mentorizado/a: Máster en Física y
+Matemáticas (FISYMAT) Curso académico: 2020/21 Título del TFG /
+TFM: Computación cuántica con qutrits: extensión del Hamiltoniano de
+Feynman Fecha de defensa del TFG / TFM: 14 julio 2021
+
+FORMACION ACADEMICA
+TITULACION UNIVERSITARIA
+Titulación
+
+Ftitulación
+
+B8522
+
+2019-07-31
+Titulación
+CICLO
+
+22003
+
+TITULACION
+
+B8522
+
+UNIVERSIDAD
+
+17
+
+FTITULACION
+
+2019-07-31
+
+HOMOLOGADO
+
+N
+
+NOTA MEDIA
+
+8,64
+
+DOCTORADO
+Programa
+
+Fdoctorado
+
+Programa de Doctorado en Física y Matemáticas (FisyMat)
+
+2024-04-29
+
+Doctorado
+PROGRAMA
+
+Programa de Doctorado en Física y Matemáticas (FisyMat)
+
+EUROPEO
+
+S
+
+FMENCION
+
+2011-10-20
+
+MENCION
+
+S
+
+UNIVERSIDAD
+
+08
+
+FDOCTORADO
+
+2024-04-29
+
+HOMOLOGADO
+
+N
+
+DIRECTOR
+
+Manuel Calixto Molina Julio Guerrero García
+
+TITULO
+
+Quantum and Topological Phase Transitions in Multi-QuDit Systems and
+2D Materials
+
+CALIFICACION
+
+20005
+
+MENCION ANNO
+
+2011
+
+OTROS TITULOS DE POSTGRADO
+Título
+
+Fecha
+
+Máster Universitario en Física y Matemáticas
+
+2020-09-19
+
+Otros Títulos
+TITULO
+
+Máster Universitario en Física y Matemáticas
+
+INSTITUCION
+
+Universidad de Granada
+FECHA
+
+2020-09-19
+
+CENTRO
+
+Facultad de Ciencias
+
+CALIFICACION
+
+9.5
+
+AYUDAS Y BECAS
+Finalidad
+
+Fdesde
+
+Ayudas para la formación de profesorado universitario (FPU)
+
+2020-10-31
+
+Ayudas
+TIPO
+
+23001
+
+FINALIDAD
+
+Ayudas para la formación de profesorado universitario (FPU)
+
+ENTIDAD
+FINANCIADORA
+
+Ministerio de Universidades
+
+FDESDE
+
+2020-10-31
+
+FHASTA
+
+2024-04-29
+
+MESES
+
+42
+
+INSTITUCION
+
+Universidad de Granada
+
+CENTRO
+
+Facultad de Ciencias
+
+ESTANCIAS EN CENTROS ESPAÑOLES Y EXTRANJEROS
+Centro
+
+Desde
+
+Institute of Theoretical Physics
+
+2022-05-01
+
+Estancias
+CENTRO
+
+Institute of Theoretical Physics
+
+INSTITUCION
+
+Ulm University
+
+LOCALIDAD
+
+Ulm
+
+PAIS
+
+D
+
+DESDE
+
+2022-05-01
+
+HASTA
+
+2022-07-31
+
+MESES
+
+3
+
+PROGRAMA
+
+Ayudas complementarias de movilidad destinadas a beneficiarios del
+programa de formación del profesorado universitario (FPU)
+
+ENTIDAD
+
+Ministerio de Universidades
+OBJETIVO
+
+-Introducirse al campo de los Sensores Cuánticos y estudiar sus
+ventajas frente a otros dispositivos. -Realizar simulaciones numéricas
+de los sistemas hamiltonianos que describen la interacción de los NV
+Centers con un número elevado de espines nucleares ("many-body
+systems"), para estudiar también las transiciones de fase cuánticas
+del sistema. -Estudiar Simuladores Cuánticos ("Quantum Simulators")
+como alternativa a las simulaciones numéricas tradicionales en
+el estudio de sistemas cuánticos de muchos cuerpos fuertemente
+correlacionados.
+
+CARACTER
+
+21001
+
+CURSOS Y SEMINARIOS DE ESPECIALIZACION
+Título
+
+Fecha
+
+Seminario el grupo de investigación FQM-207: Artificial qudit systems for 2022-09-15
+quantum simulation and computation
+Seminario sobre #El método de factorización de Wei-Norman para sistemas 2022-01-19
+de ecuaciones diferenciales ordinarias lineales con simetrías: Descripción del
+método y ejemplos#
+CURSO DE LENGUA Y CULTURA INGLESA, dentro del NIVEL ADVANCED 2021-09-29
+7-I
+Seminar "Electrodynamic Motions Induced by an Oscillating Current in an 2021-12-03
+Infinite Wire"
+Curso en línea de resonancia magnética nuclear
+
+2021-10-14
+
+Scientific writing
+
+2021-06-21
+
+ESQPT2021 seminar series
+
+2021-03-12
+
+CONSTRUCCION DE PROBLEMAS ALEATORIOS MEDIANTE R EXAMS
+
+2021-01-20
+
+La Ruta Emprendedora de los investigadores en formación 2021
+
+2021-03-02
+
+Jornada Informativa # Redes de Contratación Predoctorales (Doctoral 2021-02-18
+Networks)
+
+Cursos Especialización
+TITULO
+
+Seminario el grupo de investigación FQM-207: Artificial qudit systems
+for quantum simulation and computation
+
+FDESDE
+
+2022-09-15
+
+FHASTA
+
+2022-09-15
+
+NUM HORAS
+
+1
+
+ORGANISMO
+
+Grupo de investigación FQM-207, Universidad de Granada
+
+LUGAR
+
+Facultad de Ciencias
+FECHA
+
+2022-09-15
+
+Cursos Especialización
+TITULO
+
+Seminario sobre #El método de factorización de Wei-Norman para
+sistemas de ecuaciones diferenciales ordinarias lineales con simetrías:
+Descripción del método y ejemplos#
+
+FDESDE
+
+2022-01-19
+
+FHASTA
+
+2022-01-19
+
+NUM HORAS
+
+2
+
+ORGANISMO
+
+Programa de doctorado en Física y Matemáticas, Universidad de
+Granada
+
+LUGAR
+
+Facultad de Ciencias
+
+FECHA
+
+2022-01-19
+
+Cursos Especialización
+TITULO
+
+CURSO DE LENGUA Y CULTURA INGLESA, dentro del NIVEL
+ADVANCED 7-I
+
+FDESDE
+
+2021-09-29
+
+FHASTA
+
+2022-01-19
+
+NUM HORAS
+
+125
+
+ORGANISMO
+
+CENTRO DE LENGUAS MODERNAS DE LA UNIVERSIDAD DE
+GRANADA
+
+LUGAR
+
+CENTRO DE LENGUAS MODERNAS DE LA UNIVERSIDAD DE
+GRANADA
+
+FECHA
+
+2021-09-29
+
+Cursos Especialización
+TITULO
+
+Seminar "Electrodynamic Motions Induced by an Oscillating Current in
+an Infinite Wire"
+
+FDESDE
+
+2021-12-03
+
+FHASTA
+
+2021-12-03
+
+NUM HORAS
+
+1
+
+ORGANISMO
+
+Differential Equations Seminar of the University of Granada
+
+FECHA
+
+2021-12-03
+
+Cursos Especialización
+TITULO
+
+Curso en línea de resonancia magnética nuclear
+FDESDE
+
+2021-10-14
+
+FHASTA
+
+2021-11-04
+
+NUM HORAS
+
+12
+
+ORGANISMO
+
+Escuela de Doctorado de Ciencias, Tecnologías e Ingenierías,
+Universidad de Granada
+
+FECHA
+
+2021-10-14
+
+Cursos Especialización
+TITULO
+
+Scientific writing
+
+FDESDE
+
+2021-06-21
+
+FHASTA
+
+2021-07-02
+
+NUM HORAS
+
+20
+
+ORGANISMO
+
+Escuela de Doctorado de Ciencias, Tecnologías e Ingenierías,
+Universidad de Granada
+
+FECHA
+
+2021-06-21
+
+Cursos Especialización
+TITULO
+
+ESQPT2021 seminar series
+
+FDESDE
+
+2021-03-12
+
+FHASTA
+
+2021-06-25
+
+NUM HORAS
+
+11
+
+ORGANISMO
+
+CEAFMC, Universidad de Huelva
+
+FECHA
+
+2021-03-12
+
+Cursos Especialización
+TITULO
+
+CONSTRUCCION DE PROBLEMAS ALEATORIOS MEDIANTE R EXAMS
+
+FDESDE
+
+2021-01-20
+
+FHASTA
+
+2021-01-22
+
+NUM HORAS
+
+20
+
+ORGANISMO
+
+Unidad de Calidad, Innovación Docente y Prospectiva de la Universidad
+de Granad
+
+FECHA
+
+2021-01-20
+
+Cursos Especialización
+TITULO
+
+La Ruta Emprendedora de los investigadores en formación 2021
+FDESDE
+
+2021-03-02
+
+FHASTA
+
+2021-03-12
+
+NUM HORAS
+
+30
+
+ORGANISMO
+
+UGR Emprendedora
+
+FECHA
+
+2021-03-02
+
+Cursos Especialización
+TITULO
+
+Jornada Informativa # Redes de Contratación Predoctorales (Doctoral
+Networks)
+
+FDESDE
+
+2021-02-18
+
+FHASTA
+
+2021-02-18
+
+NUM HORAS
+
+2
+
+ORGANISMO
+
+Oficina de Proyectos Internacionales (OFPI) de la Universidad de
+Granada
+
+FECHA
+
+2021-02-18
+
+EXPERIENCIA LABORAL
+OTROS MERITOS RELEVANTES
+1) Organizador del Seminario de Jóvenes Investigadores Centro: Institute of
+Mathematics of the University of Granada (IMAG) Institución: Universidad de
+Granada Curso: 2023/24 xxxxxxxxxxxxxxx 2) Beca de colaboración del curso
+2018/19 CUANTÍA : 2.000,00 # CURSO Y ESTUDIOS : 4 º Graduado o
+Graduada en Física por la Universidad de Sevilla UNIVERSIDAD : UNIV.
+DE SEVILLA DEPARTAMENTO DE COLABORACIÓN : FÍSICA ATÓMICA,
+MOLECULAR Y NUCLEAR xxxxxxxxxxxxxxx 3) Participación en la actividad
+formativa "Divulgación Científica" Entidad organizadora: Escuela Internacional de
+Posgrado, Universidad de Granada Impartida por Carlos Centeno (periodista,
+director de Comunicación de la UGR) y Susana Escudero (Canal Sur
+Radio, directora del programa de divulgación científica #El Radioscopio#)
+Fecha de inicio: de 13/11/2023 Fecha de finalización: 15/11/2023 Horas: 20
+
+23

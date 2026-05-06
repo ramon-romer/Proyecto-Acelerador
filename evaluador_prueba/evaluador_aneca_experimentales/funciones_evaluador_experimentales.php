@@ -998,6 +998,382 @@ function calcular_4_experimentales(array $items): float
  * EVALUACIÓN PRINCIPAL
  * ========================================================= */
 
+
+/* =========================================================
+ * DIAGNÓSTICO Y ASESOR ORIENTATIVO - EXPERIMENTALES
+ * ========================================================= */
+
+function exp_objetivos_orientativos(): array
+{
+    return [
+        'B1' => 35.0,
+        'B2' => 15.0,
+        'B3' => 3.0,
+        'B4' => 1.0,
+
+        '1A' => 24.0,
+        '1B' => 1.0,
+        '1C' => 4.0,
+        '1D' => 1.0,
+        '1E' => 1.0,
+        '1F' => 0.5,
+        '1G' => 0.3,
+
+        '2A' => 12.0,
+        '2B' => 1.5,
+        '2C' => 0.8,
+        '2D' => 1.5,
+
+        '3A' => 2.0,
+        '3B' => 1.0,
+
+        'TOTAL_B1_B2' => 50.0,
+        'TOTAL_FINAL' => 55.0,
+    ];
+}
+
+function exp_clasificar_nivel(float $actual, float $objetivo): string
+{
+    if ($objetivo <= 0.0) {
+        return 'sin referencia';
+    }
+
+    $ratio = $actual / $objetivo;
+
+    return match (true) {
+        $ratio >= 1.20 => 'muy fuerte',
+        $ratio >= 1.00 => 'fuerte',
+        $ratio >= 0.70 => 'aceptable',
+        $ratio >= 0.40 => 'débil',
+        default => 'muy débil',
+    };
+}
+
+function exp_detectar_perfil(array $resultado): string
+{
+    $b1 = (float)($resultado['bloque_1']['B1'] ?? 0.0);
+    $b2 = (float)($resultado['bloque_2']['B2'] ?? 0.0);
+    $b3 = (float)($resultado['bloque_3']['B3'] ?? 0.0);
+    $b4 = (float)($resultado['bloque_4']['B4'] ?? 0.0);
+    $total12 = (float)($resultado['totales']['total_b1_b2'] ?? 0.0);
+    $total = (float)($resultado['totales']['total_final'] ?? 0.0);
+    $p1a = (float)($resultado['bloque_1']['1A'] ?? 0.0);
+    $p1c = (float)($resultado['bloque_1']['1C'] ?? 0.0);
+
+    if ($b1 >= 35.0 && $b2 < 10.0) {
+        return 'Perfil investigador fuerte con docencia insuficiente';
+    }
+
+    if ($b2 >= 15.0 && $b1 < 25.0) {
+        return 'Perfil docente razonable con investigación insuficiente';
+    }
+
+    if ($b1 >= 30.0 && $b2 >= 12.0 && $total12 >= 50.0 && $total >= 55.0) {
+        return 'Perfil equilibrado y competitivo para Experimentales';
+    }
+
+    if ($p1a >= 24.0 && $p1c < 2.0) {
+        return 'Perfil con buenas publicaciones, pero proyectos competitivos débiles';
+    }
+
+    if ($b1 < 20.0 && $b2 < 10.0) {
+        return 'Perfil aún inmaduro para acreditación en rama experimental';
+    }
+
+    if (($b3 + $b4) >= 4.0 && $total12 < 50.0) {
+        return 'Perfil con méritos complementarios aceptables, pero núcleo B1+B2 insuficiente';
+    }
+
+    return 'Perfil mixto con fortalezas parciales y necesidad de refuerzo estratégico';
+}
+
+function exp_contar_publicaciones_impacto(array $publicaciones): array
+{
+    $out = [
+        'T1_Q1' => 0,
+        'T2_Q2' => 0,
+        'T3_Q3_Q4' => 0,
+        'SCOPUS_SJR' => 0,
+        'OTRAS' => 0,
+    ];
+
+    foreach ($publicaciones as $pub) {
+        if (!is_array($pub)) {
+            continue;
+        }
+
+        $esValida = $pub['es_valida'] ?? $pub['es_valido'] ?? 1;
+        if ((string)$esValida === '0') {
+            continue;
+        }
+
+        $tercil = strtoupper(exp_str($pub['tercil'] ?? ''));
+        $cuartil = strtoupper(exp_str($pub['cuartil'] ?? ''));
+        $tipoIndice = strtoupper(exp_str($pub['tipo_indice'] ?? $pub['indice'] ?? ''));
+
+        if ($tercil === 'T1' || $cuartil === 'Q1') {
+            $out['T1_Q1']++;
+            continue;
+        }
+
+        if ($tercil === 'T2' || $cuartil === 'Q2') {
+            $out['T2_Q2']++;
+            continue;
+        }
+
+        if ($tercil === 'T3' || $cuartil === 'Q3' || $cuartil === 'Q4') {
+            $out['T3_Q3_Q4']++;
+            continue;
+        }
+
+        if (in_array($tipoIndice, ['SCOPUS', 'SJR'], true)) {
+            $out['SCOPUS_SJR']++;
+            continue;
+        }
+
+        $out['OTRAS']++;
+    }
+
+    return $out;
+}
+
+function exp_generar_diagnostico(array $datos, array $resultado): array
+{
+    $obj = exp_objetivos_orientativos();
+
+    $b1 = (float)($resultado['bloque_1']['B1'] ?? 0.0);
+    $b2 = (float)($resultado['bloque_2']['B2'] ?? 0.0);
+    $b3 = (float)($resultado['bloque_3']['B3'] ?? 0.0);
+    $b4 = (float)($resultado['bloque_4']['B4'] ?? 0.0);
+    $total12 = (float)($resultado['totales']['total_b1_b2'] ?? 0.0);
+    $total = (float)($resultado['totales']['total_final'] ?? 0.0);
+
+    $deficit1 = max(0.0, 50.0 - $total12);
+    $deficit2 = max(0.0, 55.0 - $total);
+
+    $fortalezas = [];
+    $debilidades = [];
+    $alertas = [];
+
+    if ((float)($resultado['bloque_1']['1A'] ?? 0.0) >= $obj['1A']) {
+        $fortalezas[] = 'Producción científica principal competitiva en 1A.';
+    } else {
+        $debilidades[] = 'La producción científica principal (1A) necesita refuerzo: publicaciones JCR/SCI, preferentemente T1/Q1 o T2/Q2.';
+    }
+
+    if ((float)($resultado['bloque_1']['1C'] ?? 0.0) >= $obj['1C']) {
+        $fortalezas[] = 'Existe peso razonable en proyectos competitivos de investigación.';
+    } else {
+        $debilidades[] = 'Conviene reforzar proyectos competitivos, especialmente con participación IP/co-IP o certificación clara.';
+    }
+
+    if ((float)($resultado['bloque_2']['2A'] ?? 0.0) >= $obj['2A']) {
+        $fortalezas[] = 'La docencia universitaria acreditable tiene un volumen razonable o fuerte.';
+    } else {
+        $debilidades[] = 'La docencia universitaria acreditable (2A) es insuficiente o está poco consolidada.';
+    }
+
+    if ((float)($resultado['bloque_2']['2B'] ?? 0.0) <= 0.0) {
+        $alertas[] = 'No consta evaluación docente formal relevante.';
+    }
+
+    if ((float)($resultado['bloque_2']['2C'] ?? 0.0) <= 0.0) {
+        $alertas[] = 'No consta formación docente universitaria valorable en 2C.';
+    }
+
+    if ($deficit1 > 0.0) {
+        $alertas[] = 'No se cumple la regla principal B1 + B2 ≥ 50.';
+    }
+
+    if ($deficit2 > 0.0) {
+        $alertas[] = 'No se cumple la regla total ≥ 55.';
+    }
+
+    $bloque1 = exp_list($datos, 'bloque_1');
+    $bloque2 = exp_list($datos, 'bloque_2');
+    $bloque3 = exp_list($datos, 'bloque_3');
+    $bloque4 = exp_list($datos, 'bloque_4');
+
+    return [
+        'version' => 'conservadora_pep_experimentales_v4_diagnostico_asesor',
+        'perfil_detectado' => exp_detectar_perfil($resultado),
+        'reglas' => [
+            [
+                'nombre' => 'Regla principal B1 + B2 ≥ 50',
+                'valor_actual' => exp_round($total12),
+                'objetivo' => 50.0,
+                'deficit' => exp_round($deficit1),
+                'cumple' => (bool)($resultado['decision']['cumple_regla_1'] ?? false),
+            ],
+            [
+                'nombre' => 'Regla total final ≥ 55',
+                'valor_actual' => exp_round($total),
+                'objetivo' => 55.0,
+                'deficit' => exp_round($deficit2),
+                'cumple' => (bool)($resultado['decision']['cumple_regla_2'] ?? false),
+            ],
+        ],
+        'bloques' => [
+            'B1' => [
+                'actual' => exp_round($b1),
+                'objetivo_orientativo' => $obj['B1'],
+                'deficit' => exp_round(max(0.0, $obj['B1'] - $b1)),
+                'nivel' => exp_clasificar_nivel($b1, $obj['B1']),
+            ],
+            'B2' => [
+                'actual' => exp_round($b2),
+                'objetivo_orientativo' => $obj['B2'],
+                'deficit' => exp_round(max(0.0, $obj['B2'] - $b2)),
+                'nivel' => exp_clasificar_nivel($b2, $obj['B2']),
+            ],
+            'B3' => [
+                'actual' => exp_round($b3),
+                'objetivo_orientativo' => $obj['B3'],
+                'deficit' => exp_round(max(0.0, $obj['B3'] - $b3)),
+                'nivel' => exp_clasificar_nivel($b3, $obj['B3']),
+            ],
+            'B4' => [
+                'actual' => exp_round($b4),
+                'objetivo_orientativo' => $obj['B4'],
+                'deficit' => exp_round(max(0.0, $obj['B4'] - $b4)),
+                'nivel' => exp_clasificar_nivel($b4, $obj['B4']),
+            ],
+        ],
+        'conteos' => [
+            'publicaciones_impacto' => exp_contar_publicaciones_impacto(exp_list($bloque1, 'publicaciones')),
+            'publicaciones' => exp_count_valid(exp_list($bloque1, 'publicaciones')),
+            'proyectos' => exp_count_valid(exp_list($bloque1, 'proyectos')),
+            'congresos' => exp_count_valid(exp_list($bloque1, 'congresos')),
+            'docencia_items' => exp_count_valid(exp_list($bloque2, 'docencia_universitaria')),
+            'evaluaciones_docentes' => exp_count_valid(exp_list($bloque2, 'evaluacion_docente')),
+            'formacion_docente' => exp_count_valid(exp_list($bloque2, 'formacion_docente')),
+            'material_docente' => exp_count_valid(exp_list($bloque2, 'material_docente')),
+            'exp_profesional' => exp_count_valid(exp_list($bloque3, 'experiencia_profesional')),
+            'otros_meritos' => exp_count_valid(is_array($bloque4) ? $bloque4 : []),
+        ],
+        'fortalezas' => $fortalezas,
+        'debilidades' => $debilidades,
+        'alertas' => $alertas,
+    ];
+}
+
+function exp_generar_asesor(array $resultado): array
+{
+    $acciones = [];
+
+    $total12 = (float)($resultado['totales']['total_b1_b2'] ?? 0.0);
+    $total = (float)($resultado['totales']['total_final'] ?? 0.0);
+
+    $p1a = (float)($resultado['bloque_1']['1A'] ?? 0.0);
+    $p1c = (float)($resultado['bloque_1']['1C'] ?? 0.0);
+    $p1e = (float)($resultado['bloque_1']['1E'] ?? 0.0);
+    $p2a = (float)($resultado['bloque_2']['2A'] ?? 0.0);
+    $p2b = (float)($resultado['bloque_2']['2B'] ?? 0.0);
+    $p2c = (float)($resultado['bloque_2']['2C'] ?? 0.0);
+    $p2d = (float)($resultado['bloque_2']['2D'] ?? 0.0);
+
+    if ($total12 < 50.0 && $p1a < 24.0) {
+        $acciones[] = [
+            'prioridad' => 1,
+            'titulo' => 'Reforzar publicaciones científicas JCR/SCI',
+            'detalle' => 'El cuello de botella principal parece estar en 1A. En Experimentales conviene priorizar artículos JCR/SCI T1/Q1 o T2/Q2, evitando aportaciones poco acreditadas o de baja calidad.',
+            'impacto_estimado' => '≈ 2.9 a 3.9 puntos por publicación fuerte según tercil y reglas internas.',
+        ];
+    }
+
+    if ($p1c < 4.0) {
+        $acciones[] = [
+            'prioridad' => 2,
+            'titulo' => 'Aumentar proyectos competitivos certificados',
+            'detalle' => 'Los proyectos competitivos nacionales, internacionales o autonómicos con rol claro ayudan a equilibrar el bloque investigador.',
+            'impacto_estimado' => '≈ 1 a 4 puntos por proyecto relevante.',
+        ];
+    }
+
+    if ($total12 < 50.0 && $p2a < 12.0) {
+        $acciones[] = [
+            'prioridad' => 3,
+            'titulo' => 'Consolidar docencia universitaria acreditable',
+            'detalle' => 'Conviene aportar certificados oficiales de horas impartidas, asignaturas, cursos académicos y, cuando proceda, dirección de TFG/TFM.',
+            'impacto_estimado' => '≈ 2 a 4 puntos si aumenta el volumen docente acreditado.',
+        ];
+    }
+
+    if ($p2b <= 0.0) {
+        $acciones[] = [
+            'prioridad' => 4,
+            'titulo' => 'Aportar evaluación docente formal',
+            'detalle' => 'DOCENTIA, encuestas institucionales o informes oficiales favorables ayudan a cerrar debilidades del bloque 2.',
+            'impacto_estimado' => '≈ 0.8 a 1.8 puntos.',
+        ];
+    }
+
+    if ($p2c < 0.8) {
+        $acciones[] = [
+            'prioridad' => 5,
+            'titulo' => 'Añadir formación docente universitaria',
+            'detalle' => 'Cursos de formación docente universitaria, innovación metodológica o evaluación formativa pueden reforzar 2C si están bien certificados.',
+            'impacto_estimado' => '≈ 0.5 a 1 punto.',
+        ];
+    }
+
+    if ($p2d < 1.5) {
+        $acciones[] = [
+            'prioridad' => 6,
+            'titulo' => 'Incorporar material docente o innovación educativa',
+            'detalle' => 'Material docente publicado, manuales, guías, proyectos de innovación educativa o recursos docentes institucionales pueden redondear el bloque 2.',
+            'impacto_estimado' => '≈ 0.7 a 2 puntos.',
+        ];
+    }
+
+    if ($p1e < 1.0) {
+        $acciones[] = [
+            'prioridad' => 7,
+            'titulo' => 'Valorar dirección de tesis doctorales',
+            'detalle' => 'En Experimentales, las tesis dirigidas y defendidas pueden aportar consistencia investigadora adicional.',
+            'impacto_estimado' => '≈ 1 punto por mérito relevante, según límite del subapartado.',
+        ];
+    }
+
+    usort($acciones, static fn(array $a, array $b): int => ($a['prioridad'] <=> $b['prioridad']));
+
+    if ($acciones === []) {
+        $acciones[] = [
+            'prioridad' => 1,
+            'titulo' => 'Expediente equilibrado',
+            'detalle' => 'No se aprecian debilidades severas. Conviene mantener producción científica de calidad, proyectos competitivos y docencia acreditada.',
+            'impacto_estimado' => 'Impacto incremental.',
+        ];
+    }
+
+    $sim1 = [
+        'escenario' => 'Añadir una publicación T1/Q1 en 1A',
+        'efecto_estimado' => '+3.9 puntos aprox.',
+        'nuevo_b1_b2_aprox' => exp_round(min(90.0, $total12 + 3.9)),
+        'nuevo_total_aprox' => exp_round(min(100.0, $total + 3.9)),
+    ];
+
+    $sim2 = [
+        'escenario' => 'Añadir un proyecto competitivo relevante',
+        'efecto_estimado' => '+2.5 puntos aprox.',
+        'nuevo_b1_b2_aprox' => exp_round(min(90.0, $total12 + 2.5)),
+        'nuevo_total_aprox' => exp_round(min(100.0, $total + 2.5)),
+    ];
+
+    $sim3 = [
+        'escenario' => 'Consolidar docencia y evaluación docente',
+        'efecto_estimado' => '+3 puntos aprox.',
+        'nuevo_b1_b2_aprox' => exp_round(min(90.0, $total12 + 3.0)),
+        'nuevo_total_aprox' => exp_round(min(100.0, $total + 3.0)),
+    ];
+
+    return [
+        'resumen' => 'Asesor orientativo para identificar qué palancas pueden mejorar antes el expediente de Experimentales.',
+        'acciones' => array_values($acciones),
+        'simulaciones' => [$sim1, $sim2, $sim3],
+    ];
+}
+
 function evaluar_expediente(array $datos): array
 {
     $bloque1 = exp_list($datos, 'bloque_1');
@@ -1051,7 +1427,7 @@ function evaluar_expediente(array $datos): array
     $evaluacionPositiva = $cumpleRegla1 && $cumpleRegla2;
     $resultadoTexto = $evaluacionPositiva ? 'POSITIVA' : 'NEGATIVA';
 
-    return [
+    $resultado = [
         'puntuaciones' => [
             '1A' => $p1a,
             '1B' => $p1b,
@@ -1115,19 +1491,10 @@ function evaluar_expediente(array $datos): array
         ],
         'evaluacion_positiva' => $evaluacionPositiva,
         'resultado' => $resultadoTexto,
-        'diagnostico' => [
-            'version' => 'conservadora_pep_experimentales_v3_1a_1c_duros',
-            'conteos' => [
-                'publicaciones' => exp_count_valid($publicaciones),
-                'proyectos' => exp_count_valid($proyectos),
-                'congresos' => exp_count_valid($congresos),
-                'docencia_items' => exp_count_valid($docencia),
-                'evaluaciones_docentes' => exp_count_valid($evaluacion),
-                'formacion_docente' => exp_count_valid($formacionDoc),
-                'material_docente' => exp_count_valid($materialDoc),
-                'exp_profesional' => exp_count_valid($expProfesional),
-                'otros_meritos' => exp_count_valid(is_array($bloque4) ? $bloque4 : []),
-            ],
-        ],
     ];
+
+    $resultado['diagnostico'] = exp_generar_diagnostico($datos, $resultado);
+    $resultado['asesor'] = exp_generar_asesor($resultado);
+
+    return $resultado;
 }
