@@ -7,6 +7,7 @@ use Acelerador\PanelBackend\Application\Mappers\ProfesorOutputMapper;
 use Acelerador\PanelBackend\Application\Mappers\TutoriaOutputMapper;
 use Acelerador\PanelBackend\Application\UseCases\AddProfesoresToTutoriaUseCase;
 use Acelerador\PanelBackend\Application\UseCases\CreateTutoriaUseCase;
+use Acelerador\PanelBackend\Application\UseCases\GetTutoriaMatchingRecommendationsUseCase;
 use Acelerador\PanelBackend\Application\UseCases\GetAssignedProfesorDetailUseCase;
 use Acelerador\PanelBackend\Application\UseCases\GetTutoriaUseCase;
 use Acelerador\PanelBackend\Application\UseCases\ListAssignedProfesoresUseCase;
@@ -15,6 +16,7 @@ use Acelerador\PanelBackend\Application\UseCases\SyncTutoriaProfesoresUseCase;
 use Acelerador\PanelBackend\Domain\Interfaces\TutorContextProviderInterface;
 use Acelerador\PanelBackend\Presentation\Validators\CreateTutoriaValidator;
 use Acelerador\PanelBackend\Presentation\Validators\ListProfesoresValidator;
+use Acelerador\PanelBackend\Presentation\Validators\MatchingRequestValidator;
 use Acelerador\PanelBackend\Presentation\Validators\ProfesorIdsValidator;
 use Acelerador\PanelBackend\Presentation\Validators\ValidatorUtils;
 use Acelerador\PanelBackend\Shared\Http\Request;
@@ -29,9 +31,11 @@ final class TutoriaController
     private AddProfesoresToTutoriaUseCase $addProfesoresToTutoriaUseCase;
     private RemoveProfesorFromTutoriaUseCase $removeProfesorFromTutoriaUseCase;
     private SyncTutoriaProfesoresUseCase $syncTutoriaProfesoresUseCase;
+    private GetTutoriaMatchingRecommendationsUseCase $getTutoriaMatchingRecommendationsUseCase;
     private CreateTutoriaValidator $createTutoriaValidator;
     private ProfesorIdsValidator $profesorIdsValidator;
     private ListProfesoresValidator $listProfesoresValidator;
+    private MatchingRequestValidator $matchingRequestValidator;
     private TutoriaOutputMapper $tutoriaOutputMapper;
     private ProfesorOutputMapper $profesorOutputMapper;
 
@@ -44,9 +48,11 @@ final class TutoriaController
         AddProfesoresToTutoriaUseCase $addProfesoresToTutoriaUseCase,
         RemoveProfesorFromTutoriaUseCase $removeProfesorFromTutoriaUseCase,
         SyncTutoriaProfesoresUseCase $syncTutoriaProfesoresUseCase,
+        GetTutoriaMatchingRecommendationsUseCase $getTutoriaMatchingRecommendationsUseCase,
         CreateTutoriaValidator $createTutoriaValidator,
         ProfesorIdsValidator $profesorIdsValidator,
         ListProfesoresValidator $listProfesoresValidator,
+        MatchingRequestValidator $matchingRequestValidator,
         TutoriaOutputMapper $tutoriaOutputMapper,
         ProfesorOutputMapper $profesorOutputMapper
     ) {
@@ -58,9 +64,11 @@ final class TutoriaController
         $this->addProfesoresToTutoriaUseCase = $addProfesoresToTutoriaUseCase;
         $this->removeProfesorFromTutoriaUseCase = $removeProfesorFromTutoriaUseCase;
         $this->syncTutoriaProfesoresUseCase = $syncTutoriaProfesoresUseCase;
+        $this->getTutoriaMatchingRecommendationsUseCase = $getTutoriaMatchingRecommendationsUseCase;
         $this->createTutoriaValidator = $createTutoriaValidator;
         $this->profesorIdsValidator = $profesorIdsValidator;
         $this->listProfesoresValidator = $listProfesoresValidator;
+        $this->matchingRequestValidator = $matchingRequestValidator;
         $this->tutoriaOutputMapper = $tutoriaOutputMapper;
         $this->profesorOutputMapper = $profesorOutputMapper;
     }
@@ -196,6 +204,28 @@ final class TutoriaController
         $tutoriaId = ValidatorUtils::parsePositiveInt($routeParams['tutoriaId'] ?? null, 'tutoriaId');
         $input = $this->profesorIdsValidator->validate($request->jsonBody());
         $result = $this->syncTutoriaProfesoresUseCase->execute($tutor->id, $tutoriaId, $input);
+
+        return [
+            'status' => 200,
+            'data' => $result,
+            'meta' => [],
+        ];
+    }
+
+    /**
+     * @param array<string, string> $routeParams
+     * @return array{status:int,data:mixed,meta:array<string,mixed>}
+     */
+    public function getMatchingRecommendations(Request $request, array $routeParams): array
+    {
+        $tutor = $this->tutorContextProvider->requireTutor();
+        $tutoriaId = ValidatorUtils::parsePositiveInt($routeParams['tutoriaId'] ?? null, 'tutoriaId');
+        $input = $this->matchingRequestValidator->validate($request->queryParams());
+
+        $result = $this->getTutoriaMatchingRecommendationsUseCase->execute($tutor->id, $tutoriaId, $input);
+        if (!$input->includeTrace) {
+            unset($result['trazabilidad_interna']);
+        }
 
         return [
             'status' => 200,

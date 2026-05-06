@@ -3,15 +3,23 @@ declare(strict_types=1);
 
 use Acelerador\PanelBackend\Application\Mappers\ProfesorOutputMapper;
 use Acelerador\PanelBackend\Application\Mappers\TutoriaOutputMapper;
+use Acelerador\PanelBackend\Application\Matching\CandidateRecommendationService;
+use Acelerador\PanelBackend\Application\Matching\MatchingOrchestrator;
+use Acelerador\PanelBackend\Application\Matching\MatchingPrivacyFilter;
+use Acelerador\PanelBackend\Application\Matching\McpMatchingAssistant;
+use Acelerador\PanelBackend\Application\Matching\ResearchGroupMatchingService;
+use Acelerador\PanelBackend\Application\Matching\ResearchProfileAggregator;
 use Acelerador\PanelBackend\Application\UseCases\AddProfesoresToTutoriaUseCase;
 use Acelerador\PanelBackend\Application\UseCases\CreateTutoriaUseCase;
 use Acelerador\PanelBackend\Application\UseCases\GetAssignedProfesorDetailUseCase;
+use Acelerador\PanelBackend\Application\UseCases\GetTutoriaMatchingRecommendationsUseCase;
 use Acelerador\PanelBackend\Application\UseCases\GetTutoriaUseCase;
 use Acelerador\PanelBackend\Application\UseCases\ListAssignedProfesoresUseCase;
 use Acelerador\PanelBackend\Application\UseCases\RemoveProfesorFromTutoriaUseCase;
 use Acelerador\PanelBackend\Application\UseCases\SyncTutoriaProfesoresUseCase;
 use Acelerador\PanelBackend\Infrastructure\Auth\SessionTutorContextProvider;
 use Acelerador\PanelBackend\Infrastructure\Events\NullAssignmentEventPublisher;
+use Acelerador\PanelBackend\Infrastructure\Persistence\AnecaEvaluationSignalLookup;
 use Acelerador\PanelBackend\Infrastructure\Persistence\MysqliDatabase;
 use Acelerador\PanelBackend\Infrastructure\Persistence\MysqliTransactionManager;
 use Acelerador\PanelBackend\Infrastructure\Persistence\SchemaMap;
@@ -24,6 +32,7 @@ use Acelerador\PanelBackend\Presentation\Controllers\TutoriaController;
 use Acelerador\PanelBackend\Presentation\Routes\TutoriaRoutes;
 use Acelerador\PanelBackend\Presentation\Validators\CreateTutoriaValidator;
 use Acelerador\PanelBackend\Presentation\Validators\ListProfesoresValidator;
+use Acelerador\PanelBackend\Presentation\Validators\MatchingRequestValidator;
 use Acelerador\PanelBackend\Presentation\Validators\ProfesorIdsValidator;
 use Acelerador\PanelBackend\Shared\Exceptions\ApiException;
 use Acelerador\PanelBackend\Shared\Http\JsonResponder;
@@ -107,6 +116,22 @@ try {
         $transactionManager,
         $eventPublisher
     );
+    $matchingAggregator = new ResearchProfileAggregator(
+        $profesorRepository,
+        $asignacionRepository,
+        new AnecaEvaluationSignalLookup($database)
+    );
+    $matchingOrchestrator = new MatchingOrchestrator(
+        new ResearchGroupMatchingService(),
+        new McpMatchingAssistant(),
+        new MatchingPrivacyFilter()
+    );
+    $matchingUseCase = new GetTutoriaMatchingRecommendationsUseCase(
+        $tutoriaRepository,
+        $profesorRepository,
+        $matchingAggregator,
+        new CandidateRecommendationService($matchingOrchestrator)
+    );
 
     $controller = new TutoriaController(
         $authProvider,
@@ -117,9 +142,14 @@ try {
         $addUseCase,
         $removeUseCase,
         $syncUseCase,
+        $matchingUseCase,
         new CreateTutoriaValidator(),
         new ProfesorIdsValidator(),
         new ListProfesoresValidator(
+            (int) ($appConfig['defaultPageSize'] ?? 20),
+            (int) ($appConfig['maxPageSize'] ?? 100)
+        ),
+        new MatchingRequestValidator(
             (int) ($appConfig['defaultPageSize'] ?? 20),
             (int) ($appConfig['maxPageSize'] ?? 100)
         ),

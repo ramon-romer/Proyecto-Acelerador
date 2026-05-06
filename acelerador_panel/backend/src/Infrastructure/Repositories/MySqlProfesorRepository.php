@@ -70,5 +70,77 @@ final class MySqlProfesorRepository implements ProfesorRepositoryInterface
 
         return $this->mapper->mapRowToEntity($row);
     }
+
+    public function listForMatching(int $limit, ?string $search = null): array
+    {
+        $limit = max(1, min($limit, 200));
+
+        $table = SqlIdentifier::quote($this->schema->table('profesor'));
+        $idColumn = SqlIdentifier::quote($this->schema->requiredColumn('profesor', 'id'));
+        $nombreColumn = SqlIdentifier::quote($this->schema->requiredColumn('profesor', 'nombre'));
+        $apellidosColumn = SqlIdentifier::quote($this->schema->requiredColumn('profesor', 'apellidos'));
+
+        $selectParts = [
+            "{$idColumn} AS id",
+            "{$nombreColumn} AS nombre",
+            "{$apellidosColumn} AS apellidos",
+        ];
+
+        $orcidColumn = null;
+        $departamentoColumn = null;
+        $correoColumn = null;
+
+        if ($this->schema->hasPhysicalColumn('profesor', 'orcid')) {
+            $orcidColumn = SqlIdentifier::quote($this->schema->requiredColumn('profesor', 'orcid'));
+            $selectParts[] = "{$orcidColumn} AS orcid";
+        }
+        if ($this->schema->hasPhysicalColumn('profesor', 'departamento')) {
+            $departamentoColumn = SqlIdentifier::quote($this->schema->requiredColumn('profesor', 'departamento'));
+            $selectParts[] = "{$departamentoColumn} AS departamento";
+        }
+        if ($this->schema->hasPhysicalColumn('profesor', 'correo')) {
+            $correoColumn = SqlIdentifier::quote($this->schema->requiredColumn('profesor', 'correo'));
+            $selectParts[] = "{$correoColumn} AS correo";
+        }
+
+        $whereParts = [];
+        $params = [];
+        if ($search !== null && trim($search) !== '') {
+            $searchLike = '%' . trim($search) . '%';
+            $whereParts[] = "CONCAT_WS(' ', {$nombreColumn}, {$apellidosColumn}) LIKE ?";
+            $params[] = $searchLike;
+
+            if ($orcidColumn !== null) {
+                $whereParts[] = "{$orcidColumn} LIKE ?";
+                $params[] = $searchLike;
+            }
+            if ($departamentoColumn !== null) {
+                $whereParts[] = "{$departamentoColumn} LIKE ?";
+                $params[] = $searchLike;
+            }
+            if ($correoColumn !== null) {
+                $whereParts[] = "{$correoColumn} LIKE ?";
+                $params[] = $searchLike;
+            }
+        }
+
+        $whereSql = $whereParts === [] ? '' : ('WHERE ' . implode(' OR ', $whereParts));
+        $sql = sprintf(
+            'SELECT %s FROM %s %s ORDER BY %s ASC, %s ASC LIMIT ?',
+            implode(', ', $selectParts),
+            $table,
+            $whereSql,
+            $nombreColumn,
+            $apellidosColumn
+        );
+
+        $rows = $this->db->fetchAll($sql, array_merge($params, [$limit]));
+        $result = [];
+        foreach ($rows as $row) {
+            $result[] = $this->mapper->mapRowToEntity($row);
+        }
+
+        return $result;
+    }
 }
 
