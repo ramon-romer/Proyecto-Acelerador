@@ -13,10 +13,10 @@ require_once __DIR__ . '/../src/Pipeline.php';
 require_once __DIR__ . '/../src/FecytCvnExtractor.php';
 require __DIR__ . '/ui.php';
 
-$nombre_candidato = trim($_POST['nombre_candidato'] ?? '');
+$nombreCandidato = trim($_POST['nombre_candidato'] ?? '');
 $formatoCv = trim((string)($_POST['formato_cv'] ?? 'aneca'));
 
-if ($nombre_candidato === '') {
+if ($nombreCandidato === '') {
     die('Falta el nombre del candidato.');
 }
 
@@ -61,7 +61,7 @@ if (!is_array($jsonExtraido)) {
     die('El pipeline no devolvió un array válido.');
 }
 
-$jsonExtraido['nombre_candidato'] = $nombre_candidato;
+$jsonExtraido['nombre_candidato'] = $nombreCandidato;
 $jsonExtraido['area'] = 'Humanidades';
 $jsonExtraido['categoria'] = 'PCD/PUP';
 $jsonExtraido['formato_cv'] = $formatoCv;
@@ -175,11 +175,11 @@ hum_render_layout_start(
     <div class="meta-grid">
         <div class="metric">
             <span class="label">Candidato</span>
-            <span class="value" style="font-size:20px"><?= h($nombre_candidato) ?></span>
+            <span class="value" style="font-size:20px"><?= hum_h($nombreCandidato) ?></span>
         </div>
         <div class="metric">
             <span class="label">Archivo</span>
-            <span class="value" style="font-size:18px"><?= h(basename($rutaPdf)) ?></span>
+            <span class="value" style="font-size:18px"><?= hum_h(basename($rutaPdf)) ?></span>
         </div>
         <div class="metric">
             <span class="label">Área</span>
@@ -191,7 +191,7 @@ hum_render_layout_start(
         </div>
         <div class="metric">
             <span class="label">Formato</span>
-            <span class="value" style="font-size:20px"><?= h($etiquetaFormato) ?></span>
+            <span class="value" style="font-size:20px"><?= hum_h($etiquetaFormato) ?></span>
         </div>
     </div>
 </section>
@@ -207,8 +207,8 @@ hum_render_layout_start(
     <div class="resumen-grid">
         <?php foreach ($resumen as $label => $valor): ?>
             <div class="resumen-item">
-                <span class="k"><?= h($label) ?></span>
-                <span class="v"><?= h((string)$valor) ?></span>
+                <span class="k"><?= hum_h($label) ?></span>
+                <span class="v"><?= hum_h((string)$valor) ?></span>
             </div>
         <?php endforeach; ?>
     </div>
@@ -229,14 +229,14 @@ hum_render_layout_start(
 
     <div class="toolbar">
         <form action="guardar_evaluacion.php" method="post">
-            <input type="hidden" name="nombre_candidato" value="<?= h($nombre_candidato) ?>">
-            <textarea name="json_entrada" style="display:none;"><?= h($jsonPlano) ?></textarea>
+            <input type="hidden" name="nombre_candidato" value="<?= hum_h($nombreCandidato) ?>">
+            <textarea name="json_entrada" style="display:none;"><?= hum_h($jsonPlano) ?></textarea>
             <button type="submit">Evaluar directamente</button>
         </form>
 
         <form action="completar_datos.php" method="post">
-            <input type="hidden" name="nombre_candidato" value="<?= h($nombre_candidato) ?>">
-            <textarea name="json_entrada" style="display:none;"><?= h($jsonPlano) ?></textarea>
+            <input type="hidden" name="nombre_candidato" value="<?= hum_h($nombreCandidato) ?>">
+            <textarea name="json_entrada" style="display:none;"><?= hum_h($jsonPlano) ?></textarea>
             <button type="submit" class="secondary">Completar datos manualmente</button>
         </form>
     </div>
@@ -245,8 +245,8 @@ hum_render_layout_start(
 <section class="card">
     <details>
         <summary>Ver JSON extraído</summary>
-        <pre><?= h($jsonPlano) ?></pre>
+        <pre><?= hum_h($jsonPlano) ?></pre>
     </details>
 </section>
 
-<?php exp_render_layout_end(); ?>
+<?php hum_render_layout_end(); ?>

@@ -4,17 +4,34 @@ declare(strict_types=1);
 require __DIR__ . '/config.php';
 require __DIR__ . '/ui.php';
 
+$sql = "SELECT 
+            id,
+            nombre_candidato,
+            area,
+            categoria,
+            bloque_1,
+            bloque_2,
+            bloque_3,
+            bloque_4,
+            total_b1_b2,
+            total_final,
+            resultado,
+            cumple_regla_1,
+            cumple_regla_2,
+            fecha_creacion
+        FROM evaluaciones
+        ORDER BY id DESC";
+
+$evaluaciones = $pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+
 function csyj_nf(mixed $value): string
 {
     return number_format((float)$value, 2, ',', '.');
 }
 
-$sql = 'SELECT * FROM evaluaciones ORDER BY id DESC';
-$evaluaciones = $pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
-
 csyj_render_layout_start(
     'Listado de evaluaciones',
-    'Histórico completo del módulo CSyJ con vista rápida de bloques, reglas y decisión final.',
+    'Histórico del módulo de CSyJ con acceso rápido al detalle de cada expediente.',
     [
         ['label' => 'Portal ANECA', 'url' => csyj_portal_url()],
         ['label' => 'CSyJ', 'url' => csyj_index_url()],
@@ -28,18 +45,62 @@ csyj_render_layout_start(
 ?>
 
 <style>
-    .tabla-listado th:nth-child(n+5),
-    .tabla-listado td.num {
-        text-align: center;
+    .tabla-listado {
+        width: 100%;
+        border-collapse: collapse;
+        background: #fff;
+    }
+    .tabla-listado th,
+    .tabla-listado td {
+        padding: 12px 14px;
+        border-bottom: 1px solid #e5e7eb;
+        text-align: left;
+        vertical-align: middle;
         white-space: nowrap;
     }
-    .tabla-listado td.nombre {
-        min-width: 220px;
+    .tabla-listado th {
+        background: #f8fafc;
+        color: #334155;
+        font-size: 13px;
     }
-    .reglas-cell {
+    .tabla-listado tr:hover td {
+        background: #fafafa;
+    }
+    .tabla-listado .nombre {
+        min-width: 220px;
+        white-space: normal;
+    }
+    .tabla-listado .num {
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+    }
+    .resumen-top {
         display: grid;
-        gap: 6px;
-        min-width: 170px;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 14px;
+    }
+    .box-mini {
+        border: 1px solid #dbe4ee;
+        border-radius: 12px;
+        padding: 14px;
+        background: #fff;
+    }
+    .box-mini .label {
+        display: block;
+        color: #64748b;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+    }
+    .box-mini .value {
+        font-size: 24px;
+        font-weight: 800;
+        color: #0f172a;
+    }
+    .muted-small {
+        color: #64748b;
+        font-size: 13px;
     }
     .regla-ok {
         color: #166534;
@@ -49,18 +110,39 @@ csyj_render_layout_start(
         color: #991b1b;
         font-weight: 700;
     }
+    .reglas-cell {
+        white-space: normal;
+        min-width: 180px;
+        line-height: 1.45;
+    }
 </style>
 
 <section class="card stack">
-    <div class="meta-grid">
-        <div class="metric"><span class="label">Área</span><span class="value" style="font-size:20px">Ciencias Sociales y Jurídicas</span></div>
-        <div class="metric"><span class="label">Categoría por defecto</span><span class="value" style="font-size:20px">PCD/PUP</span></div>
-        <div class="metric"><span class="label">Evaluaciones guardadas</span><span class="value"><?= csyj_h((string)count($evaluaciones)) ?></span></div>
+    <div class="resumen-top">
+        <div class="box-mini">
+            <span class="label">Área</span>
+            <span class="value" style="font-size:20px;">CSyJ</span>
+        </div>
+        <div class="box-mini">
+            <span class="label">Registros</span>
+            <span class="value"><?= csyj_h((string)count($evaluaciones)) ?></span>
+        </div>
+        <div class="box-mini">
+            <span class="label">Criterio principal</span>
+            <span class="value" style="font-size:20px;">1+2 ≥ 50</span>
+        </div>
+        <div class="box-mini">
+            <span class="label">Criterio final</span>
+            <span class="value" style="font-size:20px;">Total ≥ 55</span>
+        </div>
     </div>
+</section>
 
-    <div class="muted">
-        Umbrales de corte: bloque 1 + bloque 2 ≥ 50 y total final ≥ 55.
-    </div>
+<section class="card stack">
+    <h2 style="margin:0;">Histórico de expedientes</h2>
+    <p class="muted-small" style="margin:0;">
+        Vista rápida de bloques, reglas y decisión final. El diagnóstico y el asesor orientativo se ven dentro del detalle de cada evaluación.
+    </p>
 
     <div style="overflow:auto;">
         <table class="tabla-listado">
@@ -70,12 +152,12 @@ csyj_render_layout_start(
                     <th>Candidato</th>
                     <th>Área</th>
                     <th>Categoría</th>
-                    <th>B1</th>
-                    <th>B2</th>
-                    <th>B3</th>
-                    <th>B4</th>
-                    <th>1+2</th>
-                    <th>Total</th>
+                    <th class="num">B1</th>
+                    <th class="num">B2</th>
+                    <th class="num">B3</th>
+                    <th class="num">B4</th>
+                    <th class="num">1+2</th>
+                    <th class="num">Total</th>
                     <th>Reglas</th>
                     <th>Resultado</th>
                     <th>Fecha</th>
@@ -83,9 +165,9 @@ csyj_render_layout_start(
                 </tr>
             </thead>
             <tbody>
-                <?php if ($evaluaciones === []): ?>
+                <?php if (!$evaluaciones): ?>
                     <tr>
-                        <td colspan="14" class="muted" style="text-align:center; padding:24px;">
+                        <td colspan="14" style="text-align:center; color:#64748b;">
                             No hay evaluaciones guardadas todavía.
                         </td>
                     </tr>
@@ -116,7 +198,9 @@ csyj_render_layout_start(
                             <td><?= csyj_render_result_badge((string)$fila['resultado']) ?></td>
                             <td><?= csyj_h((string)$fila['fecha_creacion']) ?></td>
                             <td>
-                                <a class="btn outline" href="ver_evaluacion.php?id=<?= urlencode((string)$fila['id']) ?>">Abrir</a>
+                                <a class="btn outline" href="ver_evaluacion.php?id=<?= urlencode((string)$fila['id']) ?>">
+                                    Abrir
+                                </a>
                             </td>
                         </tr>
                     <?php endforeach; ?>

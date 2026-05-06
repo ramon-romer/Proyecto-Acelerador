@@ -727,6 +727,437 @@ function calcular_4_humanidades(array $otros): float
     return round(hum_clamp($total, 0.0, 2.0), 2);
 }
 
+
+/* =========================================================
+ * DIAGNÓSTICO Y ASESOR ORIENTATIVO — HUMANIDADES PCD/PUP
+ * Basado en los máximos orientativos de la rama:
+ * 1A=26, 1B=16, 1C=5, 1D=2, 1E=4, 1F=5, 1G=2
+ * 2A=17, 2B=3, 2C=3, 2D=7
+ * 3A=6, 3B=2, B4=2
+ * Reglas PCD/PUP: B1+B2 >= 50 y total >= 55
+ * ========================================================= */
+function hum_round(float $value): float
+{
+    return round($value, 2);
+}
+
+function hum_objetivos_orientativos(): array
+{
+    return [
+        'B1' => 35.0,
+        'B2' => 15.0,
+        'B3' => 3.0,
+        'B4' => 1.0,
+
+        '1A' => 18.0,
+        '1B' => 9.0,
+        '1C' => 2.5,
+        '1D' => 1.0,
+        '1E' => 1.5,
+        '1F' => 2.0,
+        '1G' => 0.8,
+
+        '2A' => 12.0,
+        '2B' => 1.5,
+        '2C' => 1.0,
+        '2D' => 2.0,
+
+        '3A' => 2.0,
+        '3B' => 0.8,
+
+        'TOTAL_B1_B2' => 50.0,
+        'TOTAL_FINAL' => 55.0,
+    ];
+}
+
+function hum_clasificar_nivel(float $actual, float $objetivo): string
+{
+    if ($objetivo <= 0.0) {
+        return 'sin referencia';
+    }
+
+    $ratio = $actual / $objetivo;
+
+    return match (true) {
+        $ratio >= 1.20 => 'muy fuerte',
+        $ratio >= 1.00 => 'fuerte',
+        $ratio >= 0.70 => 'aceptable',
+        $ratio >= 0.40 => 'débil',
+        default => 'muy débil',
+    };
+}
+
+function hum_detectar_perfil(array $resultado): string
+{
+    $b1 = (float)($resultado['bloque_1'] ?? 0);
+    $b2 = (float)($resultado['bloque_2'] ?? 0);
+    $b3 = (float)($resultado['bloque_3'] ?? 0);
+    $b4 = (float)($resultado['bloque_4'] ?? 0);
+    $total12 = (float)($resultado['total_b1_b2'] ?? 0);
+    $total = (float)($resultado['total_final'] ?? 0);
+
+    if ($b1 >= 35.0 && $b2 < 10.0) {
+        return 'Perfil investigador fuerte con docencia insuficiente';
+    }
+
+    if ($b2 >= 15.0 && $b1 < 25.0) {
+        return 'Perfil docente razonable con investigación insuficiente';
+    }
+
+    if ($b1 >= 30.0 && $b2 >= 12.0 && $total12 >= 50.0 && $total >= 55.0) {
+        return 'Perfil equilibrado y competitivo para Humanidades';
+    }
+
+    if ($b1 >= 25.0 && (float)($resultado['puntuacion_1b'] ?? 0) < 4.0) {
+        return 'Perfil investigador apoyado en artículos, con libros/capítulos mejorables';
+    }
+
+    if ($b1 >= 25.0 && (float)($resultado['puntuacion_1a'] ?? 0) < 10.0) {
+        return 'Perfil investigador apoyado en libros/capítulos, con publicaciones periódicas mejorables';
+    }
+
+    if ($b1 < 20.0 && $b2 < 10.0) {
+        return 'Perfil aún inmaduro para acreditación en Humanidades';
+    }
+
+    if (($b3 + $b4) >= 4.0 && $total12 < 50.0) {
+        return 'Perfil con méritos complementarios aceptables, pero núcleo investigación+docencia insuficiente';
+    }
+
+    return 'Perfil mixto con fortalezas parciales y necesidad de refuerzo estratégico';
+}
+
+function hum_contar_publicaciones_impacto(array $publicaciones): array
+{
+    $out = [
+        'Q1' => 0,
+        'Q2' => 0,
+        'Q3' => 0,
+        'Q4' => 0,
+        'FECYT' => 0,
+        'RESH_ERIH_MIAR' => 0,
+        'OTRAS' => 0,
+    ];
+
+    foreach ($publicaciones as $pub) {
+        if (!is_array($pub)) {
+            continue;
+        }
+
+        $esValida = $pub['es_valida'] ?? $pub['es_valido'] ?? 1;
+        if ((string)$esValida === '0') {
+            continue;
+        }
+
+        $tipoIndice = strtoupper(trim((string)($pub['tipo_indice'] ?? 'OTRO')));
+        $cuartil = strtoupper(trim((string)($pub['cuartil'] ?? '')));
+
+        if (in_array($cuartil, ['Q1', 'Q2', 'Q3', 'Q4'], true)) {
+            $out[$cuartil]++;
+            continue;
+        }
+
+        if ($tipoIndice === 'FECYT') {
+            $out['FECYT']++;
+            continue;
+        }
+
+        if (in_array($tipoIndice, ['RESH', 'ERIH', 'MIAR'], true)) {
+            $out['RESH_ERIH_MIAR']++;
+            continue;
+        }
+
+        $out['OTRAS']++;
+    }
+
+    return $out;
+}
+
+function hum_contar_libros_capitulos(array $libros): array
+{
+    $out = [
+        'libros' => 0,
+        'capitulos' => 0,
+        'actas_congreso' => 0,
+        'editorial_prestigiosa' => 0,
+    ];
+
+    foreach ($libros as $item) {
+        if (!is_array($item)) {
+            continue;
+        }
+
+        $esValido = $item['es_valido'] ?? 1;
+        if ((string)$esValido === '0') {
+            continue;
+        }
+
+        $tipo = strtolower(trim((string)($item['tipo'] ?? 'capitulo')));
+        $nivelEditorial = strtolower(trim((string)($item['nivel_editorial'] ?? '')));
+        $esActa = (string)($item['es_acta_congreso'] ?? '0') === '1';
+
+        if ($tipo === 'libro') {
+            $out['libros']++;
+        } else {
+            $out['capitulos']++;
+        }
+
+        if ($esActa) {
+            $out['actas_congreso']++;
+        }
+
+        if ($nivelEditorial === 'prestigiosa') {
+            $out['editorial_prestigiosa']++;
+        }
+    }
+
+    return $out;
+}
+
+function hum_generar_diagnostico(array $datos, array $resultado): array
+{
+    $obj = hum_objetivos_orientativos();
+
+    $b1 = (float)($resultado['bloque_1'] ?? 0);
+    $b2 = (float)($resultado['bloque_2'] ?? 0);
+    $b3 = (float)($resultado['bloque_3'] ?? 0);
+    $b4 = (float)($resultado['bloque_4'] ?? 0);
+    $total12 = (float)($resultado['total_b1_b2'] ?? 0);
+    $total = (float)($resultado['total_final'] ?? 0);
+
+    $deficit1 = max(0.0, 50.0 - $total12);
+    $deficit2 = max(0.0, 55.0 - $total);
+
+    $fortalezas = [];
+    $debilidades = [];
+    $alertas = [];
+
+    if ((float)($resultado['puntuacion_1a'] ?? 0) >= $obj['1A']) {
+        $fortalezas[] = 'Producción científica principal sólida en publicaciones revisadas por pares.';
+    } else {
+        $debilidades[] = 'La producción científica principal en revistas o publicaciones revisadas por pares necesita refuerzo.';
+    }
+
+    if ((float)($resultado['puntuacion_1b'] ?? 0) >= $obj['1B']) {
+        $fortalezas[] = 'Buen peso de libros, capítulos o contribuciones editoriales relevantes.';
+    } else {
+        $debilidades[] = 'Conviene reforzar libros, capítulos o editoriales con indicios de calidad.';
+    }
+
+    if ((float)($resultado['puntuacion_2a'] ?? 0) >= $obj['2A']) {
+        $fortalezas[] = 'La docencia universitaria acreditable tiene volumen razonable.';
+    } else {
+        $debilidades[] = 'La docencia universitaria acreditable es insuficiente o está poco consolidada.';
+    }
+
+    if ((float)($resultado['puntuacion_1c'] ?? 0) < $obj['1C']) {
+        $alertas[] = 'Los proyectos y contratos de investigación tienen bajo peso en el expediente.';
+    }
+
+    if ((float)($resultado['puntuacion_1f'] ?? 0) < $obj['1F']) {
+        $alertas[] = 'La presencia en congresos con proceso selectivo es baja.';
+    }
+
+    if ((float)($resultado['puntuacion_2b'] ?? 0) <= 0.0) {
+        $alertas[] = 'No consta evaluación docente formal relevante.';
+    }
+
+    if ($deficit1 > 0.0) {
+        $alertas[] = 'No se cumple la regla principal: Investigación + Docencia ≥ 50.';
+    }
+
+    if ($deficit2 > 0.0) {
+        $alertas[] = 'No se cumple la regla total: puntuación final ≥ 55.';
+    }
+
+    $bloque1 = hum_get_bloque($datos, 'bloque_1');
+    $bloque2 = hum_get_bloque($datos, 'bloque_2');
+    $bloque3 = hum_get_bloque($datos, 'bloque_3');
+    $bloque4 = $datos['bloque_4'] ?? [];
+
+    return [
+        'version' => 'conservadora_humanidades_v1_diagnostico_asesor',
+        'perfil_detectado' => hum_detectar_perfil($resultado),
+        'reglas' => [
+            [
+                'nombre' => 'Regla principal B1 + B2 ≥ 50',
+                'valor_actual' => hum_round($total12),
+                'objetivo' => 50.0,
+                'deficit' => hum_round($deficit1),
+                'cumple' => (bool)($resultado['cumple_regla_1'] ?? false),
+            ],
+            [
+                'nombre' => 'Regla total final ≥ 55',
+                'valor_actual' => hum_round($total),
+                'objetivo' => 55.0,
+                'deficit' => hum_round($deficit2),
+                'cumple' => (bool)($resultado['cumple_regla_2'] ?? false),
+            ],
+        ],
+        'bloques' => [
+            'B1' => [
+                'actual' => hum_round($b1),
+                'objetivo_orientativo' => $obj['B1'],
+                'deficit' => hum_round(max(0.0, $obj['B1'] - $b1)),
+                'nivel' => hum_clasificar_nivel($b1, $obj['B1']),
+            ],
+            'B2' => [
+                'actual' => hum_round($b2),
+                'objetivo_orientativo' => $obj['B2'],
+                'deficit' => hum_round(max(0.0, $obj['B2'] - $b2)),
+                'nivel' => hum_clasificar_nivel($b2, $obj['B2']),
+            ],
+            'B3' => [
+                'actual' => hum_round($b3),
+                'objetivo_orientativo' => $obj['B3'],
+                'deficit' => hum_round(max(0.0, $obj['B3'] - $b3)),
+                'nivel' => hum_clasificar_nivel($b3, $obj['B3']),
+            ],
+            'B4' => [
+                'actual' => hum_round($b4),
+                'objetivo_orientativo' => $obj['B4'],
+                'deficit' => hum_round(max(0.0, $obj['B4'] - $b4)),
+                'nivel' => hum_clasificar_nivel($b4, $obj['B4']),
+            ],
+        ],
+        'conteos' => [
+            'publicaciones_impacto' => hum_contar_publicaciones_impacto(hum_get_lista($bloque1, 'publicaciones')),
+            'libros_capitulos' => hum_contar_libros_capitulos(hum_get_lista($bloque1, 'libros')),
+            'num_proyectos_validos' => hum_count_valid(hum_get_lista($bloque1, 'proyectos')),
+            'num_transferencia_valida' => hum_count_valid(hum_get_lista($bloque1, 'transferencia')),
+            'num_tesis' => hum_count_valid(hum_get_lista($bloque1, 'tesis_dirigidas')),
+            'num_congresos' => hum_count_valid(hum_get_lista($bloque1, 'congresos')),
+            'num_docencia_items' => hum_count_valid(hum_get_lista($bloque2, 'docencia_universitaria')),
+            'num_eval_docente' => hum_count_valid(hum_get_lista($bloque2, 'evaluacion_docente')),
+            'num_formacion_docente' => hum_count_valid(hum_get_lista($bloque2, 'formacion_docente')),
+            'num_material_docente' => hum_count_valid(hum_get_lista($bloque2, 'material_docente')),
+            'num_formacion_academica' => hum_count_valid(hum_get_lista($bloque3, 'formacion_academica')),
+            'num_exp_profesional' => hum_count_valid(hum_get_lista($bloque3, 'experiencia_profesional')),
+            'num_otros_b4' => hum_count_valid(is_array($bloque4) ? $bloque4 : []),
+        ],
+        'fortalezas' => $fortalezas,
+        'debilidades' => $debilidades,
+        'alertas' => $alertas,
+    ];
+}
+
+function hum_generar_asesor(array $resultado): array
+{
+    $acciones = [];
+
+    $total12 = (float)($resultado['total_b1_b2'] ?? 0);
+    $total = (float)($resultado['total_final'] ?? 0);
+
+    $p1a = (float)($resultado['puntuacion_1a'] ?? 0);
+    $p1b = (float)($resultado['puntuacion_1b'] ?? 0);
+    $p1c = (float)($resultado['puntuacion_1c'] ?? 0);
+    $p1f = (float)($resultado['puntuacion_1f'] ?? 0);
+    $p2a = (float)($resultado['puntuacion_2a'] ?? 0);
+    $p2b = (float)($resultado['puntuacion_2b'] ?? 0);
+    $p2d = (float)($resultado['puntuacion_2d'] ?? 0);
+
+    if ($total12 < 50.0 && $p1a < 18.0) {
+        $acciones[] = [
+            'prioridad' => 1,
+            'titulo' => 'Reforzar publicaciones científicas revisadas por pares',
+            'detalle' => 'En Humanidades el apartado 1A puede llegar a 26 puntos. Conviene priorizar revistas con buenos indicios de calidad, revisión externa, citas, reseñas y autoría destacada.',
+            'impacto_estimado' => '≈ 1,5 a 3,5 puntos por publicación fuerte bien acreditada.',
+        ];
+    }
+
+    if ($total12 < 50.0 && $p1b < 9.0) {
+        $acciones[] = [
+            'prioridad' => 2,
+            'titulo' => 'Aumentar libros y capítulos con editorial relevante',
+            'detalle' => 'En Humanidades el 1B pesa mucho. Interesan editoriales con prestigio, SPI o proceso riguroso de evaluación, además de autoría destacada y coherencia con la línea investigadora.',
+            'impacto_estimado' => '≈ 1 a 5 puntos según sea capítulo, libro completo y nivel editorial.',
+        ];
+    }
+
+    if ($total12 < 50.0 && $p2a < 12.0) {
+        $acciones[] = [
+            'prioridad' => 3,
+            'titulo' => 'Consolidar docencia universitaria reglada',
+            'detalle' => 'La docencia impartida es clave en el bloque 2. Debe estar acreditada por órgano universitario competente y sumar volumen suficiente.',
+            'impacto_estimado' => '≈ 2 a 4 puntos por incremento relevante de docencia acreditada.',
+        ];
+    }
+
+    if ($p1c < 2.5) {
+        $acciones[] = [
+            'prioridad' => 4,
+            'titulo' => 'Reforzar proyectos o contratos de investigación',
+            'detalle' => 'Aportan solidez al bloque investigador. En Humanidades se valoran proyectos nacionales/autonómicos y contratos de investigación con generación clara de conocimiento.',
+            'impacto_estimado' => '≈ 1 a 2,5 puntos por proyecto o contrato relevante.',
+        ];
+    }
+
+    if ($p1f < 2.0) {
+        $acciones[] = [
+            'prioridad' => 5,
+            'titulo' => 'Mejorar congresos con proceso selectivo',
+            'detalle' => 'Se deben priorizar congresos con admisión selectiva de ponencias, preferiblemente nacionales o internacionales y coherentes con la línea investigadora.',
+            'impacto_estimado' => '≈ 0,3 a 1 punto por aportación relevante.',
+        ];
+    }
+
+    if ($p2b <= 0.0) {
+        $acciones[] = [
+            'prioridad' => 6,
+            'titulo' => 'Aportar evaluación docente formal',
+            'detalle' => 'DOCENTIA, encuestas institucionales o certificados de calidad docente pueden cerrar una debilidad clara del bloque 2.',
+            'impacto_estimado' => '≈ 0,8 a 1,8 puntos.',
+        ];
+    }
+
+    if ($p2d < 2.0) {
+        $acciones[] = [
+            'prioridad' => 7,
+            'titulo' => 'Añadir material docente o innovación educativa',
+            'detalle' => 'Material docente con ISBN/ISSN, proyectos de innovación y contribuciones al EEES ayudan a redondear la experiencia docente.',
+            'impacto_estimado' => '≈ 0,7 a 2 puntos por mérito claro.',
+        ];
+    }
+
+    usort($acciones, static fn(array $a, array $b): int => ($a['prioridad'] <=> $b['prioridad']));
+
+    if ($acciones === []) {
+        $acciones[] = [
+            'prioridad' => 1,
+            'titulo' => 'Expediente equilibrado',
+            'detalle' => 'No se aprecian debilidades severas. Conviene seguir consolidando publicaciones, libros/capítulos y estabilidad docente.',
+            'impacto_estimado' => 'Impacto incremental.',
+        ];
+    }
+
+    $sim1 = [
+        'escenario' => 'Añadir una publicación fuerte en 1A',
+        'efecto_estimado' => '+2,5 puntos aprox.',
+        'nuevo_b1_b2_aprox' => hum_round(min(90.0, $total12 + 2.5)),
+        'nuevo_total_aprox' => hum_round(min(100.0, $total + 2.5)),
+    ];
+
+    $sim2 = [
+        'escenario' => 'Añadir un capítulo/libro relevante en 1B',
+        'efecto_estimado' => '+2 puntos aprox.',
+        'nuevo_b1_b2_aprox' => hum_round(min(90.0, $total12 + 2.0)),
+        'nuevo_total_aprox' => hum_round(min(100.0, $total + 2.0)),
+    ];
+
+    $sim3 = [
+        'escenario' => 'Consolidar docencia y evaluación docente',
+        'efecto_estimado' => '+3 puntos aprox.',
+        'nuevo_b1_b2_aprox' => hum_round(min(90.0, $total12 + 3.0)),
+        'nuevo_total_aprox' => hum_round(min(100.0, $total + 3.0)),
+    ];
+
+    return [
+        'resumen' => 'Asesor orientativo para identificar qué palancas pueden mejorar antes el expediente de Humanidades.',
+        'acciones' => array_values($acciones),
+        'simulaciones' => [$sim1, $sim2, $sim3],
+    ];
+}
+
 /* =========================================================
  * FUNCIÓN PRINCIPAL
  * ========================================================= */
@@ -769,7 +1200,7 @@ function evaluar_expediente_humanidades(array $json): array
     $cumple2 = $totalFinal >= 55.0;
     $resultado = ($cumple1 && $cumple2) ? 'POSITIVA' : 'NEGATIVA';
 
-    return [
+    $salida = [
         'puntuacion_1a' => round($p1a, 2),
         'puntuacion_1b' => round($p1b, 2),
         'puntuacion_1c' => round($p1c, 2),
@@ -798,6 +1229,11 @@ function evaluar_expediente_humanidades(array $json): array
         'cumple_regla_2' => $cumple2 ? 1 : 0,
         'resultado' => $resultado,
     ];
+
+    $salida['diagnostico'] = hum_generar_diagnostico($json, $salida);
+    $salida['asesor'] = hum_generar_asesor($salida);
+
+    return $salida;
 }
 
 /**
