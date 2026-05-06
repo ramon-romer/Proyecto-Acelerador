@@ -14,6 +14,7 @@ final class TutoriaRoutes
         $router->add('GET', '/api/tutorias/{tutoriaId}', [$controller, 'getTutoria']);
         $router->add('GET', '/api/tutorias/{tutoriaId}/profesores', [$controller, 'listProfesores']);
         $router->add('GET', '/api/tutorias/{tutoriaId}/profesores/{profesorId}', [$controller, 'getProfesorDetail']);
+        $router->add('GET', '/api/tutorias/{tutoriaId}/matching', [$controller, 'getMatchingRecommendations']);
         $router->add('POST', '/api/tutorias/{tutoriaId}/profesores', [$controller, 'addProfesores']);
         $router->add('DELETE', '/api/tutorias/{tutoriaId}/profesores/{profesorId}', [$controller, 'removeProfesor']);
         $router->add('PUT', '/api/tutorias/{tutoriaId}/profesores', [$controller, 'syncProfesores']);
