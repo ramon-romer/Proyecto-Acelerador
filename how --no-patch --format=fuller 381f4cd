@@ -1,0 +1,69 @@
+* [33m702de28[m[33m ([m[1;31morigin/Desarrollo[m[33m)[m Versión admin y demas
+* [33m7ec1709[m pruebas
+[31m|[m *   [33m902c6e1[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mDesarrollo[m[33m)[m Merge branch 'Desarrollo' of https://github.com/ramon-romer/Proyecto-Acelerador into Desarrollo
+[31m|[m [32m|[m[33m\[m  
+[31m|[m [32m|[m * [33m381f4cd[m ACC-DES-ACTUALIZADO
+[31m|[m [32m|[m * [33m2b7460d[m ACC- CSYJ
+[31m|[m [32m|[m * [33mbdda59e[m ACC- Humanidades
+[31m|[m * [33m|[m [33ma1113dc[m ACC-DOC-BASELINE-MVP-PRE-UI
+[31m|[m [33m|[m[33m/[m  
+[31m|[m * [33mede8130[m ACC-BAC-SKILL-AUDITAR-MVP
+[31m|[m *   [33m22e3e20[m Merge branch 'Desarrollo' of https://github.com/ramon-romer/Proyecto-Acelerador into Desarrollo
+[31m|[m [34m|[m[35m\[m  
+[31m|[m [34m|[m * [33m5094492[m ACC-DOC-MCP-AUX-MVP
+[31m|[m [34m|[m * [33mcce80e0[m ACC-TEST-MCP-AUX-MVP
+[31m|[m [34m|[m * [33me156c0d[m ACC-EVAL-MCP-AUX-MVP
+[31m|[m [34m|[m * [33mfc3b400[m ACC-BAC-IMPLEMENTACION-MCP-PRE-MVP
+[31m|[m * [35m|[m [33ma2e361f[m ACC- Diagnóstico y asesor Experimentales
+[31m|[m [35m|[m[35m/[m  
+[31m|[m * [33m0061d6f[m ACC-BAC-CIERRE-LIMPIEZA-PRE-ENTREGA
+[31m|[m * [33m4074882[m ACC-BAC-FIXTURES-REALES-ANONIMIZADOS-02
+[31m|[m * [33m39a2f72[m ACC-BAC-FIXTURES-REALES-ANONIMIZADOS
+[31m|[m * [33mdf3a7b7[m ACC-BAC-VALIDACION-INTENSIVA-PRE-MVP
+[31m|[m * [33m884dd8a[m ACC-BAC-MEJORAS-06
+[31m|[m * [33m1af58f6[m ACC-BAC-MEJORAS-05
+[31m|[m * [33ma40f678[m ACC-BAC-FIX-TECNICAS
+[31m|[m * [33m223f2ac[m ACC- Experimentales modificado algoritmo
+[31m|[m * [33m0e4f03d[m ACC-BAC-REGISTRO-DIARIO
+[31m|[m * [33m6019a42[m ACC-BAC-PRE-MVP-PENDIENTES-OPERATIVOS
+[31m|[m * [33m49b235d[m ACC-BAC-MEJORAS-04
+[31m|[m * [33m36d0740[m ACC-BAC-MEJORAS-03
+[31m|[m *   [33m8f05c49[m Merge branch 'Desarrollo' of https://github.com/ramon-romer/Proyecto-Acelerador into Desarrollo
+[31m|[m [36m|[m[1;31m\[m  
+[31m|[m [36m|[m *   [33m8c5b0b6[m Merge branch 'Desarrollo' of https://github.com/ramon-romer/Proyecto-Acelerador into Desarrollo
+[31m|[m [36m|[m [1;32m|[m[1;33m\[m  
+[31m|[m [36m|[m * [1;33m|[m [33m5a8b72f[m ACC-BAC-MEJORAS-02
+[31m|[m * [1;33m|[m [1;33m|[m [33m6b850fb[m ACC-DES-RAMA-CSYJ
+[31m|[m [1;33m|[m [1;33m|[m[1;33m/[m  
+[31m|[m [1;33m|[m[1;33m/[m[1;33m|[m   
+[31m|[m * [1;33m|[m [33m2520724[m dfg
+[31m|[m * [1;33m|[m [33mfcad22b[m ACC- Backend
+[31m|[m * [1;33m|[m [33m26c4f55[m ACC- Backend
+[31m|[m [1;33m|[m[1;33m/[m  
+[31m|[m * [33m83ba47d[m ACC-BAC-MEJORAS-01
+[31m|[m * [33mcf80080[m ACC-BAC-PDFS-01
+[31m|[m *   [33m37735cf[m Merge branch 'Desarrollo' of https://github.com/ramon-romer/Proyecto-Acelerador into Desarrollo
+[31m|[m [1;34m|[m[1;35m\[m  
+[31m|[m [1;34m|[m * [33mb5ede04[m ACC-DES-ARREGLO
+[31m|[m [1;34m|[m[31m/[m  
+[31m|[m[31m/[m[1;34m|[m   
+* [1;34m|[m   [33mf60e89e[m Merge branch 'Desarrollo' of https://github.com/ramon-romer/Proyecto-Acelerador into Desarrollo
+[1;36m|[m[31m\[m [1;34m\[m  
+[1;36m|[m * [1;34m|[m [33m38e82fa[m ACC-BAC-Experimentales y csyj- 01
+* [31m|[m [1;34m|[m [33m9aa40cc[m dashboard+despliegue
+* [31m|[m [1;34m|[m [33m4fa5cb5[m despliegue
+[31m|[m[31m/[m [1;34m/[m  
+* [1;34m|[m [33mcbc78e0[m dashboard
+* [1;34m|[m [33m5b6fe41[m ACC-Back-EvaluadorExperimentales
+* [1;34m|[m   [33m9f61605[m Merge branch 'Desarrollo' of https://github.com/ramon-romer/Proyecto-Acelerador into Desarrollo
+[32m|[m[33m\[m [1;34m\[m  
+* [33m|[m [1;34m|[m [33m8b5e08c[m ACC-Desarrollo
+[33m|[m [33m|[m * [33m5c8a949[m checkpoint: pipeline OCR/cola/cache
+[33m|[m [33m|[m[33m/[m  
+[33m|[m * [33m38a48b5[m ACC-BAC-OCR-SCHEMA-DOC-01
+[33m|[m[33m/[m  
+*   [33m02a5839[m Merge branch 'Desarrollo' of https://github.com/ramon-romer/Proyecto-Acelerador into Desarrollo
+[34m|[m[35m\[m  
+[34m|[m *   [33mbd522c9[m Merge branch 'Desarrollo' of https://github.com/ramon-romer/Proyecto-Acelerador into Desarrollo
+[34m|[m [36m|[m[1;31m\[m  
+[34m|[m [36m|[m * [33mb4bdeb0[m ACC-BAC-MCP-DOC-REORGANIZACION-01
