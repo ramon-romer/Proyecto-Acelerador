@@ -16,7 +16,7 @@ declare(strict_types=1);
  */
 
 // Servidor MySQL
-$servidor = '127.0.0.1';
+$servidor = 'base-de-datos';
 
 // Nombre de la base de datos
 $base_datos = 'evaluador_aneca_csyj';
@@ -25,7 +25,7 @@ $base_datos = 'evaluador_aneca_csyj';
 $usuario_bd = 'root';
 
 // Contraseña de MySQL
-$contrasena_bd = '';
+$contrasena_bd = 'root_super_segura';
 
 // Juego de caracteres recomendado
 $juego_caracteres = 'utf8mb4';

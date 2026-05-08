@@ -5,10 +5,10 @@ declare(strict_types=1);
  * Configuración de conexión a MySQL mediante PDO.
  */
 
-$servidor = '127.0.0.1';
+$servidor = 'base-de-datos';
 $base_datos = 'evaluador_aneca_humanidades';
 $usuario_bd = 'root';
-$contrasena_bd = '';
+$contrasena_bd = 'root_super_segura';
 $juego_caracteres = 'utf8mb4';
 
 $dsn = "mysql:host=$servidor;dbname=$base_datos;charset=$juego_caracteres";

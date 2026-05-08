@@ -50,118 +50,124 @@ if ($query_profesores && mysqli_num_rows($query_profesores) > 0) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Acelerador - Mis Grupos</title>
   <link rel="icon" type="image/x-icon" href="https://uf3ceu.es/wp-content/uploads/logo-uf3-2k25.svg">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/styles.css?v=<?= time() ?>">
+  <style>
+    .popover-body { white-space: pre-line; }
+  </style>
 </head>
 
 <body>
   <header>
-
     <div class="contenedorimg">
       <div class="imagen">
         <img src="https://uf3ceu.es/wp-content/uploads/logo-uf3-2k25.svg" alt="CEU Universidad Fernando III"
           style="height:50px; width:auto;" id="#acele" />
       </div>
-
       <div class="imagen">
         <img src="img/AcademyAccelerator_def.png" id="academy" alt="academy" />
       </div>
     </div>
-
   </header>
-  <main>
-    <div class="formulario-tabla">
-      <div class="text-center mb-4 w-100">
-        <i class="bi bi-people-fill text-white mb-2"
-          style="font-size: 4rem; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));"></i>
-        <h2 class="text-white fw-bold">Mis Grupos de Profesores</h2>
-        <hr class="w-100 border-light opacity-25 mt-3 mb-4">
-      </div>
 
-      <div class="w-100 mb-4">
-        <?php
-        $current_grupo = '';
-        $current_id_grupo = 0;
-        if (count($profesores) > 0) {
-          foreach ($profesores as $prof) {
-            // Si cambiamos de grupo, imprimimos la cabecera del nuevo grupo y su tabla
-            if ($current_grupo != $prof['grupo_nombre']) {
+  <main>
+    <div class="panel-wrapper">
+      <div class="dashboard">
+        <div class="formulario-tabla w-100" style="max-width: 950px; margin: 0 auto;">
+          <div class="text-center mb-4 w-100">
+            <i class="bi bi-people-fill text-white mb-2"
+              style="font-size: 4rem; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));"></i>
+            <h2 class="text-white fw-bold">Mis Grupos de Profesores</h2>
+            <hr class="w-100 border-light opacity-25 mt-3 mb-4">
+          </div>
+
+          <div class="w-100 mb-4">
+            <?php
+            $current_grupo = '';
+            $current_id_grupo = 0;
+            if (count($profesores) > 0) {
+              foreach ($profesores as $prof) {
+                // Si cambiamos de grupo, imprimimos la cabecera del nuevo grupo y su tabla
+                if ($current_grupo != $prof['grupo_nombre']) {
+                  if ($current_grupo != '') {
+                    // Cerrar la tabla del grupo anterior
+                    echo "</tbody></table></div></div>";
+                  }
+                  $current_grupo = $prof['grupo_nombre'];
+                  $current_id_grupo = $prof['id_grupo'];
+                  // Abrir contenedor para el nuevo grupo
+                  echo "<div class='mb-5 w-100'>";
+                  echo "<div class='d-flex align-items-center justify-content-between w-100 mb-3 pb-2 flex-nowrap' style='border-bottom: 1px solid rgba(255,255,255,0.3); gap: 1rem;'>";
+                  echo "<div class='text-start flex-grow-1 overflow-hidden'>";
+                  echo "<h5 class='text-white mb-0 lh-base text-truncate'>";
+                  echo "<i class='bi bi-diagram-3-fill me-1'></i> Grupo: " . htmlspecialchars($current_grupo) . "<br>";
+                  echo "<span class='text-white-50 fs-6 ms-4'><i class='bi bi-person-badge me-1'></i> Tutor: " . htmlspecialchars(empty(trim($nombre_tutor)) ? 'No especificado' : $nombre_tutor) . "</span>";
+                  echo "</h5>";
+                  echo "</div>";
+                  echo "<div class='text-end flex-shrink-0'>";
+                  echo "<form method='POST' action='gestionar_grupo.php' class='m-0 p-0 text-md-end'>";
+                  echo "<input type='hidden' name='id_grupo_nav' value='" . intval($current_id_grupo) . "'>";
+                  echo "<button type='submit' class='btn btn-outline-warning btn-sm rounded-pill d-inline-flex align-items-center gap-1 text-nowrap'>";
+                  echo "<i class='bi bi-gear-fill'></i> Gestionar grupo";
+                  echo "</button>";
+                  echo "</form>";
+                  echo "</div>";
+                  echo "</div>";
+
+                  echo "<div class='table-responsive w-100' style='border-radius: 15px;'>";
+                  echo "<table class='table tabla-glass mb-0'>";
+                  echo "<thead>";
+                  echo "<tr>";
+                  echo "<th scope='col' class='border-top-0 border-end-0 text-white px-3 py-2'>ORCID</th>";
+                  echo "<th scope='col' class='border-top-0 border-end-0 text-white px-3 py-2'>Nombre</th>";
+                  echo "<th scope='col' class='border-top-0 border-end-0 text-white px-3 py-2'>Departamento</th>";
+                  echo "<th scope='col' class='border-top-0 border-end-0 text-white px-3 py-2 text-center'>Acciones</th>";
+                  echo "</tr>";
+                  echo "</thead>";
+                  echo "<tbody>";
+                }
+
+                if (!empty($prof['id_profesor'])) {
+                  $modalId = 'modalProf' . $prof['id_profesor'];
+
+                  // Filas de profesores
+                  echo "<tr>";
+                  echo "<td class='border-end-0 text-white px-3 py-2'>" . (empty($prof['ORCID']) ? '-' : htmlspecialchars($prof['ORCID'])) . "</td>";
+                  echo "<td class='border-end-0 text-white px-3 py-2'>" . htmlspecialchars($prof['nombre'] . ' ' . $prof['apellidos']) . "</td>";
+                  echo "<td class='border-end-0 text-white px-3 py-2'>" . (empty($prof['departamento']) ? '-' : htmlspecialchars($prof['departamento'])) . "</td>";
+                  echo "<td class='border-end-0 text-center px-3 py-2'>";
+                  echo "<button class='btn btn-outline-info btn-sm rounded-pill d-inline-flex align-items-center gap-1' data-bs-toggle='modal' data-bs-target='#$modalId'>";
+                  echo "<i class='bi bi-eye-fill'></i> Ver datos";
+                  echo "</button>";
+                  echo "</td>";
+                  echo "</tr>";
+                } else {
+                  echo "<tr><td colspan='4' class='text-center text-white-50 py-3 border-end-0 border-bottom-0' style='background-color: rgba(255,255,255,0.02);'>Aún no hay profesores asignados a este grupo.</td></tr>";
+                }
+              }
+              // Cerrar la última tabla creada
               if ($current_grupo != '') {
-                // Cerrar la tabla del grupo anterior
                 echo "</tbody></table></div></div>";
               }
-              $current_grupo = $prof['grupo_nombre'];
-              $current_id_grupo = $prof['id_grupo'];
-              // Abrir contenedor para el nuevo grupo
-              echo "<div class='mb-5 w-100'>";
-              echo "<div class='d-flex align-items-center justify-content-between w-100 mb-3 pb-2 flex-nowrap' style='border-bottom: 1px solid rgba(255,255,255,0.3); gap: 1rem;'>";
-              echo "<div class='text-start flex-grow-1 overflow-hidden'>";
-              echo "<h5 class='text-white mb-0 lh-base text-truncate'>";
-              echo "<i class='bi bi-diagram-3-fill me-1'></i> Grupo: " . htmlspecialchars($current_grupo) . "<br>";
-              echo "<span class='text-white-50 fs-6 ms-4'><i class='bi bi-person-badge me-1'></i> Tutor: " . htmlspecialchars(empty(trim($nombre_tutor)) ? 'No especificado' : $nombre_tutor) . "</span>";
-              echo "</h5>";
-              echo "</div>";
-              echo "<div class='text-end flex-shrink-0'>";
-              echo "<form method='POST' action='gestionar_grupo.php' class='m-0 p-0 text-md-end'>";
-              echo "<input type='hidden' name='id_grupo_nav' value='" . intval($current_id_grupo) . "'>";
-              echo "<button type='submit' class='btn btn-outline-warning btn-sm rounded-pill d-inline-flex align-items-center gap-1 text-nowrap'>";
-              echo "<i class='bi bi-gear-fill'></i> Gestionar grupo";
-              echo "</button>";
-              echo "</form>";
-              echo "</div>";
-              echo "</div>";
-
-              echo "<div class='table-responsive w-100' style='border-radius: 15px;'>";
-              echo "<table class='table tabla-glass mb-0'>";
-              echo "<thead>";
-              echo "<tr>";
-              echo "<th scope='col' class='border-top-0 border-end-0'>ORCID</th>";
-              echo "<th scope='col' class='border-top-0 border-end-0'>Nombre</th>";
-              echo "<th scope='col' class='border-top-0 border-end-0'>Departamento</th>";
-              echo "<th scope='col' class='border-top-0 border-end-0 text-center'>Acciones</th>";
-              echo "</tr>";
-              echo "</thead>";
-              echo "<tbody>";
-            }
-
-            if (!empty($prof['id_profesor'])) {
-              $modalId = 'modalProf' . $prof['id_profesor'];
-
-              // Filas de profesores
-              echo "<tr>";
-              echo "<td class='border-end-0'>" . (empty($prof['ORCID']) ? '-' : htmlspecialchars($prof['ORCID'])) . "</td>";
-              echo "<td class='border-end-0'>" . htmlspecialchars($prof['nombre'] . ' ' . $prof['apellidos']) . "</td>";
-              echo "<td class='border-end-0'>" . (empty($prof['departamento']) ? '-' : htmlspecialchars($prof['departamento'])) . "</td>";
-              echo "<td class='border-end-0 text-center'>";
-              echo "<button class='btn btn-outline-info btn-sm rounded-pill d-inline-flex align-items-center gap-1' data-bs-toggle='modal' data-bs-target='#$modalId'>";
-              echo "<i class='bi bi-eye-fill'></i> Ver datos";
-              echo "</button>";
-              echo "</td>";
-              echo "</tr>";
             } else {
-              echo "<tr><td colspan='4' class='text-center text-white-50 py-3 border-end-0 border-bottom-0' style='background-color: rgba(255,255,255,0.02);'>Aún no hay profesores asignados a este grupo.</td></tr>";
+              echo "<div class='w-100 text-center text-white-50 p-4' style='background-color: rgba(255,255,255,0.05); border-radius: 15px;'>No tienes profesores asignados a tus grupos.</div>";
             }
-          }
-          // Cerrar la última tabla creada
-          if ($current_grupo != '') {
-            echo "</tbody></table></div></div>";
-          }
-        } else {
-          echo "<div class='w-100 text-center text-white-50 p-4' style='background-color: rgba(255,255,255,0.05); border-radius: 15px;'>No tienes profesores asignados a tus grupos.</div>";
-        }
-        ?>
-      </div>
+            ?>
+          </div>
 
-      <div class="d-flex justify-content-center w-100 mt-4 gap-3">
-        <a href="crear_grupo.php"
-          class="btn btn-outline-success px-4 py-2 rounded-pill fw-medium d-inline-flex align-items-center gap-2 shadow-sm transition-all text-decoration-none">
-          <i class="bi bi-plus-circle-fill"></i> Crear nuevo grupo
-        </a>
-        <a href="panel_tutor.php"
-          class="btn btn-volver px-4 py-2 rounded-pill fw-medium d-inline-flex align-items-center gap-2 shadow-sm transition-all text-decoration-none">
-          <i class="bi bi-arrow-left"></i> Volver a mi perfil
-        </a>
+          <div class="d-flex justify-content-center w-100 mt-4 gap-3">
+            <a href="crear_grupo.php"
+              class="btn btn-outline-success px-4 py-2 rounded-pill fw-medium d-inline-flex align-items-center gap-2 shadow-sm transition-all text-decoration-none">
+              <i class="bi bi-plus-circle-fill"></i> Crear nuevo grupo
+            </a>
+            <a href="panel_tutor.php"
+              class="btn btn-outline-light px-4 py-2 rounded-pill fw-medium d-inline-flex align-items-center gap-2 shadow-sm transition-all text-decoration-none">
+              <i class="bi bi-arrow-left"></i> Volver a mi perfil
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   </main>
@@ -263,7 +269,49 @@ if ($query_profesores && mysqli_num_rows($query_profesores) > 0) {
       </div>
     </div>
   </footer>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+    crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <link rel="stylesheet" href="css/notifications.css">
+  <script src="js/notifications.js"></script>
+  <script src="js/script.js"></script>
+
+  <style>
+    /* Scrollbar personalizada minimalista (Fina línea) */
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 3px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05); 
+      border-radius: 10px;
+      margin: 10px 0;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.5); 
+      border-radius: 10px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.8); 
+    }
+    .custom-scrollbar {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 255, 255, 0.5) rgba(255, 255, 255, 0.05);
+    }
+  </style>
+
+  <script>
+    // Inicializar todos los popovers
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('[data-bs-toggle="popover"]').forEach(el => {
+        new bootstrap.Popover(el, { html: false });
+      });
+    });
+  </script>
+
+  <?php include('chatbot.php'); ?>
+
 </body>
 
 </html>

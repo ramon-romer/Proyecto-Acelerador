@@ -92,13 +92,13 @@ salud_render_layout_start(
     'Resultado de evaluación',
     'Detalle completo del expediente evaluado en Ciencias de la Salud.',
     [
-        ['label' => 'Portal ANECA', 'url' => salud_portal_url()],
+        ['label' => 'Mi Perfil', 'url' => salud_portal_url()],
         ['label' => 'Salud', 'url' => salud_index_url()],
         ['label' => 'Resultado evaluación'],
     ],
     [
         ['label' => 'Volver a Salud', 'url' => salud_index_url(), 'class' => 'light'],
-        ['label' => 'Portal principal', 'url' => salud_portal_url(), 'class' => 'light'],
+        ['label' => 'Volver a Mi Perfil', 'url' => salud_portal_url(), 'class' => 'light'],
     ]
 );
 ?>

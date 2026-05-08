@@ -1,1 +1,1 @@
-<?php header('Location: /acelerador_login/fronten/index.php'); exit; ?>
+<?php header('Location: acelerador_login/fronten/index.php'); exit; ?>

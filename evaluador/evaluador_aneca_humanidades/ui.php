@@ -8,7 +8,14 @@ function h(mixed $value): string
 
 function hum_portal_url(): string
 {
-    return '../aneca_portal/index.php';
+    if (session_status() !== PHP_SESSION_ACTIVE) {
+        session_start();
+    }
+    $perfil = $_SESSION['perfil_usuario'] ?? '';
+    if (strtoupper($perfil) === 'TUTOR') {
+        return '../../acelerador_panel/fronten/panel_tutor.php';
+    }
+    return '../../acelerador_panel/fronten/panel_profesor.php';
 }
 
 function hum_index_url(): string

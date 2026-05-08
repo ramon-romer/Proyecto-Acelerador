@@ -58,70 +58,73 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nombre_grupo'])) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Acelerador - Crear Grupo</title>
   <link rel="icon" type="image/x-icon" href="https://uf3ceu.es/wp-content/uploads/logo-uf3-2k25.svg">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/styles.css?v=<?= time() ?>">
+  <style>
+    .popover-body { white-space: pre-line; }
+  </style>
 </head>
 
 <body>
   <header>
-
     <div class="contenedorimg">
       <div class="imagen">
         <img src="https://uf3ceu.es/wp-content/uploads/logo-uf3-2k25.svg" alt="CEU Universidad Fernando III"
           style="height:50px; width:auto;" id="#acele" />
       </div>
-
       <div class="imagen">
         <img src="img/AcademyAccelerator_def.png" id="academy" alt="academy" />
       </div>
     </div>
-
   </header>
+
   <main>
-    <div class="formulario-tabla" style="max-width: 600px;">
-      <div class="text-center mb-4 w-100">
-        <i class="bi bi-diagram-3-fill text-white mb-2"
-          style="font-size: 4rem; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));"></i>
-        <h2 class="text-white fw-bold">Crear Nuevo Grupo</h2>
-        <h6 class="text-white-50">Introduce un nombre para el grupo de profesores tutorizados.</h6>
-        <hr class="w-100 border-light opacity-25 mt-3 mb-4">
-      </div>
+    <div class="panel-wrapper">
+      <div class="dashboard">
+        <div class="formulario-tabla w-100" style="max-width: 600px; margin: 0 auto;">
+          <div class="text-center mb-4 w-100">
+            <i class="bi bi-diagram-3-fill text-white mb-2"
+              style="font-size: 4rem; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));"></i>
+            <h2 class="text-white fw-bold">Crear Nuevo Grupo</h2>
+            <h6 class="text-white-50">Introduce un nombre para el grupo de profesores tutorizados.</h6>
+            <hr class="w-100 border-light opacity-25 mt-3 mb-4">
+          </div>
 
-      <?php if ($mensaje): ?>
-        <div class="alert alert-<?php echo $tipo_mensaje; ?> alert-dismissible fade show w-100 rounded-3 mb-4"
-          role="alert"
-          style="background-color: rgba(<?php echo $tipo_mensaje == 'success' ? '40,167,69' : ($tipo_mensaje == 'danger' ? '220,53,69' : '255,193,7'); ?>, 0.2); border: 1px solid rgba(255,255,255,0.2); color: white;">
-          <i
-            class="bi bi-<?php echo $tipo_mensaje == 'success' ? 'check-circle' : ($tipo_mensaje == 'danger' ? 'x-circle' : 'exclamation-triangle'); ?>-fill me-2"></i>
-          <?php echo $mensaje; ?>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+          <?php if ($mensaje): ?>
+            <script>
+              document.addEventListener('DOMContentLoaded', () => {
+                showNotification("<?php echo $mensaje; ?>", "<?php echo ($tipo_mensaje === 'success') ? 'success' : ($tipo_mensaje === 'danger' ? 'danger' : 'warning'); ?>");
+              });
+            </script>
+          <?php endif; ?>
+
+          <div class="w-100 p-4 rounded-4 shadow-sm"
+            style="background-color: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);">
+            <form method="POST" action="crear_grupo.php" class="m-0 p-0 text-start w-100">
+              <div class="mb-4">
+                <label for="nombre_grupo" class="form-label text-light fw-medium mb-2"><i
+                    class="bi bi-cursor-text me-1"></i> Nombre del Grupo</label>
+                <input type="text" class="form-control" id="nombre_grupo" name="nombre_grupo"
+                  placeholder="Ej: Grupo Avanzado 1" required
+                  style="background-color: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.35); color: white; padding: 12px 15px; font-size: 1rem; box-shadow: none;">
+              </div>
+              <div class="d-grid gap-2 text-center">
+                <button type="submit" class="btn btn-outline-success rounded-pill fw-bold py-2 shadow-sm fs-6">
+                  <i class="bi bi-plus-circle-fill me-1"></i> Confirmar Creación
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <div class="d-flex justify-content-center w-100 mt-4">
+            <a href="grupos_profesor.php"
+              class="btn btn-outline-light px-4 py-2 rounded-pill fw-medium d-inline-flex align-items-center gap-2 shadow-sm transition-all text-decoration-none">
+              <i class="bi bi-arrow-left"></i> Volver a mis grupos
+            </a>
+          </div>
         </div>
-      <?php endif; ?>
-
-      <div class="w-100 p-4 rounded-4 shadow-sm"
-        style="background-color: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);">
-        <form method="POST" action="crear_grupo.php" class="m-0 p-0 text-start w-100">
-          <div class="mb-4">
-            <label for="nombre_grupo" class="form-label text-light fw-medium mb-2"><i
-                class="bi bi-cursor-text me-1"></i> Nombre del Grupo</label>
-            <input type="text" class="form-control" id="nombre_grupo" name="nombre_grupo"
-              placeholder="Ej: Grupo Avanzado 1" required
-              style="background-color: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.35); color: white; padding: 12px 15px; font-size: 1rem; box-shadow: none;">
-          </div>
-          <div class="d-grid gap-2 text-center">
-            <button type="submit" class="btn btn-outline-success rounded-pill fw-bold py-2 shadow-sm fs-6">
-              <i class="bi bi-plus-circle-fill me-1"></i> Confirmar Creación
-            </button>
-          </div>
-        </form>
-      </div>
-
-      <div class="d-flex justify-content-center w-100 mt-4">
-        <a href="grupos_profesor.php"
-          class="btn btn-volver px-4 py-2 rounded-pill fw-medium d-inline-flex align-items-center gap-2 shadow-sm transition-all text-decoration-none">
-          <i class="bi bi-arrow-left"></i> Volver a mis grupos
-        </a>
       </div>
     </div>
   </main>
@@ -168,7 +171,49 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nombre_grupo'])) {
       </div>
     </div>
   </footer>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+    crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <link rel="stylesheet" href="css/notifications.css">
+  <script src="js/notifications.js"></script>
+  <script src="js/script.js"></script>
+
+  <style>
+    /* Scrollbar personalizada minimalista (Fina línea) */
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 3px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05); 
+      border-radius: 10px;
+      margin: 10px 0;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.5); 
+      border-radius: 10px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.8); 
+    }
+    .custom-scrollbar {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 255, 255, 0.5) rgba(255, 255, 255, 0.05);
+    }
+  </style>
+
+  <script>
+    // Inicializar todos los popovers
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('[data-bs-toggle="popover"]').forEach(el => {
+        new bootstrap.Popover(el, { html: false });
+      });
+    });
+  </script>
+
+  <?php include('chatbot.php'); ?>
+
 </body>
 
 </html>

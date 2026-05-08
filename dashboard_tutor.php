@@ -192,17 +192,6 @@ $totalGrupos = count($grupos);
       </div>
     </div>
 
-    <div class="dashboard-card p-4 mb-4">
-      <h2 class="h4 mb-3" style="color:#123b72;">Resumen del tutor</h2>
-      <?php if ($tutor): ?>
-        <p class="mb-1"><strong>Facultad:</strong> <?= htmlspecialchars($tutor['facultad']) ?></p>
-        <p class="mb-1"><strong>Departamento:</strong> <?= htmlspecialchars($tutor['departamento']) ?></p>
-        <p class="mb-0"><strong>Rama:</strong> <?= htmlspecialchars($tutor['rama']) ?></p>
-      <?php else: ?>
-        <p class="mb-0">No hay datos para este tutor.</p>
-      <?php endif; ?>
-    </div>
-
     <div class="row g-3">
       <?php foreach ($profesores as $prof): ?>
         <div class="col-md-6 col-xl-4">
@@ -245,6 +234,8 @@ $totalGrupos = count($grupos);
     </div>
   </div>
 </main>
+
+<?php include('acelerador_panel/fronten/chatbot.php'); ?>
 
 </body>
 </html>

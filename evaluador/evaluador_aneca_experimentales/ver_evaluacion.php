@@ -64,13 +64,13 @@ exp_render_layout_start(
     'Resultado de evaluación',
     'Detalle completo de la evaluación guardada para la rama Experimentales.',
     [
-        ['label' => 'Portal ANECA', 'url' => exp_portal_url()],
+        ['label' => 'Mi Perfil', 'url' => exp_portal_url()],
         ['label' => 'Experimentales', 'url' => exp_index_url()],
         ['label' => 'Evaluación #' . $id],
     ],
     [
         ['label' => 'Volver a Experimentales', 'url' => exp_index_url(), 'class' => 'light'],
-        ['label' => 'Portal principal', 'url' => exp_portal_url(), 'class' => 'light'],
+        ['label' => 'Volver a Mi Perfil', 'url' => exp_portal_url(), 'class' => 'light'],
     ]
 );
 ?>
@@ -121,6 +121,8 @@ exp_render_layout_start(
         font-weight: 800;
         color: #0f172a;
     }
+    .resumen-box .v.v-pos { color: #166534; }
+    .resumen-box .v.v-neg { color: #991b1b; }
     .tabla-puntuaciones {
         width: 100%;
         border-collapse: collapse;
@@ -231,34 +233,35 @@ $esPositiva = $resultadoTexto === 'POSITIVA';
 <section class="card stack">
     <h2 class="seccion-titulo">Resumen global</h2>
     <div class="resumen-grid">
+        <?php $vClass = $esPositiva ? 'v v-pos' : 'v v-neg'; ?>
         <div class="resumen-box">
             <span class="k">Bloque 1</span>
-            <span class="v"><?= exp_f($evaluacion['bloque_1'] ?? 0) ?></span>
+            <span class="<?= $vClass ?>"><?= exp_f($evaluacion['bloque_1'] ?? 0) ?></span>
             <span class="maximo">Máximo 60</span>
         </div>
         <div class="resumen-box">
             <span class="k">Bloque 2</span>
-            <span class="v"><?= exp_f($evaluacion['bloque_2'] ?? 0) ?></span>
+            <span class="<?= $vClass ?>"><?= exp_f($evaluacion['bloque_2'] ?? 0) ?></span>
             <span class="maximo">Máximo 30</span>
         </div>
         <div class="resumen-box">
             <span class="k">Bloque 3</span>
-            <span class="v"><?= exp_f($evaluacion['bloque_3'] ?? 0) ?></span>
+            <span class="<?= $vClass ?>"><?= exp_f($evaluacion['bloque_3'] ?? 0) ?></span>
             <span class="maximo">Máximo 8</span>
         </div>
         <div class="resumen-box">
             <span class="k">Bloque 4</span>
-            <span class="v"><?= exp_f($evaluacion['bloque_4'] ?? 0) ?></span>
+            <span class="<?= $vClass ?>"><?= exp_f($evaluacion['bloque_4'] ?? 0) ?></span>
             <span class="maximo">Máximo 2</span>
         </div>
         <div class="resumen-box">
             <span class="k">1 + 2</span>
-            <span class="v"><?= exp_f($evaluacion['total_b1_b2'] ?? 0) ?></span>
+            <span class="<?= $vClass ?>"><?= exp_f($evaluacion['total_b1_b2'] ?? 0) ?></span>
             <span class="maximo">Debe ser ≥ 50</span>
         </div>
         <div class="resumen-box">
             <span class="k">Total final</span>
-            <span class="v"><?= exp_f($evaluacion['total_final'] ?? 0) ?></span>
+            <span class="<?= $vClass ?>"><?= exp_f($evaluacion['total_final'] ?? 0) ?></span>
             <span class="maximo">Debe ser ≥ 55</span>
         </div>
     </div>
@@ -485,7 +488,7 @@ $esPositiva = $resultadoTexto === 'POSITIVA';
         <section class="card">
             <h2>Acciones</h2>
             <div class="stack">
-                <a class="btn" href="index.php">Nueva evaluación</a>
+                <a class="btn" href="<?= exp_portal_url() ?>">Volver a Mi Perfil</a>
                 <a class="btn secondary" href="listado.php">Ir al listado</a>
             </div>
         </section>

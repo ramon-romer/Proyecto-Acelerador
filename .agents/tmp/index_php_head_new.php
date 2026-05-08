@@ -17,7 +17,7 @@ if (isset($_POST["btn"])) {
       $correo,
       $authResult['context'] ?? []
     );
-    header("Location: login_invalido.php");
+    header("Location: login.php?error=auth_fail");
     exit();
   }
 
@@ -48,7 +48,7 @@ if (isset($_POST["btn"])) {
   }
 
   acelerador_auth_log_event('AUTH_FAIL_PROFILE_AMBIGUOUS', $correo, ['reason' => 'non_routable_post_auth']);
-  header("Location: login_invalido.php");
+  header("Location: login.php?error=auth_fail");
   exit();
 }
 ?>

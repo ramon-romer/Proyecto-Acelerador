@@ -77,6 +77,22 @@ CREATE TABLE `tbl_grupo_profesor` (
   KEY `fk_profesor_grupo` (`id_profesor`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE `tbl_tarea_entrega` (
+  `id`                INT(10)      NOT NULL AUTO_INCREMENT,
+  `id_grupo`          INT(10)      NOT NULL,
+  `id_profesor`       INT(10)      NOT NULL,
+  `id_tutor`          INT(10)      NOT NULL,
+  `titulo_tarea`      VARCHAR(255) NOT NULL,
+  `descripcion_tarea` TEXT         DEFAULT NULL,
+  `num_entregas`      INT(3)       NOT NULL DEFAULT 1,
+  `fechas_entregas`   JSON         DEFAULT NULL,
+  `fecha_creacion`    TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_profesor`  (`id_profesor`),
+  KEY `idx_tutor`     (`id_tutor`),
+  KEY `idx_grupo`     (`id_grupo`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE `tbl_publicacion` (
   `id_publicación` int(10) NOT NULL AUTO_INCREMENT,
   `DOI` varchar(255) NOT NULL,

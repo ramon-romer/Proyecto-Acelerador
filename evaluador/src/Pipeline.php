@@ -203,7 +203,7 @@ class Pipeline
             }
         }
 
-        return 'C:\\poppler-25.12.0\\Library\\bin\\pdftotext.exe';
+        return 'pdftotext';
     }
 
     private function rutaEjecutableValida(string $ruta): bool

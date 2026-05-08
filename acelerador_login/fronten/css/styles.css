@@ -59,13 +59,49 @@
 
 /* Zona de checkbox */
 .check {
-    width: 64%;
-    gap: 20px;
-    padding: 10px;
+    width: 63%;
+    margin: 15px auto;
     display: flex;
-    margin: auto;
-    align-items: center;
-    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    transition: background 0.3s ease;
+}
+
+.check:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.form-check-input {
+    width: 20px !important;
+    height: 20px !important;
+    margin-top: 4px !important;
+    cursor: pointer;
+    border: 2px solid rgba(255, 255, 255, 0.6) !important;
+    background-color: rgba(0, 0, 0, 0.2) !important;
+    border-radius: 6px !important;
+    transition: all 0.2s ease !important;
+}
+
+.form-check-input:checked {
+    background-color: #4db8ff !important;
+    border-color: #4db8ff !important;
+    box-shadow: 0 0 10px rgba(77, 184, 255, 0.4);
+}
+
+.form-check-label {
+    font-size: 0.85rem;
+    line-height: 1.5;
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.7);
+    user-select: none;
+    width: auto; /* Override possible default width */
+}
+
+.form-check-label:hover {
+    color: rgba(255, 255, 255, 0.9);
 }
 
 /* Contenedor del botón */
@@ -187,4 +223,7 @@ form {
 
 header {
     height: 20px;
-}
+}  
+/* Cookie Banner */  
+#cookie-banner { position: fixed; bottom: 0; left: 0; width: 100%; padding: 16px 20px; background: rgba(0,0,0,0.85); backdrop-filter: blur(4px); color: white; text-align: center; z-index: 999999; font-size: 16px; box-shadow: 0 -4px 12px rgba(0,0,0,0.4); }  
+#cookie-accept { margin-left: 15px; padding: 8px 20px; background: #4db8ff; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; } 

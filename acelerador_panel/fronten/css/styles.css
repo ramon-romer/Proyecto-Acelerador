@@ -10,7 +10,8 @@
     flex-direction: column;
     align-items: center;
     padding: 40px 24px 36px;
-    width: 420px;
+    width: 460px;
+    max-width: 100%;
     flex-shrink: 0;
 }
 
@@ -401,12 +402,19 @@ header {
     box-shadow: 0 8px 25px rgba(0,0,0,0.3);
 }
 
-/* Mini-boxes dentro del resumen del tutor */
+/* Mini-boxes dentro del resumen del tutor y profesor */
 .mini-info-box {
     background: rgba(255,255,255,0.08);
     border: 1px solid rgba(255,255,255,0.12);
     border-radius: 12px;
     padding: 12px 14px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 4px;
 }
 
 .mini-info-label {
@@ -414,7 +422,7 @@ header {
     text-transform: uppercase;
     letter-spacing: .06em;
     color: rgba(255,255,255,0.55);
-    margin-bottom: 4px;
+    margin-bottom: 0;
 }
 
 .mini-info-value {
@@ -463,6 +471,13 @@ header {
     border: 1px solid rgba(255,255,255,0.10);
     border-radius: 10px;
     padding: 10px 12px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 4px;
 }
 
 .mini-prof-label {
@@ -470,7 +485,7 @@ header {
     text-transform: uppercase;
     letter-spacing: .06em;
     color: rgba(255,255,255,0.50);
-    margin-bottom: 3px;
+    margin-bottom: 0;
 }
 
 .mini-prof-value {
@@ -495,4 +510,8 @@ header {
     .dashboard {
         width: 100%;
     }
+}@keyframes pulse {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(248, 113, 113, 0.7); }
+    70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(248, 113, 113, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(248, 113, 113, 0); }
 }

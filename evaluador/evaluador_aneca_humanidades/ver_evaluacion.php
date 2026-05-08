@@ -90,13 +90,13 @@ hum_render_layout_start(
     'Resultado de evaluación',
     'Detalle completo del expediente evaluado en Humanidades.',
     [
-        ['label' => 'Portal ANECA', 'url' => hum_portal_url()],
+        ['label' => 'Mi Perfil', 'url' => hum_portal_url()],
         ['label' => 'Humanidades', 'url' => hum_index_url()],
         ['label' => 'Resultado evaluación'],
     ],
     [
         ['label' => 'Volver a Humanidades', 'url' => hum_index_url(), 'class' => 'light'],
-        ['label' => 'Portal principal', 'url' => hum_portal_url(), 'class' => 'light'],
+        ['label' => 'Volver a Mi Perfil', 'url' => hum_portal_url(), 'class' => 'light'],
     ]
 );
 ?>

@@ -48,88 +48,93 @@ if ($query_grupos && mysqli_num_rows($query_grupos) > 0) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Acelerador - Mis Grupos</title>
   <link rel="icon" type="image/x-icon" href="https://uf3ceu.es/wp-content/uploads/logo-uf3-2k25.svg">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/styles.css?v=<?= time() ?>">
+  <style>
+    .popover-body { white-space: pre-line; }
+  </style>
 </head>
 
 <body>
   <header>
-
     <div class="contenedorimg">
       <div class="imagen">
         <img src="https://uf3ceu.es/wp-content/uploads/logo-uf3-2k25.svg" alt="CEU Universidad Fernando III"
           style="height:50px; width:auto;" id="#acele" />
       </div>
-
       <div class="imagen">
         <img src="img/AcademyAccelerator_def.png" id="academy" alt="academy" />
       </div>
     </div>
-
   </header>
 
   <main>
-    <div class="formulario text-center" style="max-width: 800px; width: 90%; margin: 50px auto;">
+    <div class="panel-wrapper">
+      <div class="dashboard">
+        <div class="formulario text-center w-100" style="max-width: 800px; margin: 0 auto;">
 
-      <div class="mb-4">
-        <i class="bi bi-diagram-3 text-white mb-2"
-          style="font-size: 3.5rem; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));"></i>
-        <h2 class="text-white fw-bold">Mis Grupos Asignados</h2>
-        <p class="text-white-50">Gestiona y revisa los grupos en los que participas como profesor.</p>
-        <hr class="w-100 border-light opacity-25 mt-3 mb-4">
-      </div>
+          <div class="mb-4">
+            <i class="bi bi-diagram-3 text-white mb-2"
+              style="font-size: 3.5rem; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));"></i>
+            <h2 class="text-white fw-bold">Mis Grupos Asignados</h2>
+            <p class="text-white-50">Gestiona y revisa los grupos en los que participas como profesor.</p>
+            <hr class="w-100 border-light opacity-25 mt-3 mb-4">
+          </div>
 
-      <?php if (count($mis_grupos) > 0): ?>
-        <div class="table-responsive w-100 mb-4 p-3 p-md-4"
-          style="border-radius: 15px; background-color: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15);">
-          <table class="table tabla-glass mb-0 text-start">
-            <thead>
-              <tr>
-                <th scope="col" class="border-top-0 border-end-0 border-bottom text-white px-4 py-3"><i
-                    class="bi bi-tag-fill me-1"></i> Nombre del Grupo</th>
-                <th scope="col" class="border-top-0 border-end-0 border-bottom text-white py-3"><i
-                    class="bi bi-person-badge-fill me-1"></i> Tutor Asignado</th>
-                <th scope="col" class="border-top-0 border-end-0 border-bottom text-white px-4 py-3"><i
-                    class="bi bi-envelope-fill me-1"></i> Contacto</th>
-              </tr>
-            </thead>
-            <tbody>
-              <?php foreach ($mis_grupos as $grupo): ?>
-                <tr>
-                  <td class="border-end-0 fw-bold border-bottom-0 text-white px-4 py-3">
-                    <?php echo htmlspecialchars($grupo['grupo_nombre']); ?>
-                  </td>
-                  <td class="border-end-0 border-bottom-0 text-white py-3">
-                    <?php echo htmlspecialchars($grupo['tutor_nombre'] . ' ' . $grupo['tutor_apellidos']); ?>
-                  </td>
-                  <td class="border-end-0 border-bottom-0 text-white-50 px-4 py-3">
-                    <a href="mailto:<?php echo htmlspecialchars($grupo['tutor_correo']); ?>"
-                      class="text-white text-decoration-none">
-                      <?php echo htmlspecialchars($grupo['tutor_correo']); ?>
-                    </a>
-                  </td>
-                </tr>
-              <?php endforeach; ?>
-            </tbody>
-          </table>
+          <?php if (count($mis_grupos) > 0): ?>
+            <div class="table-responsive w-100 mb-4 p-3 p-md-4"
+              style="border-radius: 15px; background-color: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15);">
+              <table class="table tabla-glass mb-0 text-start">
+                <thead>
+                  <tr>
+                    <th scope="col" class="border-top-0 border-end-0 border-bottom text-white px-4 py-3"><i
+                        class="bi bi-tag-fill me-1"></i> Nombre del Grupo</th>
+                    <th scope="col" class="border-top-0 border-end-0 border-bottom text-white py-3"><i
+                        class="bi bi-person-badge-fill me-1"></i> Tutor Asignado</th>
+                    <th scope="col" class="border-top-0 border-end-0 border-bottom text-white px-4 py-3"><i
+                        class="bi bi-envelope-fill me-1"></i> Contacto</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <?php foreach ($mis_grupos as $grupo): ?>
+                    <tr>
+                      <td class="border-end-0 fw-bold border-bottom-0 text-white px-4 py-3">
+                        <?php echo htmlspecialchars($grupo['grupo_nombre']); ?>
+                      </td>
+                      <td class="border-end-0 border-bottom-0 text-white py-3">
+                        <?php echo htmlspecialchars($grupo['tutor_nombre'] . ' ' . $grupo['tutor_apellidos']); ?>
+                      </td>
+                      <td class="border-end-0 border-bottom-0 text-white-50 px-4 py-3">
+                        <a href="mailto:<?php echo htmlspecialchars($grupo['tutor_correo']); ?>"
+                          class="text-white text-decoration-none">
+                          <?php echo htmlspecialchars($grupo['tutor_correo']); ?>
+                        </a>
+                      </td>
+                    </tr>
+                  <?php endforeach; ?>
+                </tbody>
+              </table>
+            </div>
+          <?php else: ?>
+            <div class="w-100 text-center p-5 rounded-4 mb-4"
+              style="background-color: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15);">
+              <i class="bi bi-info-circle text-white-50 fs-1 mb-3 d-block"></i>
+              <h5 class="text-white">Aún no estás asignado a ningún grupo</h5>
+              <p class="text-white-50 mb-0">Cuando un tutor te añada a su grupo de investigación, aparecerá en esta lista.</p>
+            </div>
+          <?php endif; ?>
+
+          <div class="d-flex justify-content-center w-100 mt-2 mb-5">
+            <a href="panel_profesor.php"
+              class="btn btn-outline-light px-4 py-2 rounded-pill fw-medium d-inline-flex align-items-center gap-2 shadow-sm transition-all text-decoration-none">
+              <i class="bi bi-arrow-left"></i> Volver a mi perfil
+            </a>
+          </div>
+
         </div>
-      <?php else: ?>
-        <div class="w-100 text-center p-5 rounded-4 mb-4"
-          style="background-color: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15);">
-          <i class="bi bi-info-circle text-white-50 fs-1 mb-3 d-block"></i>
-          <h5 class="text-white">Aún no estás asignado a ningún grupo</h5>
-          <p class="text-white-50 mb-0">Cuando un tutor te añada a su grupo de investigación, aparecerá en esta lista.</p>
-        </div>
-      <?php endif; ?>
-
-      <div class="d-flex justify-content-center w-100 mt-2 mb-5">
-        <a href="panel_profesor.php"
-          class="btn btn-volver px-4 py-2 rounded-pill fw-medium d-inline-flex align-items-center gap-2 shadow-sm transition-all text-decoration-none">
-          <i class="bi bi-arrow-left"></i> Volver a mi perfil
-        </a>
       </div>
-
     </div>
   </main>
 
@@ -175,7 +180,49 @@ if ($query_grupos && mysqli_num_rows($query_grupos) > 0) {
       </div>
     </div>
   </footer>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+    crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <link rel="stylesheet" href="css/notifications.css">
+  <script src="js/notifications.js"></script>
+  <script src="js/script.js"></script>
+
+  <style>
+    /* Scrollbar personalizada minimalista (Fina línea) */
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 3px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05); 
+      border-radius: 10px;
+      margin: 10px 0;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.5); 
+      border-radius: 10px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.8); 
+    }
+    .custom-scrollbar {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 255, 255, 0.5) rgba(255, 255, 255, 0.05);
+    }
+  </style>
+
+  <script>
+    // Inicializar todos los popovers
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('[data-bs-toggle="popover"]').forEach(el => {
+        new bootstrap.Popover(el, { html: false });
+      });
+    });
+  </script>
+
+  <?php include('chatbot.php'); ?>
+
 </body>
 
 </html>
