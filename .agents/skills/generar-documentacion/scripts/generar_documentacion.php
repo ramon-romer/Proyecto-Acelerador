@@ -268,7 +268,7 @@ function loadStructuredPayload(array $parsedArgs): array
 function resolveAuthorAndRole(array $payload, bool $interactiveMode): array
 {
     if ($interactiveMode) {
-        $authorInput = prompt('Autor de la documentacion [Basilio Lagares]:');
+        $authorInput = prompt('Autor de la documentación [Basilio Lagares]:');
         $author = resolveAuthor($authorInput === '' ? null : $authorInput);
 
         if ($author === 'Basilio Lagares') {
@@ -298,7 +298,7 @@ function prompt(string $message): string
     $line = fgets(STDIN);
     if ($line === false) {
         throw new RuntimeException(
-            'No fue posible leer entrada interactiva. Usa --non-interactive con payload explicito si ejecutas en modo automatizado.'
+            'No fue posible leer entrada interactiva. Usa --non-interactive con payload explícito si ejecutas en modo automatizado.'
         );
     }
     return trim($line);
@@ -316,7 +316,7 @@ function decodeJsonPayload(string $rawJson, string $source): array
         $decoded = json_decode($normalizedJson, true, 512, JSON_THROW_ON_ERROR);
     } catch (\JsonException $exception) {
         throw new InvalidArgumentException(
-            sprintf('El payload JSON en %s no es valido: %s', $source, $exception->getMessage()),
+            sprintf('El payload JSON en %s no es válido: %s', $source, $exception->getMessage()),
             0,
             $exception
         );
@@ -324,7 +324,7 @@ function decodeJsonPayload(string $rawJson, string $source): array
 
     if (!is_array($decoded)) {
         throw new InvalidArgumentException(
-            sprintf('El payload JSON en %s debe ser un objeto JSON valido.', $source)
+            sprintf('El payload JSON en %s debe ser un objeto JSON válido.', $source)
         );
     }
 
@@ -338,14 +338,14 @@ Uso:
   php .agents/skills/generar-documentacion/scripts/generar_documentacion.php [modo]
 
 Modo normal (interfaz humana, por defecto):
-  Sin argumentos. Pregunta solo autor, rol y ejecucion de tests.
-  El contenido tecnico/diario se detecta automaticamente desde el contexto de sesion.
+  Sin argumentos. Pregunta solo autor, rol y ejecución de tests.
+  El contenido técnico/diario se detecta automáticamente desde el contexto de sesión.
 
-Modo estructurado (automatizacion):
+Modo estructurado (automatización):
   --payload-json '<JSON>'
   --payload-file <ruta-json>
   --stdin
-  --non-interactive (recomendado para automatizacion)
+  --non-interactive (recomendado para automatización)
 TXT;
 
     fwrite(STDOUT, $usage . PHP_EOL);
@@ -353,103 +353,26 @@ TXT;
 
 /**
  * @param array<string, mixed> $payload
- * @return array{run_tests: bool, nivel: string, ventana: string}
  */
-function resolveTestExecutionConfig(array $payload, bool $interactiveMode): array
+function promptForTestExecution(array $payload, bool $interactiveMode): bool
 {
     if ($interactiveMode) {
-        $answer = normalizeDefaultShortcut(prompt('¿Quieres ejecutar la batería de tests ahora? [s/N]:'));
-        $shouldRunTests = shouldExecuteTestsFromAnswer($answer);
-        if (!$shouldRunTests) {
-            return [
-                'run_tests' => false,
-                'nivel' => 'standard',
-                'ventana' => '15m',
-            ];
-        }
-
-        $nivelInput = normalizeDefaultShortcut(prompt('Indica solo el nivel: standard, medio o agresivo.'));
-        $ventanaInput = normalizeDefaultShortcut(prompt('Indica solo la ventana: 15m, 30m, 45m, 1h o 6h.'));
-
-        return [
-            'run_tests' => true,
-            'nivel' => resolveTestNivel($nivelInput),
-            'ventana' => resolveTestVentana($ventanaInput),
-        ];
+        $answer = prompt('¿Quieres ejecutar la batería de tests ahora? [s/N]:');
+        return shouldExecuteTestsFromAnswer($answer);
     }
 
-    $runTests = false;
     if (array_key_exists('run_tests', $payload)) {
         $value = $payload['run_tests'];
         if (is_bool($value)) {
-            $runTests = $value;
-        } elseif ($value !== null) {
-            $runTests = shouldExecuteTestsFromAnswer((string) $value);
+            return $value;
         }
+        if ($value === null) {
+            return false;
+        }
+        return shouldExecuteTestsFromAnswer((string) $value);
     }
 
-    return [
-        'run_tests' => $runTests,
-        'nivel' => resolveTestNivel(isset($payload['test_nivel']) ? (string) $payload['test_nivel'] : null),
-        'ventana' => resolveTestVentana(isset($payload['test_ventana']) ? (string) $payload['test_ventana'] : null),
-    ];
-}
-
-function resolveTestNivel(?string $nivel): string
-{
-    $resolved = normalizeDefaultShortcut((string) ($nivel ?? ''));
-    if ($resolved === '') {
-        return 'standard';
-    }
-
-    $resolved = toLower($resolved);
-    $allowed = ['standard', 'medio', 'agresivo'];
-    if (!in_array($resolved, $allowed, true)) {
-        throw new InvalidArgumentException('Nivel invalido. Usa: standard, medio o agresivo.');
-    }
-
-    return $resolved;
-}
-
-function resolveTestVentana(?string $ventana): string
-{
-    $resolved = normalizeDefaultShortcut((string) ($ventana ?? ''));
-    if ($resolved === '') {
-        return '15m';
-    }
-
-    $resolved = toLower($resolved);
-    $allowed = ['15m', '30m', '45m', '1h', '6h'];
-    if (!in_array($resolved, $allowed, true)) {
-        throw new InvalidArgumentException('Ventana invalida. Usa: 15m, 30m, 45m, 1h o 6h.');
-    }
-
-    return $resolved;
-}
-
-function normalizeDefaultShortcut(string $value): string
-{
-    $trimmed = trim($value);
-    if ($trimmed === '') {
-        return '';
-    }
-
-    $normalized = toLower(preg_replace('/\s+/u', ' ', $trimmed) ?? $trimmed);
-    $shortcutTokens = ['enter', 'intro', 'default', 'defecto', 'por defecto'];
-    if (in_array($normalized, $shortcutTokens, true)) {
-        return '';
-    }
-
-    return $trimmed;
-}
-
-function toLower(string $value): string
-{
-    if (function_exists('mb_strtolower')) {
-        return mb_strtolower($value, 'UTF-8');
-    }
-
-    return strtolower($value);
+    return false;
 }
 
 /**
@@ -468,7 +391,7 @@ function toLower(string $value): string
  */
 function executeTestsAndBuildValidation(
     array $payload,
-    array $testConfig,
+    bool $shouldRunTests,
     string $repositoryRoot,
     ?array $previousValidation
 ): array {
@@ -478,11 +401,11 @@ function executeTestsAndBuildValidation(
 
     $options = [
         'provided_result' => $providedResult,
-        'nivel' => $testConfig['nivel'],
-        'ventana' => $testConfig['ventana'],
+        'nivel' => isset($payload['test_nivel']) ? (string) $payload['test_nivel'] : 'standard',
+        'ventana' => isset($payload['test_ventana']) ? (string) $payload['test_ventana'] : '15m',
     ];
 
-    $testResult = runTestsIfRequested($testConfig['run_tests'], $repositoryRoot, $options);
+    $testResult = runTestsIfRequested($shouldRunTests, $repositoryRoot, $options);
     $normalizedResult = normalizeTestResponse($testResult);
 
     return [
@@ -504,7 +427,7 @@ function main(array $argv): int
         $structuredMode = isStructuredMode($parsedArgs);
         if ($parsedArgs['non_interactive'] && !$structuredMode) {
             throw new InvalidArgumentException(
-                'El modo --non-interactive requiere payload explicito (--payload-json, --payload-file o --stdin).'
+                'El modo --non-interactive requiere payload explícito (--payload-json, --payload-file o --stdin).'
             );
         }
 
@@ -539,8 +462,8 @@ function main(array $argv): int
         createOrUpdateTechnicalDoc($normalizedPayload, $date, $author, $role, $outputDir);
         createOrUpdateDailyLog($normalizedPayload, $date, $author, $role, $outputDir);
 
-        $testConfig = resolveTestExecutionConfig($payload, !$structuredMode);
-        $validation = executeTestsAndBuildValidation($payload, $testConfig, $repositoryRoot, $previousValidation);
+        $shouldRunTests = promptForTestExecution($payload, !$structuredMode);
+        $validation = executeTestsAndBuildValidation($payload, $shouldRunTests, $repositoryRoot, $previousValidation);
 
         $technicalValidationHeading = $technicalDefinition['sections'][7];
         $dailyValidationHeading = $dailyDefinition['sections'][7];
@@ -575,4 +498,3 @@ function main(array $argv): int
 if (isset($argv[0]) && realpath((string) $argv[0]) === __FILE__) {
     exit(main($argv));
 }
-

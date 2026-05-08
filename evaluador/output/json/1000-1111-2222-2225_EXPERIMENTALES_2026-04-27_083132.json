@@ -1,0 +1,50 @@
+{
+    "bloque_1": {
+        "publicaciones": [],
+        "libros": [],
+        "proyectos": [],
+        "transferencia": [],
+        "tesis_dirigidas": [],
+        "congresos": [
+            {
+                "id": "cong_001",
+                "es_valido": true,
+                "ambito": "nacional",
+                "tipo": "ponencia_invitada",
+                "proceso_selectivo": true,
+                "id_evento": "2_la_potencia_exponenciacion_de_todos_los_numeros_por_orden_de_llegada_el_resultado",
+                "fuente_texto": "2) La potencia (exponenciación) de todos los números por orden de llegada. El resultado",
+                "confianza_extraccion": 0.55,
+                "requiere_revision": true
+            }
+        ],
+        "otros_meritos_investigacion": []
+    },
+    "bloque_2": {
+        "docencia_universitaria": [],
+        "evaluacion_docente": [],
+        "formacion_docente": [],
+        "material_docente": []
+    },
+    "bloque_3": {
+        "formacion_academica": [],
+        "experiencia_profesional": []
+    },
+    "bloque_4": [],
+    "metadatos_extraccion": {
+        "comite": "EXPERIMENTALES",
+        "subcomite": null,
+        "archivo_pdf": "1000-1111-2222-2225_EXPERIMENTALES_2026-04-27_083132.pdf",
+        "fecha_extraccion": "2026-04-27T08:31:32+00:00",
+        "version_esquema": "2.1-cvn-proyectos-duros",
+        "requiere_revision_manual": true,
+        "fallback_ocr_activado": false,
+        "ocr_disponible": false,
+        "modo_extraccion_texto": "pdftotext",
+        "detalle_extraccion_texto": "pdftotext devolvió 3038 caracteres.",
+        "caracteres_texto_extraido": 3028
+    },
+    "archivo_pdf": "1000-1111-2222-2225_EXPERIMENTALES_2026-04-27_083132.pdf",
+    "json_generado": "1000-1111-2222-2225_EXPERIMENTALES_2026-04-27_083132.json",
+    "texto_extraido": "Ejercicio 1 - BASH\n\n1. INTRODUCCIÓN\nGNU Bash o simplemente Bash (Bourne-again shell) es una popular interfaz de usuario\nde línea de comandos, específicamente un shell de Unix; así como un lenguaje de\nscripting. Bash fue originalmente escrito por Brian Fox para el sistema operativo GNU, y\npretendía ser el reemplazo de software libre del shell Bourne. Lanzado por primera vez en\n1989, se ha utilizado ampliamente como el intérprete de inicio de sesión (login)\npredeterminado para la mayoría de las distribuciones de GNU\/Linux, y también de Mac OS\nX de Apple hasta la versión 10.15. Una versión también está disponible para Windows\n10 y Android. También es el intérprete de órdenes de usuario predeterminado en Solaris\n11.\nBash es un intérprete de órdenes que generalmente se ejecuta en una ventana de\ntexto donde el usuario escribe órdenes en modo texto. Bash también puede leer y ejecutar\nórdenes desde un archivo, llamado guion o 'script'. Al igual que todos los intérpretes de\nUnix, es compatible con el agrupamiento de nombres de archivo (coincidencia de\ncomodines), tuberías, sustitución de comandos, variables y estructuras de\ncontrol para pruebas de condición e iteración. Las palabras reservadas, la sintaxis,\nlas variables de ámbito dinámico y otras características básicas del lenguaje se copian\nde sh. Otras características, por ejemplo, el historial, se copian de csh y ksh. Bash es un\nintérprete de órdenes compatible con POSIX, pero con varias extensiones.\n\n2. ENUNCIADO\nEscriba una script en bash, llamado problema1.sh que tome en ejecución un número X.\nÉste será el número de números, (valga la redundancia), que preguntará el programa en rojo.\nEjemplo:\n$.\/problema1.sh 5\nIntroduce el número 1: 2\nIntroduce el número 2: 3\nIntroduce el número 3: 6\nIntroduce el número 4: 2\nIntroduce el número 5: 1\nLos números 2, 3, 6, 2 y 1 los introduce el usuario porque al ejecutarse se indicó 5 números.\nCon ellos se realizarán las siguientes operaciones:\n1) La multiplicación de todos. El resultado se dará en cyan.\n2) La potencia (exponenciación) de todos los números por orden de llegada. El resultado\nse dará en verde.\n3) La suma de todos. el resultado en azul.\n4) La raíz cuadrada de la suma todos ellos con 4 decimales. El resultado se dará en\nmorado.\n5) Por último indique 5 comandos compuestos, de su elección y defina su\ncomportamiento.\nEjercicio 1 - BASH\n\n3.\n\nRESOLUCIÓN\n#!\/bin\/bash\n#\n#\nVersion:\n#\nAuthor:\n#\nCorreo:\n#\n###########################\n###\nFUNCIONES\n###\n###########################\nfunction echolor()\n{\nCOLORECHO=\"0;37m\" #blanco\nTEXTOECHO=$2\nif [ $1 = \"rojo\" ];then COLORECHO=\"1;31m\" ; fi\nif [ $1 = \"verde\" ];then COLORECHO=\"1;32m\" ; fi\nif [ $1 = \"amarillo\" ];then COLORECHO=\"1;33m\" ; fi\nif [ $1 = \"azul\" ];then COLORECHO=\"1;34m\" ; fi\nif [ $1 = \"morado\" ];then COLORECHO=\"1;35m\" ; fi\nif [ $1 = \"cyan\" ];then COLORECHO=\"1;36m\" ; fi\necho -e \"\\033[$COLORECHO$2\\033[0m\"\n}\n###########################\n### PROGRAMA PRINCIPAL ###\n###########################\nEjercicio 1 - BASH\n\n4.\n\nANEXO: EJEMPLO DE EJECUCIÓN\n\n3"
+}

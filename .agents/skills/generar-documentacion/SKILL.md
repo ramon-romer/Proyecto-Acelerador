@@ -9,18 +9,13 @@ description: Generar y mantener documentacion tecnica diaria y registro diario d
 Generar y mantener los documentos diarios del proyecto con evidencia real del trabajo, acumulacion inteligente y trazabilidad de autoria.
 
 ## Flujo por defecto (interfaz normal)
-En modo humano/interfaz, pedir estas 3 cosas en secuencia (pregunta-respuesta real):
+En modo humano/interfaz, pedir **solo** estas 3 cosas en secuencia (pregunta-respuesta real):
 
-1. `Autor de la documentacion [Basilio Lagares]:`
+1. `Autor de la documentación [Basilio Lagares]:`
 2. Rol segun autor:
 - Si autor es `Basilio Lagares`: `Rol [Desarrollo backend]:`
 - Si no: `Indica el rol del autor:`
-3. `Quieres ejecutar la bateria de tests ahora? [s/N]:`
-
-Si la respuesta a tests es `s`, delegar la configuracion de la bateria con estas preguntas:
-- `Indica solo el nivel: standard, medio o agresivo.`
-- `Indica solo la ventana: 15m, 30m, 45m, 1h o 6h.`
-- Si no se indica valor, usar por defecto: `nivel=standard`, `ventana=15m`.
+3. `¿Quieres ejecutar la batería de tests ahora? [s/N]:`
 
 No pedir JSON, no pedir bloques manuales, no pedir secciones 1..8.
 
@@ -31,7 +26,7 @@ Despues de esas 3 respuestas, la skill continua automaticamente:
 - `docs/registro-diario-YYYY-MM-DD.md`
 3. Si el usuario acepta tests, ejecuta `$ejecutar-tests`.
 4. Documenta resultado real de tests o, si no se ejecutan:
-- `No se han realizado tests en esta ejecucion.`
+- `No se han realizado tests en esta ejecución.`
 
 ## Modo estructurado (automatizacion)
 Solo se activa de forma explicita con payload/bandera:

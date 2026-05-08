@@ -1,0 +1,47 @@
+﻿{
+    "generated_at":  "2026-03-23T12:51:26",
+    "window_start":  "2026-03-23T12:35:27",
+    "window_end":  "2026-03-23T12:51:04",
+    "duration_minutes_approx":  15.6,
+    "deadline":  "2026-03-23T12:55:00",
+    "completed_before_deadline":  true,
+    "phases":  [
+                   {
+                       "phase":  "1/3",
+                       "loops":  366,
+                       "unit_pass":  366,
+                       "unit_fail":  0,
+                       "smoke_pass":  1098,
+                       "smoke_fail":  0
+                   },
+                   {
+                       "phase":  "2/3",
+                       "loops":  381,
+                       "unit_pass":  381,
+                       "unit_fail":  0,
+                       "smoke_pass":  1143,
+                       "smoke_fail":  0
+                   },
+                   {
+                       "phase":  "3/3",
+                       "loops":  381,
+                       "unit_pass":  381,
+                       "unit_fail":  0,
+                       "smoke_pass":  1143,
+                       "smoke_fail":  0
+                   }
+               ],
+    "totals":  {
+                   "loops":  1128,
+                   "unit_pass":  1128,
+                   "unit_fail":  0,
+                   "smoke_pass":  3384,
+                   "smoke_fail":  0
+               },
+    "tests_in_cycle":  [
+                           "php mcp-server/tests/unit_extract_pdf.php",
+                           "php mcp-server/extract_pdf.php --fuente=db --config=mcp-server/resultados/fuente_db_config.json",
+                           "php mcp-server/extract_pdf.php --fuente=db --dsn=sqlite:mcp-server/resultados/fuente_test.db --query=\"SELECT texto FROM docs\" --text_column=texto --max_text_chars=100 (espera error controlado)",
+                           "php mcp-server/ocr_probe.php forced_ocr mcp-server/pdf/prueba.pdf"
+                       ]
+}

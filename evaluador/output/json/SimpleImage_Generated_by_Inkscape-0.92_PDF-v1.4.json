@@ -1,0 +1,37 @@
+{
+    "bloque_1": {
+        "publicaciones": [],
+        "libros": [],
+        "proyectos": [],
+        "transferencia": [],
+        "tesis_dirigidas": [],
+        "congresos": [],
+        "otros_meritos_investigacion": []
+    },
+    "bloque_2": {
+        "docencia_universitaria": [],
+        "evaluacion_docente": [],
+        "formacion_docente": [],
+        "material_docente": []
+    },
+    "bloque_3": {
+        "formacion_academica": [],
+        "experiencia_profesional": []
+    },
+    "bloque_4": [],
+    "metadatos_extraccion": {
+        "comite": "CSYJ",
+        "subcomite": null,
+        "archivo_pdf": null,
+        "fecha_extraccion": "2026-04-09T13:07:48+02:00",
+        "version_esquema": "1.0",
+        "requiere_revision_manual": true,
+        "modo_extraccion_texto": "pdftotext_degradado",
+        "fallback_ocr_activado": false,
+        "detalle_extraccion_texto": "pdftotext_ok;ocr_no_disponible",
+        "ocr_disponible": false
+    },
+    "archivo_pdf": "SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.pdf",
+    "json_generado": "SimpleImage_Generated_by_Inkscape-0.92_PDF-v1.4.json",
+    "texto_extraido": "TEST"
+}

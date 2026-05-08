@@ -1,0 +1,112 @@
+{
+    "run_id": "F4C_EXEC_20260406_114115",
+    "database": "acelerador_staging_20260406",
+    "snapshot_meta": {
+        "run_id": "F4C_20260406_113816",
+        "database": "acelerador_staging_20260406",
+        "generated_at": "2026-04-06T11:38:16+02:00",
+        "snapshot_file": "C:\\Users\\basil\\Documents\\GitHub\\Proyecto-Acelerador\\.agents\\backups\\db\\snapshot_acelerador_staging_20260406_20260406_113816.sql",
+        "sha256": "5e941a478d1cc87cf8751a7553fd734ea524540aab313b24744abd071790dd31",
+        "bytes": 13992,
+        "tables": [
+            "tbl_convocatoria",
+            "tbl_grupo",
+            "tbl_grupo_profesor",
+            "tbl_merito",
+            "tbl_profesor",
+            "tbl_publicacion",
+            "tbl_usuario"
+        ],
+        "row_counts": {
+            "tbl_convocatoria": 0,
+            "tbl_grupo": 4,
+            "tbl_grupo_profesor": 2,
+            "tbl_merito": 0,
+            "tbl_profesor": 21,
+            "tbl_publicacion": 0,
+            "tbl_usuario": 11
+        }
+    },
+    "actions": [
+        {
+            "step": "PASO_2",
+            "action": "create_aux_tables",
+            "created_or_verified": 5
+        },
+        {
+            "step": "PASO_3A",
+            "action": "audit_from_tbl_profesor",
+            "affected": 21
+        },
+        {
+            "step": "PASO_3A",
+            "action": "audit_from_tbl_usuario",
+            "affected": 11
+        },
+        {
+            "step": "PASO_3C",
+            "action": "set_default_canonical_status",
+            "affected": 21
+        },
+        {
+            "step": "PASO_3C",
+            "action": "apply_canonical_rule_duplicates",
+            "affected": 9
+        },
+        {
+            "step": "PASO_3C",
+            "action": "force_manual_review_ads",
+            "affected": 2
+        },
+        {
+            "step": "PASO_3B",
+            "action": "quarantine_empty_profile",
+            "affected": 4
+        },
+        {
+            "step": "PASO_3A",
+            "action": "mark_password_migration_candidates",
+            "affected": 21
+        },
+        {
+            "step": "PASO_3C",
+            "action": "quarantine_non_canonical_duplicates",
+            "affected": 8
+        },
+        {
+            "step": "PASO_3C",
+            "action": "quarantine_manual_review_duplicates",
+            "affected": 2
+        },
+        {
+            "step": "PASO_3A",
+            "action": "quarantine_profesor_without_usuario",
+            "affected": 3
+        },
+        {
+            "step": "PASO_3A",
+            "action": "quarantine_usuario_without_profesor",
+            "affected": 1
+        },
+        {
+            "step": "PASO_3D",
+            "action": "quarantine_groups_with_orphan_tutor",
+            "affected": 3
+        },
+        {
+            "step": "PASO_3D",
+            "action": "quarantine_orphan_group_assignments",
+            "affected": 1
+        },
+        {
+            "step": "PASO_3E",
+            "action": "create_rama_normalization_audit",
+            "affected": 21
+        },
+        {
+            "step": "PASO_3B",
+            "action": "check_valid_admins",
+            "valid_admin_count": 0
+        }
+    ]
+}

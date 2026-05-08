@@ -1,0 +1,2 @@
+<?php
+// Autenticación de usuarios
