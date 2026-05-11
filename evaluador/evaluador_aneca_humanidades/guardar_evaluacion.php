@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 require __DIR__ . '/config.php';
 require __DIR__ . '/funciones_evaluador_humanidades.php';
-require_once __DIR__ . '/../src/evaluaciones_traceability.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     die('Acceso no permitido.');
@@ -40,8 +39,6 @@ if (!isset($jsonEntrada['bloque_3']) || !is_array($jsonEntrada['bloque_3'])) {
 if (!isset($jsonEntrada['bloque_4']) || !is_array($jsonEntrada['bloque_4'])) {
     $jsonEntrada['bloque_4'] = [];
 }
-
-$orcidCandidato = aneca_attach_candidate_orcid($jsonEntrada);
 
 $defaultsBloque1 = [
     'publicaciones',
@@ -86,6 +83,13 @@ foreach ($defaultsBloque3 as $key) {
  * ========================================================= */
 $resultado = evaluar_expediente($jsonEntrada);
 
+/*
+ * Guardamos también el cálculo dentro del JSON para que la pantalla
+ * ver_evaluacion.php pueda mostrar diagnóstico y asesor orientativo
+ * con el mismo aspecto que Experimentales.
+ */
+$jsonEntrada['resultado_calculo'] = $resultado;
+
 $jsonNormalizado = json_encode($jsonEntrada, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
 if ($jsonNormalizado === false) {
     die('No se pudo codificar el JSON de entrada.');
@@ -96,7 +100,6 @@ if ($jsonNormalizado === false) {
  * ========================================================= */
 $sql = "INSERT INTO evaluaciones (
     nombre_candidato,
-    orcid_candidato,
     area,
     categoria,
     json_entrada,
@@ -124,7 +127,6 @@ $sql = "INSERT INTO evaluaciones (
     cumple_regla_2
 ) VALUES (
     :nombre_candidato,
-    :orcid_candidato,
     :area,
     :categoria,
     :json_entrada,
@@ -156,7 +158,6 @@ $stmt = $pdo->prepare($sql);
 
 $stmt->execute([
     ':nombre_candidato' => $nombre,
-    ':orcid_candidato' => $orcidCandidato,
     ':area' => 'Humanidades',
     ':categoria' => 'PCD/PUP',
     ':json_entrada' => $jsonNormalizado,

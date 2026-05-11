@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 require __DIR__ . '/config.php';
 require __DIR__ . '/funciones_evaluador_tecnicas.php';
-require_once __DIR__ . '/../src/evaluaciones_traceability.php';
 
 function tec_post_array(string $key): array
 {
@@ -359,7 +358,6 @@ tec_append_items($jsonBase['bloque_4'], $bloque4Manual);
 /* =========================================================
  * EVALUAR
  * ========================================================= */
-$orcidCandidato = aneca_attach_candidate_orcid($jsonBase);
 $resultado = evaluar_expediente($jsonBase);
 
 $jsonBase['resultado_calculo'] = [
@@ -388,7 +386,6 @@ if ($jsonFinal === false) {
  * ========================================================= */
 $sql = "INSERT INTO evaluaciones (
     nombre_candidato,
-    orcid_candidato,
     area,
     categoria,
     json_entrada,
@@ -426,7 +423,6 @@ $sql = "INSERT INTO evaluaciones (
 fecha_creacion
 ) VALUES (
     :nombre_candidato,
-    :orcid_candidato,
     :area,
     :categoria,
     :json_entrada,
@@ -469,7 +465,6 @@ NOW()
 $stmt = $pdo->prepare($sql);
 $stmt->execute([
     ':nombre_candidato' => $nombreCandidato,
-    ':orcid_candidato' => $orcidCandidato,
     ':area' => 'Técnicas',
     ':categoria' => 'PCD/PUP',
     ':json_entrada' => $jsonFinal,

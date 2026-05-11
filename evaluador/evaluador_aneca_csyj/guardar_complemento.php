@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 require __DIR__ . '/config.php';
 require __DIR__ . '/funciones_evaluador_csyj.php';
-require_once __DIR__ . '/../src/evaluaciones_traceability.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     die('Acceso no permitido.');
@@ -132,7 +131,6 @@ csyj_append_items($jsonBase['bloque_3']['experiencia_profesional'], csyj_normali
 
 csyj_append_items($jsonBase['bloque_4'], csyj_normalizar_lista_post(csyj_post_array('bloque4')));
 
-$orcidCandidato = aneca_attach_candidate_orcid($jsonBase);
 $resultado = evaluar_expediente($jsonBase);
 $jsonBase['resultado_calculo'] = [
     'puntuaciones' => $resultado['puntuaciones'] ?? [],
@@ -153,7 +151,6 @@ if ($jsonFinal === false) {
 
 $sql = "INSERT INTO evaluaciones (
     nombre_candidato,
-    orcid_candidato,
     area,
     categoria,
     json_entrada,
@@ -182,7 +179,6 @@ $sql = "INSERT INTO evaluaciones (
     fecha_creacion
 ) VALUES (
     :nombre_candidato,
-    :orcid_candidato,
     :area,
     :categoria,
     :json_entrada,
@@ -214,7 +210,6 @@ $sql = "INSERT INTO evaluaciones (
 $stmt = $pdo->prepare($sql);
 $stmt->execute([
     ':nombre_candidato' => $nombreCandidato,
-    ':orcid_candidato' => $orcidCandidato,
     ':area' => 'Ciencias Sociales y Jurídicas',
     ':categoria' => 'PCD/PUP',
     ':json_entrada' => $jsonFinal,

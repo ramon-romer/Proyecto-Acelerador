@@ -1,14 +1,23 @@
 <?php
-
 declare(strict_types=1);
 
 require_once __DIR__ . '/compat_mbstring.php';
 
+/**
+ * Extractor común para CVN FECYT.
+ *
+ * NO evalúa por rama.
+ * Solo convierte el texto del CVN en una estructura JSON común.
+ *
+ * Compatible con:
+ * - Experimentales
+ * - Humanidades
+ */
 class FecytCvnExtractor
 {
     public function extraer(string $texto): array
     {
-        $texto = $this->normalizarTexto($texto);
+        $texto = $this->normalizar($texto);
 
         return [
             'bloque_1' => [
@@ -32,81 +41,266 @@ class FecytCvnExtractor
             ],
             'bloque_4' => $this->extraerBloque4($texto),
             'metadatos_extraccion' => [
-                'comite' => 'EXPERIMENTALES',
-                'subcomite' => 'CVN_FECYT',
-                'archivo_pdf' => null,
+                'formato' => 'CVN_FECYT',
+                'version_esquema' => '3.5-cvn-fecyt-comun',
                 'fecha_extraccion' => date('c'),
-                'version_esquema' => '2.2-cvn-fecyt',
                 'requiere_revision_manual' => true,
             ],
         ];
     }
 
-    private function normalizarTexto(string $texto): string
-    {
-        $texto = str_replace(["\r\n", "\r", "\f"], ["\n", "\n", "\n"], $texto);
-        $texto = preg_replace('/\n\s*\d{1,3}\s*\n\s*[a-f0-9]{32}\s*\n/iu', "\n", $texto) ?? $texto;
-        $texto = preg_replace('/\n\s*[a-f0-9]{32}\s*\n/iu', "\n", $texto) ?? $texto;
-        $texto = preg_replace('/[ \t]+/u', ' ', $texto) ?? $texto;
-        $texto = preg_replace('/\n{3,}/u', "\n\n", $texto) ?? $texto;
-        return trim($texto);
-    }
-
     private function extraerPublicaciones(string $texto): array
     {
-        $seccion = $this->extraerPrimeraSeccionDisponible($texto, [
-            ['Publicaciones, documentos científicos y técnicos', 'Trabajos presentados en congresos nacionales o internacionales'],
-            ['Publicaciones, documentos cientificos y tecnicos', 'Trabajos presentados en congresos nacionales o internacionales'],
+        $sec = $this->seccion($texto, [
+            'Publicaciones, documentos científicos y técnicos',
+            'Publicaciones, documentos cientificos y tecnicos',
+        ], [
+            'Trabajos presentados en congresos nacionales o internacionales',
+            'Trabajos presentados en jornadas',
+            'Trabajos presentados en jornadas, seminarios',
+            'Actividades de divulgación',
+            'Actividades de divulgacion',
+            'Otros méritos',
+            'Otros meritos',
         ]);
 
         $items = [];
-        foreach ($this->extraerBloquesNumerados($seccion) as $idx => $bloque) {
-            $bloqueLimpio = trim($bloque);
-            if ($bloqueLimpio === '') {
+
+        if (trim($sec) === '') {
+            return $items;
+        }
+
+        $sec = preg_replace(
+            '/^.*?Publicaciones,\s*documentos\s*cient[ií]ficos\s*y\s*t[eé]cnicos\s*/isu',
+            '',
+            $sec
+        ) ?? $sec;
+
+        $registros = $this->registrosPublicaciones($sec);
+
+        foreach ($registros as $r) {
+            $low = $this->lower($r);
+
+            if (
+                !str_contains($low, 'tipo de producción') &&
+                !str_contains($low, 'tipo de produccion')
+            ) {
                 continue;
             }
 
-            $tipoProduccion = $this->capturarCampo($bloqueLimpio, 'Tipo de producción');
-            $tipoSoporte = $this->capturarCampo($bloqueLimpio, 'Tipo de soporte');
-            if (!$this->contieneAlgunTermino((string)$tipoProduccion, ['artículo', 'articulo']) || !$this->contieneAlgunTermino((string)$tipoSoporte, ['revista'])) {
+            $esArticuloCientifico =
+                str_contains($low, 'tipo de producción: artículo científico') ||
+                str_contains($low, 'tipo de produccion: articulo cientifico') ||
+                str_contains($low, 'tipo de producción: articulo científico') ||
+                str_contains($low, 'tipo de produccion: artículo cientifico') ||
+                str_contains($low, 'artículo científico') ||
+                str_contains($low, 'articulo cientifico');
+
+            $esDivulgacion =
+                str_contains($low, 'artículo de divulgación') ||
+                str_contains($low, 'articulo de divulgacion') ||
+                str_contains($low, 'libro de divulgación') ||
+                str_contains($low, 'libro de divulgacion');
+
+            $esLibro =
+                str_contains($low, 'tipo de producción: libro') ||
+                str_contains($low, 'tipo de produccion: libro') ||
+                str_contains($low, 'libro de divulgación') ||
+                str_contains($low, 'libro de divulgacion');
+
+            if (!$esArticuloCientifico || $esDivulgacion || $esLibro) {
                 continue;
             }
 
-            $numAutores = $this->capturarEntero($bloqueLimpio, 'Nº total de autores')
-                ?? $this->capturarEntero($bloqueLimpio, 'No total de autores')
-                ?? $this->capturarEntero($bloqueLimpio, 'N total de autores')
-                ?? 1;
-            $posFirma = $this->capturarEntero($bloqueLimpio, 'Posición de firma')
-                ?? $this->capturarEntero($bloqueLimpio, 'Posicion de firma')
-                ?? 1;
-            $correspondencia = $this->capturarCampo($bloqueLimpio, 'Autor de correspondencia');
-            $anio = $this->detectarAnioPublicacion($bloqueLimpio);
-            $anioActual = (int)date('Y');
-            $tipoIndice = $this->inferirTipoIndicePublicacion($bloqueLimpio);
-            $cuartil = $this->inferirCuartilPublicacion($bloqueLimpio);
+            $items[] = $this->crearPublicacionItem($r, count($items) + 1);
+        }
 
-            $items[] = [
-                'id' => 'pub_' . str_pad((string)($idx + 1), 3, '0', STR_PAD_LEFT),
-                'tipo' => 'articulo',
-                'es_valida' => true,
-                'es_divulgacion' => false,
-                'es_docencia' => false,
-                'es_acta_congreso' => false,
-                'es_informe_proyecto' => false,
-                'tipo_indice' => $tipoIndice,
-                'cuartil' => $cuartil,
-                'tercil' => $this->cuartilATercil($cuartil),
-                'es_area_matematicas' => $this->esAreaMatematicas($bloqueLimpio),
-                'afinidad' => $this->detectarAfinidad($bloqueLimpio),
-                'posicion_autor' => $this->mapearPosicionAutor($posFirma, $numAutores, $correspondencia),
-                'numero_autores' => $numAutores,
-                'citas' => 0,
-                'anios_desde_publicacion' => $anio !== null ? max(0, $anioActual - $anio) : 3,
-                'numero_trabajos_misma_revista' => 1,
-                'fuente_texto' => $bloqueLimpio,
-                'confianza_extraccion' => 0.78,
-                'requiere_revision' => true,
-            ];
+        if (count($items) === 0 && $this->contiene($sec, ['artículo científico', 'articulo cientifico'])) {
+            $items = $this->extraerPublicacionesPorTipoProduccion($sec);
+        }
+
+        return $items;
+    }
+
+    private function registrosPublicaciones(string $sec): array
+    {
+        $sec = trim($sec);
+
+        if ($sec === '') {
+            return [];
+        }
+
+        /*
+         * Normalización específica:
+         *
+         * Convierte:
+         * 1
+         * Autor...
+         *
+         * en:
+         * 1 Autor...
+         */
+        $sec = preg_replace('/(^|\n)\s*(\d{1,3})\s*\n\s*/u', "\n$2 ", $sec) ?? $sec;
+
+        $sec = preg_replace('/\n\s*[a-f0-9]{32}\s*\n/iu', "\n", $sec) ?? $sec;
+        $sec = preg_replace('/\n\s*\d+\s*\n/u', "\n", $sec) ?? $sec;
+
+        $partes = preg_split('/\n\s*(?=\d{1,3}\s+[A-ZÁÉÍÓÚÑa-záéíóúñ])/u', "\n" . $sec) ?: [];
+
+        $registros = [];
+
+        foreach ($partes as $parte) {
+            $parte = trim($parte);
+
+            if ($parte === '') {
+                continue;
+            }
+
+            $low = $this->lower($parte);
+
+            if (
+                !str_contains($low, 'tipo de producción') &&
+                !str_contains($low, 'tipo de produccion') &&
+                !str_contains($low, 'issn') &&
+                !str_contains($low, 'doi')
+            ) {
+                continue;
+            }
+
+            if (mb_strlen($parte, 'UTF-8') < 40) {
+                continue;
+            }
+
+            $registros[] = $parte;
+        }
+
+        if (count($registros) === 0) {
+            if (preg_match_all(
+                '/(?:^|\n)\s*\d{1,3}\s+.*?(?=(?:\n\s*\d{1,3}\s+[A-ZÁÉÍÓÚÑa-záéíóúñ])|\z)/su',
+                "\n" . $sec,
+                $m
+            )) {
+                $registros = array_values(array_filter(array_map('trim', $m[0])));
+            }
+        }
+
+        if (count($registros) === 0) {
+            return [$sec];
+        }
+
+        return $registros;
+    }
+
+    private function crearPublicacionItem(string $r, int $n): array
+    {
+        $numAutores = $this->enteroCampo($r, 'Nº total de autores')
+            ?? $this->enteroCampo($r, 'No total de autores')
+            ?? $this->enteroCampo($r, 'Número total de autores')
+            ?? $this->contarAutores($r);
+
+        $pos = $this->enteroCampo($r, 'Posición de firma')
+            ?? $this->enteroCampo($r, 'Posicion de firma')
+            ?? 1;
+
+        $autorCorrespondenciaTxt = (string)($this->campo($r, 'Autor de correspondencia') ?? '');
+
+        $tipoIndice = $this->inferirIndice($r);
+        $cuartil = $this->inferirCuartil($r);
+        $tercil = $this->inferirTercil($cuartil);
+
+        return [
+            'id' => 'pub_' . str_pad((string)$n, 3, '0', STR_PAD_LEFT),
+
+            'tipo' => 'articulo',
+            'tipo_publicacion' => 'articulo_cientifico',
+            'es_valido' => true,
+            'es_valida' => true,
+            'es_articulo_cientifico' => true,
+            'es_divulgacion' => false,
+            'es_docencia' => false,
+
+            /*
+             * Campos compatibles con Experimentales y Humanidades.
+             */
+            'tipo_indice' => $tipoIndice,
+            'indice' => $tipoIndice,
+            'indexada' => $tipoIndice !== 'OTRO',
+            'jcr' => $tipoIndice === 'JCR',
+            'cuartil' => $cuartil,
+            'q' => $cuartil,
+            'tercil' => $tercil,
+            'subtipo_indice' => $tercil,
+            'calidad' => (
+                $tipoIndice === 'JCR'
+                    ? 'alta'
+                    : (in_array($tipoIndice, ['SCOPUS', 'SJR', 'FECYT'], true) ? 'media' : 'baja')
+            ),
+
+            'afinidad' => $this->inferirAfinidad($r),
+            'posicion_autor' => $this->posicionAutor(
+                $pos,
+                max(1, $numAutores),
+                $autorCorrespondenciaTxt
+            ),
+            'numero_autores' => max(1, $numAutores),
+            'num_autores' => max(1, $numAutores),
+            'autor_correspondencia' => $this->contiene($autorCorrespondenciaTxt, ['sí', 'si', 'yes']),
+
+            'es_area_matematicas' => $this->contiene($r, [
+                'matemática',
+                'matematica',
+                'mathematical',
+                'mathematics',
+                'quantum',
+                'topological',
+                'symmetry',
+                'phase transition',
+                'lipkin',
+                'graphene',
+                'qudit',
+                'qudit',
+                'hilbert',
+                'coherent states',
+                'quantum information'
+            ]),
+
+            'anio' => $this->anio($r),
+            'fuente_texto' => trim($r),
+            'confianza_extraccion' => 0.92,
+            'requiere_revision' => true,
+        ];
+    }
+
+    private function extraerPublicacionesPorTipoProduccion(string $sec): array
+    {
+        $items = [];
+        $bloques = preg_split('/\n\s*(?=\d+\s+)/u', trim($sec)) ?: [];
+
+        foreach ($bloques as $r) {
+            $r = trim($r);
+            $low = $this->lower($r);
+
+            if ($r === '') {
+                continue;
+            }
+
+            if (
+                !str_contains($low, 'artículo científico') &&
+                !str_contains($low, 'articulo cientifico')
+            ) {
+                continue;
+            }
+
+            if (
+                str_contains($low, 'artículo de divulgación') ||
+                str_contains($low, 'articulo de divulgacion') ||
+                str_contains($low, 'libro de divulgación') ||
+                str_contains($low, 'libro de divulgacion')
+            ) {
+                continue;
+            }
+
+            $items[] = $this->crearPublicacionItem($r, count($items) + 1);
         }
 
         return $items;
@@ -114,86 +308,132 @@ class FecytCvnExtractor
 
     private function extraerLibros(string $texto): array
     {
-        $seccion = $this->extraerPrimeraSeccionDisponible($texto, [
-            ['Libros y capítulos de libro', 'Proyectos de I+D+i financiados en convocatorias competitivas de Administraciones o entidades públicas y privadas'],
-            ['Libros y capitulos de libro', 'Proyectos de I+D+i financiados en convocatorias competitivas de Administraciones o entidades públicas y privadas'],
-            ['Libros y capítulos de libro', 'Trabajos presentados en congresos nacionales o internacionales'],
+        $items = [];
+
+        $secLibros = $this->seccion($texto, [
+            'Libros y capítulos de libro',
+            'Libros y capitulos de libro',
+        ], [
+            'Proyectos de I+D+i',
+            'Trabajos presentados',
+            'Experiencia científica y tecnológica',
+            'Experiencia cientifica y tecnologica',
         ]);
 
-        $items = [];
-        foreach ($this->extraerBloquesNumerados($seccion) as $idx => $bloque) {
-            $bloqueLimpio = trim($bloque);
-            if ($bloqueLimpio === '') {
+        foreach ($this->registros($secLibros) as $r) {
+            if (!$this->contiene($r, ['isbn', 'editorial', 'libro', 'capítulo', 'capitulo'])) {
                 continue;
             }
 
-            $tipo = 'libro';
-            if ($this->contieneAlgunTermino($bloqueLimpio, ['capítulo', 'capitulo'])) {
-                $tipo = 'capitulo';
-            }
+            $items[] = $this->crearLibroItem($r, count($items) + 1);
+        }
 
-            $items[] = [
-                'id' => 'lib_' . str_pad((string)($idx + 1), 3, '0', STR_PAD_LEFT),
-                'tipo' => $tipo,
-                'es_valido' => true,
-                'es_libro_investigacion' => true,
-                'es_autoedicion' => false,
-                'es_acta_congreso' => false,
-                'es_labor_edicion' => false,
-                'nivel_editorial' => $this->detectarNivelEditorial($bloqueLimpio),
-                'nivel_coleccion' => 'general',
-                'afinidad' => $this->detectarAfinidad($bloqueLimpio),
-                'numero_autores' => max(1, $this->contarAutoresPorPrimeraLinea($bloqueLimpio)),
-                'posicion_autor' => 'intermedio',
-                'nivel_resenas' => 'sin_datos',
-                'fuente_texto' => $bloqueLimpio,
-                'confianza_extraccion' => 0.65,
-                'requiere_revision' => true,
-            ];
+        $secPubs = $this->seccion($texto, [
+            'Publicaciones, documentos científicos y técnicos',
+            'Publicaciones, documentos cientificos y tecnicos',
+        ], [
+            'Trabajos presentados en congresos nacionales o internacionales',
+            'Trabajos presentados en jornadas',
+            'Actividades de divulgación',
+            'Actividades de divulgacion',
+            'Otros méritos',
+            'Otros meritos',
+        ]);
+
+        foreach ($this->registrosPublicaciones($secPubs) as $r) {
+            $low = $this->lower($r);
+
+            if (
+                str_contains($low, 'tipo de producción: libro') ||
+                str_contains($low, 'tipo de produccion: libro') ||
+                str_contains($low, 'libro de divulgación') ||
+                str_contains($low, 'libro de divulgacion')
+            ) {
+                $items[] = $this->crearLibroItem($r, count($items) + 1);
+            }
         }
 
         return $items;
     }
 
+    private function crearLibroItem(string $r, int $n): array
+    {
+        $low = $this->lower($r);
+
+        $tipo = 'libro';
+
+        if (str_contains($low, 'capítulo') || str_contains($low, 'capitulo')) {
+            $tipo = 'capitulo';
+        }
+
+        $esDivulgacion = str_contains($low, 'divulgación') || str_contains($low, 'divulgacion');
+
+        return [
+            'id' => 'lib_' . str_pad((string)$n, 3, '0', STR_PAD_LEFT),
+            'tipo' => $tipo,
+            'es_valido' => true,
+            'es_libro_investigacion' => !$esDivulgacion,
+            'es_divulgacion' => $esDivulgacion,
+            'nivel_editorial' => $this->nivelEditorial($r),
+            'afinidad' => $this->inferirAfinidad($r),
+            'numero_autores' => $this->contarAutores($r),
+            'anio' => $this->anio($r),
+            'fuente_texto' => trim($r),
+            'confianza_extraccion' => 0.75,
+            'requiere_revision' => true,
+        ];
+    }
+
     private function extraerProyectos(string $texto): array
     {
-        $seccion = $this->extraerPrimeraSeccionDisponible($texto, [
-            ['Proyectos de I+D+i financiados en convocatorias competitivas de Administraciones o entidades públicas y privadas', 'Actividades científicas y tecnológicas'],
-            ['Proyectos de I+D+i financiados en convocatorias competitivas de Administraciones o entidades publicas y privadas', 'Actividades científicas y tecnológicas'],
-            ['Proyectos de I+D+i financiados en convocatorias competitivas', 'Actividades científicas y tecnológicas'],
+        $sec = $this->seccion($texto, [
+            'Proyectos de I+D+i financiados en convocatorias competitivas',
+            'Proyectos de investigación y contratos de investigación',
+            'Proyectos de investigacion y contratos de investigacion',
+        ], [
+            'Resultados',
+            'Propiedad industrial e intelectual',
+            'Actividades científicas y tecnológicas',
+            'Actividades cientificas y tecnologicas',
+            'Producción científica',
+            'Produccion cientifica',
+            'Publicaciones, documentos científicos y técnicos',
         ]);
 
         $items = [];
-        foreach ($this->extraerBloquesNumerados($seccion) as $idx => $bloque) {
-            $bloqueLimpio = trim($bloque);
-            if ($bloqueLimpio === '') {
+
+        foreach ($this->registros($sec) as $r) {
+            if (!$this->contiene($r, [
+                'nombre del proyecto',
+                'grado de contribución',
+                'grado de contribucion',
+                'entidad de realización',
+                'entidad de realizacion',
+                'cuantía total',
+                'cuantia total',
+                'fecha de inicio-fin'
+            ])) {
                 continue;
             }
 
-            $ambito = mb_strtolower((string)$this->capturarCampo($bloqueLimpio, 'Ámbito geográfico'), 'UTF-8');
-            if ($ambito === '') {
-                $ambito = mb_strtolower((string)$this->capturarCampo($bloqueLimpio, 'Ambito geográfico'), 'UTF-8');
-            }
-            $rolFuente = (string)$this->capturarCampo($bloqueLimpio, 'Grado de contribución');
-            if ($rolFuente === '') {
-                $rolFuente = (string)$this->capturarCampo($bloqueLimpio, 'Grado de contribucion');
-            }
+            $rol = (string)($this->campo($r, 'Grado de contribución')
+                ?? $this->campo($r, 'Grado de contribucion')
+                ?? $this->campo($r, 'Tipo de participación')
+                ?? $this->campo($r, 'Tipo de participacion')
+                ?? 'investigador');
 
             $items[] = [
-                'id' => 'proy_' . str_pad((string)($idx + 1), 3, '0', STR_PAD_LEFT),
+                'id' => 'proy_' . str_pad((string)(count($items) + 1), 3, '0', STR_PAD_LEFT),
                 'es_valido' => true,
                 'esta_certificado' => true,
-                'tipo_proyecto' => $this->mapearTipoProyecto($ambito),
-                'rol' => $this->mapearRolProyecto($rolFuente, $bloqueLimpio),
-                'rol_detectado' => $this->mapearRolProyecto($rolFuente, $bloqueLimpio),
+                'tipo_proyecto' => $this->tipoProyecto($r),
+                'rol' => $this->rolProyecto($rol . ' ' . $r),
+                'rol_detectado' => $this->rolProyecto($rol . ' ' . $r),
                 'es_contrato_laboral' => false,
-                'grado_tipo' => null,
-                'grado_otros' => $rolFuente,
-                'dedicacion' => 'completa',
-                'anios_duracion' => $this->detectarDuracionEnAnios($bloqueLimpio),
-                'continuidad' => false,
-                'fuente_texto' => $bloqueLimpio,
-                'confianza_extraccion' => 0.90,
+                'anios_duracion' => $this->duracionAnios($r),
+                'cuantia' => $this->extraerCuantia($r),
+                'fuente_texto' => trim($r),
+                'confianza_extraccion' => 0.80,
                 'requiere_revision' => true,
             ];
         }
@@ -203,28 +443,38 @@ class FecytCvnExtractor
 
     private function extraerTransferencia(string $texto): array
     {
-        $seccion = $this->extraerPrimeraSeccionDisponible($texto, [
-            ['Patentes', 'Trabajos presentados en congresos nacionales o internacionales'],
-            ['Transferencia tecnológica', 'Trabajos presentados en congresos nacionales o internacionales'],
-            ['Transferencia tecnologica', 'Trabajos presentados en congresos nacionales o internacionales'],
+        $sec = $this->seccion($texto, [
+            'Propiedad industrial e intelectual',
+            'Transferencia',
+        ], [
+            'Actividades científicas y tecnológicas',
+            'Actividades cientificas y tecnologicas',
+            'Producción científica',
+            'Produccion cientifica',
+            'Publicaciones, documentos científicos y técnicos',
+            'Trabajos presentados',
         ]);
 
         $items = [];
-        foreach ($this->extraerBloquesNumerados($seccion) as $idx => $bloque) {
-            $bloqueLimpio = trim($bloque);
-            if ($bloqueLimpio === '') {
+
+        foreach ($this->registros($sec) as $r) {
+            if (!$this->contiene($r, ['propiedad', 'patente', 'registro', 'registrada', 'concesión', 'concesion'])) {
                 continue;
             }
 
             $items[] = [
-                'id' => 'trans_' . str_pad((string)($idx + 1), 3, '0', STR_PAD_LEFT),
+                'id' => 'trans_' . str_pad((string)(count($items) + 1), 3, '0', STR_PAD_LEFT),
                 'es_valido' => true,
-                'tipo' => $this->detectarTipoTransferencia($bloqueLimpio),
-                'impacto_externo' => true,
-                'liderazgo' => $this->contieneAlgunTermino($bloqueLimpio, ['investigador principal', 'responsable', 'titular']),
-                'participacion_menor' => false,
-                'fuente_texto' => $bloqueLimpio,
-                'confianza_extraccion' => 0.80,
+                'tipo' => 'propiedad_industrial_intelectual',
+                'estado' => $this->contiene($r, ['fecha de concesión', 'fecha de concesion', 'concedida'])
+                    ? 'concedida'
+                    : 'registrada',
+                'ambito' => $this->contiene($r, ['internacional', 'europea', 'europeo'])
+                    ? 'internacional'
+                    : 'nacional',
+                'relevancia' => 'media',
+                'fuente_texto' => trim($r),
+                'confianza_extraccion' => 0.78,
                 'requiere_revision' => true,
             ];
         }
@@ -234,114 +484,39 @@ class FecytCvnExtractor
 
     private function extraerTesisDirigidas(string $texto): array
     {
-        $seccion = $this->extraerPrimeraSeccionDisponible($texto, [
-            ['Dirección de tesis doctorales y/o trabajos fin de estudios', 'Pluralidad, interdisciplinariedad y complejidad docente'],
-            ['Dirección de tesis doctorales y/o trabajos fin de estudios', 'Experiencia científica y tecnológica'],
+        $sec = $this->seccion($texto, [
+            'Dirección de tesis doctorales y/o trabajos fin de estudios',
+            'Direccion de tesis doctorales y/o trabajos fin de estudios',
+        ], [
+            'Tutorías académicas de estudiantes',
+            'Tutorias academicas de estudiantes',
+            'Cursos y seminarios impartidos',
+            'Pluralidad, interdisciplinariedad',
+            'Experiencia científica y tecnológica',
+            'Experiencia cientifica y tecnologica',
         ]);
 
-        if ($seccion === '') {
-            return [];
-        }
-
-        $tipoProyecto = mb_strtolower((string)$this->capturarCampo($seccion, 'Tipo de proyecto'), 'UTF-8');
-        if ($tipoProyecto !== '' && !$this->contieneAlgunTermino($tipoProyecto, ['tesis doctoral', 'doctorado'])) {
-            return [];
-        }
-
-        $codirector = $this->capturarCampo($seccion, 'Codirector/a tesis');
-
-        return [[
-            'id' => 'tesis_001',
-            'es_valido' => true,
-            'tipo' => 'dirigida',
-            'proyecto_aprobado' => true,
-            'doctorado_europeo' => false,
-            'mencion_calidad' => false,
-            'numero_codirectores' => $codirector !== null && trim($codirector) !== '' ? 1 : 0,
-            'fuente_texto' => trim($seccion),
-            'confianza_extraccion' => 0.80,
-            'requiere_revision' => true,
-        ]];
-    }
-
-    private function extraerCongresos(string $texto): array
-    {
         $items = [];
 
-        $seccionCongresos = $this->extraerPrimeraSeccionDisponible($texto, [
-            ['Trabajos presentados en congresos nacionales o internacionales', 'Trabajos presentados en jornadas, seminarios, talleres de trabajo y/o cursos nacionales o internacionales'],
-            ['Trabajos presentados en congresos nacionales o internacionales', 'Otros méritos'],
-            ['Trabajos presentados en congresos nacionales o internacionales', 'Otros meritos'],
-        ]);
+        foreach ($this->registros($sec) as $r) {
+            $low = $this->lower($r);
 
-        foreach ($this->extraerBloquesNumerados($seccionCongresos) as $idx => $bloque) {
-            $items[] = $this->crearCongresoDesdeBloque($bloque, $idx + 1);
-        }
+            if (str_contains($low, 'tesina') || str_contains($low, 'tfm') || str_contains($low, 'tfg')) {
+                continue;
+            }
 
-        $seccionEventos = $this->extraerPrimeraSeccionDisponible($texto, [
-            ['Trabajos presentados en jornadas, seminarios, talleres de trabajo y/o cursos nacionales o internacionales', 'Otros méritos'],
-            ['Trabajos presentados en jornadas, seminarios, talleres de trabajo y/o cursos nacionales o internacionales', 'Otros meritos'],
-        ]);
+            if (!str_contains($low, 'tesis') && !str_contains($low, 'doctor')) {
+                continue;
+            }
 
-        $offset = count($items);
-        foreach ($this->extraerBloquesNumerados($seccionEventos) as $idx => $bloque) {
-            $items[] = $this->crearCongresoDesdeBloque($bloque, $offset + $idx + 1, true);
-        }
-
-        return array_values(array_filter($items, static fn($item) => is_array($item)));
-    }
-
-    private function crearCongresoDesdeBloque(string $bloque, int $numero, bool $fallbackNacional = false): ?array
-    {
-        $bloqueLimpio = trim($bloque);
-        if ($bloqueLimpio === '') {
-            return null;
-        }
-
-        $ambito = (string)$this->capturarCampo($bloqueLimpio, 'Ámbito geográfico');
-        if ($ambito === '') {
-            $ambito = $fallbackNacional ? 'Nacional' : 'Internacional';
-        }
-
-        $tipoParticipacion = (string)$this->capturarCampo($bloqueLimpio, 'Tipo de participación');
-        if ($tipoParticipacion === '') {
-            $tipoParticipacion = (string)$this->capturarCampo($bloqueLimpio, 'Tipo de participacion');
-        }
-
-        $nombreEvento = $this->capturarCampo($bloqueLimpio, 'Nombre del congreso')
-            ?? $this->capturarCampo($bloqueLimpio, 'Nombre del evento')
-            ?? ('evento_' . $numero);
-
-        $fecha = $this->capturarCampo($bloqueLimpio, 'Fecha de celebración')
-            ?? $this->capturarCampo($bloqueLimpio, 'Fecha de celebracion');
-
-        return [
-            'id' => 'cong_' . str_pad((string)$numero, 3, '0', STR_PAD_LEFT),
-            'es_valido' => true,
-            'ambito' => $this->mapearAmbitoCongreso($ambito),
-            'tipo' => $this->mapearTipoCongreso($tipoParticipacion),
-            'proceso_selectivo' => true,
-            'id_evento' => $this->normalizarEventoId($nombreEvento . '|' . (string)$fecha),
-            'fuente_texto' => $bloqueLimpio,
-            'confianza_extraccion' => 0.88,
-            'requiere_revision' => true,
-        ];
-    }
-
-    private function extraerOtrosMeritosInvestigacion(string $texto): array
-    {
-        $items = [];
-        $estancias = $this->extraerPrimeraSeccionDisponible($texto, [
-            ['Estancias en centros públicos o privados', 'Ayudas y becas obtenidas'],
-            ['Estancias en centros publicos o privados', 'Ayudas y becas obtenidas'],
-        ]);
-
-        if (trim($estancias) !== '') {
             $items[] = [
-                'id' => 'oinv_001',
+                'id' => 'tesis_' . str_pad((string)(count($items) + 1), 3, '0', STR_PAD_LEFT),
                 'es_valido' => true,
-                'tipo' => 'estancia',
-                'fuente_texto' => trim($estancias),
+                'tipo_trabajo' => 'tesis_doctoral',
+                'estado' => str_contains($low, 'fecha de defensa') ? 'defendida' : 'en_proceso',
+                'rol' => str_contains($low, 'codirector') ? 'codirector' : 'director',
+                'anteproyecto_aprobado' => true,
+                'fuente_texto' => trim($r),
                 'confianza_extraccion' => 0.85,
                 'requiere_revision' => true,
             ];
@@ -350,78 +525,170 @@ class FecytCvnExtractor
         return $items;
     }
 
-    private function extraerDocenciaUniversitaria(string $texto): array
+    private function extraerCongresos(string $texto): array
     {
-        $items = [];
-
-        $seccion = $this->extraerPrimeraSeccionDisponible($texto, [
-            ['Formación académica impartida', 'Dirección de tesis doctorales y/o trabajos fin de estudios'],
-            ['Formación academica impartida', 'Dirección de tesis doctorales y/o trabajos fin de estudios'],
-            ['Formación académica impartida', 'Pluralidad, interdisciplinariedad y complejidad docente'],
+        $sec = $this->seccion($texto, [
+            'Trabajos presentados en congresos nacionales o internacionales',
+        ], [
+            'Trabajos presentados en jornadas',
+            'Trabajos presentados en jornadas, seminarios',
+            'Actividades de divulgación',
+            'Actividades de divulgacion',
+            'Otros méritos',
+            'Otros meritos',
         ]);
 
-        foreach ($this->extraerBloquesNumerados($seccion) as $idx => $bloque) {
-            $bloqueLimpio = trim($bloque);
-            if ($bloqueLimpio === '') {
+        $items = [];
+
+        foreach ($this->registros($sec) as $r) {
+            if (!$this->contiene($r, [
+                'nombre del congreso',
+                'título del trabajo',
+                'titulo del trabajo',
+                'ciudad de celebración',
+                'ciudad de celebracion',
+                'fecha de celebración',
+                'fecha de celebracion'
+            ])) {
                 continue;
             }
 
-            $horas = $this->capturarDecimal($bloqueLimpio, 'Nº de horas/créditos ECTS')
-                ?? $this->capturarDecimal($bloqueLimpio, 'No de horas/créditos ECTS')
-                ?? $this->capturarDecimal($bloqueLimpio, 'N de horas/créditos ECTS')
-                ?? 0.0;
-            $titulacion = (string)$this->capturarCampo($bloqueLimpio, 'Titulación universitaria');
-            if ($titulacion === '') {
-                $titulacion = (string)$this->capturarCampo($bloqueLimpio, 'Titulacion universitaria');
-            }
-
             $items[] = [
-                'id' => 'doc_' . str_pad((string)($idx + 1), 3, '0', STR_PAD_LEFT),
+                'id' => 'cong_' . str_pad((string)(count($items) + 1), 3, '0', STR_PAD_LEFT),
                 'es_valido' => true,
-                'horas' => $horas,
-                'tipo' => $this->contieneAlgunTermino($titulacion, ['máster', 'master']) ? 'master' : 'grado',
-                'etapa' => $this->contieneAlgunTermino($titulacion, ['máster', 'master']) ? 'postgrado' : 'grado',
-                'tfg' => 0,
-                'tfm' => 0,
-                'fuente_texto' => $bloqueLimpio,
-                'confianza_extraccion' => 0.92,
+                'tipo' => $this->contiene($r, ['poster', 'póster']) ? 'poster' : 'ponencia',
+                'ambito' => $this->ambito($r),
+                'admision_selectiva' => true,
+                'proceso_selectivo' => true,
+                'por_invitacion' => $this->contiene($r, ['invitado', 'invitada', 'keynote', 'plenary']),
+                'fuente_texto' => trim($r),
+                'confianza_extraccion' => 0.78,
                 'requiere_revision' => true,
             ];
         }
 
-        $direccion = $this->extraerPrimeraSeccionDisponible($texto, [
-            ['Dirección de tesis doctorales y/o trabajos fin de estudios', 'Pluralidad, interdisciplinariedad y complejidad docente'],
-            ['Dirección de tesis doctorales y/o trabajos fin de estudios', 'Experiencia científica y tecnológica'],
+        return $items;
+    }
+
+    private function extraerOtrosMeritosInvestigacion(string $texto): array
+    {
+        $items = [];
+
+        $grupo = $this->seccion($texto, [
+            'Grupos/equipos de investigación, desarrollo o innovación',
+            'Grupos/equipos de investigacion, desarrollo o innovacion',
+        ], [
+            'Actividad científica o tecnológica',
+            'Actividad cientifica o tecnologica',
+            'Resultados',
+            'Propiedad industrial',
+            'Actividades científicas',
+            'Actividades cientificas',
         ]);
-        if (trim($direccion) !== '') {
-            $tipoProyecto = mb_strtolower((string)$this->capturarCampo($direccion, 'Tipo de proyecto'), 'UTF-8');
-            if ($this->contieneAlgunTermino($tipoProyecto, ['tesina', 'tfm', 'trabajo fin de máster', 'trabajo fin de master'])) {
+
+        foreach ($this->registros($grupo) as $r) {
+            if ($this->contiene($r, ['nombre del grupo', 'entidad de afiliación', 'entidad de afiliacion'])) {
                 $items[] = [
-                    'id' => 'doc_' . str_pad((string)(count($items) + 1), 3, '0', STR_PAD_LEFT),
+                    'id' => 'omi_' . str_pad((string)(count($items) + 1), 3, '0', STR_PAD_LEFT),
                     'es_valido' => true,
-                    'horas' => 0,
-                    'tipo' => 'master',
-                    'etapa' => 'postgrado',
-                    'tfg' => 0,
-                    'tfm' => 1,
-                    'fuente_texto' => trim($direccion),
-                    'confianza_extraccion' => 0.72,
-                    'requiere_revision' => true,
-                ];
-            } elseif ($this->contieneAlgunTermino($tipoProyecto, ['tfg', 'trabajo fin de grado'])) {
-                $items[] = [
-                    'id' => 'doc_' . str_pad((string)(count($items) + 1), 3, '0', STR_PAD_LEFT),
-                    'es_valido' => true,
-                    'horas' => 0,
-                    'tipo' => 'grado',
-                    'etapa' => 'grado',
-                    'tfg' => 1,
-                    'tfm' => 0,
-                    'fuente_texto' => trim($direccion),
-                    'confianza_extraccion' => 0.72,
+                    'tipo' => 'grupo_investigacion',
+                    'relevancia' => 'media',
+                    'fuente_texto' => trim($r),
+                    'confianza_extraccion' => 0.75,
                     'requiere_revision' => true,
                 ];
             }
+        }
+
+        $div = $this->seccion($texto, [
+            'Actividades de divulgación',
+            'Actividades de divulgacion',
+        ], [
+            'Otros méritos',
+            'Otros meritos',
+        ]);
+
+        foreach ($this->registros($div) as $r) {
+            if ($this->contiene($r, ['título del trabajo', 'titulo del trabajo', 'nombre del evento', 'tipo de evento'])) {
+                $items[] = [
+                    'id' => 'omi_' . str_pad((string)(count($items) + 1), 3, '0', STR_PAD_LEFT),
+                    'es_valido' => true,
+                    'tipo' => 'divulgacion',
+                    'relevancia' => 'media',
+                    'fuente_texto' => trim($r),
+                    'confianza_extraccion' => 0.75,
+                    'requiere_revision' => true,
+                ];
+            }
+        }
+
+        return $items;
+    }
+
+    private function extraerDocenciaUniversitaria(string $texto): array
+    {
+        $sec = $this->seccion($texto, [
+            'Formación académica impartida',
+            'Formacion academica impartida',
+        ], [
+            'Dirección de tesis doctorales',
+            'Direccion de tesis doctorales',
+            'Tutorías académicas',
+            'Tutorias academicas',
+            'Cursos y seminarios impartidos',
+            'Pluralidad, interdisciplinariedad',
+            'Experiencia científica y tecnológica',
+            'Experiencia cientifica y tecnologica',
+        ]);
+
+        $items = [];
+
+        foreach ($this->registros($sec) as $r) {
+            if (!$this->contiene($r, [
+                'nombre de la asignatura',
+                'nombre de la asignatura/curso',
+                'titulación universitaria',
+                'titulacion universitaria',
+                'entidad de realización',
+                'entidad de realizacion'
+            ])) {
+                continue;
+            }
+
+            $horas = $this->decimalCampo($r, 'Nº de horas/créditos ECTS')
+                ?? $this->decimalCampo($r, 'No de horas/créditos ECTS')
+                ?? $this->decimalCampo($r, 'Nº de horas')
+                ?? $this->decimalCampo($r, 'No de horas')
+                ?? $this->decimalCampo($r, 'Horas');
+
+            $horasEstimadas = false;
+
+            if ($horas === null || $horas <= 0) {
+                $horas = $this->estimarHorasDocencia($r);
+                $horasEstimadas = true;
+            }
+
+            $titulacion = (string)($this->campo($r, 'Titulación universitaria')
+                ?? $this->campo($r, 'Titulacion universitaria')
+                ?? '');
+
+            $esMaster = $this->contiene($titulacion, ['máster', 'master']);
+
+            $items[] = [
+                'id' => 'doc_' . str_pad((string)(count($items) + 1), 3, '0', STR_PAD_LEFT),
+                'es_valido' => true,
+                'acreditada' => true,
+                'horas' => $horas,
+                'horas_estimadas' => $horasEstimadas,
+                'nivel' => $esMaster ? 'master' : 'grado',
+                'tipo' => $esMaster ? 'master' : 'grado',
+                'etapa' => $esMaster ? 'postgrado' : 'grado',
+                'tfg' => 0,
+                'tfm' => 0,
+                'fuente_texto' => trim($r),
+                'confianza_extraccion' => $horasEstimadas ? 0.60 : 0.85,
+                'requiere_revision' => true,
+            ];
         }
 
         return $items;
@@ -429,59 +696,93 @@ class FecytCvnExtractor
 
     private function extraerEvaluacionDocente(string $texto): array
     {
-        $items = [];
+        $sec = $this->seccion($texto, [
+            'Evaluaciones sobre su calidad',
+            'Evaluaciones sobre la calidad',
+            'Evaluación docente',
+            'Evaluacion docente',
+        ], [
+            'Cursos y seminarios',
+            'Material docente',
+            'Publicaciones docentes',
+            'Proyectos de innovación docente',
+        ]);
 
-        if (preg_match('/evaluaci[oó]n docente.*?(excelente|muy favorable|favorable|positivo)/iu', $texto, $m)) {
-            $resultado = mb_strtolower((string)$m[1], 'UTF-8');
-            $resultadoMapeado = match (true) {
-                str_contains($resultado, 'excelente') => 'excelente',
-                str_contains($resultado, 'muy favorable') => 'muy_favorable',
-                str_contains($resultado, 'favorable'), str_contains($resultado, 'positivo') => 'favorable',
-                default => 'aceptable',
-            };
-
-            $items[] = [
-                'id' => 'evdoc_001',
-                'es_valido' => true,
-                'resultado' => $resultadoMapeado,
-                'cobertura_amplia' => true,
-                'fuente_texto' => trim($m[0]),
-                'confianza_extraccion' => 0.65,
-                'requiere_revision' => true,
-            ];
+        if ($sec === '' || !$this->contiene($sec, ['excelente', 'muy favorable', 'favorable', 'positiva'])) {
+            return [];
         }
 
-        return $items;
+        return [[
+            'id' => 'evdoc_001',
+            'es_valido' => true,
+            'calificacion' => $this->contiene($sec, ['excelente'])
+                ? 'excelente'
+                : ($this->contiene($sec, ['muy favorable']) ? 'muy_favorable' : 'favorable'),
+            'numero' => 1,
+            'fuente_texto' => trim($sec),
+            'confianza_extraccion' => 0.65,
+            'requiere_revision' => true,
+        ]];
     }
 
     private function extraerFormacionDocente(string $texto): array
     {
         $items = [];
-        $seccion = $this->extraerPrimeraSeccionDisponible($texto, [
-            ['Cursos y seminarios recibidos de perfeccionamiento, innovación y mejora docente, nuevas tecnologías, etc., cuyo objetivo sea la mejora de la docencia', 'Actividad docente'],
-            ['Cursos y seminarios recibidos de perfeccionamiento, innovación y mejora docente, nuevas tecnologias, etc., cuyo objetivo sea la mejora de la docencia', 'Actividad docente'],
-            ['Cursos y seminarios impartidos', 'Material y otras publicaciones docentes o de carácter pedagógico'],
+
+        $recibidos = $this->seccion($texto, [
+            'Cursos y seminarios recibidos de perfeccionamiento, innovación y mejora docente',
+            'Cursos y seminarios recibidos de perfeccionamiento, innovacion y mejora docente',
+        ], [
+            'Conocimiento de idiomas',
+            'Actividad docente',
         ]);
 
-        foreach ($this->extraerBloquesNumerados($seccion) as $idx => $bloque) {
-            $bloqueLimpio = trim($bloque);
-            if ($bloqueLimpio === '') {
+        foreach ($this->registros($recibidos) as $r) {
+            if (!$this->contiene($r, ['título del curso', 'titulo del curso', 'curso/seminario', 'duración en horas', 'duracion en horas'])) {
                 continue;
             }
 
-            $horas = $this->capturarDecimal($bloqueLimpio, 'Duración en horas')
-                ?? $this->capturarDecimal($bloqueLimpio, 'Horas impartidas')
-                ?? $this->capturarDecimal($bloqueLimpio, 'Num horas')
-                ?? 0.0;
+            $items[] = [
+                'id' => 'fdoc_' . str_pad((string)(count($items) + 1), 3, '0', STR_PAD_LEFT),
+                'es_valido' => true,
+                'tipo' => 'curso',
+                'rol' => 'asistente',
+                'horas' => $this->decimalCampo($r, 'Duración en horas')
+                    ?? $this->decimalCampo($r, 'Duracion en horas')
+                    ?? 0,
+                'ambito' => 'nacional',
+                'relacion_docente' => true,
+                'fuente_texto' => trim($r),
+                'confianza_extraccion' => 0.80,
+                'requiere_revision' => true,
+            ];
+        }
+
+        $impartidos = $this->seccion($texto, [
+            'Cursos y seminarios impartidos',
+        ], [
+            'Proyectos de innovación docente',
+            'Proyectos de innovacion docente',
+            'Experiencia científica',
+            'Experiencia cientifica',
+        ]);
+
+        foreach ($this->registros($impartidos) as $r) {
+            if (!$this->contiene($r, ['tipo de evento', 'nombre del evento', 'horas impartidas'])) {
+                continue;
+            }
 
             $items[] = [
-                'id' => 'fdoc_' . str_pad((string)($idx + 1), 3, '0', STR_PAD_LEFT),
+                'id' => 'fdoc_' . str_pad((string)(count($items) + 1), 3, '0', STR_PAD_LEFT),
                 'es_valido' => true,
-                'horas' => $horas,
-                'rol' => $this->contieneAlgunTermino($bloqueLimpio, ['Horas impartidas', 'impartición', 'imparticion', 'ponente']) ? 'ponente' : 'asistente',
-                'relacion_docente' => true,
-                'fuente_texto' => $bloqueLimpio,
-                'confianza_extraccion' => 0.70,
+                'tipo' => $this->contiene($r, ['curso']) ? 'curso' : 'seminario',
+                'rol' => 'ponente',
+                'horas' => $this->decimalCampo($r, 'Horas impartidas') ?? 0,
+                'ambito' => $this->ambito($r),
+                'por_invitacion' => false,
+                'relacion_docente' => $this->contiene($r, ['formación docente', 'formacion docente', 'docente']),
+                'fuente_texto' => trim($r),
+                'confianza_extraccion' => 0.78,
                 'requiere_revision' => true,
             ];
         }
@@ -491,46 +792,31 @@ class FecytCvnExtractor
 
     private function extraerMaterialDocente(string $texto): array
     {
+        $sec = $this->seccion($texto, [
+            'Proyectos de innovación docente',
+            'Proyectos de innovacion docente',
+        ], [
+            'Experiencia científica y tecnológica',
+            'Experiencia cientifica y tecnologica',
+            'Grupos/equipos',
+        ]);
+
         $items = [];
 
-        $seccionMaterial = $this->extraerPrimeraSeccionDisponible($texto, [
-            ['Material y otras publicaciones docentes o de carácter pedagógico', 'Proyectos de innovación docente'],
-            ['Material y otras publicaciones docentes o de caracter pedagogico', 'Proyectos de innovación docente'],
-            ['Material y otras publicaciones docentes o de carácter pedagógico', 'Otros méritos de docencia'],
-        ]);
-        foreach ($this->extraerBloquesNumerados($seccionMaterial) as $idx => $bloque) {
-            $bloqueLimpio = trim($bloque);
-            if ($bloqueLimpio === '') {
+        foreach ($this->registros($sec) as $r) {
+            if (!$this->contiene($r, ['título del proyecto', 'titulo del proyecto', 'tipo de participación', 'tipo de participacion'])) {
                 continue;
             }
-            $items[] = [
-                'id' => 'mdoc_' . str_pad((string)($idx + 1), 3, '0', STR_PAD_LEFT),
-                'es_valido' => true,
-                'tipo' => 'material_original',
-                'nivel_editorial' => $this->detectarNivelEditorial($bloqueLimpio),
-                'fuente_texto' => $bloqueLimpio,
-                'confianza_extraccion' => 0.72,
-                'requiere_revision' => true,
-            ];
-        }
 
-        $seccionInnovacion = $this->extraerPrimeraSeccionDisponible($texto, [
-            ['Proyectos de innovación docente', 'Otros méritos de docencia'],
-            ['Proyectos de innovacion docente', 'Otros méritos de docencia'],
-            ['Proyectos de innovación docente', 'Pluralidad, interdisciplinariedad y complejidad docente'],
-        ]);
-        foreach ($this->extraerBloquesNumerados($seccionInnovacion) as $idx => $bloque) {
-            $bloqueLimpio = trim($bloque);
-            if ($bloqueLimpio === '') {
-                continue;
-            }
             $items[] = [
                 'id' => 'mdoc_' . str_pad((string)(count($items) + 1), 3, '0', STR_PAD_LEFT),
                 'es_valido' => true,
-                'tipo' => 'proyecto_innovacion_docente',
-                'nivel_editorial' => 'nacional',
-                'fuente_texto' => $bloqueLimpio,
-                'confianza_extraccion' => 0.74,
+                'tipo' => 'proyecto_innovacion',
+                'rol' => $this->contiene($r, ['investigador principal', 'ip']) ? 'ip' : 'participante',
+                'isbn_issn' => false,
+                'relevancia' => 'media',
+                'fuente_texto' => trim($r),
+                'confianza_extraccion' => 0.78,
                 'requiere_revision' => true,
             ];
         }
@@ -542,81 +828,127 @@ class FecytCvnExtractor
     {
         $items = [];
 
-        $doctorado = $this->extraerPrimeraSeccionDisponible($texto, [
-            ['Doctorados', 'Conocimiento de idiomas'],
-            ['Doctorados', 'Actividad docente'],
+        $secFormacion = $this->seccion($texto, [
+            'Formación académica recibida',
+            'Formacion academica recibida',
+        ], [
+            'Conocimiento de idiomas',
+            'Actividad docente',
         ]);
-        if (trim($doctorado) !== '') {
-            $europeo = mb_strtolower((string)$this->capturarCampo($doctorado, 'Doctorado Europeo'), 'UTF-8');
-            $mencion = mb_strtolower((string)$this->capturarCampo($doctorado, 'Mención de calidad'), 'UTF-8');
-            $premio = mb_strtolower((string)$this->capturarCampo($doctorado, 'Premio extraordinario doctor'), 'UTF-8');
-            if ($this->esRespuestaAfirmativa($europeo)) {
-                $items[] = [
-                    'id' => 'form_001',
-                    'es_valido' => true,
-                    'tipo' => 'doctorado_internacional',
-                    'alta_competitividad' => true,
-                    'fuente_texto' => trim($doctorado),
-                    'confianza_extraccion' => 0.95,
-                    'requiere_revision' => true,
-                ];
-            }
-            if ($this->esRespuestaAfirmativa($mencion)) {
-                $items[] = [
-                    'id' => 'form_' . str_pad((string)(count($items) + 1), 3, '0', STR_PAD_LEFT),
-                    'es_valido' => true,
-                    'tipo' => 'mencion_calidad',
-                    'alta_competitividad' => true,
-                    'fuente_texto' => trim($doctorado),
-                    'confianza_extraccion' => 0.90,
-                    'requiere_revision' => true,
-                ];
-            }
-            if ($this->esRespuestaAfirmativa($premio)) {
-                $items[] = [
-                    'id' => 'form_' . str_pad((string)(count($items) + 1), 3, '0', STR_PAD_LEFT),
-                    'es_valido' => true,
-                    'tipo' => 'premio_extra_doctorado',
-                    'alta_competitividad' => true,
-                    'fuente_texto' => trim($doctorado),
-                    'confianza_extraccion' => 0.90,
-                    'requiere_revision' => true,
-                ];
-            }
-        }
 
-        $estancias = $this->extraerPrimeraSeccionDisponible($texto, [
-            ['Estancias en centros públicos o privados', 'Ayudas y becas obtenidas'],
-            ['Estancias en centros publicos o privados', 'Ayudas y becas obtenidas'],
+        $tit = $this->seccion($secFormacion, [
+            'Titulación universitaria',
+            'Titulacion universitaria',
+        ], [
+            'Doctorados',
+            'Cursos y seminarios recibidos',
         ]);
-        if (trim($estancias) !== '') {
+
+        if ($tit !== '' && $this->contiene($tit, ['nombre del título', 'nombre del titulo', 'graduado', 'licenciado', 'doctor', 'máster', 'master'])) {
             $items[] = [
                 'id' => 'form_' . str_pad((string)(count($items) + 1), 3, '0', STR_PAD_LEFT),
                 'es_valido' => true,
-                'tipo' => 'estancia',
-                'alta_competitividad' => $this->contieneAlgunTermino($estancias, ['competitivo', 'horizon', 'europea', 'europeo']),
-                'fuente_texto' => trim($estancias),
-                'confianza_extraccion' => 0.86,
+                'tipo' => $this->contiene($tit, ['máster', 'master']) ? 'master' : 'titulacion_universitaria',
+                'alta_competitividad' => false,
+                'fuente_texto' => trim($tit),
+                'confianza_extraccion' => 0.82,
                 'requiere_revision' => true,
             ];
         }
 
-        $ayudas = $this->extraerPrimeraSeccionDisponible($texto, [
-            ['Ayudas y becas obtenidas', ''],
+        $doc = $this->seccion($secFormacion, [
+            'Doctorados',
+        ], [
+            'Cursos y seminarios recibidos',
+            'Conocimiento de idiomas',
+            'Actividad docente',
         ]);
-        if (trim($ayudas) !== '') {
-            $tipoBeca = $this->inferirTipoBeca($ayudas);
-            if ($tipoBeca !== null) {
+
+        if ($doc !== '' && $this->contiene($doc, ['programa de doctorado', 'doctorado', 'doctor'])) {
+            $items[] = [
+                'id' => 'form_' . str_pad((string)(count($items) + 1), 3, '0', STR_PAD_LEFT),
+                'es_valido' => true,
+                'tipo' => 'doctorado',
+                'alta_competitividad' => false,
+                'fuente_texto' => trim($doc),
+                'confianza_extraccion' => 0.90,
+                'requiere_revision' => true,
+            ];
+
+            if ($this->contiene($doc, ['doctorado europeo: sí', 'doctorado europeo: si', 'doctorado internacional'])) {
                 $items[] = [
                     'id' => 'form_' . str_pad((string)(count($items) + 1), 3, '0', STR_PAD_LEFT),
                     'es_valido' => true,
-                    'tipo' => $tipoBeca,
-                    'alta_competitividad' => $tipoBeca === 'beca_posdoc',
-                    'fuente_texto' => trim($ayudas),
-                    'confianza_extraccion' => 0.92,
+                    'tipo' => 'doctorado_internacional',
+                    'alta_competitividad' => true,
+                    'fuente_texto' => trim($doc),
+                    'confianza_extraccion' => 0.90,
                     'requiere_revision' => true,
                 ];
             }
+
+            if ($this->contiene($doc, ['mención de calidad: sí', 'mencion de calidad: si'])) {
+                $items[] = [
+                    'id' => 'form_' . str_pad((string)(count($items) + 1), 3, '0', STR_PAD_LEFT),
+                    'es_valido' => true,
+                    'tipo' => 'mencion_calidad',
+                    'alta_competitividad' => false,
+                    'fuente_texto' => trim($doc),
+                    'confianza_extraccion' => 0.90,
+                    'requiere_revision' => true,
+                ];
+            }
+        }
+
+        $ayudas = $this->seccion($texto, [
+            'Ayudas y becas obtenidas',
+        ], [
+            'Actividades científicas',
+            'Actividades cientificas',
+            'Otros méritos',
+            'Otros meritos',
+        ]);
+
+        foreach ($this->registros($ayudas) as $r) {
+            if (!$this->contiene($r, ['nombre de la ayuda', 'beca', 'fpu', 'fpi'])) {
+                continue;
+            }
+
+            $items[] = [
+                'id' => 'form_' . str_pad((string)(count($items) + 1), 3, '0', STR_PAD_LEFT),
+                'es_valido' => true,
+                'tipo' => 'beca_competitiva',
+                'alta_competitividad' => $this->contiene($r, ['fpu', 'fpi']),
+                'fuente_texto' => trim($r),
+                'confianza_extraccion' => 0.82,
+                'requiere_revision' => true,
+            ];
+        }
+
+        $estancias = $this->seccion($texto, [
+            'Estancias en centros públicos o privados',
+            'Estancias en centros publicos o privados',
+        ], [
+            'Ayudas y becas',
+            'Otros méritos',
+            'Otros meritos',
+        ]);
+
+        foreach ($this->registros($estancias) as $r) {
+            if (!$this->contiene($r, ['entidad de realización', 'entidad de realizacion', 'duración', 'duracion'])) {
+                continue;
+            }
+
+            $items[] = [
+                'id' => 'form_' . str_pad((string)(count($items) + 1), 3, '0', STR_PAD_LEFT),
+                'es_valido' => true,
+                'tipo' => 'estancia',
+                'duracion' => $this->duracionMeses($r),
+                'alta_competitividad' => false,
+                'fuente_texto' => trim($r),
+                'confianza_extraccion' => 0.78,
+                'requiere_revision' => true,
+            ];
         }
 
         return $items;
@@ -624,60 +956,37 @@ class FecytCvnExtractor
 
     private function extraerExperienciaProfesional(string $texto): array
     {
+        $sec = $this->seccion($texto, [
+            'Situación profesional actual',
+            'Situacion profesional actual',
+        ], [
+            'Cargos y actividades desempeñados con anterioridad',
+            'Formación académica recibida',
+            'Formacion academica recibida',
+        ]);
+
+        $sec .= "\n" . $this->seccion($texto, [
+            'Cargos y actividades desempeñados con anterioridad',
+        ], [
+            'Resumen de la actividad profesional',
+            'Formación académica recibida',
+            'Formacion academica recibida',
+        ]);
+
         $items = [];
 
-        $actual = $this->extraerPrimeraSeccionDisponible($texto, [
-            ['Situación profesional actual', 'Cargos y actividades desempeñados con anterioridad'],
-            ['Situacion profesional actual', 'Cargos y actividades desempeñados con anterioridad'],
-        ]);
-        if (trim($actual) !== '') {
-            $entidad = $this->capturarCampo($actual, 'Entidad empleadora');
-            $categoria = $this->capturarCampo($actual, 'Categoría profesional') ?? $this->capturarCampo($actual, 'Categoria profesional');
-            $inicio = $this->capturarCampo($actual, 'Fecha de inicio');
-            $funciones = $this->capturarCampo($actual, 'Funciones desempeñadas') ?? '';
-
-            if ($entidad !== null || $categoria !== null) {
-                $textoFuente = trim((string)$categoria . ' en ' . (string)$entidad);
-                if ($textoFuente !== '') {
-                    $items[] = [
-                        'id' => 'eprof_001',
-                        'es_valido' => true,
-                        'justificada' => true,
-                        'no_valorable' => false,
-                        'anios' => $inicio !== null ? $this->calcularAniosDesdeFecha((string)$inicio) : 0.0,
-                        'relacion' => $this->inferirRelacionExperiencia($textoFuente . ' ' . (string)$funciones),
-                        'fuente_texto' => $textoFuente,
-                        'confianza_extraccion' => 0.82,
-                        'requiere_revision' => true,
-                    ];
-                }
-            }
-        }
-
-        $profesional = $this->extraerPrimeraSeccionDisponible($texto, [
-            ['Actividades de carácter profesional', 'Otras actividades de carácter profesional'],
-            ['Actividades de caracter profesional', 'Otras actividades de carácter profesional'],
-            ['Actividades de carácter profesional', 'Otros méritos relevantes'],
-        ]);
-        foreach ($this->extraerBloquesNumerados($profesional) as $idx => $bloque) {
-            $bloqueLimpio = trim($bloque);
-            if ($bloqueLimpio === '') {
+        foreach ($this->registros($sec) as $r) {
+            if (!$this->contiene($r, ['entidad empleadora', 'categoría profesional', 'categoria profesional', 'fecha de inicio'])) {
                 continue;
             }
-            $institucion = $this->capturarCampo($bloqueLimpio, 'Institución') ?? $this->capturarCampo($bloqueLimpio, 'Institucion');
-            $categoria = $this->capturarCampo($bloqueLimpio, 'Categoría') ?? $this->capturarCampo($bloqueLimpio, 'Categoria');
-            if ($institucion === null && $categoria === null) {
-                continue;
-            }
+
             $items[] = [
-                'id' => 'eprof_' . str_pad((string)(count($items) + 1), 3, '0', STR_PAD_LEFT),
+                'id' => 'exp_' . str_pad((string)(count($items) + 1), 3, '0', STR_PAD_LEFT),
                 'es_valido' => true,
-                'justificada' => true,
-                'no_valorable' => false,
-                'anios' => $this->detectarDuracionEnAnios($bloqueLimpio),
-                'relacion' => $this->inferirRelacionExperiencia($bloqueLimpio),
-                'fuente_texto' => trim((string)$categoria . ' ' . (string)$institucion),
-                'confianza_extraccion' => 0.76,
+                'relacion' => $this->contiene($r, ['universidad', 'facultad', 'departamento']) ? 'alta' : 'media',
+                'anios' => max(0.2, $this->duracionAnios($r)),
+                'fuente_texto' => trim($r),
+                'confianza_extraccion' => 0.72,
                 'requiere_revision' => true,
             ];
         }
@@ -689,172 +998,326 @@ class FecytCvnExtractor
     {
         $items = [];
 
-        if ($this->contieneAlgunTermino($texto, ['unidad de calidad'])) {
-            $items[] = [
-                'id' => 'b4_001',
-                'es_valido' => true,
-                'tipo' => 'gestion',
-                'fuente_texto' => 'Participación en Unidad de Calidad',
-                'confianza_extraccion' => 0.70,
-                'requiere_revision' => true,
-            ];
+        $div = $this->seccion($texto, [
+            'Actividades de divulgación',
+            'Actividades de divulgacion',
+        ], [
+            'Otros méritos',
+            'Otros meritos',
+        ]);
+
+        foreach ($this->registros($div) as $r) {
+            if ($this->contiene($r, ['título del trabajo', 'titulo del trabajo', 'nombre del evento', 'tipo de evento'])) {
+                $items[] = [
+                    'id' => 'b4_' . str_pad((string)(count($items) + 1), 3, '0', STR_PAD_LEFT),
+                    'es_valido' => true,
+                    'tipo' => 'divulgacion',
+                    'relevancia' => 'media',
+                    'fuente_texto' => trim($r),
+                    'confianza_extraccion' => 0.75,
+                    'requiere_revision' => true,
+                ];
+            }
         }
 
-        if ($this->contieneAlgunTermino($texto, ['beca de colaboración', 'beca de colaboracion'])) {
-            $items[] = [
-                'id' => 'b4_' . str_pad((string)(count($items) + 1), 3, '0', STR_PAD_LEFT),
-                'es_valido' => true,
-                'tipo' => 'beca_colaboracion',
-                'fuente_texto' => 'Beca de colaboración',
-                'confianza_extraccion' => 0.70,
-                'requiere_revision' => true,
-            ];
-        }
+        $otros = $this->seccion($texto, [
+            'Otros méritos',
+            'Otros meritos',
+        ], []);
 
-        if ($this->contieneAlgunTermino($texto, ['divulgación', 'divulgacion'])) {
-            $items[] = [
-                'id' => 'b4_' . str_pad((string)(count($items) + 1), 3, '0', STR_PAD_LEFT),
-                'es_valido' => true,
-                'tipo' => 'divulgacion',
-                'fuente_texto' => 'Actividad de divulgación detectada en CVN',
-                'confianza_extraccion' => 0.55,
-                'requiere_revision' => true,
-            ];
+        foreach ($this->registros($otros) as $r) {
+            if ($this->contiene($r, ['sexenio', 'gestión', 'gestion', 'actividad investigadora', 'actividad docente'])) {
+                $items[] = [
+                    'id' => 'b4_' . str_pad((string)(count($items) + 1), 3, '0', STR_PAD_LEFT),
+                    'es_valido' => true,
+                    'tipo' => $this->contiene($r, ['gestión', 'gestion']) ? 'gestion_universitaria' : 'otros_meritos',
+                    'relevancia' => $this->contiene($r, ['sexenio']) ? 'alta' : 'media',
+                    'fuente_texto' => trim($r),
+                    'confianza_extraccion' => 0.72,
+                    'requiere_revision' => true,
+                ];
+            }
         }
 
         return $items;
     }
 
-    private function extraerPrimeraSeccionDisponible(string $texto, array $pares): string
+    private function normalizar(string $texto): string
     {
-        foreach ($pares as $par) {
-            $inicio = (string)($par[0] ?? '');
-            $fin = (string)($par[1] ?? '');
-            if ($inicio === '') {
-                continue;
-            }
-            $seccion = $this->extraerSeccion($texto, $inicio, $fin);
-            if (trim($seccion) !== '') {
-                return trim($seccion);
+        $texto = str_replace(["\r\n", "\r", "\f"], ["\n", "\n", "\n"], $texto);
+        $texto = preg_replace('/\n\s*[a-f0-9]{32}\s*\n/iu', "\n", $texto) ?? $texto;
+        $texto = preg_replace('/[ \t]+/u', ' ', $texto) ?? $texto;
+        $texto = preg_replace('/\n{3,}/u', "\n\n", $texto) ?? $texto;
+        return trim($texto);
+    }
+
+    private function seccion(string $texto, array $inicios, array $finales = []): string
+    {
+        $ini = null;
+
+        foreach ($inicios as $inicio) {
+            $pos = mb_stripos($texto, $inicio, 0, 'UTF-8');
+
+            if ($pos !== false && ($ini === null || $pos < $ini)) {
+                $ini = $pos;
             }
         }
 
-        return '';
-    }
-
-    private function extraerSeccion(string $texto, string $inicio, string $fin = ''): string
-    {
-        $posInicio = mb_stripos($texto, $inicio, 0, 'UTF-8');
-        if ($posInicio === false) {
+        if ($ini === null) {
             return '';
         }
 
-        $sub = trim(mb_substr($texto, $posInicio + mb_strlen($inicio, 'UTF-8'), null, 'UTF-8'));
-        if ($fin === '') {
-            return trim($sub);
+        $fin = mb_strlen($texto, 'UTF-8');
+
+        foreach ($finales as $final) {
+            $pos = mb_stripos($texto, $final, $ini + 20, 'UTF-8');
+
+            if ($pos !== false && $pos > $ini && $pos < $fin) {
+                $fin = $pos;
+            }
         }
 
-        $posFin = mb_stripos($sub, $fin, 0, 'UTF-8');
-        if ($posFin === false) {
-            return trim($sub);
-        }
-
-        return trim(mb_substr($sub, 0, $posFin, 'UTF-8'));
+        return trim(mb_substr($texto, $ini, $fin - $ini, 'UTF-8'));
     }
 
-    private function extraerBloquesNumerados(string $texto): array
+    private function registros(string $sec): array
     {
-        $texto = trim($texto);
-        if ($texto === '') {
+        $sec = trim($sec);
+
+        if ($sec === '') {
             return [];
         }
 
-        preg_match_all('/(?:^|\n)\s*(\d{1,3})\s*\n(.*?)(?=(?:\n\s*\d{1,3}\s*\n)|\z)/su', $texto, $matches);
-        $bloques = array_map('trim', $matches[2] ?? []);
-        $bloques = array_values(array_filter($bloques, static fn($b) => $b !== ''));
+        $sec = preg_replace('/(^|\n)\s*(\d{1,3})\s*\n\s*/u', "\n$2 ", $sec) ?? $sec;
 
-        if ($bloques !== []) {
-            return $bloques;
+        $partes = preg_split(
+            '/\n\s*(?=\d{1,3}\s+(?:Título|Titulo|Nombre|Entidad|Tipo|Rosa|Ramon|Ramón|Alberto|Manuel|Julio|Programa|Titulación|Titulacion|Autor|Universidad))/u',
+            "\n" . $sec
+        ) ?: [];
+
+        $partes = array_values(array_filter(array_map('trim', $partes)));
+
+        if (count($partes) <= 1) {
+            return [$sec];
         }
 
-        return [trim($texto)];
+        $limpias = [];
+
+        foreach ($partes as $p) {
+            if (mb_strlen($p, 'UTF-8') < 20) {
+                continue;
+            }
+
+            $limpias[] = $p;
+        }
+
+        return $limpias ?: [$sec];
     }
 
-    private function capturarCampo(string $texto, string $campo): ?string
+    private function campo(string $txt, string $campo): ?string
     {
-        $pattern = '/(?:^|\n)' . preg_quote($campo, '/') . '\s*:\s*(.+?)(?=(?:\n[^\n:]{1,120}:)|\z)/su';
-        if (preg_match($pattern, $texto, $m)) {
-            $valor = trim(preg_replace('/\s+/u', ' ', $m[1]) ?? '');
-            return $valor !== '' ? $valor : null;
+        $campoQ = preg_quote($campo, '/');
+
+        if (preg_match(
+            '/' . $campoQ . '\s*:\s*(.+?)(?=\s+[A-ZÁÉÍÓÚÑa-záéíóúñºÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñºÁÉÍÓÚÑ\s\/]{1,80}:|\n\s*\d{1,3}\s+[A-ZÁÉÍÓÚÑa-záéíóúñ]|$)/su',
+            $txt,
+            $m
+        )) {
+            return trim($m[1]);
         }
+
         return null;
     }
 
-    private function capturarDecimal(string $texto, string $campo): ?float
+    private function enteroCampo(string $txt, string $campo): ?int
     {
-        $valor = $this->capturarCampo($texto, $campo);
-        if ($valor === null) {
-            return null;
-        }
-        if (preg_match('/-?\d+(?:[\.,]\d+)?/u', $valor, $m)) {
-            return (float)str_replace(',', '.', $m[0]);
-        }
-        return null;
-    }
+        $v = $this->campo($txt, $campo);
 
-    private function capturarEntero(string $texto, string $campo): ?int
-    {
-        $valor = $this->capturarCampo($texto, $campo);
-        if ($valor === null) {
+        if ($v === null) {
             return null;
         }
-        if (preg_match('/-?\d+/u', $valor, $m)) {
+
+        if (preg_match('/\d+/u', $v, $m)) {
             return (int)$m[0];
         }
+
         return null;
     }
 
-    private function detectarAnioPublicacion(string $bloque): ?int
+    private function decimalCampo(string $txt, string $campo): ?float
     {
-        if (preg_match('/(?:\b|\/)(20\d{2}|19\d{2})(?:\b|\/)/u', $bloque, $m)) {
-            return (int)$m[1];
+        $v = $this->campo($txt, $campo);
+
+        if ($v === null) {
+            return null;
         }
+
+        if (preg_match('/\d+(?:[\.,]\d+)?/u', $v, $m)) {
+            return (float)str_replace(',', '.', $m[0]);
+        }
+
         return null;
     }
 
-    private function inferirTipoIndicePublicacion(string $texto): string
+    private function contiene(string $txt, array $needles): bool
     {
-        $t = mb_strtolower($texto, 'UTF-8');
+        $low = $this->lower($txt);
 
-        if ($this->contieneAlgunTermino($t, ['physical review', 'journal of physics', 'physica', 'scipost', 'springer', 'elsevier'])) {
+        foreach ($needles as $n) {
+            if (str_contains($low, $this->lower($n))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function lower(string $s): string
+    {
+        return mb_strtolower($s, 'UTF-8');
+    }
+
+    private function anio(string $txt): ?int
+    {
+        if (preg_match_all('/(?:19|20)\d{2}/u', $txt, $m) && !empty($m[0])) {
+            return (int)max($m[0]);
+        }
+
+        return null;
+    }
+
+    private function contarAutores(string $txt): int
+    {
+        $primeraLinea = trim(strtok($txt, "\n") ?: $txt);
+
+        if (str_contains($primeraLinea, ';')) {
+            return max(1, substr_count($primeraLinea, ';') + 1);
+        }
+
+        return 1;
+    }
+
+    private function posicionAutor(int $pos, int $total, string $corresp = ''): string
+    {
+        if ($this->contiene($corresp, ['sí', 'si', 'yes'])) {
+            return 'correspondencia';
+        }
+
+        if ($pos <= 1) {
+            return 'primero';
+        }
+
+        if ($pos >= $total && $total > 1) {
+            return 'ultimo';
+        }
+
+        return 'intermedio';
+    }
+
+    private function inferirIndice(string $txt): string
+    {
+        if ($this->contiene($txt, [
+            'jcr',
+            'web of science',
+            'science citation',
+            'scipost',
+            'physical review',
+            'phys. rev',
+            'phys rev',
+            'physica e',
+            'journal of physics',
+            'quantum information processing',
+            'american physical society',
+            'iop publishing',
+            'elsevier',
+            'springer',
+            'springer nature',
+            'mdpi',
+            'symmetry',
+            'sciPost physics'
+        ])) {
             return 'JCR';
         }
-        if ($this->contieneAlgunTermino($t, ['mdpi', 'symmetry'])) {
+
+        if ($this->contiene($txt, ['scopus', 'sjr'])) {
             return 'SCOPUS';
         }
-        if ($this->contieneAlgunTermino($t, ['issn', 'revista'])) {
-            return 'SCOPUS';
+
+        if ($this->contiene($txt, ['fecyt'])) {
+            return 'FECYT';
+        }
+
+        if ($this->contiene($txt, ['resh'])) {
+            return 'RESH';
+        }
+
+        if ($this->contiene($txt, ['erih'])) {
+            return 'ERIH';
+        }
+
+        if ($this->contiene($txt, ['miar'])) {
+            return 'MIAR';
+        }
+
+        if ($this->contiene($txt, ['issn', 'doi', 'revista', 'journal'])) {
+            return 'SJR';
         }
 
         return 'OTRO';
     }
 
-    private function inferirCuartilPublicacion(string $texto): string
+    private function inferirCuartil(string $txt): string
     {
-        $t = mb_strtolower($texto, 'UTF-8');
+        if (preg_match('/\bQ\s*([1-4])\b/iu', $txt, $m)) {
+            return 'Q' . $m[1];
+        }
 
-        return match (true) {
-            $this->contieneAlgunTermino($t, ['physical review']) => 'Q1',
-            $this->contieneAlgunTermino($t, ['journal of physics']) => 'Q1',
-            $this->contieneAlgunTermino($t, ['physica e', 'scipost', 'quantum information processing']) => 'Q2',
-            $this->contieneAlgunTermino($t, ['symmetry', 'mdpi']) => 'Q3',
-            default => '',
-        };
+        if ($this->contiene($txt, [
+            'scipost phys',
+            'physical review',
+            'phys. rev',
+            'phys rev',
+            'american physical society',
+            'journal of physics a'
+        ])) {
+            return 'Q1';
+        }
+
+        if ($this->contiene($txt, [
+            'physica e',
+            'elsevier',
+            'quantum information processing',
+            'springer',
+            'springer nature',
+            'iop publishing'
+        ])) {
+            return 'Q2';
+        }
+
+        if ($this->contiene($txt, [
+            'symmetry',
+            'mdpi'
+        ])) {
+            return 'Q3';
+        }
+
+        if ($this->contiene($txt, [
+            'doi',
+            'issn',
+            'revista',
+            'journal'
+        ])) {
+            return 'Q3';
+        }
+
+        return '';
     }
 
-    private function cuartilATercil(string $cuartil): string
+    private function inferirTercil(string $cuartil): string
     {
-        return match (strtoupper(trim($cuartil))) {
+        $q = strtoupper(trim($cuartil));
+
+        return match ($q) {
             'Q1' => 'T1',
             'Q2' => 'T2',
             'Q3', 'Q4' => 'T3',
@@ -862,192 +1325,163 @@ class FecytCvnExtractor
         };
     }
 
-    private function esAreaMatematicas(string $texto): bool
+    private function inferirAfinidad(string $txt): string
     {
-        return $this->contieneAlgunTermino($texto, ['mathematical', 'matemática', 'matematica', 'theoretical']);
+        return $this->contiene($txt, [
+            'arqueolog',
+            'historia',
+            'arte',
+            'filolog',
+            'filosof',
+            'geograf',
+            'humanidades',
+            'física',
+            'fisica',
+            'matemática',
+            'matematica',
+            'química',
+            'quimica',
+            'biología',
+            'biologia',
+            'quantum',
+            'cuántic',
+            'cuantic',
+            'topological',
+            'topológic',
+            'topologic',
+            'graphene',
+            'nanoelectr',
+            'symmetric',
+            'entanglement',
+            'phase transition',
+            'lipkin'
+        ])
+            ? 'alta'
+            : 'media';
     }
 
-    private function detectarAfinidad(string $texto): string
+    private function nivelEditorial(string $txt): string
     {
-        return $this->contieneAlgunTermino($texto, ['quantum', 'cuántic', 'cuantic', 'physics', 'física', 'fisica']) ? 'alta' : 'media';
-    }
-
-    private function mapearPosicionAutor(int $posFirma, int $numAutores, ?string $correspondencia): string
-    {
-        if ($numAutores <= 1) {
-            return 'autor_unico';
-        }
-        if ($this->esRespuestaAfirmativa((string)$correspondencia) && $posFirma > 1) {
-            return 'correspondencia';
-        }
-        if ($posFirma <= 1) {
-            return 'primero';
-        }
-        if ($posFirma >= $numAutores) {
-            return 'ultimo';
-        }
-        return 'intermedio';
-    }
-
-    private function mapearTipoProyecto(string $ambito): string
-    {
-        $ambito = mb_strtolower(trim($ambito), 'UTF-8');
-        return match (true) {
-            str_contains($ambito, 'unión europea'), str_contains($ambito, 'union europea'), str_contains($ambito, 'europe') => 'europeo',
-            str_contains($ambito, 'nacional') => 'nacional',
-            str_contains($ambito, 'auton') => 'autonomico',
-            default => 'otro_competitivo',
-        };
-    }
-
-    private function mapearRolProyecto(string $rolFuente, string $bloque): string
-    {
-        $texto = mb_strtolower(trim($rolFuente . ' ' . $bloque), 'UTF-8');
-        return match (true) {
-            $this->contieneAlgunTermino($texto, ['investigador principal']) => 'ip',
-            $this->contieneAlgunTermino($texto, ['co-ip', 'coip', 'co ip']) => 'coip',
-            $this->contieneAlgunTermino($texto, ['contrato laboral']) => 'contrato_laboral',
-            default => 'investigador',
-        };
-    }
-
-    private function detectarDuracionEnAnios(string $texto): float
-    {
-        if (preg_match('/(\d{2}\/\d{2}\/\d{4})\s*-\s*(\d{2}\/\d{2}\/\d{4})/u', $texto, $m)) {
-            $inicio = DateTime::createFromFormat('d/m/Y', $m[1]);
-            $fin = DateTime::createFromFormat('d/m/Y', $m[2]);
-            if ($inicio instanceof DateTime && $fin instanceof DateTime) {
-                $dias = (int)$inicio->diff($fin)->format('%a');
-                return round(max(0, $dias) / 365, 2);
-            }
+        if ($this->contiene($txt, ['cambridge', 'oxford', 'springer', 'routledge', 'brill', 'wiley', 'elsevier'])) {
+            return 'internacional';
         }
 
-        if (preg_match('/(20\d{2}|19\d{2})\s*-\s*(20\d{2}|19\d{2})/u', $texto, $m)) {
-            return round(max(0, ((int)$m[2]) - ((int)$m[1])), 2);
+        if ($this->contiene($txt, ['universidad', 'csic', 'cátedra', 'catedra', 'tirant', 'aranzadi', 'comares'])) {
+            return 'nacional';
         }
 
-        if (preg_match('/(\d+(?:[\.,]\d+)?)\s*años?/iu', $texto, $m) || preg_match('/(\d+(?:[\.,]\d+)?)\s*anos?/iu', $texto, $m)) {
-            return (float)str_replace(',', '.', $m[1]);
+        return 'desconocido';
+    }
+
+    private function tipoProyecto(string $txt): string
+    {
+        if ($this->contiene($txt, ['unión europea', 'union europea', 'europeo', 'horizon', 'international'])) {
+            return 'internacional';
         }
 
-        if (preg_match('/(\d+(?:[\.,]\d+)?)\s*meses?/iu', $texto, $m)) {
-            return round(((float)str_replace(',', '.', $m[1])) / 12, 2);
+        if ($this->contiene($txt, ['nacional', 'ministerio', 'aei', 'plan nacional'])) {
+            return 'nacional';
         }
 
-        return 1.0;
-    }
-
-    private function detectarTipoTransferencia(string $texto): string
-    {
-        $t = mb_strtolower($texto, 'UTF-8');
-        return match (true) {
-            $this->contieneAlgunTermino($t, ['patente']) => 'patente',
-            $this->contieneAlgunTermino($t, ['propiedad intelectual', 'software']) => 'propiedad_intelectual',
-            $this->contieneAlgunTermino($t, ['art. 83', 'art83']) => 'art83',
-            default => 'otro',
-        };
-    }
-
-    private function mapearAmbitoCongreso(string $ambito): string
-    {
-        $ambito = mb_strtolower(trim($ambito), 'UTF-8');
-        return match (true) {
-            str_contains($ambito, 'internacional'), str_contains($ambito, 'unión europea'), str_contains($ambito, 'union europea') => 'internacional',
-            str_contains($ambito, 'nacional') => 'nacional',
-            default => 'nacional',
-        };
-    }
-
-    private function mapearTipoCongreso(string $tipo): string
-    {
-        $tipo = mb_strtolower(trim($tipo), 'UTF-8');
-        return match (true) {
-            $this->contieneAlgunTermino($tipo, ['invitada', 'plenaria']) => 'ponencia_invitada',
-            $this->contieneAlgunTermino($tipo, ['poster', 'póster']) => 'poster',
-            default => 'comunicacion_oral',
-        };
-    }
-
-    private function detectarNivelEditorial(string $texto): string
-    {
-        $t = mb_strtolower($texto, 'UTF-8');
-        return match (true) {
-            $this->contieneAlgunTermino($t, ['springer', 'elsevier', 'wiley', 'oxford', 'cambridge', 'iop', 'aps']) => 'internacional',
-            $this->contieneAlgunTermino($t, ['universidad', 'editorial', 'ministerio']) => 'nacional',
-            default => 'nacional',
-        };
-    }
-
-    private function contarAutoresPorPrimeraLinea(string $bloque): int
-    {
-        $linea = trim((string)preg_split('/\n/u', $bloque)[0]);
-        if ($linea === '') {
-            return 1;
+        if ($this->contiene($txt, ['autonómica', 'autonomica', 'junta de andalucía', 'junta de andalucia'])) {
+            return 'autonomico';
         }
-        $partes = array_filter(array_map('trim', preg_split('/;/u', $linea) ?: []), static fn($v) => $v !== '');
-        return max(1, count($partes));
+
+        return 'otros';
     }
 
-    private function inferirTipoBeca(string $texto): ?string
+    private function rolProyecto(string $txt): string
     {
-        $t = mb_strtolower($texto, 'UTF-8');
-        return match (true) {
-            $this->contieneAlgunTermino($t, ['fpu']) => 'beca_predoc_fpu',
-            $this->contieneAlgunTermino($t, ['fpi']) => 'beca_predoc_fpi',
-            $this->contieneAlgunTermino($t, ['predoctoral']) && $this->contieneAlgunTermino($t, ['universidad']) => 'beca_predoc_universidad',
-            $this->contieneAlgunTermino($t, ['predoctoral']) => 'beca_predoc_autonomica',
-            $this->contieneAlgunTermino($t, ['posdoctoral', 'posdoc']) => 'beca_posdoc',
-            default => null,
-        };
+        if ($this->contiene($txt, ['investigador principal', 'ip', 'co-ip', 'coip'])) {
+            return 'ip';
+        }
+
+        return 'investigador';
     }
 
-    private function inferirRelacionExperiencia(string $texto): string
+    private function ambito(string $txt): string
     {
-        $t = mb_strtolower($texto, 'UTF-8');
-        return match (true) {
-            $this->contieneAlgunTermino($t, ['profesor', 'docente', 'big data', 'ingeniería', 'ingenieria', 'informática', 'informatica']) => 'alta',
-            $this->contieneAlgunTermino($t, ['análisis', 'analisis', 'datos']) => 'media',
-            default => 'media',
-        };
+        if ($this->contiene($txt, [
+            'internacional',
+            'unión europea',
+            'union europea',
+            'méxico',
+            'mexico',
+            'francia',
+            'italia',
+            'alemania',
+            'portugal',
+            'benín',
+            'benin',
+            'praga',
+            'strasbourg',
+            'cotonou',
+            'república checa',
+            'republica checa'
+        ])) {
+            return 'internacional';
+        }
+
+        if ($this->contiene($txt, ['nacional', 'españa', 'spain'])) {
+            return 'nacional';
+        }
+
+        return 'autonomico';
     }
 
-    private function calcularAniosDesdeFecha(string $fecha): float
+    private function duracionAnios(string $txt): float
     {
-        $fecha = trim($fecha);
-        if ($fecha === '') {
+        if (preg_match('/Duración\s*:\s*(\d+)\s*años?/iu', $txt, $m)) {
+            return (float)$m[1];
+        }
+
+        if (preg_match('/Duración\s*:\s*(\d+)\s*meses?/iu', $txt, $m)) {
+            return round(((float)$m[1]) / 12, 2);
+        }
+
+        if (preg_match_all('/(?:19|20)\d{2}/u', $txt, $m) && count($m[0]) >= 2) {
+            $years = array_map('intval', $m[0]);
+            return max(0.2, (float)(max($years) - min($years)));
+        }
+
+        return 0.5;
+    }
+
+    private function duracionMeses(string $txt): float
+    {
+        if (preg_match('/Duración\s*:\s*(\d+)\s*meses?/iu', $txt, $m)) {
+            return (float)$m[1];
+        }
+
+        if (preg_match('/Duración\s*:\s*(\d+)\s*años?/iu', $txt, $m)) {
+            return (float)$m[1] * 12;
+        }
+
+        return max(1, $this->duracionAnios($txt) * 12);
+    }
+
+    private function estimarHorasDocencia(string $txt): float
+    {
+        if (preg_match_all('/(?:19|20)\d{2}/u', $txt, $m) && count($m[0]) >= 2) {
+            $years = array_map('intval', $m[0]);
+            $dur = max(1, max($years) - min($years));
+
+            return min(225.0, $dur * 45.0);
+        }
+
+        return 45.0;
+    }
+
+    private function extraerCuantia(string $txt): float
+    {
+        if (!preg_match('/Cuantía total\s*:\s*([0-9\.\,]+)/iu', $txt, $m) &&
+            !preg_match('/Cuantia total\s*:\s*([0-9\.\,]+)/iu', $txt, $m)) {
             return 0.0;
         }
-        $dt = DateTime::createFromFormat('d/m/Y', $fecha);
-        if (!$dt instanceof DateTime) {
-            return 0.0;
-        }
-        $ahora = new DateTime();
-        $dias = (int)$dt->diff($ahora)->format('%a');
-        return round(max(0, $dias) / 365, 2);
-    }
 
-    private function normalizarEventoId(string $texto): string
-    {
-        $texto = mb_strtolower($texto, 'UTF-8');
-        $texto = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $texto) ?: $texto;
-        $texto = preg_replace('/[^a-z0-9]+/', '_', $texto) ?? $texto;
-        return trim($texto, '_');
-    }
+        $n = str_replace('.', '', $m[1]);
+        $n = str_replace(',', '.', $n);
 
-    private function contieneAlgunTermino(string $texto, array $terminos): bool
-    {
-        $texto = mb_strtolower($texto, 'UTF-8');
-        foreach ($terminos as $termino) {
-            if (mb_stripos($texto, mb_strtolower((string)$termino, 'UTF-8'), 0, 'UTF-8') !== false) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private function esRespuestaAfirmativa(string $valor): bool
-    {
-        $valor = mb_strtolower(trim($valor), 'UTF-8');
-        return in_array($valor, ['sí', 'si', 's', 'yes', 'true', '1'], true);
+        return is_numeric($n) ? (float)$n : 0.0;
     }
 }

@@ -5,6 +5,7 @@ require __DIR__ . '/config.php';
 require __DIR__ . '/ui.php';
 
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+
 if ($id <= 0) {
     die('ID de evaluación no válido.');
 }
@@ -22,17 +23,26 @@ if (!is_array($jsonEntrada)) {
     $jsonEntrada = [];
 }
 
-$resultadoCalculo = [];
 $diagnostico = [];
 $asesor = [];
 
 if (isset($jsonEntrada['resultado_calculo']) && is_array($jsonEntrada['resultado_calculo'])) {
-    $resultadoCalculo = $jsonEntrada['resultado_calculo'];
-    $diagnostico = $resultadoCalculo['diagnostico'] ?? [];
-    $asesor = $resultadoCalculo['asesor'] ?? [];
+    $diagnostico = $jsonEntrada['resultado_calculo']['diagnostico'] ?? [];
+    $asesor = $jsonEntrada['resultado_calculo']['asesor'] ?? [];
+} else {
+    $diagnostico = $jsonEntrada['diagnostico'] ?? [];
+    $asesor = $jsonEntrada['asesor'] ?? [];
 }
 
-function csyj_vf(mixed $value, int $decimals = 2): string
+function csyj_v(mixed $value, string $default = '0'): string
+{
+    if ($value === null || $value === '') {
+        return $default;
+    }
+    return (string)$value;
+}
+
+function csyj_f(mixed $value, int $decimals = 2): string
 {
     return number_format((float)$value, $decimals, ',', '.');
 }
@@ -43,57 +53,9 @@ function csyj_json_pretty(array $data): string
     return $json !== false ? $json : '{}';
 }
 
-$resultadoTexto = strtoupper((string)($evaluacion['resultado'] ?? 'NEGATIVA'));
-$esPositiva = $resultadoTexto === 'POSITIVA';
-
-$bloques = [
-    [
-        'titulo' => 'Bloque 1. Investigación',
-        'items' => [
-            ['label' => '1.A Publicaciones científicas', 'valor' => $evaluacion['puntuacion_1a'] ?? 0, 'max' => 30],
-            ['label' => '1.B Libros y capítulos', 'valor' => $evaluacion['puntuacion_1b'] ?? 0, 'max' => 12],
-            ['label' => '1.C Proyectos de investigación', 'valor' => $evaluacion['puntuacion_1c'] ?? 0, 'max' => 5],
-            ['label' => '1.D Transferencia', 'valor' => $evaluacion['puntuacion_1d'] ?? 0, 'max' => 2],
-            ['label' => '1.E Dirección de tesis doctorales', 'valor' => $evaluacion['puntuacion_1e'] ?? 0, 'max' => 4],
-            ['label' => '1.F Congresos, seminarios y jornadas', 'valor' => $evaluacion['puntuacion_1f'] ?? 0, 'max' => 5],
-            ['label' => '1.G Otros méritos de investigación', 'valor' => $evaluacion['puntuacion_1g'] ?? 0, 'max' => 2],
-        ],
-        'total' => $evaluacion['bloque_1'] ?? 0,
-        'maximo' => 60,
-    ],
-    [
-        'titulo' => 'Bloque 2. Experiencia docente',
-        'items' => [
-            ['label' => '2.A Docencia universitaria', 'valor' => $evaluacion['puntuacion_2a'] ?? 0, 'max' => 17],
-            ['label' => '2.B Evaluación docente', 'valor' => $evaluacion['puntuacion_2b'] ?? 0, 'max' => 3],
-            ['label' => '2.C Seminarios y cursos orientados a docencia', 'valor' => $evaluacion['puntuacion_2c'] ?? 0, 'max' => 3],
-            ['label' => '2.D Material docente y proyectos de innovación', 'valor' => $evaluacion['puntuacion_2d'] ?? 0, 'max' => 7],
-        ],
-        'total' => $evaluacion['bloque_2'] ?? 0,
-        'maximo' => 30,
-    ],
-    [
-        'titulo' => 'Bloque 3. Formación académica y experiencia profesional',
-        'items' => [
-            ['label' => '3.A Formación académica', 'valor' => $evaluacion['puntuacion_3a'] ?? 0, 'max' => 6],
-            ['label' => '3.B Experiencia profesional', 'valor' => $evaluacion['puntuacion_3b'] ?? 0, 'max' => 2],
-        ],
-        'total' => $evaluacion['bloque_3'] ?? 0,
-        'maximo' => 8,
-    ],
-    [
-        'titulo' => 'Bloque 4. Otros méritos',
-        'items' => [
-            ['label' => '4. Otros méritos', 'valor' => $evaluacion['bloque_4'] ?? 0, 'max' => 2],
-        ],
-        'total' => $evaluacion['bloque_4'] ?? 0,
-        'maximo' => 2,
-    ],
-];
-
 csyj_render_layout_start(
     'Resultado de evaluación',
-    'Detalle completo de la evaluación guardada para la rama Ciencias Sociales y Jurídicas.',
+    'Detalle completo de la evaluación guardada para la rama CSyJ.',
     [
         ['label' => 'Portal ANECA', 'url' => csyj_portal_url()],
         ['label' => 'CSyJ', 'url' => csyj_index_url()],
@@ -167,11 +129,6 @@ csyj_render_layout_start(
         text-align: left;
         vertical-align: top;
     }
-    .tabla-puntuaciones th:last-child,
-    .tabla-puntuaciones td:last-child {
-        text-align: right;
-        white-space: nowrap;
-    }
     .tabla-puntuaciones th {
         background: #f8fafc;
         font-size: 13px;
@@ -242,6 +199,11 @@ csyj_render_layout_start(
     }
 </style>
 
+<?php
+$resultadoTexto = strtoupper((string)($evaluacion['resultado'] ?? 'NEGATIVA'));
+$esPositiva = $resultadoTexto === 'POSITIVA';
+?>
+
 <section class="card stack">
     <div class="meta-top">
         <div>
@@ -264,147 +226,263 @@ csyj_render_layout_start(
     <div class="resumen-grid">
         <div class="resumen-box">
             <span class="k">Bloque 1</span>
-            <span class="v"><?= csyj_vf($evaluacion['bloque_1'] ?? 0) ?></span>
+            <span class="v"><?= csyj_f($evaluacion['bloque_1'] ?? 0) ?></span>
             <span class="maximo">Máximo 60</span>
         </div>
         <div class="resumen-box">
             <span class="k">Bloque 2</span>
-            <span class="v"><?= csyj_vf($evaluacion['bloque_2'] ?? 0) ?></span>
+            <span class="v"><?= csyj_f($evaluacion['bloque_2'] ?? 0) ?></span>
             <span class="maximo">Máximo 30</span>
         </div>
         <div class="resumen-box">
             <span class="k">Bloque 3</span>
-            <span class="v"><?= csyj_vf($evaluacion['bloque_3'] ?? 0) ?></span>
+            <span class="v"><?= csyj_f($evaluacion['bloque_3'] ?? 0) ?></span>
             <span class="maximo">Máximo 8</span>
         </div>
         <div class="resumen-box">
             <span class="k">Bloque 4</span>
-            <span class="v"><?= csyj_vf($evaluacion['bloque_4'] ?? 0) ?></span>
+            <span class="v"><?= csyj_f($evaluacion['bloque_4'] ?? 0) ?></span>
             <span class="maximo">Máximo 2</span>
         </div>
         <div class="resumen-box">
             <span class="k">1 + 2</span>
-            <span class="v"><?= csyj_vf($evaluacion['total_b1_b2'] ?? 0) ?></span>
+            <span class="v"><?= csyj_f($evaluacion['total_b1_b2'] ?? 0) ?></span>
             <span class="maximo">Debe ser ≥ 50</span>
         </div>
         <div class="resumen-box">
             <span class="k">Total final</span>
-            <span class="v"><?= csyj_vf($evaluacion['total_final'] ?? 0) ?></span>
+            <span class="v"><?= csyj_f($evaluacion['total_final'] ?? 0) ?></span>
             <span class="maximo">Debe ser ≥ 55</span>
         </div>
     </div>
 </section>
 
 <section class="split">
-    <section class="card stack">
-        <h2 class="seccion-titulo">Reglas de corte</h2>
-        <div>
-            <div class="<?= ((int)($evaluacion['cumple_regla_1'] ?? 0) === 1) ? 'regla-ok' : 'regla-ko' ?>">
-                Regla 1: bloque 1 + bloque 2 ≥ 50 → <?= ((int)($evaluacion['cumple_regla_1'] ?? 0) === 1) ? 'Cumple' : 'No cumple' ?>
-            </div>
-        </div>
-        <div>
-            <div class="<?= ((int)($evaluacion['cumple_regla_2'] ?? 0) === 1) ? 'regla-ok' : 'regla-ko' ?>">
-                Regla 2: total final ≥ 55 → <?= ((int)($evaluacion['cumple_regla_2'] ?? 0) === 1) ? 'Cumple' : 'No cumple' ?>
-            </div>
-        </div>
-    </section>
+    <div class="stack">
+        <section class="card stack">
+            <h2 class="seccion-titulo">Detalle de puntuaciones</h2>
 
-    <section class="card stack">
-        <h2 class="seccion-titulo">Diagnóstico técnico</h2>
-        <?php if (!empty($diagnostico['version'])): ?>
-            <div><strong>Versión:</strong> <?= csyj_h((string)$diagnostico['version']) ?></div>
-        <?php endif; ?>
-
-        <?php if (!empty($diagnostico['conteos']) && is_array($diagnostico['conteos'])): ?>
-            <div class="sim-grid">
-                <?php foreach ($diagnostico['conteos'] as $label => $valor): ?>
-                    <div class="sim-item">
-                        <strong><?= csyj_h((string)$label) ?></strong><br>
-                        <span class="muted">Detectados: <?= csyj_h((string)$valor) ?></span>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-        <?php endif; ?>
-
-        <?php if (!empty($diagnostico['criterios_clave']) && is_array($diagnostico['criterios_clave'])): ?>
-            <ul class="lista-simple">
-                <?php foreach ($diagnostico['criterios_clave'] as $criterio): ?>
-                    <li><?= csyj_h((string)$criterio) ?></li>
-                <?php endforeach; ?>
-            </ul>
-        <?php endif; ?>
-    </section>
-</section>
-
-<?php foreach ($bloques as $bloque): ?>
-    <section class="card stack">
-        <h2 class="seccion-titulo"><?= csyj_h($bloque['titulo']) ?></h2>
-        <table class="tabla-puntuaciones">
-            <thead>
-                <tr>
-                    <th>Subapartado</th>
-                    <th>Puntuación</th>
-                    <th>Máximo</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($bloque['items'] as $item): ?>
+            <table class="tabla-puntuaciones">
+                <thead>
                     <tr>
-                        <td><?= csyj_h($item['label']) ?></td>
-                        <td><?= csyj_vf($item['valor']) ?></td>
-                        <td><?= csyj_vf($item['max']) ?></td>
+                        <th>Apartado</th>
+                        <th>Puntuación</th>
+                        <th>Máximo</th>
                     </tr>
-                <?php endforeach; ?>
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td>Total del bloque</td>
-                    <td><?= csyj_vf($bloque['total']) ?></td>
-                    <td><?= csyj_vf($bloque['maximo']) ?></td>
-                </tr>
-            </tfoot>
-        </table>
-    </section>
-<?php endforeach; ?>
+                </thead>
+                <tbody>
+                    <tr><td><strong>1.A</strong> Publicaciones científicas</td><td><?= csyj_f($evaluacion['puntuacion_1a'] ?? 0) ?></td><td>30</td></tr>
+                    <tr><td><strong>1.B</strong> Libros y capítulos de libro</td><td><?= csyj_f($evaluacion['puntuacion_1b'] ?? 0) ?></td><td>12</td></tr>
+                    <tr><td><strong>1.C</strong> Proyectos y contratos de investigación</td><td><?= csyj_f($evaluacion['puntuacion_1c'] ?? 0) ?></td><td>5</td></tr>
+                    <tr><td><strong>1.D</strong> Transferencia tecnológica</td><td><?= csyj_f($evaluacion['puntuacion_1d'] ?? 0) ?></td><td>2</td></tr>
+                    <tr><td><strong>1.E</strong> Dirección de tesis doctorales</td><td><?= csyj_f($evaluacion['puntuacion_1e'] ?? 0) ?></td><td>4</td></tr>
+                    <tr><td><strong>1.F</strong> Congresos, seminarios y jornadas</td><td><?= csyj_f($evaluacion['puntuacion_1f'] ?? 0) ?></td><td>5</td></tr>
+                    <tr><td><strong>1.G</strong> Otros méritos de investigación</td><td><?= csyj_f($evaluacion['puntuacion_1g'] ?? 0) ?></td><td>2</td></tr>
 
-<?php if (!empty($asesor)): ?>
-    <section class="card stack">
-        <h2 class="seccion-titulo">Asesor orientativo</h2>
+                    <tr><td colspan="3" style="background:#f8fafc;"><strong>Bloque 2 · Experiencia docente</strong></td></tr>
 
-        <?php if (!empty($asesor['resumen'])): ?>
-            <p><?= csyj_h((string)$asesor['resumen']) ?></p>
-        <?php endif; ?>
+                    <tr><td><strong>2.A</strong> Docencia universitaria</td><td><?= csyj_f($evaluacion['puntuacion_2a'] ?? 0) ?></td><td>17</td></tr>
+                    <tr><td><strong>2.B</strong> Evaluaciones sobre su calidad</td><td><?= csyj_f($evaluacion['puntuacion_2b'] ?? 0) ?></td><td>3</td></tr>
+                    <tr><td><strong>2.C</strong> Cursos y seminarios de formación docente universitaria</td><td><?= csyj_f($evaluacion['puntuacion_2c'] ?? 0) ?></td><td>3</td></tr>
+                    <tr><td><strong>2.D</strong> Material docente, proyectos y contribuciones al EEES</td><td><?= csyj_f($evaluacion['puntuacion_2d'] ?? 0) ?></td><td>7</td></tr>
 
-        <?php if (!empty($asesor['acciones']) && is_array($asesor['acciones'])): ?>
-            <div class="acciones-asesor">
-                <?php foreach ($asesor['acciones'] as $accion): ?>
-                    <div class="accion-item">
-                        <strong><?= csyj_h((string)($accion['titulo'] ?? 'Acción')) ?></strong>
-                        <p style="margin:8px 0 0;"><?= csyj_h((string)($accion['detalle'] ?? '')) ?></p>
-                    </div>
-                <?php endforeach; ?>
+                    <tr><td colspan="3" style="background:#f8fafc;"><strong>Bloque 3 · Formación académica y experiencia profesional</strong></td></tr>
+
+                    <tr><td><strong>3.A</strong> Tesis, becas, estancias, otros títulos</td><td><?= csyj_f($evaluacion['puntuacion_3a'] ?? 0) ?></td><td>6</td></tr>
+                    <tr><td><strong>3.B</strong> Trabajo en empresas / instituciones / hospitales</td><td><?= csyj_f($evaluacion['puntuacion_3b'] ?? 0) ?></td><td>2</td></tr>
+
+                    <tr><td colspan="3" style="background:#f8fafc;"><strong>Bloque 4</strong></td></tr>
+
+                    <tr><td><strong>4</strong> Otros méritos</td><td><?= csyj_f($evaluacion['bloque_4'] ?? 0) ?></td><td>2</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="card stack">
+            <h2 class="seccion-titulo">Reglas de decisión</h2>
+            <div class="<?= ((int)($evaluacion['cumple_regla_1'] ?? 0) === 1) ? 'regla-ok' : 'regla-ko' ?>">
+                Regla 1: Bloque 1 + Bloque 2 ≥ 50
+                → <?= ((int)($evaluacion['cumple_regla_1'] ?? 0) === 1) ? 'CUMPLE' : 'NO CUMPLE' ?>
             </div>
-        <?php endif; ?>
-
-        <?php if (!empty($asesor['simulaciones']) && is_array($asesor['simulaciones'])): ?>
-            <div class="sim-grid">
-                <?php foreach ($asesor['simulaciones'] as $sim): ?>
-                    <div class="sim-item">
-                        <strong><?= csyj_h((string)($sim['escenario'] ?? 'Escenario')) ?></strong><br>
-                        <span class="muted"><?= csyj_h((string)($sim['mensaje'] ?? '')) ?></span>
-                    </div>
-                <?php endforeach; ?>
+            <div class="<?= ((int)($evaluacion['cumple_regla_2'] ?? 0) === 1) ? 'regla-ok' : 'regla-ko' ?>">
+                Regla 2: Bloque 1 + Bloque 2 + Bloque 3 + Bloque 4 ≥ 55
+                → <?= ((int)($evaluacion['cumple_regla_2'] ?? 0) === 1) ? 'CUMPLE' : 'NO CUMPLE' ?>
             </div>
-        <?php endif; ?>
-    </section>
-<?php endif; ?>
+        </section>
 
-<section class="card">
-    <details>
-        <summary>Ver JSON del expediente evaluado</summary>
-        <pre><?= csyj_h(csyj_json_pretty($jsonEntrada)) ?></pre>
-    </details>
+        <?php if (!empty($diagnostico)): ?>
+            <section class="card stack">
+                <h2 class="seccion-titulo">Diagnóstico</h2>
+
+                <?php if (!empty($diagnostico['perfil_detectado'])): ?>
+                    <p><strong>Perfil detectado:</strong> <?= csyj_h((string)$diagnostico['perfil_detectado']) ?></p>
+                <?php endif; ?>
+
+                <?php if (!empty($diagnostico['fortalezas']) && is_array($diagnostico['fortalezas'])): ?>
+                    <div>
+                        <strong>Fortalezas</strong>
+                        <ul class="lista-simple">
+                            <?php foreach ($diagnostico['fortalezas'] as $item): ?>
+                                <li><?= csyj_h((string)$item) ?></li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                <?php endif; ?>
+
+                <?php if (!empty($diagnostico['debilidades']) && is_array($diagnostico['debilidades'])): ?>
+                    <div>
+                        <strong>Debilidades</strong>
+                        <ul class="lista-simple">
+                            <?php foreach ($diagnostico['debilidades'] as $item): ?>
+                                <li><?= csyj_h((string)$item) ?></li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                <?php endif; ?>
+
+                <?php if (!empty($diagnostico['alertas']) && is_array($diagnostico['alertas'])): ?>
+                    <div>
+                        <strong>Alertas</strong>
+                        <ul class="lista-simple">
+                            <?php foreach ($diagnostico['alertas'] as $item): ?>
+                                <li><?= csyj_h((string)$item) ?></li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                <?php endif; ?>
+
+                <?php if (!empty($diagnostico['reglas']) && is_array($diagnostico['reglas'])): ?>
+                    <div>
+                        <strong>Detalle de reglas</strong>
+                        <ul class="lista-simple">
+                            <?php foreach ($diagnostico['reglas'] as $regla): ?>
+                                <li>
+                                    <?= csyj_h((string)($regla['nombre'] ?? 'Regla')) ?>:
+                                    actual <?= csyj_f($regla['valor_actual'] ?? 0) ?> /
+                                    objetivo <?= csyj_f($regla['objetivo'] ?? 0) ?>
+                                    <?php if (isset($regla['deficit'])): ?>
+                                        · déficit <?= csyj_f($regla['deficit']) ?>
+                                    <?php endif; ?>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                <?php endif; ?>
+            </section>
+        <?php endif; ?>
+
+        <?php if (!empty($asesor)): ?>
+            <section class="card stack">
+                <h2 class="seccion-titulo">Asesor orientativo</h2>
+
+                <?php if (!empty($asesor['resumen'])): ?>
+                    <p><?= csyj_h((string)$asesor['resumen']) ?></p>
+                <?php endif; ?>
+
+                <?php if (!empty($asesor['acciones']) && is_array($asesor['acciones'])): ?>
+                    <div class="acciones-asesor">
+                        <?php foreach ($asesor['acciones'] as $accion): ?>
+                            <div class="accion-item">
+                                <div><strong><?= csyj_h((string)($accion['titulo'] ?? 'Acción')) ?></strong></div>
+                                <?php if (!empty($accion['detalle'])): ?>
+                                    <div style="margin-top:6px;"><?= csyj_h((string)$accion['detalle']) ?></div>
+                                <?php endif; ?>
+                                <?php if (!empty($accion['impacto_estimado'])): ?>
+                                    <div class="maximo" style="margin-top:8px;">
+                                        Impacto estimado: <?= csyj_h((string)$accion['impacto_estimado']) ?>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+
+                <?php if (!empty($asesor['simulaciones']) && is_array($asesor['simulaciones'])): ?>
+                    <div>
+                        <strong>Simulaciones rápidas</strong>
+                        <div class="sim-grid" style="margin-top:10px;">
+                            <?php foreach ($asesor['simulaciones'] as $sim): ?>
+                                <div class="sim-item">
+                                    <div><strong><?= csyj_h((string)($sim['escenario'] ?? 'Escenario')) ?></strong></div>
+                                    <?php if (!empty($sim['efecto_estimado'])): ?>
+                                        <div style="margin-top:6px;"><?= csyj_h((string)$sim['efecto_estimado']) ?></div>
+                                    <?php endif; ?>
+                                    <?php if (isset($sim['nuevo_b1_b2_aprox'])): ?>
+                                        <div class="maximo" style="margin-top:8px;">
+                                            Nuevo 1+2 aprox.: <?= csyj_f($sim['nuevo_b1_b2_aprox']) ?>
+                                        </div>
+                                    <?php endif; ?>
+                                    <?php if (isset($sim['nuevo_total_aprox'])): ?>
+                                        <div class="maximo">
+                                            Nuevo total aprox.: <?= csyj_f($sim['nuevo_total_aprox']) ?>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                <?php endif; ?>
+            </section>
+        <?php endif; ?>
+
+        <section class="card stack">
+            <details>
+                <summary>Ver JSON guardado</summary>
+                <pre><?= csyj_h(csyj_json_pretty($jsonEntrada)) ?></pre>
+            </details>
+        </section>
+    </div>
+
+    <aside class="stack">
+        <section class="card">
+            <h2>Resumen técnico</h2>
+            <div class="kpis">
+                <div class="kpi">
+                    <span class="label">1A</span>
+                    <strong><?= csyj_f($evaluacion['puntuacion_1a'] ?? 0) ?></strong>
+                </div>
+                <div class="kpi">
+                    <span class="label">1C</span>
+                    <strong><?= csyj_f($evaluacion['puntuacion_1c'] ?? 0) ?></strong>
+                </div>
+                <div class="kpi">
+                    <span class="label">1D</span>
+                    <strong><?= csyj_f($evaluacion['puntuacion_1d'] ?? 0) ?></strong>
+                </div>
+                <div class="kpi">
+                    <span class="label">2A</span>
+                    <strong><?= csyj_f($evaluacion['puntuacion_2a'] ?? 0) ?></strong>
+                </div>
+                <div class="kpi">
+                    <span class="label">2B</span>
+                    <strong><?= csyj_f($evaluacion['puntuacion_2b'] ?? 0) ?></strong>
+                </div>
+                <div class="kpi">
+                    <span class="label">3A</span>
+                    <strong><?= csyj_f($evaluacion['puntuacion_3a'] ?? 0) ?></strong>
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Referencia de máximos</h2>
+            <ul class="lista-simple">
+                <li>Bloque 1 = 60</li>
+                <li>Bloque 2 = 30</li>
+                <li>Bloque 3 = 8</li>
+                <li>Bloque 4 = 2</li>
+                <li>Positiva si 1+2 ≥ 50 y total ≥ 55</li>
+            </ul>
+        </section>
+
+        <section class="card">
+            <h2>Acciones</h2>
+            <div class="stack">
+                <a class="btn" href="index.php">Nueva evaluación</a>
+                <a class="btn secondary" href="listado.php">Ir al listado</a>
+            </div>
+        </section>
+    </aside>
 </section>
 
 <?php csyj_render_layout_end(); ?>

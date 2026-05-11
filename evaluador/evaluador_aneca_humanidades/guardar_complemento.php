@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 require __DIR__ . '/config.php';
 require __DIR__ . '/funciones_evaluador_humanidades.php';
-require_once __DIR__ . '/../src/evaluaciones_traceability.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     die('Acceso no permitido.');
@@ -225,7 +224,6 @@ $jsonBase['bloque_4'] = fusionar_listas(
 /* =========================================================
  * Recalcular
  * ========================================================= */
-$orcidCandidato = aneca_attach_candidate_orcid($jsonBase);
 $resultado = evaluar_expediente($jsonBase);
 $jsonFinal = json_encode($jsonBase, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
 
@@ -238,7 +236,6 @@ if ($jsonFinal === false) {
  * ========================================================= */
 $sql = "INSERT INTO evaluaciones (
     nombre_candidato,
-    orcid_candidato,
     area,
     categoria,
     json_entrada,
@@ -266,7 +263,6 @@ $sql = "INSERT INTO evaluaciones (
     cumple_regla_2
 ) VALUES (
     :nombre_candidato,
-    :orcid_candidato,
     :area,
     :categoria,
     :json_entrada,
@@ -298,7 +294,6 @@ $stmt = $pdo->prepare($sql);
 
 $stmt->execute([
     ':nombre_candidato' => $nombre,
-    ':orcid_candidato' => $orcidCandidato,
     ':area' => 'Humanidades',
     ':categoria' => 'PCD/PUP',
     ':json_entrada' => $jsonFinal,
