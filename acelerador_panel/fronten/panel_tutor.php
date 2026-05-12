@@ -1165,7 +1165,6 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
       <div class="direccion">
         <img src="https://uf3ceu.es/wp-content/uploads/logo-uf3-2k25.svg" alt="CEU Universidad Fernando III"
           style="height:50px; width:auto;" id="#acele" />
-
         <p>
           Glorieta Ángel Herrera Oria, s/n,<br />
           41930 Bormujos,<br />
@@ -1188,8 +1187,6 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
             <li>Términos y Condiciones</li>
             <li>Política de Cookies</li>
           </ul>
-
-
         </div>
         <div class="columna">
           <h4>Legal</h4>
@@ -1198,7 +1195,6 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
             <li>Política de Cookies</li>
             <li>Blog</li>
           </ul>
-
         </div>
       </div>
       <div class="piepag">

@@ -46,9 +46,14 @@ if (isset($_POST['accion']) && $_POST['accion'] == 'crear') {
     $mensaje = "Todos los campos obligatorios deben estar completos.";
     $tipo_mensaje = "danger";
   } else {
-    $check = mysqli_query($conn, "SELECT id_profesor FROM tbl_profesor WHERE ORCID = '$orcid'");
-    if (mysqli_num_rows($check) > 0) {
+    $check_orcid = mysqli_query($conn, "SELECT id_profesor FROM tbl_profesor WHERE ORCID = '$orcid'");
+    $check_correo = mysqli_query($conn, "SELECT id_profesor FROM tbl_profesor WHERE correo = '$correo_nuevo'");
+    
+    if (mysqli_num_rows($check_orcid) > 0) {
       $mensaje = "Ya existe un usuario con ese ORCID.";
+      $tipo_mensaje = "warning";
+    } elseif (mysqli_num_rows($check_correo) > 0) {
+      $mensaje = "Ya existe un usuario con ese correo.";
       $tipo_mensaje = "warning";
     } else {
       $pass_hash = password_hash($pass_plano, PASSWORD_DEFAULT);
@@ -89,15 +94,41 @@ if (isset($_POST['accion']) && $_POST['accion'] == 'editar') {
   $departamento = mysqli_real_escape_string($conn, trim($_POST['departamento']));
   $rama = mysqli_real_escape_string($conn, trim($_POST['rama']));
 
-  // Obtener correo antiguo para actualizar tbl_usuario
-  $old = mysqli_query($conn, "SELECT correo FROM tbl_profesor WHERE id_profesor = $id_edit");
-  $correo_old = mysqli_fetch_assoc($old)['correo'];
+  // Obtener información antigua
+  $q_old = mysqli_query($conn, "SELECT correo, perfil FROM tbl_profesor WHERE id_profesor = $id_edit");
+  $old_data = mysqli_fetch_assoc($q_old);
+  $correo_old = $old_data['correo'];
+  $perfil_old = strtoupper($old_data['perfil']);
 
-  mysqli_query($conn, "UPDATE tbl_profesor SET nombre='$nombre', apellidos='$apellidos', correo='$correo_edit', DNI='$dni', telefono='$telefono', perfil='$perfil_edit', facultad='$facultad', departamento='$departamento', rama='$rama' WHERE id_profesor = $id_edit");
-  mysqli_query($conn, "UPDATE tbl_usuario SET correo='$correo_edit' WHERE correo='$correo_old'");
+  $errores = false;
 
-  $mensaje = "Datos del usuario actualizados correctamente.";
-  $tipo_mensaje = "success";
+  // Si era tutor y ya no lo es, comprobar que no tenga grupos
+  if ($perfil_old === 'TUTOR' && strtoupper($perfil_edit) !== 'TUTOR') {
+      $q_grupos = mysqli_query($conn, "SELECT id_grupo FROM tbl_grupo WHERE id_tutor = $id_edit");
+      if (mysqli_num_rows($q_grupos) > 0) {
+          $mensaje = "No se puede cambiar el perfil de este TUTOR porque tiene grupos asignados. Reasigna o elimina sus grupos primero.";
+          $tipo_mensaje = "warning";
+          $errores = true;
+      }
+  }
+
+  if (!$errores) {
+      // Comprobar si el nuevo correo ya existe en otro usuario
+      $dup = mysqli_query($conn, "SELECT id_profesor FROM tbl_profesor WHERE correo = '$correo_edit' AND id_profesor != $id_edit");
+      if (mysqli_num_rows($dup) > 0) {
+          $mensaje = "El correo especificado ya pertenece a otro usuario.";
+          $tipo_mensaje = "danger";
+          $errores = true;
+      }
+  }
+
+  if (!$errores) {
+      mysqli_query($conn, "UPDATE tbl_profesor SET nombre='$nombre', apellidos='$apellidos', correo='$correo_edit', DNI='$dni', telefono='$telefono', perfil='$perfil_edit', facultad='$facultad', departamento='$departamento', rama='$rama' WHERE id_profesor = $id_edit");
+      mysqli_query($conn, "UPDATE tbl_usuario SET correo='$correo_edit' WHERE correo='$correo_old'");
+
+      $mensaje = "Datos del usuario actualizados correctamente.";
+      $tipo_mensaje = "success";
+  }
   $_POST['orcid_buscar'] = $_POST['orcid_original'];
 }
 

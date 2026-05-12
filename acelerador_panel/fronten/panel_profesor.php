@@ -1017,8 +1017,17 @@ function recomendaciones(array $e): array {
           const deadlineStr = item.getAttribute('data-deadline');
           if (!deadlineStr) return;
 
-          // Parsear la fecha
-          const deadline = new Date(deadlineStr + (deadlineStr.includes('T') ? '' : 'T23:59:59')).getTime();
+          // Parsear la fecha de manera segura (soportando YYYY-MM-DD o YYYY-MM-DD HH:MM o YYYY-MM-DDTHH:MM)
+          let dateToParse = deadlineStr;
+          if (dateToParse.includes(' ')) {
+              dateToParse = dateToParse.replace(' ', 'T');
+          } else if (!dateToParse.includes('T')) {
+              dateToParse += 'T23:59:59';
+          }
+          
+          const deadline = new Date(dateToParse).getTime();
+          if (isNaN(deadline)) return; // Evitar colgar si la fecha es inválida
+          
           let diff = deadline - ahora;
 
           const cdDias = item.querySelector('.cdDias');

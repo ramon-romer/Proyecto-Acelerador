@@ -53,6 +53,10 @@ if (isset($_POST['accion']) && $_POST['accion'] == 'cambiar_tutor') {
   $id_grupo = intval($_POST['id_grupo']);
   $nuevo_tutor = intval($_POST['nuevo_tutor']);
   mysqli_query($conn, "UPDATE tbl_grupo SET id_tutor = $nuevo_tutor WHERE id_grupo = $id_grupo");
+  
+  // Actualizar las tareas de este grupo para que pertenezcan al nuevo tutor
+  mysqli_query($conn, "UPDATE tbl_tarea_entrega SET id_tutor = $nuevo_tutor WHERE id_grupo = $id_grupo");
+
   $mensaje = "Tutor del grupo actualizado correctamente.";
   $tipo_mensaje = "success";
   if (isset($_POST['id_grupo_sel']))
@@ -120,6 +124,7 @@ if (isset($_POST['accion']) && $_POST['accion'] == 'quitar_prof') {
 // --- ELIMINAR GRUPO ---
 if (isset($_POST['accion']) && $_POST['accion'] == 'eliminar_grupo') {
   $id_grupo = intval($_POST['id_grupo']);
+  mysqli_query($conn, "DELETE FROM tbl_tarea_entrega WHERE id_grupo = $id_grupo");
   mysqli_query($conn, "DELETE FROM tbl_grupo_profesor WHERE id_grupo = $id_grupo");
   mysqli_query($conn, "DELETE FROM tbl_grupo WHERE id_grupo = $id_grupo");
   $mensaje = "Grupo eliminado correctamente.";

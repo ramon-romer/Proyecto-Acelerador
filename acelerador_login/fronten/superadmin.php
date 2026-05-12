@@ -36,8 +36,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         $rama = mysqli_real_escape_string($conn, $_POST['rama']);
         $pass = $_POST['password'];
 
-        $qOld = mysqli_query($conn, "SELECT correo FROM tbl_profesor WHERE id_profesor = $id");
-        $oldMail = ($row = mysqli_fetch_assoc($qOld)) ? $row['correo'] : '';
+        $qOld = mysqli_query($conn, "SELECT correo, perfil FROM tbl_profesor WHERE id_profesor = $id");
+        $oldData = mysqli_fetch_assoc($qOld);
+        $oldMail = $oldData['correo'] ?? '';
+        $oldPerfil = strtoupper($oldData['perfil'] ?? '');
+
+        // 1. Validar si cambiamos perfil de TUTOR a otra cosa, que no tenga grupos
+        if ($oldPerfil === 'TUTOR' && strtoupper($perfil) !== 'TUTOR') {
+            $qGroups = mysqli_query($conn, "SELECT id_grupo FROM tbl_grupo WHERE id_tutor = $id");
+            if (mysqli_num_rows($qGroups) > 0) {
+                $response = ['status' => 'error', 'message' => 'No se puede cambiar el perfil del TUTOR porque tiene grupos activos. Reasigna los grupos primero.'];
+                header('Content-Type: application/json');
+                echo json_encode($response);
+                exit;
+            }
+        }
+
+        // 2. Validar que el nuevo correo no exista en otro usuario
+        if ($correo !== $oldMail) {
+            $checkEmail = mysqli_query($conn, "SELECT id_profesor FROM tbl_profesor WHERE correo = '$correo' AND id_profesor != $id");
+            if (mysqli_num_rows($checkEmail) > 0) {
+                $response = ['status' => 'error', 'message' => 'El correo especificado ya pertenece a otro usuario registrado.'];
+                header('Content-Type: application/json');
+                echo json_encode($response);
+                exit;
+            }
+        }
 
         $updateProf = "UPDATE tbl_profesor SET nombre='$nombre', apellidos='$apellidos', correo='$correo', perfil='$perfil', DNI='$dni', ORCID='$orcid', telefono='$telefono', facultad='$facultad', departamento='$departamento', rama='$rama' ";
         if (!empty($pass)) {
