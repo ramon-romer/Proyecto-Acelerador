@@ -92,23 +92,52 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             $email = $row['correo'];
             $perfil = $row['perfil'];
 
-            // LÓGICA DE BORRADO EN CASCADA (SÓLO SI ES TUTOR)
+            // Asegurar tabla
+            mysqli_query($conn, "CREATE TABLE IF NOT EXISTS tbl_info_usuario_eliminado (
+              id INT AUTO_INCREMENT PRIMARY KEY,
+              id_profesor_original INT NOT NULL,
+              correo VARCHAR(255) NOT NULL,
+              datos_completos LONGTEXT NOT NULL,
+              fecha_eliminacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )");
+
+            // ---- BACKUP TOTAL ANTES DE BORRAR ----
+            $info_json = [];
+            $q_prof = mysqli_query($conn, "SELECT * FROM tbl_profesor WHERE id_profesor = $id");
+            if($q_prof) $info_json['tbl_profesor'] = mysqli_fetch_assoc($q_prof);
+            
+            $q_usu = mysqli_query($conn, "SELECT * FROM tbl_usuario WHERE correo = '$email'");
+            if($q_usu) $info_json['tbl_usuario'] = mysqli_fetch_assoc($q_usu);
+
+            $info_json['tbl_grupo_profesor'] = [];
+            $q_gp = mysqli_query($conn, "SELECT * FROM tbl_grupo_profesor WHERE id_profesor = $id");
+            if($q_gp) { while($r = mysqli_fetch_assoc($q_gp)) $info_json['tbl_grupo_profesor'][] = $r; }
+
             if ($perfil === 'TUTOR') {
-                // 1. Borrar tareas creadas por el tutor
+               $info_json['tbl_grupo_creados'] = [];
+               $q_gc = mysqli_query($conn, "SELECT * FROM tbl_grupo WHERE id_tutor = $id");
+               if($q_gc) { while($r = mysqli_fetch_assoc($q_gc)) $info_json['tbl_grupo_creados'][] = $r; }
+            }
+
+            $json_str = mysqli_real_escape_string($conn, json_encode($info_json, JSON_UNESCAPED_UNICODE));
+            mysqli_query($conn, "INSERT INTO tbl_info_usuario_eliminado (id_profesor_original, correo, datos_completos) VALUES ($id, '$email', '$json_str')");
+            // ----------------------------------------
+
+            // LÓGICA DE BORRADO EN CASCADA
+            if ($perfil === 'TUTOR') {
                 mysqli_query($conn, "DELETE FROM tbl_tarea_entrega WHERE id_tutor = $id");
-                
-                // 2. Borrar asignaciones de alumnos a los grupos de este tutor
                 mysqli_query($conn, "DELETE FROM tbl_grupo_profesor WHERE id_grupo IN (SELECT id_grupo FROM tbl_grupo WHERE id_tutor = $id)");
-                
-                // 3. Borrar los grupos del tutor
                 mysqli_query($conn, "DELETE FROM tbl_grupo WHERE id_tutor = $id");
+            } else {
+                mysqli_query($conn, "DELETE FROM tbl_tarea_entrega WHERE id_profesor = $id");
+                mysqli_query($conn, "DELETE FROM tbl_grupo_profesor WHERE id_profesor = $id");
             }
 
             // Borrado del perfil y la cuenta de acceso
             mysqli_query($conn, "DELETE FROM tbl_profesor WHERE id_profesor = $id");
             mysqli_query($conn, "DELETE FROM tbl_usuario WHERE correo = '$email'");
             
-            $response = ['status' => 'ok', 'message' => 'Usuario y todos sus registros vinculados eliminados permanentemente'];
+            $response = ['status' => 'ok', 'message' => 'Usuario archivado y eliminado permanentemente del sistema.'];
         }
     }
 
@@ -144,6 +173,96 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         } else {
             $response = ['status' => 'error', 'message' => 'Error al eliminar la tarea: ' . mysqli_error($conn)];
         }
+    }
+
+    // 3. GESTIÓN DE USUARIOS ELIMINADOS
+    if ($_POST['action'] === 'get_deleted_users') {
+        mysqli_query($conn, "CREATE TABLE IF NOT EXISTS tbl_info_usuario_eliminado (
+          id INT AUTO_INCREMENT PRIMARY KEY,
+          id_profesor_original INT NOT NULL,
+          correo VARCHAR(255) NOT NULL,
+          datos_completos LONGTEXT NOT NULL,
+          fecha_eliminacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )");
+        $q = mysqli_query($conn, "SELECT * FROM tbl_info_usuario_eliminado ORDER BY fecha_eliminacion DESC");
+        $deleted = [];
+        while($q && $r = mysqli_fetch_assoc($q)) {
+            $json = json_decode($r['datos_completos'], true);
+            $deleted[] = [
+                'id' => $r['id'],
+                'id_original' => $r['id_profesor_original'],
+                'correo' => $r['correo'],
+                'perfil' => $json['tbl_profesor']['perfil'] ?? 'DESCONOCIDO',
+                'nombre' => ($json['tbl_profesor']['nombre'] ?? '') . ' ' . ($json['tbl_profesor']['apellidos'] ?? ''),
+                'fecha' => $r['fecha_eliminacion'],
+            ];
+        }
+        $response = ['status' => 'ok', 'users' => $deleted];
+    }
+
+    if ($_POST['action'] === 'restore_user') {
+        $id_archivo = (int)$_POST['id'];
+        $q_arc = mysqli_query($conn, "SELECT * FROM tbl_info_usuario_eliminado WHERE id = $id_archivo");
+        if ($q_arc && mysqli_num_rows($q_arc) > 0) {
+            $arc = mysqli_fetch_assoc($q_arc);
+            $json_data = json_decode($arc['datos_completos'], true);
+            $correo_r = $arc['correo'];
+
+            $q_chk = mysqli_query($conn, "SELECT id_profesor FROM tbl_profesor WHERE correo = '" . mysqli_real_escape_string($conn, $correo_r) . "'");
+            if (mysqli_num_rows($q_chk) > 0) {
+                $response = ['status' => 'error', 'message' => 'El correo ' . $correo_r . ' ya está en uso por un usuario activo.'];
+            } else {
+                $error = false;
+                try {
+                    if (isset($json_data['tbl_profesor']) && !empty($json_data['tbl_profesor'])) {
+                        $p = $json_data['tbl_profesor'];
+                        $id_p = (int)$p['id_profesor'];
+                        $nombre = mysqli_real_escape_string($conn, $p['nombre']);
+                        $apellidos = mysqli_real_escape_string($conn, $p['apellidos']);
+                        $dni = mysqli_real_escape_string($conn, $p['DNI']);
+                        $orcid = mysqli_real_escape_string($conn, $p['ORCID']);
+                        $pass = mysqli_real_escape_string($conn, $p['password']);
+                        $correo_p = mysqli_real_escape_string($conn, $p['correo']);
+                        $departamento = mysqli_real_escape_string($conn, $p['departamento']);
+                        $telefono = mysqli_real_escape_string($conn, $p['telefono']);
+                        $facultad = mysqli_real_escape_string($conn, $p['facultad']);
+                        $perfil_u = mysqli_real_escape_string($conn, $p['perfil']);
+                        $rama = mysqli_real_escape_string($conn, $p['rama']);
+                        mysqli_query($conn, "INSERT IGNORE INTO tbl_profesor (id_profesor, nombre, apellidos, DNI, ORCID, password, correo, departamento, telefono, facultad, perfil, rama) VALUES ($id_p, '$nombre', '$apellidos', '$dni', '$orcid', '$pass', '$correo_p', '$departamento', '$telefono', '$facultad', '$perfil_u', '$rama')");
+                    }
+                    if (isset($json_data['tbl_usuario']) && !empty($json_data['tbl_usuario'])) {
+                        $u = $json_data['tbl_usuario'];
+                        $correo_u = mysqli_real_escape_string($conn, $u['correo']);
+                        $pass_u = mysqli_real_escape_string($conn, $u['password']);
+                        mysqli_query($conn, "INSERT IGNORE INTO tbl_usuario (correo, password) VALUES ('$correo_u', '$pass_u')");
+                    }
+                    if (isset($json_data['tbl_grupo_creados'])) {
+                        foreach ($json_data['tbl_grupo_creados'] as $g) {
+                            $id_g = (int)$g['id_grupo']; $id_t = (int)$g['id_tutor']; $n_g = mysqli_real_escape_string($conn, $g['nombre']);
+                            mysqli_query($conn, "INSERT IGNORE INTO tbl_grupo (id_grupo, id_tutor, nombre) VALUES ($id_g, $id_t, '$n_g')");
+                        }
+                    }
+                    if (isset($json_data['tbl_grupo_profesor'])) {
+                        foreach ($json_data['tbl_grupo_profesor'] as $gp) {
+                            $id_gp = (int)$gp['id']; $id_grupo = (int)$gp['id_grupo']; $id_prof = (int)$gp['id_profesor'];
+                            mysqli_query($conn, "INSERT IGNORE INTO tbl_grupo_profesor (id, id_grupo, id_profesor) VALUES ($id_gp, $id_grupo, $id_prof)");
+                        }
+                    }
+                    mysqli_query($conn, "DELETE FROM tbl_info_usuario_eliminado WHERE id = $id_archivo");
+                    $response = ['status' => 'ok', 'message' => 'Usuario restaurado correctamente con todo su historial.'];
+                } catch (Exception $e) {
+                    $response = ['status' => 'error', 'message' => 'Error al restaurar: ' . $e->getMessage()];
+                }
+            }
+        } else {
+            $response = ['status' => 'error', 'message' => 'Registro no encontrado.'];
+        }
+    }
+
+    if ($_POST['action'] === 'purge_user') {
+        $id_archivo = (int)$_POST['id'];
+        mysqli_query($conn, "DELETE FROM tbl_info_usuario_eliminado WHERE id = $id_archivo");
+        $response = ['status' => 'ok', 'message' => 'Archivo eliminado permanentemente.'];
     }
 
     header('Content-Type: application/json');
@@ -237,6 +356,37 @@ $users = mysqli_query($conn, "SELECT id_profesor AS id, nombre, apellidos, corre
                                     </td>
                                 </tr>
                                 <?php endwhile; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN: USUARIOS ELIMINADOS -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="admin-card">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h3 class="mb-0"><i class="bi bi-person-x-fill me-3 text-danger"></i>Usuarios Eliminados (Papelera)</h3>
+                        <button class="btn btn-sm btn-outline-light rounded-pill px-3" onclick="loadDeletedUsers()">
+                            <i class="bi bi-arrow-clockwise me-1"></i>Actualizar
+                        </button>
+                    </div>
+                    <div class="table-responsive custom-scrollbar" style="max-height: 500px;">
+                        <table class="table align-middle">
+                            <thead>
+                                <tr>
+                                    <th>ID Original</th>
+                                    <th>Nombre</th>
+                                    <th>Correo</th>
+                                    <th>Rol</th>
+                                    <th>Fecha Eliminación</th>
+                                    <th class="text-end">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="deleted_users_body">
+                                <tr><td colspan="6" class="text-center p-4 text-white-50">Cargando...</td></tr>
                             </tbody>
                         </table>
                     </div>

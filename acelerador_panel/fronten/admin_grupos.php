@@ -294,7 +294,7 @@ if (isset($_POST['ver_grupo'])) {
                             <input type="hidden" name="accion" value="eliminar_grupo">
                             <input type="hidden" name="id_grupo" value="<?php echo $g['id_grupo']; ?>">
                             <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill px-2"
-                              onclick="return confirm('¿Eliminar este grupo y todas sus asignaciones?')"><i
+                              onclick="event.preventDefault(); customConfirm('¿Eliminar este grupo y todas sus asignaciones?', () => this.form.submit());"><i
                                 class="bi bi-trash"></i></button>
                           </form>
                         </td>
@@ -389,7 +389,7 @@ if (isset($_POST['ver_grupo'])) {
                                 <input type="hidden" name="id_grupo" value="<?php echo $grupo_seleccionado['id_grupo']; ?>">
                                 <input type="hidden" name="id_profesor" value="<?php echo $pg['id_profesor']; ?>">
                                 <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill"
-                                  onclick="return confirm('¿Quitar a este profesor del grupo?')"><i
+                                  onclick="event.preventDefault(); customConfirm('¿Quitar a este profesor del grupo?', () => this.form.submit());"><i
                                     class="bi bi-x-circle"></i></button>
                               </form>
                             </td>

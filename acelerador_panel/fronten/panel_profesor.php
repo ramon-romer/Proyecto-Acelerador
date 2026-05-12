@@ -60,6 +60,41 @@ $resId   = mysqli_query($conn, "SELECT id_profesor FROM tbl_profesor WHERE corre
 $rowId   = $resId ? mysqli_fetch_assoc($resId) : null;
 $idProf  = $rowId ? (int)$rowId['id_profesor'] : 0;
 
+// ── ACCIÓN: eliminar_cuenta_propia ───────────────────────────────────────
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['accion'] === 'eliminar_cuenta_propia') {
+    mysqli_query($conn, "CREATE TABLE IF NOT EXISTS tbl_info_usuario_eliminado (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      id_profesor_original INT NOT NULL,
+      correo VARCHAR(255) NOT NULL,
+      datos_completos LONGTEXT NOT NULL,
+      fecha_eliminacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )");
+    
+    $info_json = [];
+    $q_prof = mysqli_query($conn, "SELECT * FROM tbl_profesor WHERE id_profesor = $idProf");
+    if($q_prof) $info_json['tbl_profesor'] = mysqli_fetch_assoc($q_prof);
+    
+    $q_usu = mysqli_query($conn, "SELECT * FROM tbl_usuario WHERE correo = '$correoRaw'");
+    if($q_usu) $info_json['tbl_usuario'] = mysqli_fetch_assoc($q_usu);
+
+    $info_json['tbl_grupo_profesor'] = [];
+    $q_gp = mysqli_query($conn, "SELECT * FROM tbl_grupo_profesor WHERE id_profesor = $idProf");
+    if($q_gp) { while($r = mysqli_fetch_assoc($q_gp)) $info_json['tbl_grupo_profesor'][] = $r; }
+
+    $json_str = mysqli_real_escape_string($conn, json_encode($info_json, JSON_UNESCAPED_UNICODE));
+    mysqli_query($conn, "INSERT INTO tbl_info_usuario_eliminado (id_profesor_original, correo, datos_completos) VALUES ($idProf, '$correoRaw', '$json_str')");
+
+    // LÓGICA DE BORRADO
+    mysqli_query($conn, "DELETE FROM tbl_tarea_entrega WHERE id_profesor = $idProf");
+    mysqli_query($conn, "DELETE FROM tbl_grupo_profesor WHERE id_profesor = $idProf");
+    mysqli_query($conn, "DELETE FROM tbl_profesor WHERE id_profesor = $idProf");
+    mysqli_query($conn, "DELETE FROM tbl_usuario WHERE correo = '$correoRaw'");
+
+    session_destroy();
+    header("Location: ../../acelerador_login/fronten/index.php?msg=cuenta_eliminada");
+    exit();
+}
+
 // Grupos a los que pertenece el profesor, con su tutor
 $resGrupos = mysqli_query($conn,
   "SELECT g.id_grupo, g.nombre AS grupo_nombre,
@@ -208,7 +243,7 @@ $iconProf        = $_totalFinalProf >= 70 ? '✅' : ($_totalFinalProf >= 50 ? '�
 function estadoEstimado(array $e): string {
     if ((float)$e['total_final'] >= 70) return 'Muy sólida';
     if ((float)$e['total_final'] >= 50) return 'Sólida';
-    return 'Insuficiente';
+    return 'Suspenso';
 }
 
 function bloquesCumplidos(array $e): int {
@@ -262,6 +297,10 @@ function recomendaciones(array $e): array {
   <link rel="stylesheet" href="css/styles.css?v=<?= time() ?>">
   <style>
     .popover-body { white-space: pre-line; }
+    @media (min-width: 1200px) {
+      .col-xl-custom-28 { flex: 0 0 auto; width: 28.333333%; }
+      .col-xl-custom-21 { flex: 0 0 auto; width: 21.666667%; }
+    }
   </style>
 </head>
 
@@ -386,6 +425,14 @@ function recomendaciones(array $e): array {
             class="btn btn-outline-danger px-4 py-2 rounded-pill fw-medium d-inline-flex align-items-center gap-2">
             <i class="bi bi-box-arrow-right"></i> Cerrar sesión
           </a>
+
+          <button type="button" class="btn btn-danger px-4 py-2 rounded-pill fw-medium d-inline-flex align-items-center gap-2" onclick="customConfirm('¿Estás totalmente seguro de que deseas eliminar tu cuenta permanentemente? Toda tu información será archivada y perderás el acceso.', () => document.getElementById('formEliminarCuenta').submit());">
+              <i class="bi bi-person-x-fill"></i> Eliminar cuenta
+          </button>
+
+          <form id="formEliminarCuenta" method="POST" class="d-none">
+              <input type="hidden" name="accion" value="eliminar_cuenta_propia">
+          </form>
 
         </div>
 
@@ -588,7 +635,7 @@ function recomendaciones(array $e): array {
           <h2 class="dashboard-section-title mb-3 w-100"><i class="bi bi-bar-chart-fill me-2"></i>Mi Expediente de Evaluación</h2>
           
           <div class="row g-3 mb-4 w-100">
-            <div class="col-md-6 col-xl-3">
+            <div class="col-md-6 col-xl-custom-28">
               <div class="dashboard-stat-card h-100 position-relative">
                 <button class="info-popover-btn" tabindex="0"
                   data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top"
@@ -598,17 +645,17 @@ function recomendaciones(array $e): array {
                 <div class="stat-value" style="color: <?= $colorProf ?>;"><?= number_format((float)$eval['total_final'], 2) ?>%</div>
               </div>
             </div>
-            <div class="col-md-6 col-xl-3">
+            <div class="col-md-6 col-xl-custom-28">
               <div class="dashboard-stat-card h-100 position-relative">
                 <button class="info-popover-btn" tabindex="0"
                   data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top"
                   data-bs-title="Estado estimado"
-                  data-bs-content="Valoración orientativa del nivel actual: Muy sólida (≥ 70%), Sólida (≥ 50%) o Insuficiente (< 50%) del umbral de evaluación positiva.">ⓘ</button>
+                  data-bs-content="Valoración orientativa del nivel actual: Muy sólida (≥ 70%), Sólida (≥ 50%) o Suspenso (< 50%) del umbral de evaluación positiva.">ⓘ</button>
                 <div class="stat-label">Estado estimado</div>
-                <div class="stat-value" style="color: <?= $colorProf ?>;"><?= estadoEstimado($eval) ?></div>
+                <div class="stat-value" style="color: <?= $colorProf ?>; font-size: calc(2rem - 1px);"><?= estadoEstimado($eval) ?></div>
               </div>
             </div>
-            <div class="col-md-6 col-xl-3">
+            <div class="col-md-6 col-xl-custom-21">
               <div class="dashboard-stat-card h-100 position-relative">
                 <button class="info-popover-btn" tabindex="0"
                   data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top"
@@ -618,7 +665,7 @@ function recomendaciones(array $e): array {
                 <div class="stat-value"><?= bloquesCumplidos($eval) ?> <span style="font-size: 1rem;">/ 4</span></div>
               </div>
             </div>
-            <div class="col-md-6 col-xl-3">
+            <div class="col-md-6 col-xl-custom-21">
               <div class="dashboard-stat-card h-100 position-relative">
                 <button class="info-popover-btn" tabindex="0"
                   data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top"

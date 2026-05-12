@@ -171,11 +171,42 @@ if (isset($_POST['accion']) && $_POST['accion'] == 'eliminar') {
     fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   )");
 
+  // Asegurar tabla
+  mysqli_query($conn, "CREATE TABLE IF NOT EXISTS tbl_info_usuario_eliminado (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_profesor_original INT NOT NULL,
+    correo VARCHAR(255) NOT NULL,
+    datos_completos LONGTEXT NOT NULL,
+    fecha_eliminacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  )");
+
   // Obtener datos básicos del usuario a eliminar
   $q_del_info = mysqli_query($conn, "SELECT correo, perfil FROM tbl_profesor WHERE id_profesor = $id_del");
   $del_info = mysqli_fetch_assoc($q_del_info);
   $correo_del = $del_info['correo'] ?? '';
   $perfil_del = strtoupper($del_info['perfil'] ?? '');
+
+  // ---- BACKUP TOTAL ANTES DE BORRAR ----
+  $info_json = [];
+  $q_prof = mysqli_query($conn, "SELECT * FROM tbl_profesor WHERE id_profesor = $id_del");
+  if($q_prof) $info_json['tbl_profesor'] = mysqli_fetch_assoc($q_prof);
+  
+  $q_usu = mysqli_query($conn, "SELECT * FROM tbl_usuario WHERE correo = '$correo_del'");
+  if($q_usu) $info_json['tbl_usuario'] = mysqli_fetch_assoc($q_usu);
+
+  $info_json['tbl_grupo_profesor'] = [];
+  $q_gp = mysqli_query($conn, "SELECT * FROM tbl_grupo_profesor WHERE id_profesor = $id_del");
+  if($q_gp) { while($r = mysqli_fetch_assoc($q_gp)) $info_json['tbl_grupo_profesor'][] = $r; }
+
+  if ($perfil_del === 'TUTOR') {
+     $info_json['tbl_grupo_creados'] = [];
+     $q_gc = mysqli_query($conn, "SELECT * FROM tbl_grupo WHERE id_tutor = $id_del");
+     if($q_gc) { while($r = mysqli_fetch_assoc($q_gc)) $info_json['tbl_grupo_creados'][] = $r; }
+  }
+
+  $json_str = mysqli_real_escape_string($conn, json_encode($info_json, JSON_UNESCAPED_UNICODE));
+  mysqli_query($conn, "INSERT INTO tbl_info_usuario_eliminado (id_profesor_original, correo, datos_completos) VALUES ($id_del, '$correo_del', '$json_str')");
+  // ----------------------------------------
 
   if ($perfil_del === 'TUTOR') {
     // 1. Obtener los profesores de los grupos de este tutor (para notificarles)
@@ -211,18 +242,17 @@ if (isset($_POST['accion']) && $_POST['accion'] == 'eliminar') {
       mysqli_query($conn, "INSERT INTO tbl_notificacion_pendiente (id_profesor, mensaje) VALUES ($pid_afectado, '$msg_notif')");
     }
 
-    // 5. Borrar el registro del tutor
-    mysqli_query($conn, "DELETE FROM tbl_profesor WHERE id_profesor = $id_del");
-    mysqli_query($conn, "DELETE FROM tbl_usuario WHERE correo = '$correo_del'");
-
   } else {
-    // Usuario PROFESOR: borrado clásico
+    // Usuario PROFESOR
+    mysqli_query($conn, "DELETE FROM tbl_tarea_entrega WHERE id_profesor = $id_del");
     mysqli_query($conn, "DELETE FROM tbl_grupo_profesor WHERE id_profesor = $id_del");
-    mysqli_query($conn, "DELETE FROM tbl_profesor WHERE id_profesor = $id_del");
-    mysqli_query($conn, "DELETE FROM tbl_usuario WHERE correo = '$correo_del'");
   }
 
-  $mensaje = "Usuario eliminado del sistema correctamente.";
+  // ELIMINACION REAL
+  mysqli_query($conn, "DELETE FROM tbl_profesor WHERE id_profesor = $id_del");
+  mysqli_query($conn, "DELETE FROM tbl_usuario WHERE correo = '$correo_del'");
+
+  $mensaje = "Usuario archivado y eliminado del sistema correctamente.";
   $tipo_mensaje = "success";
 }
 
@@ -466,7 +496,7 @@ if (isset($_POST['orcid_buscar']) && !empty($_POST['orcid_buscar'])) {
                                   <input type="hidden" name="orcid_original"
                                     value="<?php echo htmlspecialchars($usuario_encontrado['ORCID']); ?>">
                                   <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill"
-                                    onclick="return confirm('¿Eliminar de este grupo?')"><i class="bi bi-x-circle"></i></button>
+                                    onclick="event.preventDefault(); customConfirm('¿Eliminar de este grupo?', () => this.form.submit());"><i class="bi bi-x-circle"></i></button>
                                 </form>
                               </td>
                             </tr>
@@ -521,7 +551,7 @@ if (isset($_POST['orcid_buscar']) && !empty($_POST['orcid_buscar'])) {
                       <input type="hidden" name="accion" value="eliminar">
                       <input type="hidden" name="id_profesor" value="<?php echo $usuario_encontrado['id_profesor']; ?>">
                       <button type="submit" class="btn btn-danger rounded-pill px-4 py-2 fw-bold"
-                        onclick="return confirm('¿Estás SEGURO de eliminar este usuario del sistema?')">
+                        onclick="event.preventDefault(); customConfirm('¿Estás SEGURO de eliminar este usuario del sistema?', () => this.form.submit());">
                         <i class="bi bi-trash-fill me-1"></i> Eliminar usuario permanentemente
                       </button>
                     </form>

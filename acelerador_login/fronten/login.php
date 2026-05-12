@@ -177,16 +177,11 @@ if (isset($_POST["btn"])) {
   <header>
     <div class="contenedorimg">
       <div class="imagen">
-        <a href="../../index.php">
-          <img src="https://uf3ceu.es/wp-content/uploads/logo-uf3-2k25.svg" alt="CEU Universidad Fernando III"
-            style="height:50px; width:auto;" id="#acele" />
-        </a>
+        <img src="https://uf3ceu.es/wp-content/uploads/logo-uf3-2k25.svg" alt="CEU Universidad Fernando III"
+          style="height:50px; width:auto;" id="#acele" />
       </div>
-
       <div class="imagen">
-        <a href="../../index.php">
-          <img src="img/AcademyAccelerator_def.png" id="academy" alt="academy" />
-        </a>
+        <img src="img/AcademyAccelerator_def.png" id="academy" alt="academy" />
       </div>
     </div>
   </header>
@@ -242,14 +237,14 @@ if (isset($_POST["btn"])) {
   <footer>
     <div class="mipie" id="mipie">
       <div class="direccion">
-        <img src="https://uf3ceu.es/wp-content/uploads/logo-uf3-2k25.svg" alt="CEU Universidad Fernando III" />
+        <img src="https://uf3ceu.es/wp-content/uploads/logo-uf3-2k25.svg" alt="CEU Universidad Fernando III"
+          style="height:50px; width:auto;" id="#acele" />
         <p>
           Glorieta Ángel Herrera Oria, s/n,<br />
           41930 Bormujos,<br />
           Sevilla
         </p>
       </div>
-
       <div class="requerimientolegal">
         <div class="columna">
           <h4>La Empresa</h4>
@@ -276,7 +271,6 @@ if (isset($_POST["btn"])) {
           </ul>
         </div>
       </div>
-
       <div class="piepag">
         <p>&copy; UF3. Todos los derechos reservados.</p>
       </div>

@@ -282,7 +282,7 @@ $query_profes = mysqli_query($conn, "
                         <td class="border-end-0"><?php echo empty($p['correo']) ? '-' : htmlspecialchars($p['correo']); ?></td>
                         <td class="border-end-0 text-center">
                           <form method="POST" style="display:inline;"
-                            onsubmit="return confirm('¿Eliminar a <?php echo htmlspecialchars($p['nombre'] . ' ' . $p['apellidos']); ?> de este grupo?');">
+                            onsubmit="event.preventDefault(); customConfirm('¿Eliminar a <?php echo htmlspecialchars(addslashes($p['nombre'] . ' ' . $p['apellidos'])); ?> de este grupo?', () => this.submit());">
                             <input type="hidden" name="accion" value="eliminar">
                             <input type="hidden" name="id_profesor" value="<?php echo $p['id_profesor']; ?>">
                             <button type="submit"

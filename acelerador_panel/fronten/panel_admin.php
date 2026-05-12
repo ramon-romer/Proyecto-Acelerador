@@ -95,6 +95,19 @@ if ($query_perfil && mysqli_num_rows($query_perfil) > 0) {
               </div>
             </a>
 
+            <!-- Tarjeta Usuarios Eliminados -->
+            <a href="admin_eliminados.php" class="text-decoration-none flex-fill" style="max-width: 350px;">
+              <div class="p-4 rounded-4 text-center shadow-sm h-100"
+                style="background-color: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); transition: all 0.3s ease; cursor: pointer;"
+                onmouseover="this.style.backgroundColor='rgba(255,255,255,0.15)'; this.style.transform='translateY(-4px)';"
+                onmouseout="this.style.backgroundColor='rgba(255,255,255,0.08)'; this.style.transform='translateY(0)';">
+                <i class="bi bi-person-x-fill text-danger mb-3" style="font-size: 3rem;"></i>
+                <h4 class="text-white fw-bold">Usuarios Eliminados</h4>
+                <p class="text-white-50 mb-0 small">Ver el archivo de usuarios eliminados y restaurar cuentas si es necesario.
+                </p>
+              </div>
+            </a>
+
           </div>
 
           <div class="d-flex justify-content-center w-100 mt-2">

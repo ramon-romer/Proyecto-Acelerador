@@ -12,7 +12,7 @@
     flex-direction: column;
     align-items: center;
     margin-bottom: 70px;
-    margin-top: 45px;
+    margin-top: 65px;
 }
 
 .contenedor {
@@ -116,14 +116,20 @@
 /* Estilos del body */
 body {
     width: 100%;
-    height: 100vh;
-    min-height: 30vh;
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
     background-image: url('../img/Image (3).jpg');
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
     background-attachment: fixed;
     color: lightgray;
+}
+
+main {
+    flex: 1;
 }
 
 /* Texto de ayuda del email */
@@ -142,7 +148,7 @@ form {
 
 /* Footer principal */
 .mipie {
-    background-color: rgba(20, 88, 204, 0.5);
+    background-color: rgba(20, 88, 204, 0.15);
     color: #c5c6c7;
     display: flex;
     width: 100%;
@@ -153,10 +159,12 @@ form {
 
 /* Imágenes dentro del footer */
 .mipie img {
-    width: 130px;
-    height: 130px;
+    width: 130px !important;
+    height: 130px !important;
     margin-top: 15px;
     margin-left: 15px;
+    object-fit: cover;
+    display: block;
 }
 
 /* Texto dentro de la dirección del footer */
@@ -227,3 +235,15 @@ header {
 /* Cookie Banner */  
 #cookie-banner { position: fixed; bottom: 0; left: 0; width: 100%; padding: 16px 20px; background: rgba(0,0,0,0.85); backdrop-filter: blur(4px); color: white; text-align: center; z-index: 999999; font-size: 16px; box-shadow: 0 -4px 12px rgba(0,0,0,0.4); }  
 #cookie-accept { margin-left: 15px; padding: 8px 20px; background: #4db8ff; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; } 
+
+/* Fijar el tamaño del logo #acele para que no cambie */
+[id="#acele"] {
+    height: 50px !important;
+    min-height: 50px !important;
+    max-height: 50px !important;
+    width: auto !important;
+    flex-shrink: 0 !important;
+    flex-grow: 0 !important;
+    max-width: none !important;
+    object-fit: contain !important;
+} 

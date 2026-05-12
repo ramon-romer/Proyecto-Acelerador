@@ -225,4 +225,74 @@ $(document).ready(function() {
             }, 'json');
         });
     };
+
+    // --- GESTIÓN DE USUARIOS ELIMINADOS ---
+
+    window.loadDeletedUsers = function() {
+        const body = $('#deleted_users_body');
+        body.html('<tr><td colspan="6" class="text-center p-4"><div class="spinner-border spinner-border-sm text-primary" role="status"></div> Cargando...</td></tr>');
+
+        $.post('superadmin.php', { action: 'get_deleted_users' }, function(res) {
+            if (res.status === 'ok') {
+                body.empty();
+                if (res.users.length === 0) {
+                    body.append('<tr><td colspan="6" class="text-center p-4 text-white-50"><i class="bi bi-inbox-fill me-2" style="font-size:1.2rem;"></i>No hay usuarios en la papelera.</td></tr>');
+                    return;
+                }
+                res.users.forEach(u => {
+                    const badgeClass = u.perfil === 'ADMIN' ? 'bg-danger' : (u.perfil === 'TUTOR' ? 'bg-primary' : 'bg-info');
+                    const row = `
+                        <tr>
+                            <td class="fw-bold text-white-50">${u.id_original}</td>
+                            <td class="fw-medium">${u.nombre}</td>
+                            <td class="text-white-50">${u.correo}</td>
+                            <td><span class="badge ${badgeClass} bg-opacity-25 text-white">${u.perfil}</span></td>
+                            <td class="text-white-50 small">${u.fecha}</td>
+                            <td class="text-end">
+                                <div class="d-flex justify-content-end gap-2">
+                                    <button class="btn btn-sm btn-success rounded-pill px-3 fw-bold d-flex align-items-center gap-1" onclick="restoreUser(${u.id})">
+                                        <i class="bi bi-arrow-counterclockwise"></i> Restaurar
+                                    </button>
+                                    <button class="btn-action btn-delete" onclick="purgeUser(${u.id})" title="Purgar permanentemente">
+                                        <i class="bi bi-trash3-fill"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                    body.append(row);
+                });
+            }
+        }, 'json');
+    };
+
+    window.restoreUser = function(id) {
+        customConfirm('¿RESTAURAR USUARIO?', 'El usuario recuperará toda su información y volverá a tener acceso al sistema.', function() {
+            $.post('superadmin.php', { action: 'restore_user', id: id }, function(res) {
+                if (res.status === 'ok') {
+                    showNotification(res.message);
+                    loadDeletedUsers();
+                    setTimeout(() => location.reload(), 1500);
+                } else {
+                    showNotification(res.message, 'danger');
+                }
+            }, 'json');
+        });
+    };
+
+    window.purgeUser = function(id) {
+        customConfirm('¿PURGAR PERMANENTEMENTE?', 'Esta acción destruirá la copia de seguridad de este usuario PARA SIEMPRE. No se podrá recuperar.', function() {
+            $.post('superadmin.php', { action: 'purge_user', id: id }, function(res) {
+                if (res.status === 'ok') {
+                    showNotification(res.message);
+                    loadDeletedUsers();
+                } else {
+                    showNotification(res.message, 'danger');
+                }
+            }, 'json');
+        });
+    };
+
+    // Auto-cargar usuarios eliminados al abrir la página
+    loadDeletedUsers();
 });

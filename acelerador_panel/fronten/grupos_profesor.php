@@ -21,6 +21,26 @@ if ($query_tutor && mysqli_num_rows($query_tutor) > 0) {
   $nombre_tutor = $tutor_data['nombre'] . ' ' . $tutor_data['apellidos'];
 }
 
+$mensaje_accion = '';
+$tipo_accion = '';
+
+// Procesar eliminación de grupo
+if (isset($_POST['accion']) && $_POST['accion'] == 'eliminar_grupo') {
+  $id_grupo_del = intval($_POST['id_grupo']);
+  // Verificar que el grupo pertenece a este tutor por seguridad
+  $check = mysqli_query($conn, "SELECT id_grupo FROM tbl_grupo WHERE id_grupo = $id_grupo_del AND id_tutor = $id_tutor");
+  if ($check && mysqli_num_rows($check) > 0) {
+    mysqli_query($conn, "DELETE FROM tbl_tarea_entrega WHERE id_grupo = $id_grupo_del");
+    mysqli_query($conn, "DELETE FROM tbl_grupo_profesor WHERE id_grupo = $id_grupo_del");
+    mysqli_query($conn, "DELETE FROM tbl_grupo WHERE id_grupo = $id_grupo_del");
+    $mensaje_accion = "Grupo eliminado correctamente junto a sus asignaciones.";
+    $tipo_accion = "success";
+  } else {
+    $mensaje_accion = "Error: no tienes permisos para eliminar este grupo.";
+    $tipo_accion = "danger";
+  }
+}
+
 // Conseguir los profesores de su grupo — todos los campos excepto password
 $query_profesores = mysqli_query($conn, "
     SELECT p.id_profesor, p.ORCID, p.nombre, p.apellidos, p.DNI, p.telefono, 
@@ -30,14 +50,36 @@ $query_profesores = mysqli_query($conn, "
     LEFT JOIN tbl_grupo_profesor gp ON g.id_grupo = gp.id_grupo
     LEFT JOIN tbl_profesor p ON gp.id_profesor = p.id_profesor
     WHERE g.id_tutor = '$id_tutor'
-    ORDER BY g.nombre ASC, p.nombre ASC
+    ORDER BY g.nombre ASC, g.id_grupo ASC, p.nombre ASC
 ");
 
-// Guardar resultados en un array para poder generar modales después
-$profesores = [];
+// Guardar resultados en un array estructurado por grupos
+$grupos_organizados = [];
+$profesores = []; // Array plano para los modales
 if ($query_profesores && mysqli_num_rows($query_profesores) > 0) {
   while ($row = mysqli_fetch_assoc($query_profesores)) {
-    $profesores[] = $row;
+    $id_g = $row['id_grupo'];
+    if (!isset($grupos_organizados[$id_g])) {
+      $grupos_organizados[$id_g] = [
+        'nombre' => $row['grupo_nombre'],
+        'profesores' => []
+      ];
+    }
+    // Si hay un profesor válido y no es un registro huérfano
+    if (!empty($row['id_profesor'])) {
+      // Evitar duplicados si hay un error en la base de datos
+      $exists = false;
+      foreach ($grupos_organizados[$id_g]['profesores'] as $p) {
+        if ($p['id_profesor'] === $row['id_profesor']) {
+          $exists = true;
+          break;
+        }
+      }
+      if (!$exists) {
+        $grupos_organizados[$id_g]['profesores'][] = $row;
+        $profesores[] = $row; // Para generar el modal luego
+      }
+    }
   }
 }
 ?>
@@ -83,34 +125,39 @@ if ($query_profesores && mysqli_num_rows($query_profesores) > 0) {
             <hr class="w-100 border-light opacity-25 mt-3 mb-4">
           </div>
 
+          <?php if ($mensaje_accion): ?>
+            <script>
+              document.addEventListener('DOMContentLoaded', () => {
+                showNotification("<?php echo $mensaje_accion; ?>", "<?php echo $tipo_accion; ?>");
+              });
+            </script>
+          <?php endif; ?>
+
           <div class="w-100 mb-4">
             <?php
-            $current_grupo = '';
-            $current_id_grupo = 0;
-            if (count($profesores) > 0) {
-              foreach ($profesores as $prof) {
-                // Si cambiamos de grupo, imprimimos la cabecera del nuevo grupo y su tabla
-                if ($current_grupo != $prof['grupo_nombre']) {
-                  if ($current_grupo != '') {
-                    // Cerrar la tabla del grupo anterior
-                    echo "</tbody></table></div></div>";
-                  }
-                  $current_grupo = $prof['grupo_nombre'];
-                  $current_id_grupo = $prof['id_grupo'];
-                  // Abrir contenedor para el nuevo grupo
+            if (count($grupos_organizados) > 0) {
+              foreach ($grupos_organizados as $id_g => $grupo) {
                   echo "<div class='mb-5 w-100'>";
                   echo "<div class='d-flex align-items-center justify-content-between w-100 mb-3 pb-2 flex-nowrap' style='border-bottom: 1px solid rgba(255,255,255,0.3); gap: 1rem;'>";
                   echo "<div class='text-start flex-grow-1 overflow-hidden'>";
                   echo "<h5 class='text-white mb-0 lh-base text-truncate'>";
-                  echo "<i class='bi bi-diagram-3-fill me-1'></i> Grupo: " . htmlspecialchars($current_grupo) . "<br>";
+                  echo "<i class='bi bi-diagram-3-fill me-1'></i> Grupo: " . htmlspecialchars($grupo['nombre']) . "<br>";
                   echo "<span class='text-white-50 fs-6 ms-4'><i class='bi bi-person-badge me-1'></i> Tutor: " . htmlspecialchars(empty(trim($nombre_tutor)) ? 'No especificado' : $nombre_tutor) . "</span>";
                   echo "</h5>";
                   echo "</div>";
-                  echo "<div class='text-end flex-shrink-0'>";
+                  echo "<div class='text-end flex-shrink-0 d-flex gap-2'>";
                   echo "<form method='POST' action='gestionar_grupo.php' class='m-0 p-0 text-md-end'>";
-                  echo "<input type='hidden' name='id_grupo_nav' value='" . intval($current_id_grupo) . "'>";
+                  echo "<input type='hidden' name='id_grupo_nav' value='" . intval($id_g) . "'>";
                   echo "<button type='submit' class='btn btn-outline-warning btn-sm rounded-pill d-inline-flex align-items-center gap-1 text-nowrap'>";
                   echo "<i class='bi bi-gear-fill'></i> Gestionar grupo";
+                  echo "</button>";
+                  echo "</form>";
+
+                  echo "<form method='POST' action='grupos_profesor.php' class='m-0 p-0 text-md-end'>";
+                  echo "<input type='hidden' name='accion' value='eliminar_grupo'>";
+                  echo "<input type='hidden' name='id_grupo' value='" . intval($id_g) . "'>";
+                  echo "<button type='submit' class='btn btn-outline-danger btn-sm rounded-pill d-inline-flex align-items-center gap-1 text-nowrap' onclick='event.preventDefault(); customConfirm(\"¿Eliminar el grupo " . htmlspecialchars(addslashes($grupo['nombre'])) . " y todas sus asignaciones?\", () => this.form.submit());'>";
+                  echo "<i class='bi bi-trash-fill'></i> Eliminar grupo";
                   echo "</button>";
                   echo "</form>";
                   echo "</div>";
@@ -127,29 +174,26 @@ if ($query_profesores && mysqli_num_rows($query_profesores) > 0) {
                   echo "</tr>";
                   echo "</thead>";
                   echo "<tbody>";
-                }
 
-                if (!empty($prof['id_profesor'])) {
-                  $modalId = 'modalProf' . $prof['id_profesor'];
+                  if (count($grupo['profesores']) > 0) {
+                      foreach ($grupo['profesores'] as $prof) {
+                          $modalId = 'modalProf' . $prof['id_profesor'];
+                          echo "<tr>";
+                          echo "<td class='border-end-0 text-white px-3 py-2'>" . (empty($prof['ORCID']) ? '-' : htmlspecialchars($prof['ORCID'])) . "</td>";
+                          echo "<td class='border-end-0 text-white px-3 py-2'>" . htmlspecialchars($prof['nombre'] . ' ' . $prof['apellidos']) . "</td>";
+                          echo "<td class='border-end-0 text-white px-3 py-2'>" . (empty($prof['departamento']) ? '-' : htmlspecialchars($prof['departamento'])) . "</td>";
+                          echo "<td class='border-end-0 text-center px-3 py-2'>";
+                          echo "<button class='btn btn-outline-info btn-sm rounded-pill d-inline-flex align-items-center gap-1' data-bs-toggle='modal' data-bs-target='#$modalId'>";
+                          echo "<i class='bi bi-eye-fill'></i> Ver datos";
+                          echo "</button>";
+                          echo "</td>";
+                          echo "</tr>";
+                      }
+                  } else {
+                      echo "<tr><td colspan='4' class='text-center text-white-50 py-3 border-end-0 border-bottom-0' style='background-color: rgba(255,255,255,0.02);'>Aún no hay profesores asignados a este grupo.</td></tr>";
+                  }
 
-                  // Filas de profesores
-                  echo "<tr>";
-                  echo "<td class='border-end-0 text-white px-3 py-2'>" . (empty($prof['ORCID']) ? '-' : htmlspecialchars($prof['ORCID'])) . "</td>";
-                  echo "<td class='border-end-0 text-white px-3 py-2'>" . htmlspecialchars($prof['nombre'] . ' ' . $prof['apellidos']) . "</td>";
-                  echo "<td class='border-end-0 text-white px-3 py-2'>" . (empty($prof['departamento']) ? '-' : htmlspecialchars($prof['departamento'])) . "</td>";
-                  echo "<td class='border-end-0 text-center px-3 py-2'>";
-                  echo "<button class='btn btn-outline-info btn-sm rounded-pill d-inline-flex align-items-center gap-1' data-bs-toggle='modal' data-bs-target='#$modalId'>";
-                  echo "<i class='bi bi-eye-fill'></i> Ver datos";
-                  echo "</button>";
-                  echo "</td>";
-                  echo "</tr>";
-                } else {
-                  echo "<tr><td colspan='4' class='text-center text-white-50 py-3 border-end-0 border-bottom-0' style='background-color: rgba(255,255,255,0.02);'>Aún no hay profesores asignados a este grupo.</td></tr>";
-                }
-              }
-              // Cerrar la última tabla creada
-              if ($current_grupo != '') {
-                echo "</tbody></table></div></div>";
+                  echo "</tbody></table></div></div>";
               }
             } else {
               echo "<div class='w-100 text-center text-white-50 p-4' style='background-color: rgba(255,255,255,0.05); border-radius: 15px;'>No tienes profesores asignados a tus grupos.</div>";
@@ -173,9 +217,12 @@ if ($query_profesores && mysqli_num_rows($query_profesores) > 0) {
   </main>
 
   <!-- Modales de detalle de profesor -->
-  <?php foreach ($profesores as $prof):
-    if (empty($prof['id_profesor']))
+  <?php 
+  $modales_impresos = [];
+  foreach ($profesores as $prof):
+    if (empty($prof['id_profesor']) || in_array($prof['id_profesor'], $modales_impresos))
       continue;
+    $modales_impresos[] = $prof['id_profesor'];
     $modalId = 'modalProf' . $prof['id_profesor'];
     ?>
     <div class="modal fade" id="<?php echo $modalId; ?>" tabindex="-1" aria-labelledby="<?php echo $modalId; ?>Label"

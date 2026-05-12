@@ -69,6 +69,48 @@ $resId = mysqli_query($conn, "SELECT id_profesor FROM tbl_profesor WHERE correo 
 $rowId  = $resId ? mysqli_fetch_assoc($resId) : null;
 $idTutor = $rowId ? (int)$rowId['id_profesor'] : 0;
 
+// ── ACCIÓN: eliminar_cuenta_propia (TUTOR) ──────────────────────────────
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['accion'] === 'eliminar_cuenta_propia') {
+    mysqli_query($conn, "CREATE TABLE IF NOT EXISTS tbl_info_usuario_eliminado (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      id_profesor_original INT NOT NULL,
+      correo VARCHAR(255) NOT NULL,
+      datos_completos LONGTEXT NOT NULL,
+      fecha_eliminacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )");
+    
+    $info_json = [];
+    $q_prof = mysqli_query($conn, "SELECT * FROM tbl_profesor WHERE id_profesor = $idTutor");
+    if($q_prof) $info_json['tbl_profesor'] = mysqli_fetch_assoc($q_prof);
+    
+    $q_usu = mysqli_query($conn, "SELECT * FROM tbl_usuario WHERE correo = '$correoRaw'");
+    if($q_usu) $info_json['tbl_usuario'] = mysqli_fetch_assoc($q_usu);
+
+    $info_json['tbl_grupo_profesor'] = [];
+    $q_gp = mysqli_query($conn, "SELECT * FROM tbl_grupo_profesor WHERE id_profesor = $idTutor");
+    if($q_gp) { while($r = mysqli_fetch_assoc($q_gp)) $info_json['tbl_grupo_profesor'][] = $r; }
+
+    $info_json['tbl_grupo_creados'] = [];
+    $q_gc = mysqli_query($conn, "SELECT * FROM tbl_grupo WHERE id_tutor = $idTutor");
+    if($q_gc) { while($r = mysqli_fetch_assoc($q_gc)) $info_json['tbl_grupo_creados'][] = $r; }
+
+
+    $json_str = mysqli_real_escape_string($conn, json_encode($info_json, JSON_UNESCAPED_UNICODE));
+    mysqli_query($conn, "INSERT INTO tbl_info_usuario_eliminado (id_profesor_original, correo, datos_completos) VALUES ($idTutor, '$correoRaw', '$json_str')");
+
+    // LÓGICA DE CASCADA TUTOR
+    mysqli_query($conn, "DELETE FROM tbl_tarea_entrega WHERE id_tutor = $idTutor");
+    mysqli_query($conn, "DELETE FROM tbl_grupo_profesor WHERE id_grupo IN (SELECT id_grupo FROM tbl_grupo WHERE id_tutor = $idTutor)");
+    mysqli_query($conn, "DELETE FROM tbl_grupo WHERE id_tutor = $idTutor");
+
+    mysqli_query($conn, "DELETE FROM tbl_profesor WHERE id_profesor = $idTutor");
+    mysqli_query($conn, "DELETE FROM tbl_usuario WHERE correo = '$correoRaw'");
+
+    session_destroy();
+    header("Location: ../../acelerador_login/fronten/index.php?msg=cuenta_eliminada");
+    exit();
+}
+
 // ── Mapa rama → BD evaluadora (Global para acciones AJAX) ─────────────
 $mapaDB = [
     'CSYJ' => 'evaluador_aneca_csyj', 'EXPERIMENTALES' => 'evaluador_aneca_experimentales',
@@ -762,6 +804,13 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
             <i class="bi bi-file-earmark-plus"></i> Añadir trabajos/artículos
           </button>
 
+          <button type="button" class="btn btn-danger px-4 py-2 rounded-pill fw-medium d-inline-flex align-items-center gap-2" onclick="customConfirm('¿Estás totalmente seguro de que deseas eliminar tu cuenta permanentemente? Toda tu información y grupos creados serán archivados y perderás el acceso.', () => document.getElementById('formEliminarCuenta').submit());">
+              <i class="bi bi-person-x-fill"></i> Eliminar cuenta
+          </button>
+
+          <form id="formEliminarCuenta" method="POST" class="d-none">
+              <input type="hidden" name="accion" value="eliminar_cuenta_propia">
+          </form>
 
         </div>
 
@@ -905,7 +954,7 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
                     <span class="badge rounded-pill" style="background:rgba(74,222,128,0.2); color:#4ade80; font-size:.7rem;"><?= $tareaActual['num_entregas'] ?> entregas</span>
                   </div>
                   <!-- Botones editar/borrar centrados -->
-                  <form method="POST" class="m-0 d-flex justify-content-center gap-3 mb-2" onsubmit="return confirm('¿Seguro que deseas eliminar esta tarea?');">
+                  <form method="POST" class="m-0 d-flex justify-content-center gap-3 mb-2" onsubmit="event.preventDefault(); customConfirm('¿Seguro que deseas eliminar esta tarea?', () => this.submit());">
                     <input type="hidden" name="accion" value="borrar_tarea">
                     <input type="hidden" name="id_tarea" value="<?= $tareaActual['id'] ?>">
                     <button type="button" class="btn btn-sm btn-outline-info rounded-3 d-flex flex-column align-items-center btn-editar-tarea" style="min-width:56px; padding:6px 10px; gap:3px;" title="Editar tarea"
