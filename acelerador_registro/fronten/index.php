@@ -1,9 +1,9 @@
 <?php
 session_start();
-include('config.php');
+require_once __DIR__ . '/config.php';
 
 define('BASE_PATH', dirname(__DIR__));
-require_once BASE_PATH . '/correo/vendor/autoload.php';
+require_once dirname(__DIR__, 2) . '/vendor/autoload.php';
 require_once BASE_PATH . '/correo/sendmail.php';
 
 if (function_exists('mysqli_set_charset')) {
