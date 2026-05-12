@@ -34,10 +34,11 @@ exp_render_layout_start(
                 </div>
             </div>
 
-            <div class="form-actions">
+        <div class="form-actions">
                 <button type="submit" name="formato_cv" value="aneca">Procesar PDF</button>
                 <button type="submit" name="formato_cv" value="cvn_fecyt" class="secondary">Procesar CVN (FECYT)</button>
                 <a class="btn outline" href="<?= exp_h(exp_listado_url()) ?>">Abrir listado</a>
+                <a class="btn secondary" href="completar_datos.php" id="btn-ingreso-manual" style="gap:8px;">&#9998; Ingreso manual</a>
             </div>
         </form>
     </section>

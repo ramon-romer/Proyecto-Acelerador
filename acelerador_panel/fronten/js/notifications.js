@@ -18,6 +18,21 @@ function showNotification(message, type = 'info') {
   }, 4000);
 }
 
+// Notificación persistente — no desaparece automáticamente, requiere cierre manual (×)
+function showNotificationPersistent(message, type = 'warning') {
+  let container = document.getElementById('toast-container');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'toast-container';
+    document.body.appendChild(container);
+  }
+  const toast = document.createElement('div');
+  toast.className = `custom-toast ${type} toast-persistent`;
+  const icon = type === 'success' ? 'bi-check-circle-fill' : (type === 'danger' ? 'bi-exclamation-octagon-fill' : 'bi-info-circle-fill');
+  toast.innerHTML = `<i class="bi ${icon} me-3 fs-5 flex-shrink-0"></i><div style="flex:1;">${message}</div><button type="button" class="toast-close-btn" onclick="this.parentElement.remove()" title="Cerrar">&times;</button>`;
+  container.appendChild(toast);
+}
+
 function customConfirm(message, onConfirm) {
   const overlay = document.createElement('div');
   overlay.className = 'custom-confirm-overlay';

@@ -1,0 +1,125 @@
+{
+    "executed": true,
+    "suiteName": "ejecutar-tests:agresivo-1h",
+    "total": 7,
+    "passed": 7,
+    "failed": 0,
+    "errors": [
+        "[inspect-schema] Inspect schema backend (exit=1): Error: Error de conexión a base de datos. Unknown database 'acelerador'"
+    ],
+    "summary": "Bateria completada con 1 verificaciones no verificables.",
+    "timestamp": "2026-04-06 17:51:26",
+    "observations": "Nivel=agresivo; Ventana=1h; Presupuesto intensivo=3600s; Distribucion=aneca=2160s, backend=1080s, mcp=360s; No verificables=1; sin redistribuciones.",
+    "checks": [
+        {
+            "id": "php-version",
+            "name": "Version de PHP",
+            "command": "\"C:\\xampp\\php\\php.exe\" -v",
+            "optional": false,
+            "status": "passed",
+            "exitCode": 0,
+            "output": "PHP 8.2.12 (cli) (built: Oct 24 2023 21:15:15) (ZTS Visual C++ 2019 x64)\nCopyright (c) The PHP Group\nZend Engine v4.2.12, Copyright (c) Zend Technologies",
+            "category": "base",
+            "strategy": "single",
+            "budgetSeconds": 0
+        },
+        {
+            "id": "backend-smoke",
+            "name": "Smoke backend tutorias",
+            "command": "\"C:\\xampp\\php\\php.exe\" \"C:\\Users\\basil\\Documents\\GitHub\\Proyecto-Acelerador\\acelerador_panel\\backend\\tests\\run_usecases_smoke.php\"",
+            "optional": false,
+            "status": "passed",
+            "exitCode": 0,
+            "output": "OK: usecases smoke tests passed.",
+            "category": "base",
+            "strategy": "single",
+            "budgetSeconds": 0
+        },
+        {
+            "id": "mcp-unit",
+            "name": "MCP unit extract_pdf",
+            "command": "\"C:\\xampp\\php\\php.exe\" \"C:\\Users\\basil\\Documents\\GitHub\\Proyecto-Acelerador\\mcp-server\\tests\\unit_extract_pdf.php\"",
+            "optional": false,
+            "status": "passed",
+            "exitCode": 0,
+            "output": "[PASS] DocumentoExtractor extrae campos completos\r\n[PASS] DocumentoExtractor soporta numero con Numero:\r\n[PASS] DocumentoExtractor detecta fecha YYYY-MM-DD\r\n[PASS] DocumentoExtractor devuelve null si faltan campos\r\n[PASS] texto_preview truncado a 1200\r\n[PASS] detectarCamposNegocioFaltantes identifica null y vacios\r\n[PASS] detectarCamposNegocioFaltantes sin faltantes\r\n[PASS] PdfProcessor lanza error para archivo inexistente\r\n[PASS] PdfProcessor devuelve claves exactas en PDF real\r\n[PASS] Fuzz extractor no rompe contrato en 200 iteraciones\r\n[PASS] PdfProcessor procesa fuente db con SQLite\r\n[PASS] parsearArgumentosCli mantiene modo legacy PDF\r\n[PASS] parsearArgumentosCli soporta fuente db por flags\r\n\r\n=== Unit Summary ===\r\npassed=13 failed=0",
+            "category": "base",
+            "strategy": "single",
+            "budgetSeconds": 0
+        },
+        {
+            "id": "aneca-unit-src",
+            "name": "ANECA unit src",
+            "command": "\"C:\\xampp\\php\\php.exe\" \"C:\\Users\\basil\\Documents\\GitHub\\Proyecto-Acelerador\\acelerador_evaluador_ANECA\\tests\\unit_src.php\"",
+            "optional": false,
+            "status": "passed",
+            "exitCode": 0,
+            "output": "[PASS] TextCleaner normaliza espacios y saltos\r\n[PASS] AnecaExtractor devuelve esquema base\r\n[PASS] AnecaExtractor detecta entidades relevantes\r\n[PASS] AnecaExtractor fuzz mantiene contrato\r\n[PASS] Pipeline falla con PDF inexistente\r\n[PASS] OcrProcessor gestiona error en entrada no valida\r\n\r\n=== ANECA Unit Summary ===\r\npassed=6 failed=0",
+            "category": "base",
+            "strategy": "single",
+            "budgetSeconds": 0
+        },
+        {
+            "id": "inspect-schema",
+            "name": "Inspect schema backend",
+            "command": "\"C:\\xampp\\php\\php.exe\" \"C:\\Users\\basil\\Documents\\GitHub\\Proyecto-Acelerador\\acelerador_panel\\backend\\tools\\inspect_schema.php\"",
+            "optional": true,
+            "status": "no_verificable",
+            "exitCode": 1,
+            "output": "Error: Error de conexión a base de datos. Unknown database 'acelerador'",
+            "category": "base",
+            "strategy": "single",
+            "budgetSeconds": 0
+        },
+        {
+            "id": "contract-routes",
+            "name": "Contrato de rutas criticas",
+            "command": "rg -n -F \"\/api\/tutorias\" \"C:\\Users\\basil\\Documents\\GitHub\\Proyecto-Acelerador\\acelerador_panel\\backend\\docs\\02-api-rest-contratos.md\" && rg -n -F \"createTutoria\" \"C:\\Users\\basil\\Documents\\GitHub\\Proyecto-Acelerador\\acelerador_panel\\backend\\src\\Presentation\\Routes\\TutoriaRoutes.php\"",
+            "optional": false,
+            "status": "passed",
+            "exitCode": 0,
+            "output": "39:## POST `\/api\/tutorias`\r\n55:## GET `\/api\/tutorias\/{tutoriaId}`\r\n61:## GET `\/api\/tutorias\/{tutoriaId}\/profesores`\r\n71:## GET `\/api\/tutorias\/{tutoriaId}\/profesores\/{profesorId}`\r\n77:## POST `\/api\/tutorias\/{tutoriaId}\/profesores`\r\n95:## DELETE `\/api\/tutorias\/{tutoriaId}\/profesores\/{profesorId}`\r\n101:## PUT `\/api\/tutorias\/{tutoriaId}\/profesores`\r\n13:        $router->add('POST', '\/api\/tutorias', [$controller, 'createTutoria']);",
+            "category": "base",
+            "strategy": "single",
+            "budgetSeconds": 0
+        },
+        {
+            "id": "aneca-aggressive",
+            "name": "ANECA bateria agresiva (2160s)",
+            "command": "\"C:\\xampp\\php\\php.exe\" \"C:\\Users\\basil\\Documents\\GitHub\\Proyecto-Acelerador\\acelerador_evaluador_ANECA\\tests\\run_aggressive_battery.php\" --duration-seconds=2160 --progress-interval=30 --report-file=\"C:\\Users\\basil\\AppData\\Local\\Temp\\acelerador_aneca_aggressive_20260406_165120.json\"",
+            "optional": false,
+            "status": "passed",
+            "exitCode": 0,
+            "output": "Running lint for acelerador_evaluador_ANECA...\r\nRunning unit_src.php...\r\nStarting area stress loop...\r\n[progress] elapsed=30s runs=402 ok=402 failed=0 runs\/s=13.4\r\n[progress] elapsed=60s runs=808 ok=808 failed=0 runs\/s=13.47\r\n[progress] elapsed=90s runs=1188 ok=1188 failed=0 runs\/s=13.2\r\n[progress] elapsed=120s runs=1584 ok=1584 failed=0 runs\/s=13.2\r\n[progress] elapsed=150s runs=2002 ok=2002 failed=0 runs\/s=13.35\r\n[progress] elapsed=180s runs=2400 ok=2400 failed=0 runs\/s=13.33\r\n[progress] elapsed=210s runs=2798 ok=2798 failed=0 runs\/s=13.32\r\n[progress] elapsed=240s runs=3211 ok=3211 failed=0 runs\/s=13.38\r\n[progress] elapsed=270s runs=3618 ok=3618 failed=0 runs\/s=13.4\r\n[progress] elapsed=300s runs=4031 ok=4031 failed=0 runs\/s=13.44\r\n[progress] elapsed=330s runs=4430 ok=4430 failed=0 runs\/s=13.42\r\n[progress] elapsed=360s runs=4831 ok=4831 failed=0 runs\/s=13.42\r\n[progress] elapsed=390s runs=5232 ok=5232 failed=0 runs\/s=13.42\r\n[progress] elapsed=420s runs=5627 ok=5627 failed=0 runs\/s=13.4\r\n[progress] elapsed=450s runs=6028 ok=6028 failed=0 runs\/s=13.4\r\n[progress] elapsed=480s runs=6425 ok=6425 failed=0 runs\/s=13.39\r\n[progress] elapsed=510s runs=6828 ok=6828 failed=0 runs\/s=13.39\r\n[progress] elapsed=540s runs=7231 ok=7231 failed=0 runs\/s=13.39\r\n[progress] elapsed=570s runs=7632 ok=7632 failed=0 runs\/s=13.39\r\n[progress] elapsed=600s runs=8040 ok=8040 failed=0 runs\/s=13.4\r\n[progress] elapsed=630s runs=8444 ok=8444 failed=0 runs\/s=13.4\r\n[progress] elapsed=660s runs=8853 ok=8853 failed=0 runs\/s=13.41\r\n[progress] elapsed=690s runs=9248 ok=9248 failed=0 runs\/s=13.4\r\n[progress] elapsed=720s runs=9653 ok=9653 failed=0 runs\/s=13.41\r\n[progress] elapsed=750s runs=10056 ok=10056 failed=0 runs\/s=13.41\r\n[progress] elapsed=780s runs=10456 ok=10456 failed=0 runs\/s=13.41\r\n[progress] elapsed=810s runs=10854 ok=10854 failed=0 runs\/s=13.4\r\n[progress] elapsed=840s runs=11268 ok=11268 failed=0 runs\/s=13.41\r\n[progress] elapsed=870s runs=11683 ok=11683 failed=0 runs\/s=13.43\r\n[progress] elapsed=900s runs=12094 ok=12094 failed=0 runs\/s=13.44\r\n[progress] elapsed=930s runs=12492 ok=12492 failed=0 runs\/s=13.43\r\n[progress] elapsed=960s runs=12894 ok=12894 failed=0 runs\/s=13.43\r\n[progress] elapsed=990s runs=13304 ok=13304 failed=0 runs\/s=13.44\r\n[progress] elapsed=1020s runs=13707 ok=13707 failed=0 runs\/s=13.44\r\n[progress] elapsed=1051s runs=14097 ok=14097 failed=0 runs\/s=13.41\r\n[progress] elapsed=1081s runs=14498 ok=14498 failed=0 runs\/s=13.41\r\n[progress] elapsed=1111s runs=14910 ok=14910 failed=0 runs\/s=13.42\r\n[progress] elapsed=1141s runs=15319 ok=15319 failed=0 runs\/s=13.43\r\n[progress] elapsed=1171s runs=15721 ok=15721 failed=0 runs\/s=13.43\r\n[progress] elapsed=1201s runs=16124 ok=16124 failed=0 runs\/s=13.43\r\n[progress] elapsed=1231s runs=16524 ok=16524 failed=0 runs\/s=13.42\r\n[progress] elapsed=1261s runs=16909 ok=16909 failed=0 runs\/s=13.41\r\n[progress] elapsed=1291s runs=17321 ok=17321 failed=0 runs\/s=13.42\r\n[progress] elapsed=1321s runs=17740 ok=17740 failed=0 runs\/s=13.43\r\n[progress] elapsed=1351s runs=18145 ok=18145 failed=0 runs\/s=13.43\r\n[progress] elapsed=1381s runs=18534 ok=18534 failed=0 runs\/s=13.42\r\n[progress] elapsed=1411s runs=18939 ok=18939 failed=0 runs\/s=13.42\r\n[progress] elapsed=1441s runs=19343 ok=19343 failed=0 runs\/s=13.42\r\n[progress] elapsed=1471s runs=19746 ok=19746 failed=0 runs\/s=13.42\r\n[progress] elapsed=1501s runs=20152 ok=20152 failed=0 runs\/s=13.43\r\n[progress] elapsed=1531s runs=20558 ok=20558 failed=0 runs\/s=13.43\r\n[progress] elapsed=1561s runs=20973 ok=20973 failed=0 runs\/s=13.44\r\n[progress] elapsed=1591s runs=21391 ok=21391 failed=0 runs\/s=13.45\r\n[progress] elapsed=1621s runs=21777 ok=21777 failed=0 runs\/s=13.43\r\n[progress] elapsed=1651s runs=22163 ok=22163 failed=0 runs\/s=13.42\r\n[progress] elapsed=1681s runs=22555 ok=22555 failed=0 runs\/s=13.42\r\n[progress] elapsed=1711s runs=22953 ok=22953 failed=0 runs\/s=13.41\r\n[progress] elapsed=1741s runs=23369 ok=23369 failed=0 runs\/s=13.42\r\n[progress] elapsed=1772s runs=23764 ok=23764 failed=0 runs\/s=13.41\r\n[progress] elapsed=1802s runs=24166 ok=24166 failed=0 runs\/s=13.41\r\n[progress] elapsed=1832s runs=24566 ok=24566 failed=0 runs\/s=13.41\r\n[progress] elapsed=1862s runs=24972 ok=24972 failed=0 runs\/s=13.41\r\n[progress] elapsed=1892s runs=25383 ok=25383 failed=0 runs\/s=13.42\r\n[progress] elapsed=1922s runs=25791 ok=25791 failed=0 runs\/s=13.42\r\n[progress] elapsed=1952s runs=26207 ok=26207 failed=0 runs\/s=13.43\r\n[progress] elapsed=1982s runs=26627 ok=26627 failed=0 runs\/s=13.43\r\n[progress] elapsed=2012s runs=27034 ok=27034 failed=0 runs\/s=13.44\r\n[progress] elapsed=2042s runs=27430 ok=27430 failed=0 runs\/s=13.43\r\n[progress] elapsed=2072s runs=27834 ok=27834 failed=0 runs\/s=13.43\r\n[progress] elapsed=2102s runs=28257 ok=28257 failed=0 runs\/s=13.44\r\n[progress] elapsed=2132s runs=28677 ok=28677 failed=0 runs\/s=13.45\r\nAggressive battery finished. status=PASS report=C:\\Users\\basil\\AppData\\Local\\Temp\\acelerador_aneca_aggressive_20260406_165120.json",
+            "category": "intensivo",
+            "strategy": "single_window_budget",
+            "budgetSeconds": 2160
+        },
+        {
+            "id": "backend-aggressive",
+            "name": "Backend bateria agresiva (1080s)",
+            "command": "\"C:\\xampp\\php\\php.exe\" \"C:\\Users\\basil\\Documents\\GitHub\\Proyecto-Acelerador\\acelerador_panel\\backend\\tests\\run_aggressive_battery.php\" --duration-seconds=1080 --progress-interval=30 --report-file=\"C:\\Users\\basil\\AppData\\Local\\Temp\\acelerador_backend_aggressive_20260406_165120.json\"",
+            "optional": false,
+            "status": "passed",
+            "exitCode": 0,
+            "output": "Starting aggressive battery. seed=4995852830897710037, duration=1080s\n[progress] elapsed=30s ops=972156 ops\/s=32405.2 unexpected=0\n[progress] elapsed=60s ops=1798250 ops\/s=29970.83 unexpected=0\n[progress] elapsed=90s ops=2511270 ops\/s=27903 unexpected=0\n[progress] elapsed=120s ops=3211500 ops\/s=26762.5 unexpected=0\n[progress] elapsed=150s ops=4109793 ops\/s=27398.62 unexpected=0\n[progress] elapsed=180s ops=4865095 ops\/s=27028.31 unexpected=0\n[progress] elapsed=210s ops=5950989 ops\/s=28338.04 unexpected=0\n[progress] elapsed=240s ops=6875076 ops\/s=28646.15 unexpected=0\n[progress] elapsed=270s ops=7999236 ops\/s=29626.8 unexpected=0\n[progress] elapsed=300s ops=8764782 ops\/s=29215.94 unexpected=0\n[progress] elapsed=330s ops=9789502 ops\/s=29665.16 unexpected=0\n[progress] elapsed=360s ops=10878182 ops\/s=30217.17 unexpected=0\n[progress] elapsed=390s ops=11908579 ops\/s=30534.82 unexpected=0\n[progress] elapsed=420s ops=12701095 ops\/s=30240.7 unexpected=0\n[progress] elapsed=450s ops=13400576 ops\/s=29779.06 unexpected=0\n[progress] elapsed=480s ops=14101634 ops\/s=29378.4 unexpected=0\n[progress] elapsed=510s ops=14805892 ops\/s=29031.16 unexpected=0\n[progress] elapsed=540s ops=15754788 ops\/s=29175.53 unexpected=0\n[progress] elapsed=570s ops=16896241 ops\/s=29642.53 unexpected=0\n[progress] elapsed=600s ops=17688516 ops\/s=29480.86 unexpected=0\n[progress] elapsed=630s ops=18403000 ops\/s=29211.11 unexpected=0\n[progress] elapsed=660s ops=19123179 ops\/s=28974.51 unexpected=0\n[progress] elapsed=690s ops=19858619 ops\/s=28780.61 unexpected=0\n[progress] elapsed=720s ops=20572206 ops\/s=28572.51 unexpected=0\n[progress] elapsed=750s ops=21271413 ops\/s=28361.88 unexpected=0\n[progress] elapsed=780s ops=21971826 ops\/s=28169.01 unexpected=0\n[progress] elapsed=810s ops=22672368 ops\/s=27990.58 unexpected=0\n[progress] elapsed=840s ops=23566623 ops\/s=28055.5 unexpected=0\n[progress] elapsed=870s ops=24283500 ops\/s=27912.07 unexpected=0\n[progress] elapsed=900s ops=25022750 ops\/s=27803.06 unexpected=0\n[progress] elapsed=930s ops=25907602 ops\/s=27857.64 unexpected=0\n[progress] elapsed=960s ops=26885642 ops\/s=28005.88 unexpected=0\n[progress] elapsed=990s ops=27741934 ops\/s=28022.16 unexpected=0\n[progress] elapsed=1020s ops=28705885 ops\/s=28143.02 unexpected=0\n[progress] elapsed=1050s ops=29448458 ops\/s=28046.15 unexpected=0\nAggressive battery finished. status=PASS report=C:\\Users\\basil\\AppData\\Local\\Temp\\acelerador_backend_aggressive_20260406_165120.json\nSummary: operations=30404232, assertions=416933259, invariantChecks=121616, unexpectedErrors=0, duration=1080s",
+            "category": "intensivo",
+            "strategy": "single_window_budget",
+            "budgetSeconds": 1080
+        },
+        {
+            "id": "mcp-worker-loop",
+            "name": "Worker MCP en bucle temporal (360s)",
+            "command": "\"C:\\xampp\\php\\php.exe\" \"C:\\Users\\basil\\Documents\\GitHub\\Proyecto-Acelerador\\mcp-server\\worker_jobs.php\" --once",
+            "optional": true,
+            "status": "passed",
+            "exitCode": 0,
+            "output": "Timed loop ejecutado: iteraciones=1302, fallos=0, presupuesto=360s, duracion_real=360s.",
+            "category": "intensivo",
+            "strategy": "timed_loop",
+            "budgetSeconds": 360
+        }
+    ],
+    "nivel": "agresivo",
+    "ventana": "1h"
+}

@@ -828,21 +828,26 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
                     </div>
                   </div>
                   
-                  <div class="d-flex flex-wrap gap-2 ms-lg-3">
-                    <a href="../../dashboard_profesor.php?nombre=<?= urlencode($prof['nombre']) ?>&rama=<?= urlencode($prof['rama']) ?>" class="btn btn-sm btn-primary rounded-pill">
-                      <i class="bi bi-diagram-3 me-1"></i> Ver dashboard
+                  <div class="d-flex flex-wrap gap-2 ms-lg-3 justify-content-end align-items-start">
+                    <a href="../../dashboard_profesor.php?nombre=<?= urlencode($prof['nombre']) ?>&rama=<?= urlencode($prof['rama']) ?>" class="btn btn-sm btn-primary rounded-3 d-flex flex-column align-items-center" style="min-width:68px; padding:8px 10px; gap:4px;">
+                      <i class="bi bi-diagram-3" style="font-size:1.25rem;"></i>
+                      <span style="font-size:.65rem; line-height:1;">Dashboard</span>
                     </a>
-                    <button type="button" class="btn btn-sm btn-outline-light rounded-pill" data-bs-toggle="modal" data-bs-target="#modalTarea<?= $pid ?>">
-                      <i class="bi bi-clipboard-check me-1"></i> Ver tarea
+                    <button type="button" class="btn btn-sm btn-outline-light rounded-3 d-flex flex-column align-items-center" style="min-width:68px; padding:8px 10px; gap:4px;" data-bs-toggle="modal" data-bs-target="#modalTarea<?= $pid ?>">
+                      <i class="bi bi-clipboard-check" style="font-size:1.25rem;"></i>
+                      <span style="font-size:.65rem; line-height:1;">Ver tarea</span>
                     </button>
-                    <button type="button" class="btn btn-sm btn-outline-light rounded-pill btn-estado-prof" data-bs-toggle="modal" data-bs-target="#modalEstado<?= $pid ?>" data-orcid="<?= htmlspecialchars($prof['orcid']) ?>">
-                      <i class="bi bi-speedometer2 me-1"></i> Estado
+                    <button type="button" class="btn btn-sm btn-outline-light rounded-3 d-flex flex-column align-items-center btn-estado-prof" style="min-width:68px; padding:8px 10px; gap:4px;" data-bs-toggle="modal" data-bs-target="#modalEstado<?= $pid ?>" data-orcid="<?= htmlspecialchars($prof['orcid']) ?>">
+                      <i class="bi bi-speedometer2" style="font-size:1.25rem;"></i>
+                      <span style="font-size:.65rem; line-height:1;">Estado</span>
                     </button>
-                    <button type="button" class="btn btn-sm btn-outline-light rounded-pill btn-gantt-prof" data-bs-toggle="modal" data-bs-target="#modalGrafico<?= $pid ?>" data-id="<?= $pid ?>">
-                      <i class="bi bi-bar-chart-line me-1"></i> Gráfico
+                    <button type="button" class="btn btn-sm btn-outline-light rounded-3 d-flex flex-column align-items-center btn-gantt-prof" style="min-width:68px; padding:8px 10px; gap:4px;" data-bs-toggle="modal" data-bs-target="#modalGrafico<?= $pid ?>" data-id="<?= $pid ?>">
+                      <i class="bi bi-bar-chart-line" style="font-size:1.25rem;"></i>
+                      <span style="font-size:.65rem; line-height:1;">Gráfico</span>
                     </button>
-                    <button type="button" class="btn btn-sm btn-outline-light rounded-pill" data-bs-toggle="modal" data-bs-target="#modalOpciones<?= $pid ?>">
-                      <i class="bi bi-three-dots me-1"></i> Más opciones
+                    <button type="button" class="btn btn-sm btn-outline-light rounded-3 d-flex flex-column align-items-center" style="min-width:68px; padding:8px 10px; gap:4px;" data-bs-toggle="modal" data-bs-target="#modalOpciones<?= $pid ?>">
+                      <i class="bi bi-three-dots" style="font-size:1.25rem;"></i>
+                      <span style="font-size:.65rem; line-height:1;">Opciones</span>
                     </button>
                   </div>
                 </div>
@@ -882,46 +887,48 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
             <h5 class="modal-title"><i class="bi bi-clipboard-check me-2"></i>Tareas — <?= $profNombreCompleto ?></h5>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
           </div>
-          <div class="modal-body d-flex flex-column custom-scrollbar pe-2" style="max-width: 400px; margin: 0 auto; width: 100%; min-height: 70vh; overflow-y: auto; overflow-x: hidden;">
+          <div class="modal-body d-flex flex-column custom-scrollbar pe-2" style="max-width: 420px; margin: 0 auto; width: 100%; min-height: 70vh; overflow-y: auto; overflow-x: hidden; align-items: center;">
             
             <!-- Mostrar todas las tareas activas (múltiples simultáneas) -->
             <?php if (!empty($tareasList)): ?>
-              <h6 class="text-white fw-bold mb-3"><i class="bi bi-list-task me-2"></i>Tareas Activas</h6>
+              <h6 class="text-white fw-bold mb-3 text-center w-100"><i class="bi bi-list-task me-2"></i>Tareas Activas</h6>
               <div class="d-flex flex-column gap-3 mb-4">
               <?php foreach ($tareasList as $tareaActual): 
                 $fechasT = json_decode($tareaActual['fechas_entregas'] ?? '[]', true) ?: [];
                 $hechas = json_decode($tareaActual['entregas_realizadas'] ?? '{}', true) ?: [];
                 $tiempoPrincipal = !empty($fechasT) ? $fechasT[0] : '';
               ?>
-                <div class="p-3 rounded-3" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.10);">
-                  <div class="d-flex justify-content-between align-items-start mb-2">
-                    <div>
-                      <h6 class="text-white fw-bold mb-0"><?= htmlspecialchars($tareaActual['titulo_tarea']) ?></h6>
-                      <span class="badge rounded-pill mt-1" style="background:rgba(74,222,128,0.2); color:#4ade80; font-size:.7rem;"><?= $tareaActual['num_entregas'] ?> entregas</span>
-                    </div>
-                    <form method="POST" class="m-0 d-flex" onsubmit="return confirm('¿Seguro que deseas eliminar esta tarea?');">
-                      <input type="hidden" name="accion" value="borrar_tarea">
-                      <input type="hidden" name="id_tarea" value="<?= $tareaActual['id'] ?>">
-                      <button type="button" class="btn btn-sm text-info p-0 m-0 me-3 btn-editar-tarea" title="Editar tarea" 
-                        data-id="<?= $tareaActual['id'] ?>"
-                        data-titulo="<?= htmlspecialchars($tareaActual['titulo_tarea'], ENT_QUOTES) ?>"
-                        data-desc="<?= htmlspecialchars($tareaActual['descripcion_tarea'], ENT_QUOTES) ?>"
-                        data-entregas="<?= $tareaActual['num_entregas'] ?>"
-                        data-fechas="<?= htmlspecialchars($tareaActual['fechas_entregas'] ?? '[]', ENT_QUOTES) ?>"
-                        data-tiempo="<?= $tiempoPrincipal ?>"
-                        data-bs-dismiss="modal">
-                        <i class="bi bi-pencil-square"></i>
-                      </button>
-                      <button type="submit" class="btn btn-sm text-danger p-0 m-0" style="background:none; border:none;" title="Borrar tarea">
-                        <i class="bi bi-trash3-fill"></i>
-                      </button>
-                    </form>
+                <div class="p-3 rounded-3 w-100" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.10);">
+                  <!-- Cabecera centrada: título + acciones -->
+                  <div class="text-center mb-2">
+                    <h6 class="text-white fw-bold mb-1"><?= htmlspecialchars($tareaActual['titulo_tarea']) ?></h6>
+                    <span class="badge rounded-pill" style="background:rgba(74,222,128,0.2); color:#4ade80; font-size:.7rem;"><?= $tareaActual['num_entregas'] ?> entregas</span>
                   </div>
+                  <!-- Botones editar/borrar centrados -->
+                  <form method="POST" class="m-0 d-flex justify-content-center gap-3 mb-2" onsubmit="return confirm('¿Seguro que deseas eliminar esta tarea?');">
+                    <input type="hidden" name="accion" value="borrar_tarea">
+                    <input type="hidden" name="id_tarea" value="<?= $tareaActual['id'] ?>">
+                    <button type="button" class="btn btn-sm btn-outline-info rounded-3 d-flex flex-column align-items-center btn-editar-tarea" style="min-width:56px; padding:6px 10px; gap:3px;" title="Editar tarea"
+                      data-id="<?= $tareaActual['id'] ?>"
+                      data-titulo="<?= htmlspecialchars($tareaActual['titulo_tarea'], ENT_QUOTES) ?>"
+                      data-desc="<?= htmlspecialchars($tareaActual['descripcion_tarea'], ENT_QUOTES) ?>"
+                      data-entregas="<?= $tareaActual['num_entregas'] ?>"
+                      data-fechas="<?= htmlspecialchars($tareaActual['fechas_entregas'] ?? '[]', ENT_QUOTES) ?>"
+                      data-tiempo="<?= $tiempoPrincipal ?>"
+                      data-bs-dismiss="modal">
+                      <i class="bi bi-pencil-square" style="font-size:1.1rem;"></i>
+                      <span style="font-size:.6rem;">Editar</span>
+                    </button>
+                    <button type="submit" class="btn btn-sm btn-outline-danger rounded-3 d-flex flex-column align-items-center" style="min-width:56px; padding:6px 10px; gap:3px; background:none;" title="Borrar tarea">
+                      <i class="bi bi-trash3-fill" style="font-size:1.1rem;"></i>
+                      <span style="font-size:.6rem;">Borrar</span>
+                    </button>
+                  </form>
                   <?php if (!empty($tareaActual['descripcion_tarea'])): ?>
-                    <p class="text-white-50 small mb-2"><?= htmlspecialchars($tareaActual['descripcion_tarea']) ?></p>
+                    <p class="text-white-50 small mb-2 text-center"><?= htmlspecialchars($tareaActual['descripcion_tarea']) ?></p>
                   <?php endif; ?>
                   <?php if (!empty($fechasT)): ?>
-                    <div class="text-white-50 small fw-bold text-uppercase mb-1" style="font-size:.7rem;">Entregas programadas:</div>
+                    <div class="text-white-50 small fw-bold text-uppercase mb-1 text-center" style="font-size:.7rem;">Entregas programadas:</div>
                     <?php foreach ($fechasT as $fi => $fe): 
                       $estaHecha = !empty($hechas[$fi]);
                     ?>
@@ -934,7 +941,7 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
                           <?php endif; ?>
                         </div>
                         <?php if (!$estaHecha): ?>
-                          <button class="btn btn-xs btn-success py-0 px-2 rounded-pill btn-marcar-hecha" style="font-size: .6rem;" 
+                          <button class="btn btn-xs btn-success py-0 px-2 rounded-pill btn-marcar-hecha" style="font-size: .6rem;"
                                   data-id-tarea="<?= $tareaActual['id'] ?>" data-indice="<?= $fi ?>">Marcar como hecha</button>
                         <?php endif; ?>
                       </div>
@@ -944,15 +951,15 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
               <?php endforeach; ?>
               </div>
             <?php else: ?>
-              <div class="text-center text-white-50 mb-4">
-                <i class="bi bi-inbox" style="font-size:2rem;"></i>
+              <div class="text-center text-white-50 mb-4 w-100">
+                <i class="bi bi-inbox" style="font-size:2.5rem;"></i>
                 <p class="mt-2 mb-0">No hay tareas asignadas a este profesor.</p>
               </div>
             <?php endif; ?>
 
-            <hr style="border-color:rgba(255,255,255,0.15); margin: 10px 0 20px 0;">
+            <hr style="border-color:rgba(255,255,255,0.15); margin: 10px 0 20px 0; width:100%;">
             
-            <h6 class="text-white fw-bold mb-3"><i class="bi bi-plus-circle me-2"></i>Añadir nueva tarea</h6>
+            <h6 class="text-white fw-bold mb-3 text-center w-100"><i class="bi bi-plus-circle me-2"></i>Añadir nueva tarea</h6>
             
             <!-- Formulario para UPDATE/INSERT -->
             <form method="POST" class="d-flex flex-column gap-3 w-100">
@@ -1347,8 +1354,13 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
       document.querySelectorAll('[id^="modalTarea"]').forEach(modal => {
         modal.addEventListener('show.bs.modal', function() {
           const pid = this.id.replace('modalTarea', '');
-          const container = document.getElementById('fechasContainer' + pid);
-          if (container && container.innerHTML.trim() === '') {
+          const inputNumEntregas = document.getElementById('inputNumEntregas' + pid);
+          if (inputNumEntregas) {
+            // Asegurar que el valor mínimo sea 1
+            if (!inputNumEntregas.value || parseInt(inputNumEntregas.value, 10) < 1) {
+              inputNumEntregas.value = '1';
+            }
+            // Generar siempre los campos de fecha (incluye el caso de entrega única)
             generarFechasModal(pid);
           }
         });

@@ -111,7 +111,25 @@ if (isset($_POST['accion'])) {
   // ELIMINAR profesor del grupo
   if ($_POST['accion'] == 'eliminar' && !empty($_POST['id_profesor'])) {
     $id_prof_eliminar = intval($_POST['id_profesor']);
+
+    // Asegurar que existe la tabla de notificaciones persistentes
+    mysqli_query($conn, "CREATE TABLE IF NOT EXISTS tbl_notificacion_pendiente (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      id_profesor INT NOT NULL,
+      mensaje TEXT NOT NULL,
+      fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )");
+
+    // Borrar las tareas asignadas a este profesor en este grupo
+    mysqli_query($conn, "DELETE FROM tbl_tarea_entrega WHERE id_profesor = $id_prof_eliminar AND id_grupo = $id_grupo");
+
+    // Quitar al profesor del grupo
     mysqli_query($conn, "DELETE FROM tbl_grupo_profesor WHERE id_grupo = $id_grupo AND id_profesor = $id_prof_eliminar");
+
+    // Insertar notificación persistente para el profesor eliminado
+    $msg_notif = mysqli_real_escape_string($conn, "Se le ha eliminado del grupo actual, se le añadirá a otro a la mayor brevedad posible.");
+    mysqli_query($conn, "INSERT INTO tbl_notificacion_pendiente (id_profesor, mensaje) VALUES ($id_prof_eliminar, '$msg_notif')");
+
     $mensaje = 'Profesor eliminado del grupo correctamente.';
     $tipo_mensaje = 'success';
   }
@@ -335,7 +353,7 @@ $query_profes = mysqli_query($conn, "
         </div>
       </div>
       <div class="piepag">
-        <p>&copy; CEU Lab. Todos los derechos reservados.</p>
+        <p>&copy; UF3. Todos los derechos reservados.</p>
       </div>
     </div>
   </footer>

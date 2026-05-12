@@ -265,7 +265,7 @@ if ($query_profesores && mysqli_num_rows($query_profesores) > 0) {
         </div>
       </div>
       <div class="piepag">
-        <p>&copy; CEU Lab. Todos los derechos reservados.</p>
+        <p>&copy; UF3. Todos los derechos reservados.</p>
       </div>
     </div>
   </footer>

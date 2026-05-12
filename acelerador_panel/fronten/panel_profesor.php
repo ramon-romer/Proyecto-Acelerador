@@ -74,6 +74,25 @@ $misGrupos   = [];
 if ($resGrupos) { while ($g = mysqli_fetch_assoc($resGrupos)) $misGrupos[] = $g; }
 $totalGrupos = count($misGrupos);
 
+// ── Notificaciones persistentes pendientes ──────────────────────────────────────────
+$notifsPendientes = [];
+if ($idProf > 0) {
+  // Verificar que la tabla existe antes de consultar
+  $tablaExists = mysqli_query($conn, "SHOW TABLES LIKE 'tbl_notificacion_pendiente'");
+  if ($tablaExists && mysqli_num_rows($tablaExists) > 0) {
+    $qNotifs = mysqli_query($conn, "SELECT mensaje FROM tbl_notificacion_pendiente WHERE id_profesor = $idProf ORDER BY fecha_creacion ASC");
+    if ($qNotifs) {
+      while ($rn = mysqli_fetch_assoc($qNotifs)) {
+        $notifsPendientes[] = $rn['mensaje'];
+      }
+      // Limpiar notificaciones ya leídas
+      if (!empty($notifsPendientes)) {
+        mysqli_query($conn, "DELETE FROM tbl_notificacion_pendiente WHERE id_profesor = $idProf");
+      }
+    }
+  }
+}
+
 // ── Tareas pendientes del profesor ────────────────────────────────────────────────
 $tareasActivas = [];
 $entregasTotales = []; // Array plano con todas las entregas de todas las tareas
@@ -846,7 +865,7 @@ function recomendaciones(array $e): array {
         </div>
       </div>
       <div class="piepag">
-        <p>&copy; CEU Lab. Todos los derechos reservados.</p>
+        <p>&copy; UF3. Todos los derechos reservados.</p>
       </div>
     </div>
   </footer>
@@ -1034,6 +1053,16 @@ function recomendaciones(array $e): array {
   </script>
 
   <?php include('chatbot.php'); ?>
+
+  <?php if (!empty($notifsPendientes)): ?>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      <?php foreach ($notifsPendientes as $notifMsg): ?>
+      showNotificationPersistent(<?= json_encode(htmlspecialchars_decode($notifMsg)) ?>, 'warning');
+      <?php endforeach; ?>
+    });
+  </script>
+  <?php endif; ?>
 
 </body>
 

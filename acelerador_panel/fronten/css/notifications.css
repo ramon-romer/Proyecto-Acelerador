@@ -52,6 +52,25 @@
   transition: all 0.5s ease;
 }
 
+/* Toast persistente: sin barra de progreso, con botón de cierre */
+.toast-persistent .toast-progress {
+  display: none;
+}
+.toast-close-btn {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 0 0 12px;
+  flex-shrink: 0;
+  transition: color 0.2s;
+}
+.toast-close-btn:hover {
+  color: #fff;
+}
+
 /* Confirm Modal Personalizado */
 .custom-confirm-overlay {
   position: fixed;

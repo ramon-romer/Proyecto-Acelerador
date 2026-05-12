@@ -176,7 +176,7 @@ if ($query_grupos && mysqli_num_rows($query_grupos) > 0) {
         </div>
       </div>
       <div class="piepag">
-        <p>&copy; CEU Lab. Todos los derechos reservados.</p>
+        <p>&copy; UF3. Todos los derechos reservados.</p>
       </div>
     </div>
   </footer>

@@ -4,14 +4,18 @@ declare(strict_types=1);
 $nombre = trim($_POST['nombre_candidato'] ?? '');
 $jsonEntrada = trim($_POST['json_entrada'] ?? '');
 
-if ($nombre === '' || $jsonEntrada === '') {
-    die('Faltan datos obligatorios para completar el expediente.');
+// Modo "ingreso manual directo": se permite acceso sin POST con formulario en blanco
+if ($nombre === '') {
+    $nombre = '';
+}
+if ($jsonEntrada === '' || json_decode($jsonEntrada, true) === null) {
+    $jsonEntrada = '{}';
 }
 
 $jsonExtraido = json_decode($jsonEntrada, true);
 
 if (!is_array($jsonExtraido)) {
-    die('El JSON extraído no es válido.');
+    $jsonExtraido = [];
 }
 
 require __DIR__ . '/ui.php';
@@ -93,20 +97,27 @@ exp_render_layout_start(
     .fila textarea {
         width: 100%;
         padding: 10px 14px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.15);
         border-radius: 10px;
         font-size: 14px;
-        background: rgba(255, 255, 255, 0.05);
-        color: #fff;
+        background: rgba(20, 30, 55, 0.85) !important;
+        color: #e2e8f0 !important;
         box-sizing: border-box;
         transition: border-color 0.2s, background 0.2s;
+        -webkit-appearance: none;
+        appearance: none;
     }
     .fila input:focus,
     .fila select:focus,
     .fila textarea:focus {
-        border-color: rgba(255, 255, 255, 0.3);
-        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.35);
+        background: rgba(20, 30, 65, 0.95) !important;
         outline: none;
+    }
+    /* Evitar que el sistema operativo imponga fondo blanco en select */
+    .fila select option {
+        background: #0f1e3a;
+        color: #e2e8f0;
     }
     .hint {
         color: rgba(255, 255, 255, 0.4);

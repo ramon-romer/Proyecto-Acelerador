@@ -131,12 +131,65 @@ if (isset($_POST['accion']) && $_POST['accion'] == 'quitar_grupo') {
 // --- ELIMINAR USUARIO ---
 if (isset($_POST['accion']) && $_POST['accion'] == 'eliminar') {
   $id_del = intval($_POST['id_profesor']);
-  $correo_del_q = mysqli_query($conn, "SELECT correo FROM tbl_profesor WHERE id_profesor = $id_del");
-  $correo_del = mysqli_fetch_assoc($correo_del_q)['correo'];
 
-  mysqli_query($conn, "DELETE FROM tbl_grupo_profesor WHERE id_profesor = $id_del");
-  mysqli_query($conn, "DELETE FROM tbl_profesor WHERE id_profesor = $id_del");
-  mysqli_query($conn, "DELETE FROM tbl_usuario WHERE correo = '$correo_del'");
+  // Asegurar que existe la tabla de notificaciones persistentes
+  mysqli_query($conn, "CREATE TABLE IF NOT EXISTS tbl_notificacion_pendiente (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_profesor INT NOT NULL,
+    mensaje TEXT NOT NULL,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  )");
+
+  // Obtener datos básicos del usuario a eliminar
+  $q_del_info = mysqli_query($conn, "SELECT correo, perfil FROM tbl_profesor WHERE id_profesor = $id_del");
+  $del_info = mysqli_fetch_assoc($q_del_info);
+  $correo_del = $del_info['correo'] ?? '';
+  $perfil_del = strtoupper($del_info['perfil'] ?? '');
+
+  if ($perfil_del === 'TUTOR') {
+    // 1. Obtener los profesores de los grupos de este tutor (para notificarles)
+    $q_profs_afectados = mysqli_query($conn, "
+      SELECT DISTINCT gp.id_profesor
+      FROM tbl_grupo g
+      INNER JOIN tbl_grupo_profesor gp ON g.id_grupo = gp.id_grupo
+      WHERE g.id_tutor = $id_del
+    ");
+    $profs_afectados_ids = [];
+    while ($q_profs_afectados && $rpa = mysqli_fetch_assoc($q_profs_afectados)) {
+      $profs_afectados_ids[] = intval($rpa['id_profesor']);
+    }
+
+    // 2. Obtener los grupos del tutor
+    $q_grupos_tutor = mysqli_query($conn, "SELECT id_grupo FROM tbl_grupo WHERE id_tutor = $id_del");
+    $ids_grupos = [];
+    while ($q_grupos_tutor && $rgt = mysqli_fetch_assoc($q_grupos_tutor)) {
+      $ids_grupos[] = intval($rgt['id_grupo']);
+    }
+
+    // 3. Borrar tareas de esos grupos
+    if (!empty($ids_grupos)) {
+      $ids_grupos_sql = implode(',', $ids_grupos);
+      mysqli_query($conn, "DELETE FROM tbl_tarea_entrega WHERE id_grupo IN ($ids_grupos_sql)");
+      mysqli_query($conn, "DELETE FROM tbl_grupo_profesor WHERE id_grupo IN ($ids_grupos_sql)");
+      mysqli_query($conn, "DELETE FROM tbl_grupo WHERE id_tutor = $id_del");
+    }
+
+    // 4. Insertar notificación persistente para cada profesor afectado
+    $msg_notif = mysqli_real_escape_string($conn, "Su tutor ha sido dado de baja del sistema. Se le asignará un nuevo tutor a la mayor brevedad posible.");
+    foreach ($profs_afectados_ids as $pid_afectado) {
+      mysqli_query($conn, "INSERT INTO tbl_notificacion_pendiente (id_profesor, mensaje) VALUES ($pid_afectado, '$msg_notif')");
+    }
+
+    // 5. Borrar el registro del tutor
+    mysqli_query($conn, "DELETE FROM tbl_profesor WHERE id_profesor = $id_del");
+    mysqli_query($conn, "DELETE FROM tbl_usuario WHERE correo = '$correo_del'");
+
+  } else {
+    // Usuario PROFESOR: borrado clásico
+    mysqli_query($conn, "DELETE FROM tbl_grupo_profesor WHERE id_profesor = $id_del");
+    mysqli_query($conn, "DELETE FROM tbl_profesor WHERE id_profesor = $id_del");
+    mysqli_query($conn, "DELETE FROM tbl_usuario WHERE correo = '$correo_del'");
+  }
 
   $mensaje = "Usuario eliminado del sistema correctamente.";
   $tipo_mensaje = "success";
@@ -587,7 +640,7 @@ if (isset($_POST['orcid_buscar']) && !empty($_POST['orcid_buscar'])) {
         </div>
       </div>
       <div class="piepag">
-        <p>&copy; CEU Lab. Todos los derechos reservados.</p>
+        <p>&copy; UF3. Todos los derechos reservados.</p>
       </div>
     </div>
   </footer>
