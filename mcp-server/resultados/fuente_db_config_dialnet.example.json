@@ -1,0 +1,13 @@
+{
+  "dsn": "pgsql:host=HOST_DIALNET;port=5432;dbname=DB_DIALNET",
+  "usuario": "USUARIO_DIALNET",
+  "password": "PASSWORD_DIALNET",
+  "query": "SELECT resumen_texto FROM publicaciones WHERE anyo >= :anyo ORDER BY id DESC",
+  "params": {
+    "anyo": 2020
+  },
+  "text_column": "resumen_texto",
+  "max_rows": 3000,
+  "max_text_chars": 3000000,
+  "query_timeout_seconds": 45
+}

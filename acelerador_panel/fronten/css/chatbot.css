@@ -1,0 +1,170 @@
+/* === START CSS: css/chatbot.css === */
+.cb-bubble {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #123f82 0%, #1c54a8 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 26px;
+    z-index: 999999 !important;
+    cursor: pointer !important;
+    pointer-events: auto !important;
+    box-shadow: 0 10px 30px rgba(18, 63, 130, 0.3);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.cb-bubble:hover {
+    transform: scale(1.1) rotate(8deg);
+    box-shadow: 0 15px 40px rgba(18, 63, 130, 0.4);
+}
+
+.cb-window {
+    position: fixed;
+    bottom: 95px;
+    right: 25px;
+    width: 380px;
+    height: 550px;
+    background: #ffffff;
+    border-radius: 24px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    display: none; /* Se controla por JS */
+    flex-direction: column;
+    z-index: 999999 !important;
+    overflow: hidden;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    border: 1px solid rgba(18, 63, 130, 0.08);
+}
+
+.cb-header {
+    background: linear-gradient(135deg, #123f82 0%, #1c54a8 100%);
+    color: white;
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cb-header-info {
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 0.5px;
+}
+
+.cb-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.cb-reset-btn {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 0;
+    transition: transform 0.4s ease;
+}
+
+.cb-reset-btn:hover {
+    transform: rotate(-180deg);
+}
+
+.cb-close-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 28px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+}
+
+.cb-body {
+    flex-grow: 1;
+    padding: 20px;
+    overflow-y: auto;
+    background: #f8fafc;
+    display: flex;
+    flex-direction: column;
+}
+
+.bot-msg, .user-msg {
+    margin: 12px 0;
+    padding: 14px 18px;
+    border-radius: 18px;
+    font-size: 14.5px;
+    line-height: 1.6;
+    max-width: 88%;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.bot-msg {
+    background: #ffffff;
+    color: #334155;
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
+    border: 1px solid #e2e8f0;
+}
+
+.user-msg {
+    background: #123f82;
+    color: white;
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+}
+
+.cb-options-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+    padding-bottom: 10px;
+}
+
+.cb-menu-label {
+    font-size: 11px;
+    font-weight: 800;
+    color: #94a3b8;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.cb-option-btn {
+    text-align: left;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    padding: 12px 16px;
+    border-radius: 14px;
+    font-size: 13.5px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    color: #475569;
+    font-weight: 500;
+}
+
+.cb-option-btn:hover {
+    background: #f1f5f9;
+    border-color: #123f82;
+    color: #123f82;
+    transform: translateX(6px);
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+    width: 5px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+/* === END CSS === */

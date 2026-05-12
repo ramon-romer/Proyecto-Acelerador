@@ -1,13 +1,14 @@
 .formulario {
     width: 70%;
-    margin: auto;
-    background-color: rgba(20, 88, 204, 0.25);
+    margin: 100px auto 0 auto;
+    background-color: rgba(20, 88, 204, 0.4);
     border-radius: 20px;
     display: flex;
     flex-direction: column;
-   
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
-
 
 
 .titulos {
@@ -119,6 +120,7 @@ form {
 #acele {
     height: 200px;
     width: 200px;
+    object-fit: contain;
 }
 
 .mipie {
@@ -131,11 +133,14 @@ form {
     margin-top: 30px;
 }
 
+/* Imágenes dentro del footer */
 .mipie img {
-    width: 90px;
-    height: 90px;
+    width: 130px !important;
+    height: 130px !important;
     margin-top: 15px;
     margin-left: 15px;
+    object-fit: cover;
+    display: block;
 }
 
 .direccion p {
@@ -218,3 +223,112 @@ form {
 .errorBox li {
     color: red;
 }
+
+/* Fondo del popup */
+.popup-premium {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999999;
+    transition: opacity .3s ease;
+}
+
+.popup-premium.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Caja del popup (estilo Material Design) */
+.popup-premium-container {
+    background: white;
+    padding: 28px;
+    border-radius: 14px;
+    width: 90%;
+    max-width: 420px;
+    text-align: center;
+    box-shadow: 0px 12px 35px rgba(0, 0, 0, 0.25);
+    animation: popupSlide .35s ease both;
+}
+
+/* Animación de entrada Material */
+@keyframes popupSlide {
+    0% {
+        transform: translateY(-25px);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Icono */
+.popup-premium-icon {
+    font-size: 62px;
+    margin-bottom: 15px;
+}
+
+/* Título */
+.popup-premium-titulo {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+/* Mensaje */
+.popup-premium-mensaje {
+    font-size: 15px;
+    margin-bottom: 22px;
+    line-height: 1.4;
+}
+
+/* Botón */
+.popup-premium-btn {
+    background: #1a73e8;
+    /* Azul Google */
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background .2s ease;
+    width: 100%;
+    font-weight: bold;
+}
+
+.popup-premium-btn:hover {
+    background: #0c57b3;
+}
+
+.contenedorimg {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin: auto 0;
+    padding: 0 60px;
+}
+
+
+.imagen img {
+    max-height: 150px;
+    width: 150px;
+}
+
+
+
+header {
+    height: 20px;
+}  
+/* Cookie Banner */  
+#cookie-banner { position: fixed; bottom: 0; left: 0; width: 100%; padding: 16px 20px; background: rgba(0,0,0,0.85); backdrop-filter: blur(4px); color: white; text-align: center; z-index: 999999; font-size: 16px; box-shadow: 0 -4px 12px rgba(0,0,0,0.4); }  
+#cookie-accept { margin-left: 15px; padding: 8px 20px; background: #4db8ff; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; } 

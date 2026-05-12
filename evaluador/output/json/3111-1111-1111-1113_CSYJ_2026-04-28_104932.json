@@ -1,0 +1,380 @@
+{
+    "bloque_1": {
+        "publicaciones": [],
+        "libros": [],
+        "proyectos": [],
+        "transferencia": [],
+        "tesis_dirigidas": [
+            {
+                "id": "tesis_001",
+                "es_valido": true,
+                "tipo": "dirigida",
+                "proyecto_aprobado": null,
+                "doctorado_europeo": false,
+                "mencion_calidad": false,
+                "numero_codirectores": 0,
+                "fuente_texto": "Dirección de tesis doctorales y\/o trabajos fin de estudios",
+                "confianza_extraccion": 0.6,
+                "requiere_revision": true
+            },
+            {
+                "id": "tesis_002",
+                "es_valido": true,
+                "tipo": "dirigida",
+                "proyecto_aprobado": null,
+                "doctorado_europeo": false,
+                "mencion_calidad": false,
+                "numero_codirectores": 0,
+                "fuente_texto": "Tipo de proyecto: Tesis doctoral",
+                "confianza_extraccion": 0.6,
+                "requiere_revision": true
+            }
+        ],
+        "congresos": [
+            {
+                "id": "cong_001",
+                "es_valido": true,
+                "ambito": "nacional",
+                "tipo": "comunicacion_oral",
+                "proceso_selectivo": true,
+                "id_evento": "entre_estas_actividades_destacan_la_coordinaci_on_de_seminarios_jornadas_de_innovaci_on_educativa_comit_es",
+                "fuente_texto": "Entre estas actividades destacan la coordinación de seminarios, jornadas de innovación educativa, comités",
+                "confianza_extraccion": 0.55,
+                "requiere_revision": true
+            },
+            {
+                "id": "cong_002",
+                "es_valido": true,
+                "ambito": "nacional",
+                "tipo": "comunicacion_oral",
+                "proceso_selectivo": true,
+                "id_evento": "cient_ificos_de_congresos_direcci_on_de_trabajos_acad_emicos_y_participaci_on_como_investigadora_principal_en",
+                "fuente_texto": "científicos de congresos, dirección de trabajos académicos y participación como investigadora principal en",
+                "confianza_extraccion": 0.55,
+                "requiere_revision": true
+            },
+            {
+                "id": "cong_003",
+                "es_valido": true,
+                "ambito": "nacional",
+                "tipo": "comunicacion_oral",
+                "proceso_selectivo": true,
+                "id_evento": "cursos_y_seminarios_recibidos_de_perfeccionamiento_innovaci_on_y_mejora",
+                "fuente_texto": "Cursos y seminarios recibidos de perfeccionamiento, innovación y mejora",
+                "confianza_extraccion": 0.55,
+                "requiere_revision": true
+            },
+            {
+                "id": "cong_004",
+                "es_valido": true,
+                "ambito": "nacional",
+                "tipo": "comunicacion_oral",
+                "proceso_selectivo": true,
+                "id_evento": "1_t_itulo_del_curso_seminario_dise_no_de_r_ubricas_y_evaluaci_on_competencial_en_educaci_on_superior",
+                "fuente_texto": "1 Título del curso\/seminario: Diseño de rúbricas y evaluación competencial en Educación Superior",
+                "confianza_extraccion": 0.55,
+                "requiere_revision": true
+            },
+            {
+                "id": "cong_005",
+                "es_valido": true,
+                "ambito": "nacional",
+                "tipo": "comunicacion_oral",
+                "proceso_selectivo": true,
+                "id_evento": "objetivos_del_curso_seminario_profundizar_en_el_dise_no_de_instrumentos_de_evaluaci_on_por_competencias",
+                "fuente_texto": "Objetivos del curso\/seminario: Profundizar en el diseño de instrumentos de evaluación por competencias,",
+                "confianza_extraccion": 0.55,
+                "requiere_revision": true
+            },
+            {
+                "id": "cong_006",
+                "es_valido": true,
+                "ambito": "nacional",
+                "tipo": "comunicacion_oral",
+                "proceso_selectivo": true,
+                "id_evento": "2_t_itulo_del_curso_seminario_aprendizaje_basado_en_proyectos_y_metodolog_ias_activas_en_ciencias_sociales",
+                "fuente_texto": "2 Título del curso\/seminario: Aprendizaje basado en proyectos y metodologías activas en Ciencias Sociales",
+                "confianza_extraccion": 0.55,
+                "requiere_revision": true
+            },
+            {
+                "id": "cong_007",
+                "es_valido": true,
+                "ambito": "nacional",
+                "tipo": "comunicacion_oral",
+                "proceso_selectivo": true,
+                "id_evento": "objetivos_del_curso_seminario_aplicar_metodolog_ias_activas_en_asignaturas_de_educaci_on_y_ciencias",
+                "fuente_texto": "Objetivos del curso\/seminario: Aplicar metodologías activas en asignaturas de Educación y Ciencias",
+                "confianza_extraccion": 0.55,
+                "requiere_revision": true
+            },
+            {
+                "id": "cong_008",
+                "es_valido": true,
+                "ambito": "nacional",
+                "tipo": "comunicacion_oral",
+                "proceso_selectivo": true,
+                "id_evento": "3_t_itulo_del_curso_seminario_uso_de_plataformas_virtuales_y_recursos_digitales_para_la_docencia_universitaria",
+                "fuente_texto": "3 Título del curso\/seminario: Uso de plataformas virtuales y recursos digitales para la docencia universitaria",
+                "confianza_extraccion": 0.55,
+                "requiere_revision": true
+            },
+            {
+                "id": "cong_009",
+                "es_valido": true,
+                "ambito": "nacional",
+                "tipo": "comunicacion_oral",
+                "proceso_selectivo": true,
+                "id_evento": "objetivos_del_curso_seminario_adquirir_competencias_en_el_uso_de_plataformas_virtuales_materiales",
+                "fuente_texto": "Objetivos del curso\/seminario: Adquirir competencias en el uso de plataformas virtuales, materiales",
+                "confianza_extraccion": 0.55,
+                "requiere_revision": true
+            },
+            {
+                "id": "cong_010",
+                "es_valido": true,
+                "ambito": "nacional",
+                "tipo": "comunicacion_oral",
+                "proceso_selectivo": true,
+                "id_evento": "4_t_itulo_del_curso_seminario_inclusi_on_diversidad_y_perspectiva_de_g_enero_en_la_docencia_universitaria",
+                "fuente_texto": "4 Título del curso\/seminario: Inclusión, diversidad y perspectiva de género en la docencia universitaria",
+                "confianza_extraccion": 0.55,
+                "requiere_revision": true
+            },
+            {
+                "id": "cong_011",
+                "es_valido": true,
+                "ambito": "nacional",
+                "tipo": "comunicacion_oral",
+                "proceso_selectivo": true,
+                "id_evento": "objetivos_del_curso_seminario_incorporar_principios_de_inclusi_on_educativa_accesibilidad_y_perspectiva_de",
+                "fuente_texto": "Objetivos del curso\/seminario: Incorporar principios de inclusión educativa, accesibilidad y perspectiva de",
+                "confianza_extraccion": 0.55,
+                "requiere_revision": true
+            },
+            {
+                "id": "cong_012",
+                "es_valido": true,
+                "ambito": "nacional",
+                "tipo": "comunicacion_oral",
+                "proceso_selectivo": true,
+                "id_evento": "5_t_itulo_del_curso_seminario_innovaci_on_educativa_y_calidad_docente_en_titulaciones_universitarias",
+                "fuente_texto": "5 Título del curso\/seminario: Innovación educativa y calidad docente en titulaciones universitarias",
+                "confianza_extraccion": 0.55,
+                "requiere_revision": true
+            },
+            {
+                "id": "cong_013",
+                "es_valido": true,
+                "ambito": "nacional",
+                "tipo": "comunicacion_oral",
+                "proceso_selectivo": true,
+                "id_evento": "objetivos_del_curso_seminario_analizar_estrategias_de_mejora_docente_coordinaci_on_de_asignaturas",
+                "fuente_texto": "Objetivos del curso\/seminario: Analizar estrategias de mejora docente, coordinación de asignaturas,",
+                "confianza_extraccion": 0.55,
+                "requiere_revision": true
+            },
+            {
+                "id": "cong_014",
+                "es_valido": true,
+                "ambito": "nacional",
+                "tipo": "comunicacion_oral",
+                "proceso_selectivo": true,
+                "id_evento": "cursos_y_seminarios_impartidos",
+                "fuente_texto": "Cursos y seminarios impartidos",
+                "confianza_extraccion": 0.55,
+                "requiere_revision": true
+            },
+            {
+                "id": "cong_015",
+                "es_valido": true,
+                "ambito": "nacional",
+                "tipo": "comunicacion_oral",
+                "proceso_selectivo": true,
+                "id_evento": "1_tipo_de_evento_seminario",
+                "fuente_texto": "1 Tipo de evento: Seminario",
+                "confianza_extraccion": 0.55,
+                "requiere_revision": true
+            },
+            {
+                "id": "cong_016",
+                "es_valido": true,
+                "ambito": "nacional",
+                "tipo": "comunicacion_oral",
+                "proceso_selectivo": true,
+                "id_evento": "3_tipo_de_evento_seminario",
+                "fuente_texto": "3 Tipo de evento: Seminario",
+                "confianza_extraccion": 0.55,
+                "requiere_revision": true
+            },
+            {
+                "id": "cong_017",
+                "es_valido": true,
+                "ambito": "nacional",
+                "tipo": "comunicacion_oral",
+                "proceso_selectivo": true,
+                "id_evento": "escolar_colaboraci_on_en_la_organizaci_on_de_jornadas_de_orientaci_on_universitaria_coordinaci_on_de_pr_acticas",
+                "fuente_texto": "Escolar. Colaboración en la organización de jornadas de orientación universitaria, coordinación de prácticas",
+                "confianza_extraccion": 0.55,
+                "requiere_revision": true
+            },
+            {
+                "id": "cong_018",
+                "es_valido": true,
+                "ambito": "internacional",
+                "tipo": "comunicacion_oral",
+                "proceso_selectivo": true,
+                "id_evento": "trabajos_presentados_en_congresos_nacionales_o_internacionales",
+                "fuente_texto": "Trabajos presentados en congresos nacionales o internacionales",
+                "confianza_extraccion": 0.55,
+                "requiere_revision": true
+            },
+            {
+                "id": "cong_019",
+                "es_valido": true,
+                "ambito": "internacional",
+                "tipo": "comunicacion_oral",
+                "proceso_selectivo": true,
+                "id_evento": "nombre_del_congreso_congreso_internacional_de_innovaci_on_educativa_en_educaci_on_superior",
+                "fuente_texto": "Nombre del congreso: Congreso Internacional de Innovación Educativa en Educación Superior",
+                "confianza_extraccion": 0.55,
+                "requiere_revision": true
+            },
+            {
+                "id": "cong_020",
+                "es_valido": true,
+                "ambito": "internacional",
+                "tipo": "comunicacion_oral",
+                "proceso_selectivo": true,
+                "id_evento": "nombre_del_congreso_congreso_internacional_de_educaci_on_y_sociedad",
+                "fuente_texto": "Nombre del congreso: Congreso Internacional de Educación y Sociedad",
+                "confianza_extraccion": 0.55,
+                "requiere_revision": true
+            },
+            {
+                "id": "cong_021",
+                "es_valido": true,
+                "ambito": "nacional",
+                "tipo": "comunicacion_oral",
+                "proceso_selectivo": true,
+                "id_evento": "nombre_del_congreso_congreso_nacional_de_pedagog_ia",
+                "fuente_texto": "Nombre del congreso: Congreso Nacional de Pedagogía",
+                "confianza_extraccion": 0.55,
+                "requiere_revision": true
+            },
+            {
+                "id": "cong_022",
+                "es_valido": true,
+                "ambito": "internacional",
+                "tipo": "comunicacion_oral",
+                "proceso_selectivo": true,
+                "id_evento": "nombre_del_congreso_congreso_internacional_sobre_tecnolog_ia_educativa",
+                "fuente_texto": "Nombre del congreso: Congreso Internacional sobre Tecnología Educativa",
+                "confianza_extraccion": 0.55,
+                "requiere_revision": true
+            },
+            {
+                "id": "cong_023",
+                "es_valido": true,
+                "ambito": "nacional",
+                "tipo": "comunicacion_oral",
+                "proceso_selectivo": true,
+                "id_evento": "nombre_del_congreso_jornadas_nacionales_de_investigaci_on_educativa",
+                "fuente_texto": "Nombre del congreso: Jornadas Nacionales de Investigación Educativa",
+                "confianza_extraccion": 0.55,
+                "requiere_revision": true
+            },
+            {
+                "id": "cong_024",
+                "es_valido": true,
+                "ambito": "nacional",
+                "tipo": "comunicacion_oral",
+                "proceso_selectivo": true,
+                "id_evento": "nombre_del_evento_jornadas_de_innovaci_on_educativa",
+                "fuente_texto": "Nombre del evento: Jornadas de Innovación Educativa",
+                "confianza_extraccion": 0.55,
+                "requiere_revision": true
+            },
+            {
+                "id": "cong_025",
+                "es_valido": true,
+                "ambito": "nacional",
+                "tipo": "comunicacion_oral",
+                "proceso_selectivo": true,
+                "id_evento": "nombre_del_evento_jornadas_europeas_de_educaci_on",
+                "fuente_texto": "Nombre del evento: Jornadas Europeas de Educación",
+                "confianza_extraccion": 0.55,
+                "requiere_revision": true
+            },
+            {
+                "id": "cong_026",
+                "es_valido": true,
+                "ambito": "internacional",
+                "tipo": "comunicacion_oral",
+                "proceso_selectivo": true,
+                "id_evento": "1_t_itulo_del_comit_e_comit_e_cient_ifico_del_congreso_internacional_de_innovaci_on_educativa",
+                "fuente_texto": "1 Título del comité: Comité científico del Congreso Internacional de Innovación Educativa",
+                "confianza_extraccion": 0.55,
+                "requiere_revision": true
+            },
+            {
+                "id": "cong_027",
+                "es_valido": true,
+                "ambito": "nacional",
+                "tipo": "comunicacion_oral",
+                "proceso_selectivo": true,
+                "id_evento": "objetivos_de_la_estancia_consulta_de_fondos_bibliogr_aficos_participaci_on_en_seminarios_de_investigaci_on",
+                "fuente_texto": "Objetivos de la estancia: Consulta de fondos bibliográficos, participación en seminarios de investigación",
+                "confianza_extraccion": 0.55,
+                "requiere_revision": true
+            },
+            {
+                "id": "cong_028",
+                "es_valido": true,
+                "ambito": "nacional",
+                "tipo": "comunicacion_oral",
+                "proceso_selectivo": true,
+                "id_evento": "educaci_on_pertenencia_a_comit_es_editoriales_y_colaboraci_on_en_la_organizaci_on_de_congresos_y_jornadas",
+                "fuente_texto": "educación, pertenencia a comités editoriales y colaboración en la organización de congresos y jornadas",
+                "confianza_extraccion": 0.55,
+                "requiere_revision": true
+            }
+        ],
+        "otros_meritos_investigacion": []
+    },
+    "bloque_2": {
+        "docencia_universitaria": [],
+        "evaluacion_docente": [],
+        "formacion_docente": [],
+        "material_docente": []
+    },
+    "bloque_3": {
+        "formacion_academica": [
+            {
+                "id": "facad_001",
+                "es_valido": true,
+                "tipo": "doctorado_sin_mencion",
+                "posterior_grado": true,
+                "duracion": 0,
+                "fuente_texto": "Doctorados\nPrograma de doctorado: Doctorado en Educación\nEntidad de titulación: Universidad de Sevilla Tipo de entidad: Universidad\nFecha de titulación: 20\/09\/2011\nDoctorado Europeo: Sí Fecha de mención: 20\/09\/2011\nTítulo de la tesis: Evaluación formativa e innovación metodológica en la formación inicial del profesorado\nDirector\/a de tesis: Carmen Rodríguez López\nCalificación obtenida: Sobresaliente Cum Laude\nMención de calidad: Sí\nPremio extraordinario doctor: Sí\n\nConocimiento de idiomas\nIdioma Comprensión auditiva Comprensión de lectura Interacción oral Expresión oral Expresión escrita\nInglés C1 C1 C1 C1 C1\n7ac9f1d2b8456f0c9e8d23a41b7c6a90\n\nCursos y seminarios recibidos de perfeccionamiento, innovación y mejora\ndocente, nuevas tecnologías, etc., cuyo objetivo sea la mejora de la\ndocencia\n1 Título del curso\/seminario: Diseño de rúbricas y evaluación competencial en Educación Superior\nObjetivos del curso\/seminario: Profundizar en el diseño de instrumentos de evaluación por competencias,\nrúbricas analíticas, evidencias de aprendizaje y estrategias de retroalimentación formativa.\nDuración en horas: 30 horas\nFecha de inicio: 12\/11\/2022\n2 Título del curso\/seminario: Aprendizaje basado en proyectos y metodologías activas en Ciencias Sociales\nObjetivos del curso\/seminario: Aplicar metodologías activas en asignaturas de Educación y Ciencias\nSociales, con especial atención al aprendizaje colaborativo y al estudio de casos.\nDuración en horas: 30 horas\nFecha de inicio: 18\/03\/2021\n3 Título del curso\/seminario: Uso de plataformas virtuales y recursos digitales para la docencia universitaria\nObjetivos del curso\/seminario: Adquirir competencias en el uso de plataformas virtuales, materiales\ndigitales, actividades en línea y seguimiento del aprendizaje mediante herramientas tecnológicas.\nDuración en horas: 30 horas\nFecha de inicio: 20\/01\/2020\n4 Título del curso\/seminario: Inclusión, diversidad y perspectiva de género en la docencia universitaria\nObjetivos del curso\/seminario: Incorporar principios de inclusión educativa, accesibilidad y perspectiva de\ngénero en la planificación docente y en la selección de recursos didácticos.\nDuración en horas: 25 horas\nFecha de inicio: 10\/05\/2019\n5 Título del curso\/seminario: Innovación educativa y calidad docente en titulaciones universitarias\nObjetivos del curso\/seminario: Analizar estrategias de mejora docente, coordinación de asignaturas,\nevaluación continua y sistemas de garantía de calidad en la universidad.\nDuración en horas: 25 horas\nFecha de inicio: 15\/02\/2018\n7ac9f1d2b8456f0c9e8d23a41b7c6a90\n\nActividad docente\nFormación académica impartida\n1 Nombre de la asignatura\/curso: Didáctica General\nTitulación universitaria: Grado en Educación Primaria\nFecha de inicio: 2021 Fecha de finalización: 2026\nTipo de horas\/créditos ECTS: Horas\nNº de horas\/créditos ECTS: 180\nEntidad de realización: Universidad de Sevilla Tipo de entidad: Universidad\n2 Nombre de la asignatura\/curso: Organización Escolar\nTitulación universitaria: Grado en Educación Infantil\nFecha de inicio: 2021 Fecha de finalización: 2026\nTipo de horas\/créditos ECTS: Horas\nNº de horas\/créditos ECTS: 150\nEntidad de realización: Universidad de Sevilla Tipo de entidad: Universidad\n3 Nombre de la asignatura\/curso: Evaluación Educativa\nTitulación universitaria: Máster Universitario en Formación del Profesorado\nFecha de inicio: 2022 Fecha de finalización: 2026\nTipo de horas\/créditos ECTS: Horas\nNº de horas\/créditos ECTS: 90\nEntidad de realización: Universidad de Sevilla Tipo de entidad: Universidad\n4 Nombre de la asignatura\/curso: Innovación Docente e Investigación Educativa\nTitulación universitaria: Máster Universitario en Educación\nFecha de inicio: 2018 Fecha de finalización: 2021\nTipo de horas\/créditos ECTS: Horas\nNº de horas\/créditos ECTS: 80\nEntidad de realización: Universidad Pablo de Olavide Tipo de entidad: Universidad\n5 Nombre de la asignatura\/curso: Atención a la Diversidad\nTitulación universitaria: Grado en Educación Social\nFecha de inicio: 2016 Fecha de finalización: 2021\nTipo de horas\/créditos ECTS: Horas\nNº de horas\/créditos ECTS: 120\nEntidad de realización: Universidad Pablo de Olavide Tipo de entidad: Universidad\n\nDirección de tesis doctorales y\/o trabajos fin de estudios\n1 Título del trabajo: Evaluación formativa y aprendizaje cooperativo en la formación inicial docente\nTipo de proyecto: Tesis doctoral\nEntidad de realización: Universidad de Sevilla Tipo de entidad: Universidad\nFecha de defensa: 15\/06\/2023\n2 Título del trabajo: Diseño de rúbricas para la evaluación de competencias en Educación Primaria\nTipo de proyecto: Trabajo Fin de Máster\nEntidad de realización: Universidad de Sevilla Tipo de entidad: Universidad\nFecha de defensa: 10\/07\/2021\n3 Título del trabajo: La inclusión educativa en centros de educación secundaria\nTipo de proyecto: Trabajo Fin de Grado\nEntidad de realización: Universidad Pablo de Olavide Tipo de entidad: Universidad\nFecha de defensa: 22\/06\/2020\n4 Título del trabajo: Metodologías activas en la enseñanza universitaria\nTipo de proyecto: Trabajo Fin de Grado\nEntidad de realización: Universidad Pablo de Olavide Tipo de entidad: Universidad\nFecha de defensa: 18\/06\/2019\n7ac9f1d2b8456f0c9e8d23a41b7c6a90\n\nActividad docente\nTutorías académicas de estudiantes\nTutoría Reglada: Sí\nExplicación Narrativa: Tutorización académica de estudiantes de los grados de Educación Infantil, Educación\nPrimaria y Educación Social en programas oficiales de orientación universitaria. La actividad ha incluido\nseguimiento académico, orientación sobre prácticas externas, asesoramiento sobre itinerarios formativos y\nacompañamiento en la elaboración de trabajos académicos.\n\nCursos y seminarios impartidos\n1 Tipo de evento: Seminario\nNombre del evento: Evaluación formativa en la universidad\nHoras impartidas: 10\nFecha de impartición: 25\/05\/2023\nTemática: Formación Docente\nEntidad organizadora: Universidad de Sevilla\n2 Tipo de evento: Curso\nNombre del evento: Diseño de situaciones de aprendizaje inclusivas\nHoras impartidas: 15\nFecha de impartición: 15\/04\/2021\nTemática: Formación Docente\nEntidad organizadora: Universidad de Sevilla\n3 Tipo de evento: Seminario\nNombre del evento: Innovación educativa y aprendizaje cooperativo\nHoras impartidas: 8\nFecha de impartición: 20\/11\/2019\nTemática: Formación Docente\nEntidad organizadora: Universidad Pablo de Olavide\n4 Tipo de evento: Curso\nNombre del evento: Competencias docentes para la atención a la diversidad\nHoras impartidas: 12\nFecha de impartición: 12\/03\/2018\nTemática: Formación Docente\nEntidad organizadora: Consejería de Educación de la Junta de Andalucía\n\nMaterial y otras publicaciones docentes o de carácter pedagógico\n1 Laura Gómez Hernández. (España):\nNombre del material: Repositorio digital de recursos para evaluación competencial\nFecha de elaboración: 20\/09\/2022\nTipo de soporte: Material docente digital\n2 Laura Gómez Hernández. (España):\nNombre del material: Cuaderno de prácticas de innovación educativa y diseño curricular\nFecha de elaboración: 15\/02\/2021\nTipo de soporte: Documento docente\n3 Laura Gómez Hernández. (España):\nNombre del material: Guía docente práctica para la elaboración de rúbricas\nFecha de elaboración: 10\/09\/2019\nTipo de soporte: Apuntes\n7ac9f1d2b8456f0c9e8d23a41b7c6a90\n\nActividad docente\nProyectos de innovación docente\n1 Título del proyecto: Diseño de itinerarios de aprendizaje competencial en la formación inicial del\nprofesorado\nTipo de participación: Investigador principal\nFecha de inicio-fin: 01\/10\/2023 - 30\/09\/2024\n2 Título del proyecto: Uso de analíticas de aprendizaje y recursos digitales en asignaturas de Educación\nTipo de participación: Miembro de equipo\nFecha de inicio-fin: 01\/10\/2021 - 30\/09\/2022\n3 Título del proyecto: Aprendizaje basado en proyectos para la mejora de la inclusión educativa\nTipo de participación: Investigador principal\nFecha de inicio-fin: 01\/10\/2020 - 30\/09\/2021\n\nOtros méritos de docencia\nParticipación continuada en actividades de coordinación docente del área de Didáctica y Organización\nEscolar. Colaboración en la organización de jornadas de orientación universitaria, coordinación de prácticas\nexternas, participación en tribunales de trabajos académicos y elaboración de materiales de apoyo para la\ndocencia presencial y virtual.\n\nPluralidad, interdisciplinariedad y complejidad docente\nMi actividad docente se ha desarrollado en asignaturas vinculadas a la Didáctica, Organización Escolar,\nEvaluación Educativa, Inclusión, Innovación Docente y Formación del Profesorado. Esta docencia combina\ncontenidos teóricos, análisis de casos, prácticas de aula, diseño curricular y evaluación de competencias en\ndiferentes titulaciones universitarias.\nHe impartido docencia en grados y másteres universitarios con alumnado de perfiles diversos, integrando\nmetodologías activas, recursos digitales y sistemas de evaluación continua.\n7ac9f1d2b8456f0c9e8d23a41b7c6a90\n\nExperiencia científica y tecnológica\nGrupos\/equipos de investigación, desarrollo o innovación\n1 Nombre del grupo: Innovación Educativa, Evaluación y Desarrollo Profesional Docente\nEntidad de afiliación: Universidad de Sevilla\nFecha de inicio: 01\/01\/2014\n2 Nombre del grupo: Políticas Educativas, Inclusión y Calidad Universitaria\nEntidad de afiliación: Universidad Pablo de Olavide\nFecha de inicio: 01\/09\/2016\n\nProyectos de I+D+i financiados en convocatorias competitivas de Administraciones o\nentidades públicas y privadas\n1 Nombre del proyecto: Evaluación competencial y mejora de la calidad docente en titulaciones\nuniversitarias\nEntidad de realización: Universidad de Sevilla Tipo de entidad: Universidad\nNombres investigadores principales (IP, Co-IP,...): Laura Gómez Hernández\nEntidad\/es financiadora\/s: Ministerio de Ciencia e Innovación\nFecha de inicio-fin: 01\/01\/2018 - 31\/12\/2021\nCuantía total: 72.000 €\n2 Nombre del proyecto: Inclusión educativa y transición académica en contextos vulnerables\nEntidad de realización: Universidad Pablo de Olavide Tipo de entidad: Universidad\nNombres investigadores principales (IP, Co-IP,...): Antonio Pérez Morales\nEntidad\/es financiadora\/s: Junta de Andalucía\nFecha de inicio-fin: 01\/09\/2015 - 31\/08\/2018\nCuantía total: 36.000 €\n3 Nombre del proyecto: Analíticas de aprendizaje y personalización de la enseñanza en Educación Superior\nEntidad de realización: Universidad de Sevilla Tipo de entidad: Universidad\nNombres investigadores principales (IP, Co-IP,...): Laura Gómez Hernández\nEntidad\/es financiadora\/s: Universidad de Sevilla\nFecha de inicio-fin: 01\/10\/2022 - 30\/09\/2024\nCuantía total: 18.000 €\n7ac9f1d2b8456f0c9e8d23a41b7c6a90\n\n11\n\nExperiencia científica y tecnológica\nContratos, convenios o proyectos de I+D+i no competitivos con Administraciones o\nentidades públicas o privadas\n1 Nombre del proyecto: Diseño de materiales formativos para programas de innovación educativa\nNombres investigadores principales (IP, Co-IP,...): Laura Gómez Hernández\nEntidad\/es financiadora\/s: Consejería de Desarrollo Educativo y Formación Profesional\nFecha de inicio: 01\/02\/2023 Duración: 5 meses\nCuantía total: 8.500 €\n2 Nombre del proyecto: Asesoramiento para la evaluación de planes de atención a la diversidad\nNombres investigadores principales (IP, Co-IP,...): Laura Gómez Hernández\nEntidad\/es financiadora\/s: Diputación Provincial de Sevilla\nFecha de inicio: 01\/05\/2021 Duración: 6 meses\nCuantía total: 12.000 €\n3 Nombre del proyecto: Diagnóstico de necesidades formativas del profesorado en centros públicos\nNombres investigadores principales (IP, Co-IP,...): Laura Gómez Hernández\nEntidad\/es financiadora\/s: Ayuntamiento de Sevilla\nFecha de inicio: 01\/03\/2019 Duración: 8 meses\nCuantía total: 9.500 €\n\nTransferencia e intercambio de conocimiento\nMi actividad de transferencia se ha centrado en la colaboración con administraciones públicas, centros\neducativos y entidades sociales para mejorar los procesos de enseñanza-aprendizaje, la inclusión educativa\ny la evaluación de competencias. He participado en actividades de asesoramiento, elaboración de\nmateriales formativos, diseño de programas de innovación educativa y evaluación de planes institucionales.\n\nPropiedad industrial e intelectual\nTítulo propiedad industrial registrada: Banco de rúbricas y situaciones de aprendizaje para evaluación\ncompetencial\nFecha de registro: 20\/09\/2022\nFecha de concesión: 20\/09\/2022\n\n7ac9f1d2b8456f0c9e8d23a41b7c6a90\n\n12\n\nActividades científicas y tecnológicas\nProducción científica\nPublicaciones, documentos científicos y técnicos\n1 Laura Gómez Hernández. Evaluación formativa y desarrollo competencial en la formación inicial del\nprofesorado. Revista de Educación. 394 - 1, pp. 45 - 72. Ministerio de Educación y Formación Profesional,\n15\/03\/2022.\nTipo de producción: Artículo científico\nNº total de autores: 1\n2 Laura Gómez Hernández; Carmen Rodríguez López. Metodologías activas e inclusión en la educación\nsuperior. Bordón. Revista de Pedagogía. 73 - 2, pp. 123 - 148. Sociedad Española de Pedagogía, 10\/09\/2021.\nTipo de producción: Artículo científico\nNº total de autores: 2\n3 Laura Gómez Hernández. Analíticas de aprendizaje y evaluación continua en asignaturas universitarias.\nRELIEVE. Revista Electrónica de Investigación y Evaluación Educativa. 27 - 1, pp. 89 - 112. Universidad de\nValencia, 20\/05\/2020.\nTipo de producción: Artículo científico\nNº total de autores: 1\n4 Laura Gómez Hernández; Antonio Pérez Morales. Orientación académica y transición a la universidad en\nalumnado vulnerable. Revista Española de Orientación y Psicopedagogía. 30 - 2, pp. 201 - 226. UNED,\n12\/11\/2019.\nTipo de producción: Artículo científico\nNº total de autores: 2\n5 Laura Gómez Hernández. La evaluación por competencias como herramienta de mejora docente.\nEducación XX1. 22 - 1, pp. 77 - 101. UNED, 25\/04\/2018.\nTipo de producción: Artículo científico\nNº total de autores: 1\n6 Laura Gómez Hernández. Innovación educativa y desarrollo profesional docente. Profesorado. Revista de\nCurrículum y Formación del Profesorado. 21 - 3, pp. 115 - 138. Universidad de Granada, 08\/06\/2017.\nTipo de producción: Artículo científico\nNº total de autores: 1\n\n7ac9f1d2b8456f0c9e8d23a41b7c6a90\n\n13\n\nActividades científicas y tecnológicas\nPublicaciones, documentos científicos y técnicos\n7 Laura Gómez Hernández. Diseño de rúbricas para la evaluación de competencias docentes. Evaluación,\ninnovación y calidad en Educación Superior. pp. 67 - 94. Tirant Humanidades, 20\/03\/2023.\nTipo de producción: Capítulo de libro\nNº total de autores: 1\n8 Laura Gómez Hernández; Marta Jiménez Ortega. Atención a la diversidad y aprendizaje cooperativo en\ncontextos universitarios. Inclusión educativa y prácticas docentes transformadoras. pp. 115 - 138. Dykinson,\n25\/04\/2021.\nTipo de producción: Capítulo de libro\nNº total de autores: 2\n9 Laura Gómez Hernández. La formación inicial del profesorado ante los retos de la digitalización.\nEducación, tecnología y sociedad. pp. 141 - 166. Síntesis, 08\/06\/2020.\nTipo de producción: Capítulo de libro\nNº total de autores: 1\n10 Laura Gómez Hernández. Evaluación competencial e innovación docente en Educación Superior.\nEvaluación competencial e innovación docente en Educación Superior. pp. 1 - 236. Editorial Universidad de\nSevilla, 14\/02\/2024.\nTipo de producción: Libro o monografía científica\nNº total de autores: 1\n\n7ac9f1d2b8456f0c9e8d23a41b7c6a90\n\nActividades científicas y tecnológicas\nTrabajos presentados en congresos nacionales o internacionales\n1 Título del trabajo: Evaluación competencial y mejora de la calidad docente universitaria\nNombre del congreso: Congreso Internacional de Innovación Educativa en Educación Superior\nCiudad de celebración: Madrid, Comunidad de Madrid, España\nFecha de celebración: 21\/11\/2018\nFecha de finalización: 23\/11\/2018\nEntidad organizadora: Universidad Complutense de Madrid\nLaura Gómez Hernández. (España):\n2 Título del trabajo: Metodologías activas para la formación inicial del profesorado\nNombre del congreso: Congreso Internacional de Educación y Sociedad\nCiudad de celebración: Lisboa, Portugal\nFecha de celebración: 05\/05\/2021\nFecha de finalización: 07\/05\/2021\nEntidad organizadora: Universidade de Lisboa\nLaura Gómez Hernández. (España):\n3 Título del trabajo: Inclusión y orientación académica en la universidad\nNombre del congreso: Congreso Nacional de Pedagogía\nCiudad de celebración: Granada, Andalucía, España\nFecha de celebración: 18\/10\/2022\nFecha de finalización: 20\/10\/2022\nEntidad organizadora: Universidad de Granada\nLaura Gómez Hernández. (España):\n4 Título del trabajo: Analíticas de aprendizaje aplicadas a la evaluación continua\nNombre del congreso: Congreso Internacional sobre Tecnología Educativa\nCiudad de celebración: Barcelona, Cataluña, España\nFecha de celebración: 14\/06\/2023\nFecha de finalización: 16\/06\/2023\nEntidad organizadora: Universitat de Barcelona\nLaura Gómez Hernández. (España):\n5 Título del trabajo: La formación docente ante los retos de la digitalización\nNombre del congreso: Jornadas Nacionales de Investigación Educativa\nCiudad de celebración: Cádiz, Andalucía, España\nFecha de celebración: 12\/09\/2017\nFecha de finalización: 15\/09\/2017\nEntidad organizadora: Universidad de Cádiz\nLaura Gómez Hernández. (España):\n\nActividades de divulgación\n1 Título del trabajo: Educar para incluir: claves para una escuela diversa\nNombre del evento: Semana de la Ciencia y la Educación\nTipo de evento: Conferencia impartida\nFecha de celebración: 20\/05\/2019\n2 Título del trabajo: Evaluación competencial para familias y centros educativos\nNombre del evento: Jornadas de Innovación Educativa\nTipo de evento: Mesa redonda\nFecha de celebración: 18\/11\/2020\n3 Título del trabajo: La universidad como espacio de inclusión y orientación\nNombre del evento: Ciclo de conferencias sobre Educación y Sociedad\nTipo de evento: Conferencia impartida\nFecha de celebración: 12\/04\/2022\n7ac9f1d2b8456f0c9e8d23a41b7c6a90\n\n4 Título del trabajo: Aprendizaje cooperativo y mejora de la convivencia escolar\nNombre del evento: Jornadas Europeas de Educación\nTipo de evento: Actividad de divulgación científica\nFecha de celebración: 07\/06\/2024\n7ac9f1d2b8456f0c9e8d23a41b7c6a90\n\nOtros méritos\nComités científicos, técnicos y\/o asesores\n1 Título del comité: Comité científico del Congreso Internacional de Innovación Educativa\nEntidad de afiliación: Universidad de Sevilla\nFecha de inicio: 01\/02\/2021\nFecha de finalización: 30\/06\/2021\n2 Título del comité: Comité asesor para la mejora de programas de orientación educativa\nEntidad de afiliación: Consejería de Educación de la Junta de Andalucía\nFecha de inicio: 01\/03\/2023\nFecha de finalización: 31\/12\/2023\n\nEstancias en centros públicos o privados\n1 Entidad de realización: Università di Bologna\nCiudad entidad realización: Italia\nFecha de inicio-fin: 01\/04\/2017 - 30\/06\/2017\nTipo Estancia: Investigación\nObjetivos de la estancia: Consulta de fondos bibliográficos, participación en seminarios de investigación\neducativa y desarrollo de trabajo comparado sobre innovación docente en educación superior.\n2 Entidad de realización: Universidade de Lisboa\nCiudad entidad realización: Portugal\nFecha de inicio-fin: 01\/09\/2021 - 30\/11\/2021\nTipo Estancia: Investigación\nObjetivos de la estancia: Desarrollo de actividades de investigación sobre evaluación competencial,\norientación académica y políticas de inclusión educativa en contextos universitarios.\n\nPeríodos de actividad investigadora, docente y de transferencia del conocimiento\nNombre de la actuación: Sexenio CNEAI\nEntidad acreditante: Comisión Nacional Evaluadora de la Actividad Investigadora\nFecha de obtención: 15\/12\/2022\nTipo de actividad: Investigación\nAño de inicio: 2016\nAño de finalización: 2021\nPeriodo cubierto: 2016, 2017, 2018, 2019, 2020, 2021\nAño de Convocatoria: 2022\n\nOtros méritos de la actividad investigadora\nParticipación en actividades de evaluación científica, revisión de artículos para revistas especializadas en\neducación, pertenencia a comités editoriales y colaboración en la organización de congresos y jornadas\nacadémicas. Asimismo, he participado en acciones de transferencia del conocimiento educativo,\nasesoramiento a centros e instituciones públicas y elaboración de materiales de divulgación científica.\n\n16",
+                "confianza_extraccion": 0.92,
+                "requiere_revision": true
+            }
+        ],
+        "experiencia_profesional": []
+    },
+    "bloque_4": [],
+    "metadatos_extraccion": {
+        "comite": "CSYJ",
+        "subcomite": null,
+        "archivo_pdf": null,
+        "fecha_extraccion": "2026-04-28T10:49:32+02:00",
+        "version_esquema": "2.1-cvn-proyectos-duros",
+        "requiere_revision_manual": true
+    },
+    "archivo_pdf": "3111-1111-1111-1113_CSYJ_2026-04-28_104932.pdf",
+    "json_generado": "3111-1111-1111-1113_CSYJ_2026-04-28_104932.json",
+    "texto_extraido_preview": "c\n\nv\n\nn\n\nCURRÍCULUM VÍTAE NORMALIZADO\n\nCVN\n\nLaura Gómez Hernández\nGenerado desde: Editor CVN de FECYT\nFecha del documento: 27\/04\/2026\nv 1.4.3\n7ac9f1d2b8456f0c9e8d23a41b7c6a90\n\nEste fichero electrónico (PDF) contiene incrustada la tecnología CVN (CVN-XML). La tecnología CVN de este fichero permite exportar e importar los datos\ncurriculares desde y hacia cualquier base de datos compatible. Listado de Bases de Datos adaptadas disponible en http:\/\/cvn.fecyt.es\/\nGOBIERNO DE ESPAÑA\n\nMINISTERIO DE CIENCIA\n\nFECYT\n\nINNOVACIÓN\n\n7ac9f1d2b8456f0c9e8d23a41b7c6a90\n\nResumen libre del currículum\nDescripción breve de la trayectoria científica, los principales logros científico-técnicos obtenidos, los\nintereses y objetivos científico-técnicos a medio\/largo plazo de la línea de investigación. Incluye también\notros aspectos o peculiaridades importantes.\nDoctora en Ciencias de la Educación por la Universidad de Sevilla, con una trayectoria académica,\ninvestigadora y docente centrada en la innovación educativa, la formación del profesorado, la inclusión\nescolar y la evaluación de competencias en contextos universitarios y no universitarios.\nMi actividad investigadora se ha orientado al análisis de metodologías activas, evaluación formativa,\norientación académica y mejora de la calidad docente. Esta línea de trabajo se ha desarrollado mediante\npublicaciones científicas, capítulos de libro, participación en proyectos competitivos de investigación,\ntransferencia educativa y colaboración con administraciones públicas y centros educativos.\nEn el ámbito docente, he impartido asignaturas universitarias relacionadas con Didáctica General,\nOrganización Escolar, Evaluación Educativa, Innovación Docente y Atención a la Diversidad. También he\ndirigido trabajos académicos, coordinado prácticas externas, participado en proyectos de innovación\ndocente y elaborado materiales didácticos para la formación inicial del profesorado.\nMi trayectoria combina la docencia universitaria, la investigación aplicada, la transferencia del conocimiento\neducativo y la colaboración con instituciones públicas y entidades del tercer sector para la mejora de los\nprocesos de enseñanza-aprendizaje.\n7ac9f1d2b8456f0c9e8d23a41b7c6a90\n\nMéritos de Liderazgo\nBreve exposición de los méritos relativos a actividades de liderazgo de especial relevancia.\nHe desarrollado tareas de coordinación académica, dirección de equipos de innovación docente y\norganización de actividades científicas vinculadas a la formación del profesorado, la inclusión educativa y la\nmejora de la calidad universitaria.\nEntre estas actividades destacan la coordinación de seminarios, jornadas de innovación educativa, comités\ncientíficos de congresos, dirección de trabajos académicos y participación como investigadora principal en\nproyectos de innovación docente y transferencia educativa.\nAsimismo, he impulsado acciones de colaboración entre universidad, centros educativos y administraciones\npúblicas orientadas a transferir resultados de investigación a la práctica profesional docente.\n7ac9f1d2b8456f0c9e8d23a41b7c6a90\n\nLaura Gómez Hernández\nApellidos: Gómez Hernández\nNombre: Laura\nDNI: 28456781L\nFecha de nacimiento: 14\/05\/1980\nSexo: Mujer\nNacionalidad: España\nPaís de nacimiento: España\nC. Autón.\/Reg. de nacimiento: Andalucía\nCiudad de nacimiento: Sevilla\nCorreo electrónico: laura.gomez.hernandez@example.es\nTeléfono móvil: 600123456\n\nSituación profesional actual\nEntidad empleadora: Universidad de Sevilla Tipo de entidad: Universidad\nDepartamento: Departamento de Didáctica y Organización Educativa, Facultad de Ciencias de la Educación\nCategoría profesional: Profesora Contratada Doctora\nFecha de inicio: 01\/09\/2021\nRégimen de dedicación: Tiempo completo\nFunciones desempeñadas: Docencia universitaria en asignaturas del área de Didáctica y Organización\nEscolar. Coordinación de prácticas externas, dirección de trabajos académicos, participación en proyectos\nde investigación educativa y elaboración de materiales docentes. Desarrollo de actividades de transferencia\nvinculadas a la formación del profesorado, innovación educativa e inclusión escolar.\n\nCargos y actividades desempeñados con anterioridad\nEntidad empleadora Categoría profesional Fecha de inicio\nUniversidad Pablo de Olavide Profesora Asociada 01\/10\/2016\nEntidad empleadora: Universidad Pablo de Olavide Tipo de entidad: Universidad\nCategoría profesional: Profesora Asociada\nFecha de inicio: 01\/10\/2016 Duración: 4 años - 11 meses\nEntidad empleadora: Consejería de Educación de la Junta de Andalucía Tipo de entidad: Administración\nPública\nCategoría profesional: Técnica en programas de innovación educativa\nFecha de inicio: 01\/09\/2011 Duración: 4 años - 10 meses\nEntidad empleadora: Universidad de Sevilla Tipo de entidad: Universidad\nCategoría profesional: Personal investigador predoctoral\nFecha de inicio: 01\/10\/2006 Duración: 4 años\n7ac9f1d2b8456f0c9e8d23a41b7c6a90\n\nFormación académica recibida\nTitulación universitaria\nTitulación universitaria: Licenciada\nNombre de",
+    "longitud_texto_extraido": 25506,
+    "metodo_extraccion": "pdftotext"
+}

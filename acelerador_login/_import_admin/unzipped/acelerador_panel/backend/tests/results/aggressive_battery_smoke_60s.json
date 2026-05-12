@@ -1,0 +1,65 @@
+{
+    "startedAt": "2026-03-25T12:20:32+01:00",
+    "targetDurationSeconds": 60,
+    "seed": 2465578902151006545,
+    "totalOperations": 1433250,
+    "assertions": 18786781,
+    "invariantChecks": 5733,
+    "operationStats": {
+        "create_tutoria": {
+            "ok": 20000,
+            "expected_error": 0,
+            "unexpected_error": 0
+        },
+        "add_profesores": {
+            "ok": 333627,
+            "expected_error": 219316,
+            "unexpected_error": 0
+        },
+        "sync_profesores": {
+            "ok": 232171,
+            "expected_error": 25755,
+            "unexpected_error": 0
+        },
+        "remove_profesor": {
+            "ok": 98634,
+            "expected_error": 102158,
+            "unexpected_error": 0
+        },
+        "get_tutoria": {
+            "ok": 57325,
+            "expected_error": 14210,
+            "unexpected_error": 0
+        },
+        "validators_negative": {
+            "ok": 42969,
+            "expected_error": 0,
+            "unexpected_error": 0
+        },
+        "list_profesores": {
+            "ok": 171908,
+            "expected_error": 0,
+            "unexpected_error": 0
+        },
+        "get_profesor_detail": {
+            "ok": 56512,
+            "expected_error": 58665,
+            "unexpected_error": 0
+        }
+    },
+    "expectedErrors": {
+        "PROFESOR_NOT_FOUND": 125718,
+        "ASSIGNMENT_NOT_FOUND": 116465,
+        "TUTORIA_NOT_FOUND": 14210,
+        "ASSIGNMENT_DUPLICATE": 163711
+    },
+    "unexpectedErrorCount": 0,
+    "unexpectedErrors": [],
+    "failedAssertions": [],
+    "endedAt": "2026-03-25T12:21:32+01:00",
+    "actualDurationSeconds": 60.003,
+    "opsPerSecond": 23886.4,
+    "peakMemoryMB": 90,
+    "totalTutorias": 20000,
+    "finalStatus": "PASS"
+}

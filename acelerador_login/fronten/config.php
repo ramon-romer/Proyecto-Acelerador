@@ -2,10 +2,10 @@
 // Configuración del sistema de méritos
 
 // Parámetros de conexión a la base de datos
-define('DB_HOST', 'localhost');      // Host del servidor
-define('DB_USER', 'root');           // Usuario de base de datos
-define('DB_PASS', '');               // Contraseña
-define('DB_NAME', 'Acelerador');     // Nombre de la base de datos
+define('DB_HOST', 'base-de-datos');      // Host del servidor
+define('DB_USER', 'usuario_web');           // Usuario de base de datos
+define('DB_PASS', 'password_segura');               // Contraseña
+define('DB_NAME', 'acelerador');     // Nombre de la base de datos
 define('DB_PORT', 3306);             // Puerto (por defecto 3306 para MySQL)
 
 // Crear conexión

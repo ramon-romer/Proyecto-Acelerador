@@ -1,0 +1,191 @@
+/* 
+   ACELERADOR - SUPERADMIN ELITE STYLES 
+   Glassmorphism & Premium Design System
+*/
+
+:root {
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --accent-blue: #1458cc;
+    --accent-gold: #fbbf24;
+    --accent-red: #f87171;
+    --accent-green: #4ade80;
+}
+
+body.superadmin-body {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    background-attachment: fixed;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    color: #f8fafc;
+    min-height: 100vh;
+}
+
+/* Header Refinement */
+header {
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--glass-border);
+    padding: 1rem 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.contenedorimg {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Admin Card (Glassmorphism) */
+.admin-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(15px);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    padding: 2rem;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.admin-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 25px 60px rgba(0,0,0,0.4);
+}
+
+.admin-card h3 {
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
+    color: #fff;
+    display: flex;
+    align-items: center;
+}
+
+/* Table Customization */
+.table {
+    --bs-table-bg: transparent;
+    --bs-table-hover-bg: rgba(255, 255, 255, 0.03);
+    color: #cbd5e1;
+    border-collapse: separate;
+    border-spacing: 0 8px;
+}
+
+.table thead th {
+    border: none;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #94a3b8;
+    padding: 1rem;
+}
+
+.table tbody tr {
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+
+.table tbody tr td {
+    border: none;
+    padding: 1.2rem 1rem;
+}
+
+.table tbody tr td:first-child { border-radius: 12px 0 0 12px; }
+.table tbody tr td:last-child { border-radius: 0 12px 12px 0; }
+
+.table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Badges */
+.badge {
+    padding: 0.5em 1em;
+    font-weight: 600;
+    border-radius: 8px;
+}
+
+/* Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Modals */
+.modal-content {
+    background: #1e293b;
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    box-shadow: 0 25px 70px rgba(0,0,0,0.5);
+}
+
+.modal-header {
+    border-bottom: 1px solid var(--glass-border);
+    padding: 1.5rem 2rem;
+}
+
+.modal-footer {
+    border-top: 1px solid var(--glass-border);
+    padding: 1.5rem 2rem;
+}
+
+.form-control {
+    background: rgba(15, 23, 42, 0.5);
+    border: 1px solid var(--glass-border);
+    color: #fff;
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+}
+
+.form-control:focus {
+    background: rgba(15, 23, 42, 0.7);
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 0 4px rgba(20, 88, 204, 0.2);
+    color: #fff;
+}
+
+/* Footer */
+footer {
+    margin-top: 5rem;
+    padding: 2rem;
+    background: rgba(15, 23, 42, 0.5);
+    border-top: 1px solid var(--glass-border);
+}
+
+.piepag {
+    text-align: center;
+    color: #64748b;
+    font-size: 0.9rem;
+}
+
+/* Action Buttons */
+.btn-action {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.btn-edit { background: rgba(20, 88, 204, 0.1); color: var(--accent-blue); }
+.btn-edit:hover { background: var(--accent-blue); color: #fff; }
+
+.btn-delete { background: rgba(248, 113, 113, 0.1); color: var(--accent-red); }
+.btn-delete:hover { background: var(--accent-red); color: #fff; }
+
+.btn-reset { background: rgba(251, 191, 36, 0.1); color: var(--accent-gold); }
+.btn-reset:hover { background: var(--accent-gold); color: #000; }
