@@ -340,19 +340,23 @@ $users = mysqli_query($conn, "SELECT id_profesor AS id, nombre, apellidos, corre
 
     <div id="toast-container"></div>
 
-    <header>
-        <div class="contenedorimg">
-            <div class="imagen">
-                <img src="https://uf3ceu.es/wp-content/uploads/logo-uf3-2k25.svg" alt="CEU Universidad Fernando III"
-                    style="height:50px; width:auto;" id="#acele" />
-            </div>
-            <div class="imagen">
-                <img src="img/AcademyAccelerator_def.png" id="academy" alt="academy" />
-            </div>
+    <header class="main-header">
+        <div class="d-flex align-items-center gap-4">
+            <img src="https://uf3ceu.es/wp-content/uploads/logo-uf3-2k25.svg" alt="UF3 Logo" class="header-logo">
+            <div class="header-divider"></div>
+            <img src="img/AcademyAccelerator_def.png" alt="Academy Accelerator" class="header-logo-secondary">
+        </div>
+        <div class="d-flex align-items-center gap-3">
+            <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 rounded-pill px-3 py-2 fw-bold d-none d-md-inline-block">
+                <i class="bi bi-cpu-fill me-2"></i>SISTEMA DE GESTIÓN ELITE
+            </span>
+            <a href="logout.php" class="btn btn-sm btn-danger rounded-pill px-4 fw-bold shadow-sm">
+                <i class="bi bi-power me-1"></i>DESCONECTAR
+            </a>
         </div>
     </header>
 
-    <main class="container p-4 mt-2">
+    <main class="container">
         <div class="row">
             <div class="col-12">
                 <div class="admin-card">
@@ -439,12 +443,6 @@ $users = mysqli_query($conn, "SELECT id_profesor AS id, nombre, apellidos, corre
                     </div>
                 </div>
             </div>
-        </div>
-
-        <div class="d-flex justify-content-center mt-5 mb-4">
-            <a href="logout.php" class="btn btn-outline-danger px-5 py-3 rounded-pill fw-bold shadow-lg border-2" style="background: rgba(248, 113, 113, 0.05);">
-                <i class="bi bi-box-arrow-right me-2"></i>SALIR DEL ADMINISTRATOR MODE
-            </a>
         </div>
     </main>
 
@@ -588,49 +586,6 @@ $users = mysqli_query($conn, "SELECT id_profesor AS id, nombre, apellidos, corre
             </div>
         </div>
     </div>
-
-  <footer>
-    <div class="mipie" id="mipie">
-      <div class="direccion">
-        <img src="https://uf3ceu.es/wp-content/uploads/logo-uf3-2k25.svg" alt="CEU Universidad Fernando III"
-          style="height:50px; width:auto;" id="#acele" />
-        <p>
-          Glorieta Ángel Herrera Oria, s/n,<br />
-          41930 Bormujos,<br />
-          Sevilla
-        </p>
-      </div>
-      <div class="requerimientolegal">
-        <div class="columna">
-          <h4>La Empresa</h4>
-          <ul>
-            <li>Contacto</li>
-            <li>Preguntas Frecuentes (FAQ)</li>
-            <li>Centro de Ayuda</li>
-            <li>Soporte</li>
-          </ul>
-        </div>
-        <div class="columna">
-          <h4>Ayuda</h4>
-          <ul>
-            <li>Términos y Condiciones</li>
-            <li>Política de Cookies</li>
-          </ul>
-        </div>
-        <div class="columna">
-          <h4>Legal</h4>
-          <ul>
-            <li>Sobre nosotros</li>
-            <li>Política de Cookies</li>
-            <li>Blog</li>
-          </ul>
-        </div>
-      </div>
-      <div class="piepag">
-        <p>&copy; UF3. Todos los derechos reservados.</p>
-      </div>
-    </div>
-  </footer>
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
