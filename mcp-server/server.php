@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/extract_pdf.php';
 
-$host = '127.0.0.1';
+$host = '0.0.0.0';
 $port = 5000;
 $maxRequestBytes = leerMaxRequestBytes();
 $jobsDir = leerJobsDir();

@@ -69,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             $updateProf .= ", password='$hashed' ";
         }
         $updateProf .= " WHERE id_profesor = $id";
-        
+
         if(mysqli_query($conn, $updateProf)) {
             if ($oldMail) {
                 $updateUser = "UPDATE tbl_usuario SET correo='$correo' ";
@@ -105,7 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             $info_json = [];
             $q_prof = mysqli_query($conn, "SELECT * FROM tbl_profesor WHERE id_profesor = $id");
             if($q_prof) $info_json['tbl_profesor'] = mysqli_fetch_assoc($q_prof);
-            
+
             $q_usu = mysqli_query($conn, "SELECT * FROM tbl_usuario WHERE correo = '$email'");
             if($q_usu) $info_json['tbl_usuario'] = mysqli_fetch_assoc($q_usu);
 
@@ -136,7 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             // Borrado del perfil y la cuenta de acceso
             mysqli_query($conn, "DELETE FROM tbl_profesor WHERE id_profesor = $id");
             mysqli_query($conn, "DELETE FROM tbl_usuario WHERE correo = '$email'");
-            
+
             $response = ['status' => 'ok', 'message' => 'Usuario archivado y eliminado permanentemente del sistema.'];
         }
     }
@@ -245,7 +245,57 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                     if (isset($json_data['tbl_grupo_profesor'])) {
                         foreach ($json_data['tbl_grupo_profesor'] as $gp) {
                             $id_gp = (int)$gp['id']; $id_grupo = (int)$gp['id_grupo']; $id_prof = (int)$gp['id_profesor'];
-                            mysqli_query($conn, "INSERT IGNORE INTO tbl_grupo_profesor (id, id_grupo, id_profesor) VALUES ($id_gp, $id_grupo, $id_prof)");
+
+                            // Validar capacidad del grupo antes de restaurar (Límite: 3)
+                            $res_cap = mysqli_query($conn, "SELECT COUNT(*) as total FROM tbl_grupo_profesor WHERE id_grupo = $id_grupo");
+                            $total_actual = ($res_cap) ? (int)mysqli_fetch_assoc($res_cap)['total'] : 0;
+
+                            if ($total_actual < 3) {
+                                // TIENE ESPACIO: Se notifica al tutor para que tome la decisión
+                                // Primero obtenemos el ID del tutor del grupo
+                                $q_tutor_grp = mysqli_query($conn, "SELECT id_tutor FROM tbl_grupo WHERE id_grupo = $id_grupo");
+                                $tutor_data = mysqli_fetch_assoc($q_tutor_grp);
+                                $id_tutor_grp = $tutor_data ? (int)$tutor_data['id_tutor'] : 0;
+
+                                if ($id_tutor_grp > 0) {
+                                    // Crear tabla de solicitudes si no existe
+                                    mysqli_query($conn, "CREATE TABLE IF NOT EXISTS tbl_solicitud_readmision (
+                                        id INT AUTO_INCREMENT PRIMARY KEY,
+                                        id_grupo INT NOT NULL,
+                                        id_profesor INT NOT NULL,
+                                        id_tutor INT NOT NULL,
+                                        estado ENUM('PENDIENTE', 'ACEPTADA', 'RECHAZADA') DEFAULT 'PENDIENTE',
+                                        fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                                    )");
+
+                                    // Insertar solicitud pendiente
+                                    mysqli_query($conn, "INSERT INTO tbl_solicitud_readmision (id_grupo, id_profesor, id_tutor) VALUES ($id_grupo, $id_prof, $id_tutor_grp)");
+
+                                    // Notificar al tutor (puedes usar un sistema de notificaciones similar al del profesor)
+                                    mysqli_query($conn, "CREATE TABLE IF NOT EXISTS tbl_notificacion_tutor (
+                                        id INT AUTO_INCREMENT PRIMARY KEY,
+                                        id_tutor INT NOT NULL,
+                                        mensaje TEXT NOT NULL,
+                                        tipo VARCHAR(50) DEFAULT 'readmision',
+                                        id_referencia INT,
+                                        fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                                    )");
+
+                                    $nombre_prof = mysqli_real_escape_string($conn, ($json_data['tbl_profesor']['nombre'] ?? '') . ' ' . ($json_data['tbl_profesor']['apellidos'] ?? ''));
+                                    $msg_tutor = "El profesor $nombre_prof ha sido restaurado y solicita volver a su antiguo grupo. ¿Desea readmitirlo?";
+                                    mysqli_query($conn, "INSERT INTO tbl_notificacion_tutor (id_tutor, mensaje, id_referencia) VALUES ($id_tutor_grp, '$msg_tutor', $id_prof)");
+                                }
+                            } else {
+                                // Grupo lleno: Notificar al profesor
+                                mysqli_query($conn, "CREATE TABLE IF NOT EXISTS tbl_notificacion_pendiente (
+                                  id INT AUTO_INCREMENT PRIMARY KEY,
+                                  id_profesor INT NOT NULL,
+                                  mensaje TEXT NOT NULL,
+                                  fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                                )");
+                                $msg_notif = mysqli_real_escape_string($conn, "Se le asignara un grupo a la mayor brevedad posible");
+                                mysqli_query($conn, "INSERT INTO tbl_notificacion_pendiente (id_profesor, mensaje) VALUES ($id_prof, '$msg_notif')");
+                            }
                         }
                     }
                     mysqli_query($conn, "DELETE FROM tbl_info_usuario_eliminado WHERE id = $id_archivo");
@@ -279,7 +329,7 @@ $users = mysqli_query($conn, "SELECT id_profesor AS id, nombre, apellidos, corre
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SISTEMA ADMINISTRATOR MODE - Acelerador</title>
-    
+
     <link rel="icon" type="image/x-icon" href="https://uf3ceu.es/wp-content/uploads/logo-uf3-2k25.svg">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
@@ -290,22 +340,23 @@ $users = mysqli_query($conn, "SELECT id_profesor AS id, nombre, apellidos, corre
 
     <div id="toast-container"></div>
 
-    <header>
-        <div class="contenedorimg">
-            <div class="d-flex align-items-center">
-                <img src="https://uf3ceu.es/wp-content/uploads/logo-uf3-2k25.svg" style="height:45px;"/>
-                <div class="ms-3 border-start ps-3 border-opacity-25 border-light">
-                    <h4 class="text-white fw-800 mb-0">ADMINISTRATOR MODE</h4>
-                    <small class="text-white-50 text-uppercase fw-bold" style="font-size: 0.65rem; letter-spacing: 2px;">Gestión Dinámica de Usuarios</small>
-                </div>
-            </div>
-            <div class="d-none d-md-block">
-                <span class="badge bg-danger rounded-pill px-3 py-2">ACCESO TOTAL ACTIVADO</span>
-            </div>
+    <header class="main-header">
+        <div class="d-flex align-items-center gap-4">
+            <img src="https://uf3ceu.es/wp-content/uploads/logo-uf3-2k25.svg" alt="UF3 Logo" class="header-logo">
+            <div class="header-divider"></div>
+            <img src="img/AcademyAccelerator_def.png" alt="Academy Accelerator" class="header-logo-secondary">
+        </div>
+        <div class="d-flex align-items-center gap-3">
+            <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 rounded-pill px-3 py-2 fw-bold d-none d-md-inline-block">
+                <i class="bi bi-cpu-fill me-2"></i>SISTEMA DE GESTIÓN ELITE
+            </span>
+            <a href="logout.php" class="btn btn-sm btn-danger rounded-pill px-4 fw-bold shadow-sm">
+                <i class="bi bi-power me-1"></i>DESCONECTAR
+            </a>
         </div>
     </header>
 
-    <main class="container p-4 mt-2">
+    <main class="container">
         <div class="row">
             <div class="col-12">
                 <div class="admin-card">
@@ -313,7 +364,7 @@ $users = mysqli_query($conn, "SELECT id_profesor AS id, nombre, apellidos, corre
                         <h3 class="mb-0"><i class="bi bi-people-fill me-3 text-primary"></i>Panel de Control</h3>
                         <span class="badge bg-white bg-opacity-10 text-white-50"><?= mysqli_num_rows($users) ?> Registros</span>
                     </div>
-                    
+
                     <div class="table-responsive custom-scrollbar" style="max-height: 700px;">
                         <table class="table align-middle">
                             <thead>
@@ -326,7 +377,7 @@ $users = mysqli_query($conn, "SELECT id_profesor AS id, nombre, apellidos, corre
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php while($u = mysqli_fetch_assoc($users)): 
+                                <?php while($u = mysqli_fetch_assoc($users)):
                                     $jsData = htmlspecialchars(json_encode($u), ENT_QUOTES, 'UTF-8');
                                 ?>
                                 <tr id="u-<?= $u['id'] ?>">
@@ -345,7 +396,7 @@ $users = mysqli_query($conn, "SELECT id_profesor AS id, nombre, apellidos, corre
                                                 <i class="bi bi-list-task"></i> Tareas
                                             </button>
                                             <?php endif; ?>
-                                            
+
                                             <button class="btn-action btn-edit" onclick="openEditUser(<?= $jsData ?>)" title="Editar perfil">
                                                 <i class="bi bi-pencil-square"></i>
                                             </button>
@@ -392,12 +443,6 @@ $users = mysqli_query($conn, "SELECT id_profesor AS id, nombre, apellidos, corre
                     </div>
                 </div>
             </div>
-        </div>
-
-        <div class="d-flex justify-content-center mt-5 mb-4">
-            <a href="logout.php" class="btn btn-outline-danger px-5 py-3 rounded-pill fw-bold shadow-lg border-2" style="background: rgba(248, 113, 113, 0.05);">
-                <i class="bi bi-box-arrow-right me-2"></i>SALIR DEL ADMINISTRATOR MODE
-            </a>
         </div>
     </main>
 
@@ -541,13 +586,6 @@ $users = mysqli_query($conn, "SELECT id_profesor AS id, nombre, apellidos, corre
             </div>
         </div>
     </div>
-
-    <footer>
-        <div class="piepag">
-            <p>Nivel de Acceso: <strong>PROPIETARIO (ADMINISTRATOR MODE)</strong> | CEU Universidad Fernando III &copy; <?= date('Y') ?></p>
-            <p class="small text-white-25 mt-1">Refinado con Estándares de Ingeniería de Software de Élite</p>
-        </div>
-    </footer>
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>

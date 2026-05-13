@@ -526,3 +526,13 @@ header {
     flex-grow: 0 !important;
     object-fit: contain !important;
 }
+
+#academy {
+    height: 140px !important;
+    min-height: 140px !important;
+    max-height: 140px !important;
+    width: auto !important;
+    flex-shrink: 0 !important;
+    flex-grow: 0 !important;
+    object-fit: contain !important;
+}

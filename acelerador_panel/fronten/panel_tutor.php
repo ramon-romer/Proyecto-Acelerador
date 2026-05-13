@@ -15,17 +15,17 @@ $correo = $_SESSION['nombredelusuario'];
 
 $query_perfil = mysqli_query(
   $conn,
-  "SELECT 
-        nombre, 
-        apellidos, 
-        DNI AS dni, 
+  "SELECT
+        nombre,
+        apellidos,
+        DNI AS dni,
         ORCID AS orcid,
         correo,
         departamento,
         telefono,
         facultad,
         rama
-    FROM tbl_profesor 
+    FROM tbl_profesor
     WHERE correo = '$correo'"
 );
 
@@ -78,11 +78,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['
       datos_completos LONGTEXT NOT NULL,
       fecha_eliminacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )");
-    
+
     $info_json = [];
     $q_prof = mysqli_query($conn, "SELECT * FROM tbl_profesor WHERE id_profesor = $idTutor");
     if($q_prof) $info_json['tbl_profesor'] = mysqli_fetch_assoc($q_prof);
-    
+
     $q_usu = mysqli_query($conn, "SELECT * FROM tbl_usuario WHERE correo = '$correoRaw'");
     if($q_usu) $info_json['tbl_usuario'] = mysqli_fetch_assoc($q_usu);
 
@@ -111,7 +111,57 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['
     exit();
 }
 
-// ── Mapa rama → BD evaluadora (Global para acciones AJAX) ─────────────
+// ── ACCIÓN: decision_readmision (TUTOR) ──────────────────────────────
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['accion'] === 'decision_readmision') {
+    $id_solicitud = (int)($_POST['id_solicitud'] ?? 0);
+    $decision = $_POST['decision'] ?? ''; // 'ACEPTAR' o 'RECHAZAR'
+
+    if ($id_solicitud > 0) {
+        $q_sol = mysqli_query($conn, "SELECT * FROM tbl_solicitud_readmision WHERE id = $id_solicitud AND id_tutor = $idTutor");
+        if ($q_sol && $sol = mysqli_fetch_assoc($q_sol)) {
+            $id_prof_r = $sol['id_profesor'];
+            $id_grupo_r = $sol['id_grupo'];
+
+            if ($decision === 'ACEPTAR') {
+                mysqli_query($conn, "INSERT IGNORE INTO tbl_grupo_profesor (id_grupo, id_profesor) VALUES ($id_grupo_r, $id_prof_r)");
+                mysqli_query($conn, "UPDATE tbl_solicitud_readmision SET estado = 'ACEPTADA' WHERE id = $id_solicitud");
+                $mensaje = "Profesor readmitido con éxito.";
+                $tipo_mensaje = "success";
+            } else {
+                mysqli_query($conn, "UPDATE tbl_solicitud_readmision SET estado = 'RECHAZADA' WHERE id = $id_solicitud");
+                // Notificar al profesor el rechazo
+                mysqli_query($conn, "CREATE TABLE IF NOT EXISTS tbl_notificacion_pendiente (
+                  id INT AUTO_INCREMENT PRIMARY KEY,
+                  id_profesor INT NOT NULL,
+                  mensaje TEXT NOT NULL,
+                  fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )");
+                $msg_notif = mysqli_real_escape_string($conn, "Se le asignara un grupo a la mayor brevedad posible");
+                mysqli_query($conn, "INSERT INTO tbl_notificacion_pendiente (id_profesor, mensaje) VALUES ($id_prof_r, '$msg_notif')");
+                $mensaje = "Petición de readmisión rechazada.";
+                $tipo_mensaje = "info";
+            }
+            // Eliminar la notificación del tutor una vez tomada la decisión
+            mysqli_query($conn, "DELETE FROM tbl_notificacion_tutor WHERE id_tutor = $idTutor AND tipo = 'readmision' AND id_referencia = $id_prof_r");
+        }
+    }
+}
+
+// ── Notificaciones del tutor (incluyendo readmisiones) ────────────────
+$notifsTutor = [];
+if ($idTutor > 0) {
+    $tablaExistsT = mysqli_query($conn, "SHOW TABLES LIKE 'tbl_notificacion_tutor'");
+    if ($tablaExistsT && mysqli_num_rows($tablaExistsT) > 0) {
+        $qNotT = mysqli_query($conn, "SELECT n.*, s.id as id_solicitud FROM tbl_notificacion_tutor n
+                                     LEFT JOIN tbl_solicitud_readmision s ON n.id_referencia = s.id_profesor AND s.estado = 'PENDIENTE'
+                                     WHERE n.id_tutor = $idTutor ORDER BY n.fecha_creacion ASC");
+        if ($qNotT) {
+            while ($rt = mysqli_fetch_assoc($qNotT)) {
+                $notifsTutor[] = $rt;
+            }
+        }
+    }
+}
 $mapaDB = [
     'CSYJ' => 'evaluador_aneca_csyj', 'EXPERIMENTALES' => 'evaluador_aneca_experimentales',
     'HUMANIDADES' => 'evaluador_aneca_humanidades', 'SALUD' => 'evaluador_aneca_salud',
@@ -125,18 +175,18 @@ $dbPort = (int)(getenv('ACELERADOR_DB_PORT') ?: getenv('DB_PORT') ?: 3306);
 // ── ACCIÓN: get_estado_candidato (ADITIVO - DISEÑADOR SENIOR / TARJETAS) ─
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['accion'] === 'get_estado_candidato') {
     $orcid_req = mysqli_real_escape_string($conn, $_POST['orcid'] ?? '');
-    
+
     // Obtenemos datos del profesor para rama
     $res_p = mysqli_query($conn, "SELECT rama FROM `tbl_profesor` WHERE `ORCID` = '$orcid_req' LIMIT 1");
     $p_info = mysqli_fetch_assoc($res_p);
-    
+
     if ($p_info) {
         $r_norm = strtoupper(trim($p_info['rama'] ?? ''));
         $db_n = $mapaDB[$r_norm] ?? null;
         if ($db_n) {
             try {
                 $pdo_e = new PDO("mysql:host={$dbHost};port={$dbPort};dbname={$db_n};charset=utf8mb4", $dbUser, $dbPass, [
-                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, 
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                 ]);
 
@@ -155,7 +205,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['
                 $meritData = [
                     'meta' => ['total_evals' => $totalEvals],
                     'bloque1' => [
-                        'publicaciones' => 0, 'libros' => 0, 'proyectos' => 0, 'transferencia' => 0, 
+                        'publicaciones' => 0, 'libros' => 0, 'proyectos' => 0, 'transferencia' => 0,
                         'tesis' => 0, 'congresos' => 0, 'otros' => 0
                     ],
                     'bloque2' => [
@@ -181,13 +231,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['
                         $meritData['bloque1']['tesis']         = count($b1['tesis_dirigidas'] ?? []);
                         $meritData['bloque1']['congresos']     = count($b1['congresos'] ?? []);
                         $meritData['bloque1']['otros']         = count($b1['otros_meritos_investigacion'] ?? []);
-                        
+
                         // Bloque 2: Docencia
                         $meritData['bloque2']['docencia']   = count($b2['docencia_universitaria'] ?? []);
                         $meritData['bloque2']['evaluacion'] = count($b2['evaluacion_docente'] ?? []);
                         $meritData['bloque2']['formacion']  = count($b2['formacion_docente'] ?? []);
                         $meritData['bloque2']['material']   = count($b2['material_docente'] ?? []);
-                        
+
                         $sumH = 0;
                         foreach (($b2['docencia_universitaria'] ?? []) as $item) {
                             if (isset($item['horas'])) $sumH += (float)$item['horas'];
@@ -228,7 +278,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && ($_POST[
             $pdo = new PDO("mysql:host={$dbHost};port={$dbPort};dbname=acelerador;charset=utf8mb4", $dbUser, $dbPass, [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
             ]);
-            
+
             // Asegurar existencia de columna
             $pdo->exec("ALTER TABLE tbl_tarea_entrega ADD COLUMN IF NOT EXISTS fechas_reales_entregas JSON DEFAULT NULL");
 
@@ -236,12 +286,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && ($_POST[
             $stmt = $pdo->prepare("SELECT fechas_reales_entregas FROM tbl_tarea_entrega WHERE id = ?");
             $stmt->execute([$id_tarea]);
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            
+
             $reales = json_decode($row['fechas_reales_entregas'] ?? '[]', true) ?: [];
-            
+
             // 2. Registrar fecha real de finalización para el índice actual
-            $reales[$indice] = $ahora; 
-            
+            $reales[$indice] = $ahora;
+
             // 3. Persistencia (La entrega N+1 se activará visualmente al usar esta fecha como inicio)
             $stmtUpdate = $pdo->prepare("UPDATE tbl_tarea_entrega SET fechas_reales_entregas = ? WHERE id = ?");
             $stmtUpdate->execute([json_encode($reales), $id_tarea]);
@@ -263,28 +313,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['
     if ($pid_req > 0) {
         try {
             // SELECT quirúrgico: capturamos solo lo indispensable para el gráfico
-            $resTareas = mysqli_query($conn, 
-                "SELECT id, titulo_tarea, fecha_creacion, num_entregas, fechas_entregas, fechas_reales_entregas, fechas_inicio_entregas 
-                 FROM tbl_tarea_entrega 
-                 WHERE id_profesor = $pid_req AND id_tutor = $idTutor 
+            $resTareas = mysqli_query($conn,
+                "SELECT id, titulo_tarea, fecha_creacion, num_entregas, fechas_entregas, fechas_reales_entregas, fechas_inicio_entregas
+                 FROM tbl_tarea_entrega
+                 WHERE id_profesor = $pid_req AND id_tutor = $idTutor
                  ORDER BY fecha_creacion DESC"
             );
-            
+
             $gData = [];
             while ($t = mysqli_fetch_assoc($resTareas)) {
                 $gData[] = [
-                    'id' => $t['id'], 
-                    'titulo' => $t['titulo_tarea'], 
+                    'id' => $t['id'],
+                    'titulo' => $t['titulo_tarea'],
                     'creacion' => $t['fecha_creacion'],
-                    'n' => (int)$t['num_entregas'], 
+                    'n' => (int)$t['num_entregas'],
                     'teoricas' => json_decode($t['fechas_entregas'] ?? '[]', true),
                     'reales' => json_decode($t['fechas_reales_entregas'] ?? '[]', true),
                     'inicios' => json_decode($t['fechas_inicio_entregas'] ?? '[]', true)
                 ];
             }
-            
+
             // Blindaje del flujo JSON
-            if (ob_get_length()) ob_clean(); 
+            if (ob_get_length()) ob_clean();
             header('Content-Type: application/json; charset=utf-8');
             echo json_encode(['status' => 'success', 'data' => $gData]);
             exit;
@@ -303,7 +353,7 @@ $mensaje = '';
 $tipo_mensaje = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['accion'] === 'actualizar_tarea') {
-    
+
     // DETECCIÓN DE MODO EDICIÓN (ADITIVO - CONTRATO PDO)
     if (isset($_POST['id_tarea']) && (int)$_POST['id_tarea'] > 0) {
         $id_tarea_edit = (int)$_POST['id_tarea'];
@@ -327,7 +377,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['
                 $pdoU = new PDO("mysql:host={$dbCfg['host']};port={$dbCfg['port']};dbname={$dbCfg['name']};charset=utf8mb4", $dbCfg['user'], $dbCfg['pass'], [
                     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
                 ]);
-                
+
                 $sqlU = "UPDATE tbl_tarea_entrega SET titulo_tarea = ?, descripcion_tarea = ?, num_entregas = ?, fechas_entregas = ? WHERE id = ? AND id_tutor = ?";
                 $stmtU = $pdoU->prepare($sqlU);
                 $stmtU->execute([$titulo_tarea, $desc_tarea, $num_entregas, $fechas_json, $id_tarea_edit, $idTutor]);
@@ -365,14 +415,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['
         $desc_tarea   = trim($_POST['descripcion_tarea'] ?? '');
         $num_entregas = max(1, intval($_POST['num_entregas'] ?? 1));
         $fechas_arr   = isset($_POST['fecha_entrega']) && is_array($_POST['fecha_entrega']) ? $_POST['fecha_entrega'] : [];
-        
+
         $fechas_arr = array_values(array_filter($fechas_arr, function($f) { return !empty(trim($f)); }));
-        
+
         if ($idProfAsignado > 0 && !empty($titulo_tarea) && count($fechas_arr) > 0) {
             $titulo_esc = mysqli_real_escape_string($conn, $titulo_tarea);
             $desc_esc   = mysqli_real_escape_string($conn, $desc_tarea);
             $fechas_json = mysqli_real_escape_string($conn, json_encode($fechas_arr, JSON_UNESCAPED_UNICODE));
-            
+
             try {
                 mysqli_query($conn,
                     "INSERT INTO tbl_tarea_entrega (id_grupo, id_profesor, id_tutor, titulo_tarea, descripcion_tarea, num_entregas, fechas_entregas)
@@ -408,21 +458,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['
     $desc_tarea   = trim($_POST['descripcion_tarea'] ?? '');
     $num_entregas = max(1, intval($_POST['num_entregas'] ?? 1));
     $fechas_arr   = isset($_POST['fecha_entrega']) && is_array($_POST['fecha_entrega']) ? $_POST['fecha_entrega'] : [];
-    
+
     // Filtrar fechas vacías
     $fechas_arr = array_values(array_filter($fechas_arr, function($f) { return !empty(trim($f)); }));
-    
+
     if ($id_tarea > 0 && !empty($titulo_tarea) && count($fechas_arr) > 0) {
         $titulo_esc = mysqli_real_escape_string($conn, $titulo_tarea);
         $desc_esc   = mysqli_real_escape_string($conn, $desc_tarea);
         $fechas_json = mysqli_real_escape_string($conn, json_encode($fechas_arr, JSON_UNESCAPED_UNICODE));
-        
+
         try {
             mysqli_query($conn,
-                "UPDATE tbl_tarea_entrega 
-                 SET titulo_tarea = '$titulo_esc', 
-                     descripcion_tarea = '$desc_esc', 
-                     num_entregas = $num_entregas, 
+                "UPDATE tbl_tarea_entrega
+                 SET titulo_tarea = '$titulo_esc',
+                     descripcion_tarea = '$desc_esc',
+                     num_entregas = $num_entregas,
                      fechas_entregas = '$fechas_json'
                  WHERE id = $id_tarea AND id_tutor = $idTutor"
             );
@@ -509,18 +559,18 @@ foreach ($profesores as $prof) {
 // ── AJAX: Obtener Histórico ANECA ─────────────────────────────────────
 if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset($_GET['orcid'])) {
     $orcid_req = mysqli_real_escape_string($conn, $_GET['orcid']);
-    
+
     // Obtenemos los datos completos del profesor para criterios de búsqueda robustos
     $res_p = mysqli_query($conn, "SELECT * FROM `tbl_profesor` WHERE `ORCID` = '$orcid_req' LIMIT 1");
     $p_info = mysqli_fetch_assoc($res_p);
-    
+
     if ($p_info) {
         $r_norm = strtoupper(trim($p_info['rama'] ?? ''));
         $db_n = $mapaDB[$r_norm] ?? null;
         if ($db_n) {
             try {
                 $pdo_h = new PDO("mysql:host={$dbHost};port={$dbPort};dbname={$db_n};charset=utf8mb4", $dbUser, $dbPass, [
-                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, 
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                 ]);
 
@@ -531,18 +581,18 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
                 $nombre_completo = trim(($p_info['nombre'] ?? '') . ' ' . ($p_info['apellidos'] ?? ''));
 
                 // Consulta blindada por identificador único (DNI/ORCID) o Nombre
-                $sql = "SELECT * FROM `evaluaciones` 
-                        WHERE (`json_entrada` LIKE :orcid_original 
+                $sql = "SELECT * FROM `evaluaciones`
+                        WHERE (`json_entrada` LIKE :orcid_original
                            OR `json_entrada` LIKE :orcid_limpio)
                         ORDER BY `fecha_creacion` DESC";
-                
+
                 $st_h = $pdo_h->prepare($sql);
                 $st_h->execute([
                     ':orcid_original' => '%' . $orcid_original . '%',
                     ':orcid_limpio'   => '%' . $orcid_limpio . '%'
                 ]);
                 $evals_h = $st_h->fetchAll();
-                
+
                 if (empty($evals_h)) {
                     echo '<div class="text-center text-white-50 py-4"><i class="bi bi-journal-x" style="font-size:2.5rem;"></i><p class="mt-2">No hay evaluaciones registradas para el ORCID: '.htmlspecialchars($orcid_req).'.</p></div>';
                 } else {
@@ -552,7 +602,7 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
                         $resText = htmlspecialchars($ev['resultado'] ?? '-');
                         $resBadge = strtoupper($resText) === 'POSITIVA' ? 'rgba(74,222,128,0.2)' : 'rgba(248,113,113,0.2)';
                         $resColor = strtoupper($resText) === 'POSITIVA' ? '#4ade80' : '#f87171';
-                        
+
                         $collapseId = 'detalleEvals_' . ($ev['id'] ?? $ei);
                         $jsonId = 'jsonRaw_' . ($ev['id'] ?? $ei);
                         $jsonDecoded = json_decode($ev['json_entrada'] ?? '{}', true);
@@ -566,11 +616,11 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
                         echo '<div class="progress rounded-pill mt-2" style="height:6px; background:rgba(255,255,255,0.1);"><div class="progress-bar" style="width:'.min(100, $evTotal).'%; background:'.$evColor.';"></div></div>';
                         echo '<div class="d-flex gap-3 mt-2 text-white-50 small"><span>B1: '.number_format((float)($ev['bloque_1'] ?? 0), 2).'</span><span>B2: '.number_format((float)($ev['bloque_2'] ?? 0), 2).'</span><span>B3: '.number_format((float)($ev['bloque_3'] ?? 0), 2).'</span><span>B4: '.number_format((float)($ev['bloque_4'] ?? 0), 2).'</span></div>';
                         echo '</div>'; // Fin Tarjeta Principal
-                        
+
                         // Contenido Colapsable
                         echo '<div class="collapse mt-2" id="'.$collapseId.'">';
                         echo '<div class="p-3 rounded-3" style="background:rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.05);">';
-                        
+
                         // Metadatos
                         echo '<h6 class="text-white border-bottom border-light border-opacity-10 pb-2 mb-3"><i class="bi bi-info-circle me-2"></i>Metadatos de la Evaluación</h6>';
                         echo '<div class="row g-2 mb-4">';
@@ -579,13 +629,13 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
                         echo '<div class="col-sm-6"><div class="text-white-50 small">Fecha Creación</div><div class="text-white">'.htmlspecialchars($ev['fecha_creacion'] ?? '-').'</div></div>';
                         echo '<div class="col-sm-6"><div class="text-white-50 small">Resultado</div><div class="text-white fw-bold" style="color:'.$resColor.';">'.htmlspecialchars($ev['resultado'] ?? '-').'</div></div>';
                         echo '</div>';
-                        
+
                         // Desglose Puntuaciones
                         echo '<h6 class="text-white border-bottom border-light border-opacity-10 pb-2 mb-3"><i class="bi bi-bar-chart-steps me-2"></i>Desglose de Puntuaciones</h6>';
                         echo '<div class="table-responsive"><table class="table table-sm table-dark table-borderless text-white-50" style="background:transparent;">';
                         echo '<thead><tr style="border-bottom:1px solid rgba(255,255,255,0.1);"><th class="text-white">Bloque 1</th><th class="text-white">Bloque 2</th><th class="text-white">Bloque 3</th><th class="text-white">Bloque 4</th></tr></thead>';
                         echo '<tbody><tr>';
-                        
+
                         echo '<td><ul class="list-unstyled mb-0 small">';
                         echo '<li>1a: '.number_format((float)($ev['puntuacion_1a'] ?? 0), 2).'</li>';
                         echo '<li>1b: '.number_format((float)($ev['puntuacion_1b'] ?? 0), 2).'</li>';
@@ -595,25 +645,25 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
                         echo '<li>1f: '.number_format((float)($ev['puntuacion_1f'] ?? 0), 2).'</li>';
                         echo '<li>1g: '.number_format((float)($ev['puntuacion_1g'] ?? 0), 2).'</li>';
                         echo '</ul></td>';
-                        
+
                         echo '<td><ul class="list-unstyled mb-0 small">';
                         echo '<li>2a: '.number_format((float)($ev['puntuacion_2a'] ?? 0), 2).'</li>';
                         echo '<li>2b: '.number_format((float)($ev['puntuacion_2b'] ?? 0), 2).'</li>';
                         echo '<li>2c: '.number_format((float)($ev['puntuacion_2c'] ?? 0), 2).'</li>';
                         echo '<li>2d: '.number_format((float)($ev['puntuacion_2d'] ?? 0), 2).'</li>';
                         echo '</ul></td>';
-                        
+
                         echo '<td><ul class="list-unstyled mb-0 small">';
                         echo '<li>3a: '.number_format((float)($ev['puntuacion_3a'] ?? 0), 2).'</li>';
                         echo '<li>3b: '.number_format((float)($ev['puntuacion_3b'] ?? 0), 2).'</li>';
                         echo '</ul></td>';
-                        
+
                         echo '<td><ul class="list-unstyled mb-0 small">';
                         echo '<li>4: '.number_format((float)($ev['puntuacion_4'] ?? 0), 2).'</li>';
                         echo '</ul></td>';
-                        
+
                         echo '</tr></tbody></table></div>';
-                        
+
                         // JSON Original Colapsable
                         echo '<div class="mt-3">';
                         echo '<button class="btn btn-sm btn-outline-secondary w-100 mb-2" type="button" data-bs-toggle="collapse" data-bs-target="#'.$jsonId.'" aria-expanded="false" aria-controls="'.$jsonId.'"><i class="bi bi-code-square me-2"></i>Ver JSON Original de Extracción IA</button>';
@@ -626,12 +676,12 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
                             echo htmlspecialchars($ev['json_entrada'] ?? 'JSON no disponible o inválido.');
                         }
                         echo '</code></pre></div></div></div>'; // Fin JSON Original
-                        
+
                         echo '</div></div></div>'; // Fin Body y Contenedor Principal
                     }
                 }
-            } catch (Exception $e) { 
-                echo '<div class="alert alert-danger">Error de SQL: ' . htmlspecialchars($e->getMessage()) . '</div>'; 
+            } catch (Exception $e) {
+                echo '<div class="alert alert-danger">Error de SQL: ' . htmlspecialchars($e->getMessage()) . '</div>';
             }
         } else { echo '<div class="alert alert-warning">Rama no reconocida.</div>'; }
     } else { echo '<div class="alert alert-danger">Profesor no encontrado.</div>'; }
@@ -664,7 +714,7 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
           style="height:50px; width:auto;" id="#acele" />
       </div>
       <div class="imagen">
-        <img src="img/AcademyAccelerator_def.png" id="academy" alt="academy" />
+        <img src="../../acelerador_login/fronten/img/AcademyAccelerator_def.png" id="academy" alt="academy" />
       </div>
     </div>
   </header>
@@ -828,6 +878,34 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
           </div>
         <?php endif; ?>
 
+        <!-- Notificaciones de Decisiones Pendientes (Readmisiones) -->
+        <?php if (!empty($notifsTutor)): ?>
+        <div class="row g-3 mb-4 w-100">
+          <div class="col-12">
+            <div class="dashboard-info-card border-warning border-opacity-50">
+              <h5 class="text-warning mb-3"><i class="bi bi-exclamation-triangle-fill me-2"></i>Decisiones Pendientes</h5>
+              <div class="d-flex flex-column gap-3">
+                <?php foreach ($notifsTutor as $nt): ?>
+                  <div class="p-3 rounded-4 d-flex flex-column flex-md-row justify-content-between align-items-center gap-3" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1);">
+                    <div class="text-white">
+                        <i class="bi bi-person-badge me-2 text-info"></i> <?= htmlspecialchars($nt['mensaje']) ?>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <form method="POST" class="m-0 d-flex gap-3">
+                            <input type="hidden" name="accion" value="decision_readmision">
+                            <input type="hidden" name="id_solicitud" value="<?= $nt['id_solicitud'] ?>">
+                            <button type="submit" name="decision" value="ACEPTAR" class="btn btn-sm btn-success rounded-pill px-4 fw-bold">ACEPTAR</button>
+                            <button type="submit" name="decision" value="RECHAZAR" class="btn btn-sm btn-outline-danger rounded-pill px-4 fw-bold">RECHAZAR</button>
+                        </form>
+                    </div>
+                  </div>
+                <?php endforeach; ?>
+              </div>
+            </div>
+          </div>
+        </div>
+        <?php endif; ?>
+
         <!-- Tarjetas de estadísticas -->
         <div class="row g-3 mb-4 w-100">
           <div class="col-md-4">
@@ -871,12 +949,12 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
                       <?= htmlspecialchars($prof['nombre'] . ' ' . $prof['apellidos']) ?>
                     </div>
                     <div class="prof-panel-grupo text-white-50 small mb-0">
-                      <i class="bi bi-collection me-1"></i>Grupo: <strong><?= htmlspecialchars($prof['grupo']) ?></strong> | 
+                      <i class="bi bi-collection me-1"></i>Grupo: <strong><?= htmlspecialchars($prof['grupo']) ?></strong> |
                       Rama: <?= htmlspecialchars($prof['rama']) ?> |
                       <a href="mailto:<?= htmlspecialchars($prof['correo']) ?>" class="text-white-50 text-decoration-none ms-1"><i class="bi bi-envelope"></i> <?= htmlspecialchars($prof['correo']) ?></a>
                     </div>
                   </div>
-                  
+
                   <div class="d-flex flex-wrap gap-2 ms-lg-3 justify-content-end align-items-start">
                     <a href="../../dashboard_profesor.php?nombre=<?= urlencode($prof['nombre']) ?>&rama=<?= urlencode($prof['rama']) ?>" class="btn btn-sm btn-primary rounded-3 d-flex flex-column align-items-center" style="min-width:68px; padding:8px 10px; gap:4px;">
                       <i class="bi bi-diagram-3" style="font-size:1.25rem;"></i>
@@ -893,8 +971,7 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
                     <button type="button" class="btn btn-sm btn-outline-light rounded-3 d-flex flex-column align-items-center btn-gantt-prof" style="min-width:68px; padding:8px 10px; gap:4px;" data-bs-toggle="modal" data-bs-target="#modalGrafico<?= $pid ?>" data-id="<?= $pid ?>">
                       <i class="bi bi-bar-chart-line" style="font-size:1.25rem;"></i>
                       <span style="font-size:.65rem; line-height:1;">Gráfico</span>
-                    </button>
-                    <button type="button" class="btn btn-sm btn-outline-light rounded-3 d-flex flex-column align-items-center" style="min-width:68px; padding:8px 10px; gap:4px;" data-bs-toggle="modal" data-bs-target="#modalOpciones<?= $pid ?>">
+                    </button>                    <button type="button" class="btn btn-sm btn-outline-light rounded-3 d-flex flex-column align-items-center" style="min-width:68px; padding:8px 10px; gap:4px;" data-bs-toggle="modal" data-bs-target="#modalOpciones<?= $pid ?>">
                       <i class="bi bi-three-dots" style="font-size:1.25rem;"></i>
                       <span style="font-size:.65rem; line-height:1;">Opciones</span>
                     </button>
@@ -937,12 +1014,12 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
           </div>
           <div class="modal-body d-flex flex-column custom-scrollbar pe-2" style="max-width: 420px; margin: 0 auto; width: 100%; min-height: 70vh; overflow-y: auto; overflow-x: hidden; align-items: center;">
-            
+
             <!-- Mostrar todas las tareas activas (múltiples simultáneas) -->
             <?php if (!empty($tareasList)): ?>
               <h6 class="text-white fw-bold mb-3 text-center w-100"><i class="bi bi-list-task me-2"></i>Tareas Activas</h6>
               <div class="d-flex flex-column gap-3 mb-4">
-              <?php foreach ($tareasList as $tareaActual): 
+              <?php foreach ($tareasList as $tareaActual):
                 $fechasT = json_decode($tareaActual['fechas_entregas'] ?? '[]', true) ?: [];
                 $hechas = json_decode($tareaActual['entregas_realizadas'] ?? '{}', true) ?: [];
                 $tiempoPrincipal = !empty($fechasT) ? $fechasT[0] : '';
@@ -978,7 +1055,7 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
                   <?php endif; ?>
                   <?php if (!empty($fechasT)): ?>
                     <div class="text-white-50 small fw-bold text-uppercase mb-1 text-center" style="font-size:.7rem;">Entregas programadas:</div>
-                    <?php foreach ($fechasT as $fi => $fe): 
+                    <?php foreach ($fechasT as $fi => $fe):
                       $estaHecha = !empty($hechas[$fi]);
                     ?>
                       <div class="d-flex align-items-center justify-content-between gap-1 mb-1">
@@ -1007,9 +1084,9 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
             <?php endif; ?>
 
             <hr style="border-color:rgba(255,255,255,0.15); margin: 10px 0 20px 0; width:100%;">
-            
+
             <h6 class="text-white fw-bold mb-3 text-center w-100"><i class="bi bi-plus-circle me-2"></i>Añadir nueva tarea</h6>
-            
+
             <!-- Formulario para UPDATE/INSERT -->
             <form method="POST" class="d-flex flex-column gap-3 w-100">
               <input type="hidden" name="accion" value="actualizar_tarea">
@@ -1020,12 +1097,12 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
                 $gId = ($resProfGrp && $rG = mysqli_fetch_assoc($resProfGrp)) ? $rG['id_grupo'] : 0;
               ?>
               <input type="hidden" name="id_grupo" value="<?= $gId ?>">
-              
+
               <div>
                 <label class="form-label text-white-50 small mb-1">Título de la tarea *</label>
                 <input type="text" name="titulo_tarea" class="form-control form-control-sm text-white" style="background:rgba(255,255,255,0.1); border-color:rgba(255,255,255,0.2);" required placeholder="Ej: Preparación expediente">
               </div>
-              
+
               <div>
                 <label class="form-label text-white-50 small mb-1">Descripción</label>
                 <textarea name="descripcion_tarea" class="form-control form-control-sm text-white" style="background:rgba(255,255,255,0.1); border-color:rgba(255,255,255,0.2);" rows="2" placeholder="Opcional..."></textarea>
@@ -1035,11 +1112,11 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
                 <label class="form-label text-white-50 small mb-1">Cantidad de entregas *</label>
                 <input type="number" name="num_entregas" id="inputNumEntregas<?= $pid ?>" class="form-control form-control-sm text-white" style="background:rgba(255,255,255,0.1); border-color:rgba(255,255,255,0.2);" required min="1" max="10" value="1" oninput="generarFechasModal(<?= $pid ?>)">
               </div>
-              
+
               <div id="fechasContainer<?= $pid ?>" class="d-flex flex-column gap-2">
                 <!-- Se inyectan con JS -->
               </div>
-              
+
               <button type="submit" class="btn btn-primary btn-sm rounded-pill mt-2 w-100"><i class="bi bi-save me-1"></i> Guardar tarea</button>
             </form>
 
@@ -1060,7 +1137,7 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
           </div>
           <div class="modal-body custom-scrollbar">
-            
+
             <!-- Contenedor dinámico para tarjetas de bloques -->
             <div id="rawMeritContainer<?= $pid ?>">
               <div class="text-center py-5 text-white-50">
@@ -1264,7 +1341,7 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
           <div class="modal-body">
             <input type="hidden" name="accion" value="actualizar_tarea">
             <input type="hidden" name="id_tarea" id="editTareaId" value="">
-            
+
             <div class="mb-3">
               <label class="form-label text-white-50 small">Título de la tarea</label>
               <input type="text" name="titulo_tarea" id="editTareaTitulo" class="form-control text-white" style="background:rgba(255,255,255,0.1); border-color:rgba(255,255,255,0.2);" required>
@@ -1277,7 +1354,7 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
               <label class="form-label text-white-50 small">Número de entregas</label>
               <input type="number" name="num_entregas" id="editTareaEntregas" class="form-control text-white" style="background:rgba(255,255,255,0.1); border-color:rgba(255,255,255,0.2);" min="1" max="10" required>
             </div>
-            
+
             <div id="editFechasContainer" class="d-flex flex-column gap-2">
               <!-- Los inputs de fecha se generarán dinámicamente aquí -->
             </div>
@@ -1381,7 +1458,7 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
       const inputVal = parseInt(document.getElementById('inputNumEntregas' + pid).value, 10);
       const numFechas = isNaN(inputVal) || inputVal < 1 ? 1 : inputVal;
       const container = document.getElementById('fechasContainer' + pid);
-      
+
       let html = '';
       for (let i = 1; i <= numFechas; i++) {
         html += `
@@ -1419,10 +1496,10 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
           const orcid = this.getAttribute('data-orcid');
           const targetModalId = this.getAttribute('data-bs-target');
           const modalBody = document.querySelector(targetModalId + ' .modal-body');
-          
+
           if (orcid && modalBody) {
             modalBody.innerHTML = '<div class="text-center py-5"><div class="spinner-border text-light" role="status"></div><p class="mt-2 text-white-50">Cargando historial para ORCID: ' + orcid + '...</p></div>';
-            
+
             $.ajax({
               url: 'panel_tutor.php',
               type: 'GET',
@@ -1464,7 +1541,7 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
           const desc = this.getAttribute('data-desc');
           const entregas = parseInt(this.getAttribute('data-entregas'), 10) || 1;
           const fechasStr = this.getAttribute('data-fechas');
-          
+
           let fechasArr = [];
           try {
             fechasArr = JSON.parse(fechasStr);
@@ -1496,7 +1573,7 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
           const inputsFechas = document.querySelectorAll('#editFechasContainer input[type="datetime-local"]');
           let valoresActuales = [];
           inputsFechas.forEach(inp => valoresActuales.push(inp.value));
-          
+
           generarFechasEditModal(nuevasEntregas, valoresActuales);
         });
       }
@@ -1542,7 +1619,7 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
           const pid = targetId.replace('modalEstado', '');
           const container = document.getElementById('rawMeritContainer' + pid);
           const modalElem = document.getElementById('modalEstado' + pid);
-          
+
           if (!orcid || !container) return;
 
           $.ajax({
@@ -1552,7 +1629,7 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
             success: function(response) {
               if (response.status === 'success') {
                 const d = response.data;
-                
+
                 // 1. Manejo del mensaje de "No evaluaciones"
                 if (modalElem) {
                     const noEvalMsg = modalElem.querySelector('.no-eval-msg');
@@ -1657,7 +1734,7 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
         const idTarea = $(this).data('id-tarea');
         const indice = $(this).data('indice');
         const btn = $(this);
-        
+
         customConfirm('¿Deseas marcar esta entrega como completada hoy?', () => {
           $.ajax({
             url: 'panel_tutor.php',
@@ -1667,10 +1744,10 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
               if (response.status === 'success') {
                 showNotification('Entrega registrada con éxito', 'success');
                 // Feedback visual inmediato
-                btn.closest('.d-flex').find('.badge').remove(); 
+                btn.closest('.d-flex').find('.badge').remove();
                 btn.after('<span class="badge bg-success bg-opacity-10 text-success ms-1" style="font-size: .6rem;">HECHA</span>');
                 btn.remove();
-                
+
                 const activeModal = document.querySelector('.modal.show[id^="modalGrafico"]');
                 if (activeModal) {
                     const pid = activeModal.id.replace('modalGrafico', '');
@@ -1692,7 +1769,7 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
         btn.addEventListener('click', function() {
           const pid = this.getAttribute('data-id');
           const container = document.getElementById('ganttContainer' + pid);
-          
+
           if (!pid || !container) return;
 
           $.ajax({
@@ -1709,7 +1786,7 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
                 const fechasLimite = t.teoricas || [];
                 const fechasReales = t.reales || [];
                 const inicioTarea = new Date(t.creacion).getTime();
-                
+
                 // Definimos el fin del gráfico: el mayor entre el último plazo o hoy
                 const maxPlazo = Math.max(...fechasLimite.map(f => new Date(f).getTime()));
                 const finGrafico = Math.max(maxPlazo, hoy.getTime());
@@ -1722,33 +1799,59 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
                 fechasLimite.forEach((limiteStr, idx) => {
                     const limite = new Date(limiteStr).getTime();
                     const real = fechasReales[idx] ? new Date(fechasReales[idx]).getTime() : null;
-                    
+
                     // Lógica de Relevos: El inicio es el fin de la entrega anterior (o la creación si es la primera)
-                    const inicioSegmento = (idx === 0) ? inicioTarea : 
+                    const inicioSegmento = (idx === 0) ? inicioTarea :
                                          (fechasReales[idx-1] ? new Date(fechasReales[idx-1]).getTime() : hoy.getTime());
-                    
+
                     // Fin del segmento: si está hecha, su fecha real. Si es la activa, hoy.
                     let finSegmento = real ? real : hoy.getTime();
                     if (finSegmento < inicioSegmento) finSegmento = inicioSegmento;
 
+                    // Cálculo de Retraso (Aditivo)
+                    const esRetraso = finSegmento > limite;
+                    let infoRetraso = '';
+                    let widthRetraso = 0;
+                    let widthNormal = 0;
+
+                    if (esRetraso) {
+                        const diff = finSegmento - limite;
+                        const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
+                        const horas = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                        const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                        infoRetraso = ` — Retraso: ${dias}d ${horas}h ${mins}m`;
+
+                        // Si empezó antes del límite, la parte normal llega hasta el límite
+                        const finNormal = Math.max(inicioSegmento, limite);
+                        widthNormal = ((Math.min(finSegmento, limite) - inicioSegmento) / totalDuracion) * 100;
+                        widthRetraso = ((finSegmento - Math.max(inicioSegmento, limite)) / totalDuracion) * 100;
+                    } else {
+                        widthNormal = ((finSegmento - inicioSegmento) / totalDuracion) * 100;
+                    }
+
                     const marginLeft = ((inicioSegmento - inicioTarea) / totalDuracion) * 100;
-                    const width = ((finSegmento - inicioSegmento) / totalDuracion) * 100;
-                    
-                    const esFueraDePlazo = (!real && hoy.getTime() > limite);
-                    const colorBarra = real ? '#198754' : (esFueraDePlazo ? '#f87171' : '#3b82f6');
-                    const animation = (!real && width > 1) ? 'progress-bar-animated progress-bar-striped' : '';
+                    const colorBarra = real ? '#198754' : '#3b82f6';
+                    const animation = (!real) ? 'progress-bar-animated progress-bar-striped' : '';
 
                     html += `
                         <div class="gantt-row">
                             <div class="d-flex justify-content-between mb-1">
                                 <span class="text-white-50" style="font-size:0.75rem;">Entrega ${idx + 1}</span>
-                                ${esFueraDePlazo ? '<span class="text-danger fw-bold" style="font-size:0.7rem;">FUERA DE PLAZO</span>' : ''}
+                                ${esRetraso ? `<span class="text-danger fw-bold" style="font-size:0.7rem;">${real ? 'ENTREGA TARDÍA' : 'FUERA DE PLAZO'}${infoRetraso}</span>` : ''}
                             </div>
-                            <div class="progress position-relative" style="height:12px; background:rgba(255,255,255,0.05); overflow:visible;">
-                                <div class="progress-bar ${animation}" 
-                                     style="width:${width}%; margin-left:${marginLeft}%; background-color:${colorBarra}; transition:width 0.4s ease;"></div>
-                                <!-- Marca de Plazo Límite -->
-                                <div class="position-absolute" style="left:${((limite - inicioTarea) / totalDuracion) * 100}%; top:-5px; height:22px; width:2px; background:#fff; opacity:0.3;" title="Plazo: ${limiteStr}"></div>
+                            <div class="progress position-relative" style="height:10px; background:rgba(255,255,255,0.05); overflow:visible;">
+                                <!-- Barra Normal -->
+                                <div class="progress-bar ${animation}"
+                                     style="width:${widthNormal}%; margin-left:${marginLeft}%; background-color:${colorBarra}; transition:width 0.4s ease; border-radius:10px 0 0 10px;"></div>
+                                <!-- Barra de Retraso (Roja) -->
+                                ${widthRetraso > 0 ? `
+                                <div class="progress-bar progress-bar-striped progress-bar-animated"
+                                     style="width:${widthRetraso}%; background-color:#f87171; transition:width 0.4s ease; border-radius:0 10px 10px 0;"></div>` : ''}
+
+                                <!-- Rombo de Plazo Límite (Fin de Plazo) -->
+                                <div class="position-absolute"
+                                     style="left:${((limite - inicioTarea) / totalDuracion) * 100}%; top:50%; width:16px; height:16px; border:3px solid ${esRetraso ? '#f87171' : '#fff'}; background:#0f172a; transform: translate(-50%, -50%) rotate(45deg); z-index:10; box-shadow: ${esRetraso ? '0 0 15px #f87171' : 'none'};"
+                                     title="Plazo: ${limiteStr}"></div>
                             </div>
                         </div>`;
                 });
@@ -1783,16 +1886,16 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
       width: 3px;
     }
     .custom-scrollbar::-webkit-scrollbar-track {
-      background: rgba(255, 255, 255, 0.05); 
+      background: rgba(255, 255, 255, 0.05);
       border-radius: 10px;
       margin: 10px 0;
     }
     .custom-scrollbar::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.5); 
+      background: rgba(255, 255, 255, 0.5);
       border-radius: 10px;
     }
     .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-      background: rgba(255, 255, 255, 0.8); 
+      background: rgba(255, 255, 255, 0.8);
     }
     .custom-scrollbar {
       scrollbar-width: thin;

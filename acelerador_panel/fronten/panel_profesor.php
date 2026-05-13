@@ -312,7 +312,7 @@ function recomendaciones(array $e): array {
           style="height:50px; width:auto;" id="#acele" />
       </div>
       <div class="imagen">
-        <img src="img/AcademyAccelerator_def.png" id="academy" alt="academy" />
+        <img src="../../acelerador_login/fronten/img/AcademyAccelerator_def.png" id="academy" alt="academy" />
       </div>
     </div>
   </header>
@@ -717,7 +717,7 @@ function recomendaciones(array $e): array {
           <div class="row g-3 mb-4 w-100">
             <div class="col-lg-8">
               <div class="dashboard-info-card h-100" style="position:relative;">
-                <h3 class="dashboard-section-title text-white mb-3">Resumen de progreso</h3>
+                <h3 class="dashboard-section-title text-white mb-3">Resumen ultima evaluación</h3>
                 <div class="d-flex align-items-center gap-3 mb-2">
                   <div class="fs-1 fw-bold" style="line-height:1; color: <?= $colorProf ?>;">
                   <?= number_format((float)$eval['total_final'], 2) ?>%

@@ -45,6 +45,9 @@ exp_render_layout_start(
 ?>
 
 <style>
+    .shell {
+        max-width: 1600px !important;
+    }
     .tabla-listado {
         width: 100%;
         border-collapse: separate;

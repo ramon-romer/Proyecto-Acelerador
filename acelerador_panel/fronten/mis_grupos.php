@@ -65,7 +65,7 @@ if ($query_grupos && mysqli_num_rows($query_grupos) > 0) {
           style="height:50px; width:auto;" id="#acele" />
       </div>
       <div class="imagen">
-        <img src="img/AcademyAccelerator_def.png" id="academy" alt="academy" />
+        <img src="../../acelerador_login/fronten/img/AcademyAccelerator_def.png" id="academy" alt="academy" />
       </div>
     </div>
   </header>

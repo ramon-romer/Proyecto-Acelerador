@@ -137,9 +137,10 @@ if (isset($_POST['accion']) && $_POST['accion'] == 'asignar_grupo') {
   $id_prof = intval($_POST['id_profesor']);
   $id_grupo = intval($_POST['id_grupo']);
 
-  $check_dup = mysqli_query($conn, "SELECT id FROM tbl_grupo_profesor WHERE id_grupo = $id_grupo AND id_profesor = $id_prof");
+  $check_dup = mysqli_query($conn, "SELECT g.nombre FROM tbl_grupo_profesor gp INNER JOIN tbl_grupo g ON gp.id_grupo = g.id_grupo WHERE gp.id_profesor = $id_prof");
   if (mysqli_num_rows($check_dup) > 0) {
-    $mensaje = "El usuario ya pertenece a ese grupo.";
+    $grupo_actual = mysqli_fetch_assoc($check_dup)['nombre'];
+    $mensaje = "El usuario ya pertenece al grupo: <strong>" . htmlspecialchars($grupo_actual) . "</strong>. Un profesor solo puede pertenecer a un grupo.";
     $tipo_mensaje = "warning";
   } else {
     mysqli_query($conn, "INSERT INTO tbl_grupo_profesor (id_grupo, id_profesor) VALUES ($id_grupo, $id_prof)");
@@ -306,7 +307,7 @@ if (isset($_POST['orcid_buscar']) && !empty($_POST['orcid_buscar'])) {
           style="height:50px; width:auto;" id="#acele" />
       </div>
       <div class="imagen">
-        <img src="img/AcademyAccelerator_def.png" id="academy" alt="academy" />
+        <img src="../../acelerador_login/fronten/img/AcademyAccelerator_def.png" id="academy" alt="academy" />
       </div>
     </div>
   </header>

@@ -12,6 +12,12 @@
 session_start();
 error_reporting(0);
 
+require_once __DIR__ . '/acelerador_login/fronten/lib/session_security.php';
+require_once __DIR__ . '/acelerador_panel/fronten/lib/db.php';
+
+// Aplicar protecciones de sesión y validación de credenciales
+acelerador_apply_protected_page_session_guards();
+
 $nombre = isset($_GET['nombre']) ? trim($_GET['nombre']) : null;
 
 // ── Determinar la rama para elegir la BD correcta ─────────────────────────
@@ -76,7 +82,7 @@ if (isset($pdo)) {
         ");
         $stmt->execute(['nombre' => '%' . $nombre . '%']);
         $eval = $stmt->fetch();
-        
+
         // Fallback si no encuentra por nombre (común si hay diferencias entre perfil y PDF extraído)
         if (!$eval) {
             $stmt = $pdo->query("
@@ -159,245 +165,384 @@ function recomendaciones(array $e): array {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Dashboard Profesor</title>
+  <title>Dashboard Profesor - <?= htmlspecialchars($eval['nombre_candidato'] ?? 'Candidato') ?></title>
+  <link rel="icon" type="image/x-icon" href="https://uf3ceu.es/wp-content/uploads/logo-uf3-2k25.svg">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <style>
     :root {
-      --primary: #123f82;
-      --text-main: #123b72;
-      --bg-page: #eef2f7;
-      --card-border: #d9e2ee;
-      --soft-orange: #d8921d;
+        --azul-glass: rgba(20, 88, 204, 0.4);
+        --blanco: #ffffff;
+        --blanco-alpha: rgba(255, 255, 255, 0.1);
+        --verde: #4ade80;
+        --verde-fondo: rgba(74, 222, 128, 0.15);
+        --rojo: #f87171;
+        --rojo-fondo: rgba(248, 113, 113, 0.15);
+        --sombra: 0 8px 32px rgba(0, 0, 0, 0.37);
+        --radio: 24px;
     }
-    body { background: var(--bg-page); font-family: "Segoe UI", sans-serif; }
-    .top-header {
-      background: linear-gradient(180deg, var(--primary) 0%, #154a97 100%);
-      color: #fff; padding: 20px 0;
+    * { box-sizing: border-box; }
+    body {
+        margin: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-image: url('acelerador_panel/fronten/img/Image (3).jpg');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-attachment: fixed;
+        color: #e2e8f0;
+        min-height: 100vh;
     }
-    .dashboard-card {
-      background: #fff;
-      border: 1px solid var(--card-border);
-      border-radius: 18px;
-      box-shadow: 0 4px 16px rgba(18,63,130,.05);
-      height: 100%;
-      position: relative;
+    .shell { max-width: 1280px; margin: 0 auto; padding: 40px 24px; }
+    .hero {
+        background: var(--azul-glass);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        color: var(--blanco);
+        border-radius: var(--radio);
+        padding: 30px 35px;
+        box-shadow: var(--sombra);
+        margin-bottom: 30px;
+        border: 1px solid rgba(255, 255, 255, 0.15);
     }
-    .stat-card { padding: 18px; }
-    .stat-label { font-size:.9rem; text-transform:uppercase; color:#708198; margin-bottom:.4rem; }
-    .stat-value { font-size:2rem; font-weight:800; color:var(--text-main); }
-    .summary-card { padding: 20px; }
-    .big-percent { font-size:3rem; font-weight:800; color:var(--soft-orange); line-height:1; }
-    .custom-progress {
-      height:12px; background:#dfe7f2; border-radius:999px; overflow:hidden; margin:14px 0;
+    .hero-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
     }
-    .custom-progress-bar {
-      height:100%;
-      background: linear-gradient(90deg, #d8921d 0%, #d69522 100%);
+    .hero h1 { margin: 0; font-size: 36px; font-weight: 800; letter-spacing: -0.02em; }
+    .hero p { margin: 12px 0 0; max-width: 850px; color: rgba(255,255,255,.7); font-size: 18px; }
+    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+    .card {
+        background: var(--azul-glass);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-radius: var(--radio);
+        box-shadow: var(--sombra);
+        padding: 30px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: #fff;
+        height: 100%;
     }
-    .badge-rama {
-      background: rgba(18,63,130,.12);
-      color: var(--primary);
-      font-size:.8rem;
-      border-radius: 20px;
-      padding: 4px 12px;
+    .card h2, .card h3 { margin-top: 0; font-weight: 700; color: #fff; }
+
+    .metrics-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
     }
-    .popover-body {
-      white-space: pre-line;
+    .metric {
+        background: rgba(20, 88, 204, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 18px;
+        padding: 20px;
+        text-align: center;
+        transition: transform 0.2s, background 0.2s;
+        backdrop-filter: blur(8px);
+    }
+    .metric:hover { background: rgba(20, 88, 204, 0.5); transform: translateY(-3px); }
+    .metric .label {
+        display: block;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: .08em;
+        color: rgba(255, 255, 255, 0.5);
+        margin-bottom: 8px;
+        font-weight: 700;
+    }
+    .metric .value {
+        font-size: 32px;
+        font-weight: 800;
+        color: #fff;
+    }
+
+    .btn {
+        border-radius: 50px;
+        background: #1458cc;
+        color: var(--blanco);
+        padding: 12px 24px;
+        font-weight: 700;
+        border: none;
+        transition: all 0.2s ease;
+        box-shadow: 0 4px 12px rgba(20, 88, 204, 0.3);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .btn:hover {
+        transform: translateY(-2px);
+        background: #1e63e6;
+        box-shadow: 0 6px 16px rgba(20, 88, 204, 0.4);
+        color: #fff;
+    }
+    .btn.outline {
+        background: transparent;
+        color: #fff;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: none;
+    }
+    .btn.outline:hover { background: rgba(255, 255, 255, 0.1); border-color: #fff; }
+
+    .badge-custom {
+        display: inline-flex;
+        align-items: center;
+        border-radius: 50px;
+        padding: 6px 16px;
+        font-weight: 700;
+        font-size: 14px;
+        text-transform: uppercase;
+    }
+    .badge-custom.success { color: #4ade80; background: rgba(74, 222, 128, 0.15); border: 1px solid rgba(74, 222, 128, 0.2); }
+    .badge-custom.danger { color: #f87171; background: rgba(248, 113, 113, 0.15); border: 1px solid rgba(248, 113, 113, 0.2); }
+    .badge-custom.warning { color: #fbbf24; background: rgba(251, 191, 36, 0.15); border: 1px solid rgba(251, 191, 36, 0.2); }
+
+    table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        border-radius: 20px;
+        overflow: hidden;
+        background: rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        margin-top: 20px;
+    }
+    th, td {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        padding: 15px 20px;
+        text-align: left;
+    }
+    th { background: rgba(255, 255, 255, 0.05); color: rgba(255, 255, 255, 0.6); font-size: 12px; text-transform: uppercase; font-weight: 700; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(255, 255, 255, 0.03); }
+
+    .progress-glass {
+        height: 12px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 999px;
+        overflow: hidden;
+        margin: 20px 0;
+    }
+    .progress-glass-bar {
+        height: 100%;
+        transition: width 1s ease-in-out;
+    }
+
+    .asesor-item {
+        background: rgba(20, 88, 204, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 18px;
+        padding: 20px;
+        margin-bottom: 15px;
+        backdrop-filter: blur(5px);
+    }
+    .asesor-item h4 { margin-top: 0; font-size: 18px; color: #fff; }
+
+    .stack { display: flex; flex-direction: column; gap: 24px; }
+    .split { display: grid; grid-template-columns: 1fr 350px; gap: 24px; }
+
+    @media (max-width: 992px) {
+        .split { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
 
-<header class="top-header">
-  <div class="container">
-    <?php if (!empty($eval)): ?>
-      <h1 class="h2 mb-1"><?= htmlspecialchars($eval['nombre_candidato']) ?></h1>
-      <div class="d-flex align-items-center gap-3 flex-wrap">
-        <span><?= htmlspecialchars($eval['area'] ?? '') ?> · Categoría: <?= htmlspecialchars($eval['categoria'] ?? '') ?></span>
-        <span class="badge-rama">📚 Rama: <?= htmlspecialchars(strtoupper($ramaNorm)) ?> (BD: <?= htmlspecialchars($dbName) ?>)</span>
-      </div>
-    <?php elseif (isset($dbError)): ?>
-      <h1 class="h2 mb-1">Error de conexión</h1>
-    <?php else: ?>
-      <h1 class="h2 mb-1">Evaluación no encontrada</h1>
-    <?php endif; ?>
-  </div>
-</header>
-
-<main class="py-4">
-  <div class="container">
-    <?php if (isset($dbError)): ?>
-      <div class="alert alert-danger"><?= htmlspecialchars($dbError) ?></div>
-    <?php elseif (!empty($eval)): ?>
-
-      <!-- Stat cards -->
-      <div class="row g-3 mb-4 w-100">
-        <div class="col-md-6 col-xl-3">
-          <div class="dashboard-card stat-card h-100">
-            <div class="stat-label">Cumplimiento global</div>
-            <div class="stat-value" style="color: <?= $colorDash ?>;">
-              <?= number_format((float)$eval['total_final'], 2) ?>%
+<div class="shell">
+    <header class="hero">
+        <div class="hero-top">
+            <div>
+                <?php if (!empty($eval)): ?>
+                    <h1><?= htmlspecialchars($eval['nombre_candidato']) ?></h1>
+                    <p>
+                        <i class="bi bi-bookmark-fill me-1"></i> <?= htmlspecialchars($eval['area'] ?? '') ?>
+                        <span class="mx-2">|</span>
+                        <i class="bi bi-award me-1"></i> Categoría: <?= htmlspecialchars($eval['categoria'] ?? '') ?>
+                        <span class="mx-2">|</span>
+                        <i class="bi bi-diagram-3 me-1"></i> Rama: <?= htmlspecialchars(strtoupper($ramaNorm)) ?>
+                    </p>
+                <?php else: ?>
+                    <h1>Evaluación no encontrada</h1>
+                    <p>No se han encontrado registros para los criterios especificados.</p>
+                <?php endif; ?>
             </div>
-          </div>
-        </div>
-        <div class="col-md-6 col-xl-3">
-          <div class="dashboard-card stat-card h-100">
-            <div class="stat-label">Estado estimado</div>
-            <div class="stat-value" style="color: <?= $colorDash ?>;"><?= estadoEstimado($eval) ?></div>
-          </div>
-        </div>
-        <div class="col-md-6 col-xl-3">
-          <div class="dashboard-card stat-card h-100">
-            <div class="stat-label">Bloques cumplidos</div>
-            <div class="stat-value"><?= bloquesCumplidos($eval) ?> / 4</div>
-          </div>
-        </div>
-        <div class="col-md-6 col-xl-3">
-          <div class="dashboard-card stat-card h-100">
-            <div class="stat-label">Bloque más débil</div>
-            <div class="stat-value" style="font-size:1.2rem;"><?= bloqueDebil($eval) ?></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Resumen + Bloques -->
-      <div class="row g-3 mb-4">
-        <div class="col-lg-8">
-          <div class="dashboard-card summary-card">
-            <h2 class="h3 mb-3" style="color: <?= $colorDash ?>;">Resumen de progreso</h2>
-            <div class="big-percent" style="color: <?= $colorDash ?>;">
-              <?= number_format((float)$eval['total_final'], 2) ?>%
-              <span style="font-size:1.5rem; margin-left:10px;"><?= $iconDash ?></span>
+            <div class="hero-actions">
+                <?php
+                  $perfilUser = strtoupper($_SESSION['perfil_usuario'] ?? ($_SESSION['rol'] ?? 'PROFESOR'));
+                  $btnText = ($perfilUser === 'TUTOR') ? 'Panel Tutor' : 'Panel Profesor';
+                  $btnUrl = ($perfilUser === 'TUTOR') ? 'acelerador_panel/fronten/panel_tutor.php' : 'acelerador_panel/fronten/panel_profesor.php';
+                ?>
+                <a href="<?= $btnUrl ?>" class="btn">
+                    <i class="bi bi-arrow-left-circle me-2"></i><?= $btnText ?>
+                </a>
             </div>
-            <div class="custom-progress">
-              <div class="custom-progress-bar" style="width:<?= min(100, max(0, (float)$eval['total_final'])) ?>%; background: <?= $gradientDash ?>;"></div>
+        </div>
+    </header>
+
+    <main class="page-body">
+        <?php if (isset($dbError)): ?>
+            <div class="card">
+                <div class="alert alert-danger mb-0"><?= htmlspecialchars($dbError) ?></div>
             </div>
-            <button type="button"
-              style="position:absolute; top:12px; right:14px; background:none; border:none; cursor:pointer; font-size:1.1rem; color:#a0aec0; padding:0; line-height:1;"
-              data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="left"
-              data-bs-title="Código de colores"
-              data-bs-content="● Verde (≥ 70 pts): expediente muy sólido.&#10;&#10;● Ámbar (50–70 pts): en zona intermedia.&#10;&#10;● Rojo (< 50 pts): por debajo del umbral.&#10;&#10;⚠️ La barra puede ser ámbar y la evaluación estar APROBADA si se cumplen las reglas: B1+B2 ≥ 50 y total ≥ 55."
-              tabindex="0">ⓘ
-            </button>
-            <p class="mb-1"><strong>Resultado:</strong>
-              <span style="color: <?= $esPositivaDash ? '#16a34a' : '#dc2626' ?>; font-weight:700;">
-                <?= htmlspecialchars($eval['resultado'] ?? '-') ?>
-              </span>
-            </p>
-            <p class="mb-1"><strong>Regla 1 (B1+B2 &ge; 50):</strong> <?= (int)($eval['cumple_regla_1'] ?? 0) ? '<span style="color:#16a34a">Sí &#9989;</span>' : '<span style="color:#dc2626">No &#10060;</span>' ?></p>
-            <p class="mb-0"><strong>Regla 2 (total &ge; 55):</strong> <?= (int)($eval['cumple_regla_2'] ?? 0) ? '<span style="color:#16a34a">Sí &#9989;</span>' : '<span style="color:#dc2626">No &#10060;</span>' ?></p>
-          </div>
-        </div>
-        <div class="col-lg-4">
-          <div class="dashboard-card summary-card">
-            <h3 class="h5 mb-3" style="color: <?= $colorDash ?>;">Bloques</h3>
-            <p class="mb-2"><strong>Bloque 1:</strong> <?= number_format((float)($eval['bloque_1'] ?? 0), 2) ?> <span class="text-muted">/ 60</span></p>
-            <p class="mb-2"><strong>Bloque 2:</strong> <?= number_format((float)($eval['bloque_2'] ?? 0), 2) ?> <span class="text-muted">/ 30</span></p>
-            <p class="mb-2"><strong>Bloque 3:</strong> <?= number_format((float)($eval['bloque_3'] ?? 0), 2) ?> <span class="text-muted">/ 8</span></p>
-            <p class="mb-0"><strong>Bloque 4:</strong> <?= number_format((float)($eval['bloque_4'] ?? 0), 2) ?> <span class="text-muted">/ 2</span></p>
-          </div>
-        </div>
-      </div>
+        <?php elseif (!empty($eval)): ?>
 
-      <!-- Detalle completo de puntuaciones -->
-      <div class="dashboard-card p-4 mb-4">
-        <h3 class="h5 mb-3" style="color:#123b72;">Detalle de puntuaciones</h3>
-        <div class="table-responsive">
-          <table class="table table-sm table-bordered">
-            <thead class="table-light">
-              <tr><th>Apartado</th><th>Puntuación</th><th>Máximo</th></tr>
-            </thead>
-            <tbody>
-              <tr class="table-secondary"><td colspan="3"><strong>Bloque 1 &mdash; Investigación</strong></td></tr>
-              <tr><td>1.A Publicaciones científicas y patentes</td><td><?= number_format((float)($eval['puntuacion_1a'] ?? 0),2) ?></td><td>30</td></tr>
-              <tr><td>1.B Libros y capítulos</td><td><?= number_format((float)($eval['puntuacion_1b'] ?? 0),2) ?></td><td>12</td></tr>
-              <tr><td>1.C Proyectos y contratos</td><td><?= number_format((float)($eval['puntuacion_1c'] ?? 0),2) ?></td><td>5</td></tr>
-              <tr><td>1.D Transferencia de tecnología</td><td><?= number_format((float)($eval['puntuacion_1d'] ?? 0),2) ?></td><td>2</td></tr>
-              <tr><td>1.E Dirección de tesis doctorales</td><td><?= number_format((float)($eval['puntuacion_1e'] ?? 0),2) ?></td><td>4</td></tr>
-              <tr><td>1.F Congresos, conferencias</td><td><?= number_format((float)($eval['puntuacion_1f'] ?? 0),2) ?></td><td>5</td></tr>
-              <tr><td>1.G Otros méritos</td><td><?= number_format((float)($eval['puntuacion_1g'] ?? 0),2) ?></td><td>2</td></tr>
-              <tr class="table-secondary"><td colspan="3"><strong>Bloque 2 &mdash; Docencia</strong></td></tr>
-              <tr><td>2.A Docencia universitaria</td><td><?= number_format((float)($eval['puntuacion_2a'] ?? 0),2) ?></td><td>17</td></tr>
-              <tr><td>2.B Evaluaciones de calidad</td><td><?= number_format((float)($eval['puntuacion_2b'] ?? 0),2) ?></td><td>3</td></tr>
-              <tr><td>2.C Cursos de formación docente</td><td><?= number_format((float)($eval['puntuacion_2c'] ?? 0),2) ?></td><td>3</td></tr>
-              <tr><td>2.D Material docente y EEES</td><td><?= number_format((float)($eval['puntuacion_2d'] ?? 0),2) ?></td><td>7</td></tr>
-              <tr class="table-secondary"><td colspan="3"><strong>Bloque 3 &mdash; Formación y experiencia</strong></td></tr>
-              <tr><td>3.A Tesis, becas, estancias</td><td><?= number_format((float)($eval['puntuacion_3a'] ?? 0),2) ?></td><td>6</td></tr>
-              <tr><td>3.B Trabajo profesional</td><td><?= number_format((float)($eval['puntuacion_3b'] ?? 0),2) ?></td><td>2</td></tr>
-              <tr class="table-secondary"><td colspan="3"><strong>Bloque 4 &mdash; Otros méritos</strong></td></tr>
-              <tr><td>4. Otros méritos</td><td><?= number_format((float)($eval['bloque_4'] ?? 0),2) ?></td><td>2</td></tr>
-              <tr class="table-primary fw-bold"><td><strong>B1 + B2</strong></td><td><strong><?= number_format((float)($eval['total_b1_b2'] ?? ((float)($eval['bloque_1']??0)+(float)($eval['bloque_2']??0))), 2) ?></strong></td><td>&ge; 50</td></tr>
-              <tr class="table-primary fw-bold"><td><strong>Total final</strong></td><td><strong><?= number_format((float)($eval['total_final'] ?? 0), 2) ?></strong></td><td>&ge; 55</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- Asesor orientativo -->
-      <div class="dashboard-card p-4">
-        <h3 class="h5 mb-3" style="color:#123b72;"><i class="bi bi-robot me-1"></i> Asesor orientativo</h3>
-        <?php if (!empty($asesorDash)): ?>
-          <?php if (!empty($asesorDash['resumen'])): ?>
-            <p><?= htmlspecialchars((string)$asesorDash['resumen']) ?></p>
-          <?php endif; ?>
-          <?php if (!empty($asesorDash['acciones']) && is_array($asesorDash['acciones'])): ?>
-            <div class="d-flex flex-column gap-2 mb-3">
-              <?php foreach ($asesorDash['acciones'] as $accion): ?>
-                <div class="border rounded p-3">
-                  <strong><?= htmlspecialchars((string)($accion['titulo'] ?? 'Acción')) ?></strong>
-                  <?php if (!empty($accion['detalle'])): ?>
-                    <div class="mt-1"><?= htmlspecialchars((string)$accion['detalle']) ?></div>
-                  <?php endif; ?>
-                  <?php if (!empty($accion['impacto_estimado'])): ?>
-                    <div class="text-muted small mt-1">Impacto estimado: <?= htmlspecialchars((string)$accion['impacto_estimado']) ?></div>
-                  <?php endif; ?>
+            <div class="metrics-grid">
+                <div class="metric">
+                    <span class="label">Puntuación Total</span>
+                    <div class="value" style="color: <?= $colorDash ?>;"><?= number_format($_totalFinalDash, 2) ?>%</div>
                 </div>
-              <?php endforeach; ?>
-            </div>
-          <?php endif; ?>
-          <?php if (!empty($asesorDash['simulaciones']) && is_array($asesorDash['simulaciones'])): ?>
-            <div class="fw-bold small text-muted text-uppercase mb-2">Simulaciones rápidas</div>
-            <div class="row g-2">
-              <?php foreach ($asesorDash['simulaciones'] as $sim): ?>
-                <div class="col-sm-6">
-                  <div class="border rounded p-3">
-                    <strong><?= htmlspecialchars((string)($sim['escenario'] ?? 'Escenario')) ?></strong>
-                    <?php if (!empty($sim['efecto_estimado'])): ?>
-                      <div class="mt-1 small"><?= htmlspecialchars((string)$sim['efecto_estimado']) ?></div>
-                    <?php endif; ?>
-                    <?php if (isset($sim['nuevo_total_aprox'])): ?>
-                      <div class="text-muted small">Nuevo total ≈ <?= number_format((float)$sim['nuevo_total_aprox'], 2) ?></div>
-                    <?php endif; ?>
-                  </div>
+                <div class="metric">
+                    <span class="label">Estado Estimado</span>
+                    <div class="value" style="color: <?= $colorDash ?>;"><?= estadoEstimado($eval) ?></div>
                 </div>
-              <?php endforeach; ?>
+                <div class="metric">
+                    <span class="label">Bloques Cumplidos</span>
+                    <div class="value"><?= bloquesCumplidos($eval) ?> / 4</div>
+                </div>
+                <div class="metric">
+                    <span class="label">Bloque más débil</span>
+                    <div class="value" style="font-size: 20px;"><?= bloqueDebil($eval) ?></div>
+                </div>
             </div>
-          <?php endif; ?>
+
+            <div class="split">
+                <div class="stack">
+                    <section class="card">
+                        <h2>Resumen última evaluación</h2>
+                        <div class="d-flex align-items-baseline gap-3">
+                            <span style="font-size: 48px; font-weight: 800; color: <?= $colorDash ?>;"><?= number_format($_totalFinalDash, 2) ?>%</span>
+                            <span class="badge-custom <?= $esPositivaDash ? 'success' : 'danger' ?>">
+                                <?= $esPositivaDash ? '<i class="bi bi-check-circle-fill me-2"></i>' : '<i class="bi bi-x-circle-fill me-2"></i>' ?>
+                                <?= htmlspecialchars($eval['resultado'] ?? '-') ?>
+                            </span>
+                        </div>
+
+                        <div class="progress-glass">
+                            <div class="progress-glass-bar" style="width: <?= min(100, max(0, $_totalFinalDash)) ?>%; background: <?= $gradientDash ?>;"></div>
+                        </div>
+
+                        <div class="row g-4 mt-2">
+                            <div class="col-md-6">
+                                <div class="d-flex justify-content-between align-items-center p-3 rounded-4" style="background: rgba(20, 88, 204, 0.2); border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(5px);">
+                                    <span class="fw-bold">Regla 1 (B1+B2 &ge; 50)</span>
+                                    <span><?= (int)($eval['cumple_regla_1'] ?? 0) ? '<span class="text-success"><i class="bi bi-check-lg"></i></span>' : '<span class="text-danger"><i class="bi bi-x-lg"></i></span>' ?></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex justify-content-between align-items-center p-3 rounded-4" style="background: rgba(20, 88, 204, 0.2); border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(5px);">
+                                    <span class="fw-bold">Regla 2 (Total &ge; 55)</span>
+                                    <span><?= (int)($eval['cumple_regla_2'] ?? 0) ? '<span class="text-success"><i class="bi bi-check-lg"></i></span>' : '<span class="text-danger"><i class="bi bi-x-lg"></i></span>' ?></span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="card">
+                        <h3>Detalle de puntuaciones</h3>
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Apartado</th>
+                                        <th>Puntuación</th>
+                                        <th>Máximo</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style="background: rgba(20, 88, 204, 0.2);"><td colspan="3"><strong>Bloque 1 — Investigación</strong></td></tr>
+                                    <tr><td>1.A Publicaciones científicas y patentes</td><td><?= number_format((float)($eval['puntuacion_1a'] ?? 0),2) ?></td><td>30</td></tr>
+                                    <tr><td>1.B Libros y capítulos</td><td><?= number_format((float)($eval['puntuacion_1b'] ?? 0),2) ?></td><td>12</td></tr>
+                                    <tr><td>1.C Proyectos y contratos</td><td><?= number_format((float)($eval['puntuacion_1c'] ?? 0),2) ?></td><td>5</td></tr>
+                                    <tr><td>1.D Transferencia de tecnología</td><td><?= number_format((float)($eval['puntuacion_1d'] ?? 0),2) ?></td><td>2</td></tr>
+                                    <tr><td>1.E Dirección de tesis doctorales</td><td><?= number_format((float)($eval['puntuacion_1e'] ?? 0),2) ?></td><td>4</td></tr>
+                                    <tr><td>1.F Congresos, conferencias</td><td><?= number_format((float)($eval['puntuacion_1f'] ?? 0),2) ?></td><td>5</td></tr>
+                                    <tr><td>1.G Otros méritos</td><td><?= number_format((float)($eval['puntuacion_1g'] ?? 0),2) ?></td><td>2</td></tr>
+                                    <tr style="background: rgba(20, 88, 204, 0.2);"><td colspan="3"><strong>Bloque 2 — Docencia</strong></td></tr>
+                                    <tr><td>2.A Docencia universitaria</td><td><?= number_format((float)($eval['puntuacion_2a'] ?? 0),2) ?></td><td>17</td></tr>
+                                    <tr><td>2.B Evaluaciones de calidad</td><td><?= number_format((float)($eval['puntuacion_2b'] ?? 0),2) ?></td><td>3</td></tr>
+                                    <tr><td>2.C Cursos de formación docente</td><td><?= number_format((float)($eval['puntuacion_2c'] ?? 0),2) ?></td><td>3</td></tr>
+                                    <tr><td>2.D Material docente y EEES</td><td><?= number_format((float)($eval['puntuacion_2d'] ?? 0),2) ?></td><td>7</td></tr>
+                                    <tr style="background: rgba(20, 88, 204, 0.2);"><td colspan="3"><strong>Bloque 3 — Formación y experiencia</strong></td></tr>
+                                    <tr><td>3.A Tesis, becas, estancias</td><td><?= number_format((float)($eval['puntuacion_3a'] ?? 0),2) ?></td><td>6</td></tr>
+                                    <tr><td>3.B Trabajo profesional</td><td><?= number_format((float)($eval['puntuacion_3b'] ?? 0),2) ?></td><td>2</td></tr>
+                                    <tr style="background: rgba(20, 88, 204, 0.2);"><td colspan="3"><strong>Bloque 4 — Otros méritos</strong></td></tr>
+                                    <tr><td>4. Otros méritos</td><td><?= number_format((float)($eval['bloque_4'] ?? 0),2) ?></td><td>2</td></tr>
+                                    <tr style="background: var(--azul-glass);"><td class="fw-bold">Total Final</td><td class="fw-bold" style="color: <?= $colorDash ?>;"><?= number_format($_totalFinalDash, 2) ?></td><td class="fw-bold">&ge; 55</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+
+                <aside class="stack">
+                    <section class="card">
+                        <h3>Puntuación por Bloques</h3>
+                        <div class="stack" style="gap: 15px;">
+                            <div class="metric p-3">
+                                <span class="label">Investigación</span>
+                                <div class="value" style="font-size: 24px;"><?= number_format((float)($eval['bloque_1'] ?? 0), 2) ?> <small class="text-white-50" style="font-size: 14px;">/ 60</small></div>
+                            </div>
+                            <div class="metric p-3">
+                                <span class="label">Docencia</span>
+                                <div class="value" style="font-size: 24px;"><?= number_format((float)($eval['bloque_2'] ?? 0), 2) ?> <small class="text-white-50" style="font-size: 14px;">/ 30</small></div>
+                            </div>
+                            <div class="metric p-3">
+                                <span class="label">Formación</span>
+                                <div class="value" style="font-size: 24px;"><?= number_format((float)($eval['bloque_3'] ?? 0), 2) ?> <small class="text-white-50" style="font-size: 14px;">/ 8</small></div>
+                            </div>
+                            <div class="metric p-3">
+                                <span class="label">Otros Méritos</span>
+                                <div class="value" style="font-size: 24px;"><?= number_format((float)($eval['bloque_4'] ?? 0), 2) ?> <small class="text-white-50" style="font-size: 14px;">/ 2</small></div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="card">
+                        <h3><i class="bi bi-robot me-2 text-info"></i>Asesor IA</h3>
+                        <?php if (!empty($asesorDash)): ?>
+                            <?php if (!empty($asesorDash['resumen'])): ?>
+                                <p class="small text-white-50"><?= htmlspecialchars((string)$asesorDash['resumen']) ?></p>
+                            <?php endif; ?>
+
+                            <?php if (!empty($asesorDash['acciones']) && is_array($asesorDash['acciones'])): ?>
+                                <div class="stack" style="gap: 10px;">
+                                    <?php foreach (array_slice($asesorDash['acciones'], 0, 3) as $accion): ?>
+                                        <div class="asesor-item p-3 mb-0">
+                                            <div class="fw-bold small mb-1"><?= htmlspecialchars((string)($accion['titulo'] ?? 'Acción')) ?></div>
+                                            <div class="text-white-50" style="font-size: 12px;"><?= htmlspecialchars((string)($accion['impacto_estimado'] ?? '')) ?></div>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            <?php endif; ?>
+                        <?php else: ?>
+                            <div class="text-center py-4">
+                                <i class="bi bi-info-circle text-white-50" style="font-size: 24px;"></i>
+                                <p class="small text-white-50 mt-2">No hay consejos disponibles.</p>
+                            </div>
+                        <?php endif; ?>
+                    </section>
+                </aside>
+            </div>
+
         <?php else: ?>
-          <p class="text-muted">No hay consejos del asesor disponibles para esta evaluación.</p>
+            <div class="card text-center py-5">
+                <i class="bi bi-search text-white-50" style="font-size: 48px;"></i>
+                <h2 class="mt-3">Sin resultados</h2>
+                <p class="text-white-50">No se ha encontrado ninguna evaluación para "<strong><?= htmlspecialchars($nombre ?? 'sin nombre') ?></strong>".</p>
+                <div class="mt-4">
+                    <a href="<?= $btnUrl ?>" class="btn">Volver al panel</a>
+                </div>
+            </div>
         <?php endif; ?>
-        <hr>
-        <small class="text-muted">Última actualización: <?= htmlspecialchars($eval['fecha_creacion'] ?? '-') ?></small>
-      </div>
+    </main>
+</div>
 
-    <?php else: ?>
-      <div class="alert alert-warning">
-        No se ha encontrado ninguna evaluación para "<strong><?= htmlspecialchars($nombre ?? 'sin nombre') ?></strong>" en la base de datos <strong><?= htmlspecialchars($dbName) ?></strong>.
-      </div>
-    <?php endif; ?>
-  </div>
-</main>
+<?php include('acelerador_panel/fronten/chatbot.php'); ?>
 
-</body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('[data-bs-toggle="popover"]').forEach(el => {
-      new bootstrap.Popover(el, { html: false });
-    });
-  });
-  </script>
-
-  <?php include('acelerador_panel/fronten/chatbot.php'); ?>
-
-  </html>
+</body>
+</html>

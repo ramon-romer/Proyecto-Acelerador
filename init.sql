@@ -73,6 +73,7 @@ CREATE TABLE `tbl_grupo_profesor` (
   `id_grupo` int(10) NOT NULL,
   `id_profesor` int(10) NOT NULL,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `id_profesor_unique` (`id_profesor`),
   KEY `id_grupo` (`id_grupo`),
   KEY `fk_profesor_grupo` (`id_profesor`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

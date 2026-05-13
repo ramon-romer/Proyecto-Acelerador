@@ -21,9 +21,9 @@ final class MysqliDatabase
     {
         mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
-        $host = (string) ($config['host'] ?? 'localhost');
-        $user = (string) ($config['user'] ?? 'root');
-        $password = (string) ($config['password'] ?? '');
+        $host = (string) ($config['host'] ?? 'base-de-datos');
+        $user = (string) ($config['user'] ?? 'usuario_web');
+        $password = (string) ($config['password'] ?? 'password_segura');
         $port = (int) ($config['port'] ?? 3306);
 
         $dbCandidates = [];

@@ -156,5 +156,26 @@ body {
 
 header {
     height: 20px;
-}  
-.listas ul li { color: lightgray !important; } 
+}
+.listas ul li { color: lightgray !important; }
+
+/* Forzar que los logos mantengan su tamaño de forma rígida incluso al pulsar F11 o hacer zoom */
+[id="#acele"] {
+    height: 50px !important;
+    min-height: 50px !important;
+    max-height: 50px !important;
+    width: auto !important;
+    flex-shrink: 0 !important;
+    flex-grow: 0 !important;
+    object-fit: contain !important;
+}
+
+#academy {
+    height: 140px !important;
+    min-height: 140px !important;
+    max-height: 140px !important;
+    width: auto !important;
+    flex-shrink: 0 !important;
+    flex-grow: 0 !important;
+    object-fit: contain !important;
+}
