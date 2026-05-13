@@ -111,7 +111,57 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['
     exit();
 }
 
-// ── Mapa rama → BD evaluadora (Global para acciones AJAX) ─────────────
+// ── ACCIÓN: decision_readmision (TUTOR) ──────────────────────────────
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['accion'] === 'decision_readmision') {
+    $id_solicitud = (int)($_POST['id_solicitud'] ?? 0);
+    $decision = $_POST['decision'] ?? ''; // 'ACEPTAR' o 'RECHAZAR'
+
+    if ($id_solicitud > 0) {
+        $q_sol = mysqli_query($conn, "SELECT * FROM tbl_solicitud_readmision WHERE id = $id_solicitud AND id_tutor = $idTutor");
+        if ($q_sol && $sol = mysqli_fetch_assoc($q_sol)) {
+            $id_prof_r = $sol['id_profesor'];
+            $id_grupo_r = $sol['id_grupo'];
+
+            if ($decision === 'ACEPTAR') {
+                mysqli_query($conn, "INSERT IGNORE INTO tbl_grupo_profesor (id_grupo, id_profesor) VALUES ($id_grupo_r, $id_prof_r)");
+                mysqli_query($conn, "UPDATE tbl_solicitud_readmision SET estado = 'ACEPTADA' WHERE id = $id_solicitud");
+                $mensaje = "Profesor readmitido con éxito.";
+                $tipo_mensaje = "success";
+            } else {
+                mysqli_query($conn, "UPDATE tbl_solicitud_readmision SET estado = 'RECHAZADA' WHERE id = $id_solicitud");
+                // Notificar al profesor el rechazo
+                mysqli_query($conn, "CREATE TABLE IF NOT EXISTS tbl_notificacion_pendiente (
+                  id INT AUTO_INCREMENT PRIMARY KEY,
+                  id_profesor INT NOT NULL,
+                  mensaje TEXT NOT NULL,
+                  fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )");
+                $msg_notif = mysqli_real_escape_string($conn, "Se le asignara un grupo a la mayor brevedad posible");
+                mysqli_query($conn, "INSERT INTO tbl_notificacion_pendiente (id_profesor, mensaje) VALUES ($id_prof_r, '$msg_notif')");
+                $mensaje = "Petición de readmisión rechazada.";
+                $tipo_mensaje = "info";
+            }
+            // Eliminar la notificación del tutor una vez tomada la decisión
+            mysqli_query($conn, "DELETE FROM tbl_notificacion_tutor WHERE id_tutor = $idTutor AND tipo = 'readmision' AND id_referencia = $id_prof_r");
+        }
+    }
+}
+
+// ── Notificaciones del tutor (incluyendo readmisiones) ────────────────
+$notifsTutor = [];
+if ($idTutor > 0) {
+    $tablaExistsT = mysqli_query($conn, "SHOW TABLES LIKE 'tbl_notificacion_tutor'");
+    if ($tablaExistsT && mysqli_num_rows($tablaExistsT) > 0) {
+        $qNotT = mysqli_query($conn, "SELECT n.*, s.id as id_solicitud FROM tbl_notificacion_tutor n 
+                                     LEFT JOIN tbl_solicitud_readmision s ON n.id_referencia = s.id_profesor AND s.estado = 'PENDIENTE'
+                                     WHERE n.id_tutor = $idTutor ORDER BY n.fecha_creacion ASC");
+        if ($qNotT) {
+            while ($rt = mysqli_fetch_assoc($qNotT)) {
+                $notifsTutor[] = $rt;
+            }
+        }
+    }
+}
 $mapaDB = [
     'CSYJ' => 'evaluador_aneca_csyj', 'EXPERIMENTALES' => 'evaluador_aneca_experimentales',
     'HUMANIDADES' => 'evaluador_aneca_humanidades', 'SALUD' => 'evaluador_aneca_salud',
@@ -664,7 +714,7 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
           style="height:50px; width:auto;" id="#acele" />
       </div>
       <div class="imagen">
-        <img src="img/AcademyAccelerator_def.png" id="academy" alt="academy" />
+        <img src="../../acelerador_login/fronten/img/AcademyAccelerator_def.png" id="academy" alt="academy" />
       </div>
     </div>
   </header>
@@ -828,6 +878,34 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
           </div>
         <?php endif; ?>
 
+        <!-- Notificaciones de Decisiones Pendientes (Readmisiones) -->
+        <?php if (!empty($notifsTutor)): ?>
+        <div class="row g-3 mb-4 w-100">
+          <div class="col-12">
+            <div class="dashboard-info-card border-warning border-opacity-50">
+              <h5 class="text-warning mb-3"><i class="bi bi-exclamation-triangle-fill me-2"></i>Decisiones Pendientes</h5>
+              <div class="d-flex flex-column gap-3">
+                <?php foreach ($notifsTutor as $nt): ?>
+                  <div class="p-3 rounded-4 d-flex flex-column flex-md-row justify-content-between align-items-center gap-3" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1);">
+                    <div class="text-white">
+                        <i class="bi bi-person-badge me-2 text-info"></i> <?= htmlspecialchars($nt['mensaje']) ?>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <form method="POST" class="m-0 d-flex gap-3">
+                            <input type="hidden" name="accion" value="decision_readmision">
+                            <input type="hidden" name="id_solicitud" value="<?= $nt['id_solicitud'] ?>">
+                            <button type="submit" name="decision" value="ACEPTAR" class="btn btn-sm btn-success rounded-pill px-4 fw-bold">ACEPTAR</button>
+                            <button type="submit" name="decision" value="RECHAZAR" class="btn btn-sm btn-outline-danger rounded-pill px-4 fw-bold">RECHAZAR</button>
+                        </form>
+                    </div>
+                  </div>
+                <?php endforeach; ?>
+              </div>
+            </div>
+          </div>
+        </div>
+        <?php endif; ?>
+
         <!-- Tarjetas de estadísticas -->
         <div class="row g-3 mb-4 w-100">
           <div class="col-md-4">
@@ -893,8 +971,7 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
                     <button type="button" class="btn btn-sm btn-outline-light rounded-3 d-flex flex-column align-items-center btn-gantt-prof" style="min-width:68px; padding:8px 10px; gap:4px;" data-bs-toggle="modal" data-bs-target="#modalGrafico<?= $pid ?>" data-id="<?= $pid ?>">
                       <i class="bi bi-bar-chart-line" style="font-size:1.25rem;"></i>
                       <span style="font-size:.65rem; line-height:1;">Gráfico</span>
-                    </button>
-                    <button type="button" class="btn btn-sm btn-outline-light rounded-3 d-flex flex-column align-items-center" style="min-width:68px; padding:8px 10px; gap:4px;" data-bs-toggle="modal" data-bs-target="#modalOpciones<?= $pid ?>">
+                    </button>                    <button type="button" class="btn btn-sm btn-outline-light rounded-3 d-flex flex-column align-items-center" style="min-width:68px; padding:8px 10px; gap:4px;" data-bs-toggle="modal" data-bs-target="#modalOpciones<?= $pid ?>">
                       <i class="bi bi-three-dots" style="font-size:1.25rem;"></i>
                       <span style="font-size:.65rem; line-height:1;">Opciones</span>
                     </button>
@@ -1731,24 +1808,50 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
                     let finSegmento = real ? real : hoy.getTime();
                     if (finSegmento < inicioSegmento) finSegmento = inicioSegmento;
 
+                    // Cálculo de Retraso (Aditivo)
+                    const esRetraso = finSegmento > limite;
+                    let infoRetraso = '';
+                    let widthRetraso = 0;
+                    let widthNormal = 0;
+
+                    if (esRetraso) {
+                        const diff = finSegmento - limite;
+                        const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
+                        const horas = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                        const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                        infoRetraso = ` — Retraso: ${dias}d ${horas}h ${mins}m`;
+                        
+                        // Si empezó antes del límite, la parte normal llega hasta el límite
+                        const finNormal = Math.max(inicioSegmento, limite);
+                        widthNormal = ((Math.min(finSegmento, limite) - inicioSegmento) / totalDuracion) * 100;
+                        widthRetraso = ((finSegmento - Math.max(inicioSegmento, limite)) / totalDuracion) * 100;
+                    } else {
+                        widthNormal = ((finSegmento - inicioSegmento) / totalDuracion) * 100;
+                    }
+
                     const marginLeft = ((inicioSegmento - inicioTarea) / totalDuracion) * 100;
-                    const width = ((finSegmento - inicioSegmento) / totalDuracion) * 100;
-                    
-                    const esFueraDePlazo = (!real && hoy.getTime() > limite);
-                    const colorBarra = real ? '#198754' : (esFueraDePlazo ? '#f87171' : '#3b82f6');
-                    const animation = (!real && width > 1) ? 'progress-bar-animated progress-bar-striped' : '';
+                    const colorBarra = real ? '#198754' : '#3b82f6';
+                    const animation = (!real) ? 'progress-bar-animated progress-bar-striped' : '';
 
                     html += `
                         <div class="gantt-row">
                             <div class="d-flex justify-content-between mb-1">
                                 <span class="text-white-50" style="font-size:0.75rem;">Entrega ${idx + 1}</span>
-                                ${esFueraDePlazo ? '<span class="text-danger fw-bold" style="font-size:0.7rem;">FUERA DE PLAZO</span>' : ''}
+                                ${esRetraso ? `<span class="text-danger fw-bold" style="font-size:0.7rem;">${real ? 'ENTREGA TARDÍA' : 'FUERA DE PLAZO'}${infoRetraso}</span>` : ''}
                             </div>
-                            <div class="progress position-relative" style="height:12px; background:rgba(255,255,255,0.05); overflow:visible;">
+                            <div class="progress position-relative" style="height:10px; background:rgba(255,255,255,0.05); overflow:visible;">
+                                <!-- Barra Normal -->
                                 <div class="progress-bar ${animation}" 
-                                     style="width:${width}%; margin-left:${marginLeft}%; background-color:${colorBarra}; transition:width 0.4s ease;"></div>
-                                <!-- Marca de Plazo Límite -->
-                                <div class="position-absolute" style="left:${((limite - inicioTarea) / totalDuracion) * 100}%; top:-5px; height:22px; width:2px; background:#fff; opacity:0.3;" title="Plazo: ${limiteStr}"></div>
+                                     style="width:${widthNormal}%; margin-left:${marginLeft}%; background-color:${colorBarra}; transition:width 0.4s ease; border-radius:10px 0 0 10px;"></div>
+                                <!-- Barra de Retraso (Roja) -->
+                                ${widthRetraso > 0 ? `
+                                <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                                     style="width:${widthRetraso}%; background-color:#f87171; transition:width 0.4s ease; border-radius:0 10px 10px 0;"></div>` : ''}
+                                
+                                <!-- Rombo de Plazo Límite (Fin de Plazo) -->
+                                <div class="position-absolute" 
+                                     style="left:${((limite - inicioTarea) / totalDuracion) * 100}%; top:50%; width:16px; height:16px; border:3px solid ${esRetraso ? '#f87171' : '#fff'}; background:#0f172a; transform: translate(-50%, -50%) rotate(45deg); z-index:10; box-shadow: ${esRetraso ? '0 0 15px #f87171' : 'none'};" 
+                                     title="Plazo: ${limiteStr}"></div>
                             </div>
                         </div>`;
                 });

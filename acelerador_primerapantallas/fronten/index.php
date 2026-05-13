@@ -152,15 +152,11 @@ if (isset($_POST["guardar"])) {
   <header>
     <div class="contenedorimg">
       <div class="imagen">
-        <a href="../../index.php">
-          <img src="https://uf3ceu.es/wp-content/uploads/logo-uf3-2k25.svg" alt="CEU Universidad Fernando III"
-            style="height:50px; width:auto;" id="#acele" />
-        </a>
+        <img src="https://uf3ceu.es/wp-content/uploads/logo-uf3-2k25.svg" alt="CEU Universidad Fernando III"
+          style="height:50px; width:auto;" id="#acele" />
       </div>
       <div class="imagen">
-        <a href="../../index.php">
-          <img src="img/AcademyAccelerator_def.png" id="academy" alt="academy" />
-        </a>
+        <img src="img/AcademyAccelerator_def.png" id="academy" alt="academy" />
       </div>
     </div>
   </header>
@@ -316,24 +312,40 @@ if (isset($_POST["guardar"])) {
       <div class="direccion">
         <img src="https://uf3ceu.es/wp-content/uploads/logo-uf3-2k25.svg" alt="CEU Universidad Fernando III"
           style="height:50px; width:auto;" id="#acele" />
-        <p>Glorieta Ángel Herrera Oria, s/n,<br />41930 Bormujos,<br />Sevilla</p>
+        <p>
+          Glorieta Ángel Herrera Oria, s/n,<br />
+          41930 Bormujos,<br />
+          Sevilla
+        </p>
       </div>
       <div class="requerimientolegal">
         <div class="columna">
           <h4>La Empresa</h4>
-          <ul><li>Contacto</li><li>FAQ</li><li>Soporte</li></ul>
+          <ul>
+            <li>Contacto</li>
+            <li>Preguntas Frecuentes (FAQ)</li>
+            <li>Centro de Ayuda</li>
+            <li>Soporte</li>
+          </ul>
         </div>
         <div class="columna">
           <h4>Ayuda</h4>
-          <ul><li>Términos</li><li>Cookies</li></ul>
+          <ul>
+            <li>Términos y Condiciones</li>
+            <li>Política de Cookies</li>
+          </ul>
         </div>
         <div class="columna">
           <h4>Legal</h4>
-          <ul><li>Sobre nosotros</li><li>Blog</li></ul>
+          <ul>
+            <li>Sobre nosotros</li>
+            <li>Política de Cookies</li>
+            <li>Blog</li>
+          </ul>
         </div>
       </div>
       <div class="piepag">
-        <p>&copy; CEU Lab. Todos los derechos reservados.</p>
+        <p>&copy; UF3. Todos los derechos reservados.</p>
       </div>
     </div>
   </footer>

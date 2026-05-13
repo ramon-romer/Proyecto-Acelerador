@@ -162,6 +162,7 @@ ALTER TABLE `tbl_grupo`
 --
 ALTER TABLE `tbl_grupo_profesor`
   ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `id_profesor_unique` (`id_profesor`),
   ADD KEY `id_grupo` (`id_grupo`),
   ADD KEY `fk_profesor` (`id_profesor`);
 
