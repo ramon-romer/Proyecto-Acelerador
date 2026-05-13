@@ -10,7 +10,7 @@ define('DB_PORT', 3306);             // Puerto (por defecto 3306 para MySQL)
 
 // Crear conexión
 try {
-    $$conn = mysqli_connect(DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT);
+    $conn = mysqli_connect(DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT);
  
     // Verificar conexión
     if (!$conn) {
