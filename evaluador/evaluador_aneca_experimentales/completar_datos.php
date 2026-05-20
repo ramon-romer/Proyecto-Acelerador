@@ -65,7 +65,7 @@ exp_render_layout_start(
         border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 20px;
         padding: 24px;
-        margin: 20px 0;
+        margin: 32px 0;
         background: rgba(255, 255, 255, 0.03);
     }
     .bloque h3 {
@@ -76,18 +76,18 @@ exp_render_layout_start(
     .fila {
         border: 1px solid rgba(255, 255, 255, 0.05);
         border-radius: 15px;
-        padding: 16px;
-        margin: 12px 0;
+        padding: 12px;
+        margin: 10px 0;
         background: rgba(0, 0, 0, 0.2);
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        gap: 16px;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 12px;
     }
     .fila label {
         display: block;
         font-size: 11px;
         font-weight: 700;
-        margin-bottom: 8px;
+        margin-bottom: 6px;
         color: rgba(255, 255, 255, 0.5);
         text-transform: uppercase;
         letter-spacing: 0.05em;
@@ -96,44 +96,25 @@ exp_render_layout_start(
     .fila select,
     .fila textarea {
         width: 100%;
-        padding: 10px 14px;
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        border-radius: 10px;
+        padding: 8px 12px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
         font-size: 14px;
-        background: rgba(20, 30, 55, 0.85) !important;
-        color: #e2e8f0 !important;
+        background: rgba(255, 255, 255, 0.05);
+        color: #fff;
         box-sizing: border-box;
-        transition: border-color 0.2s, background 0.2s;
-        -webkit-appearance: none;
-        appearance: none;
-    }
-    .fila input:focus,
-    .fila select:focus,
-    .fila textarea:focus {
-        border-color: rgba(255, 255, 255, 0.35);
-        background: rgba(20, 30, 65, 0.95) !important;
-        outline: none;
-    }
-    /* Evitar que el sistema operativo imponga fondo blanco en select */
-    .fila select option {
-        background: #0f1e3a;
-        color: #e2e8f0;
     }
     .hint {
         color: rgba(255, 255, 255, 0.4);
         font-size: 13px;
-        margin: 8px 0 16px;
-        line-height: 1.5;
+        margin: 6px 0 12px;
+        line-height: 1.4;
     }
     .acciones {
         display: flex;
         gap: 12px;
         flex-wrap: wrap;
-        margin-top: 32px;
-        padding: 24px;
-        background: rgba(255, 255, 255, 0.02);
-        border-radius: 20px;
-        border: 1px solid rgba(255, 255, 255, 0.05);
+        margin-top: 24px;
     }
     .subgrid-2 {
         display: grid;
@@ -159,16 +140,16 @@ exp_render_layout_start(
         font-style: italic;
         margin: 12px 0;
         text-align: center;
-        padding: 20px;
+        padding: 15px;
         border: 1px dashed rgba(255, 255, 255, 0.1);
-        border-radius: 15px;
+        border-radius: 12px;
     }
     button.btn {
         background: rgba(255, 255, 255, 0.05);
         border: 1px solid rgba(255, 255, 255, 0.1);
         color: #fff;
-        padding: 10px 20px;
-        border-radius: 12px;
+        padding: 8px 16px;
+        border-radius: 10px;
         cursor: pointer;
         font-weight: 600;
         transition: all 0.2s;
@@ -176,6 +157,40 @@ exp_render_layout_start(
     button.btn:hover {
         background: rgba(255, 255, 255, 0.1);
         border-color: rgba(255, 255, 255, 0.2);
+    }
+    .aside-card-short {
+        padding: 16px !important;
+    }
+    .aside-card-short h2 {
+        font-size: 18px !important;
+        margin-bottom: 12px !important;
+    }
+    .aside-card-short .kpi {
+        padding: 12px !important;
+    }
+    .help-item {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        padding: 10px;
+        border-radius: 12px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+    .help-item:hover {
+        background: rgba(255, 255, 255, 0.08);
+        transform: translateX(5px);
+        border-color: rgba(255, 255, 255, 0.2);
+    }
+    .help-tag {
+        font-size: 10px;
+        text-transform: uppercase;
+        font-weight: 800;
+        letter-spacing: 0.1em;
+        display: flex;
+        align-items: center;
+        gap: 6px;
     }
 </style>
 
@@ -652,11 +667,15 @@ exp_render_layout_start(
     document.addEventListener('DOMContentLoaded', actualizarVacios);
 </script>
 
-<section class="card stack">
+<section class="card stack" style="margin-bottom: 32px;">
     <div class="meta-grid">
         <div class="metric">
             <span class="label">Candidato</span>
-            <span class="value" style="font-size:20px"><?= exp_h($nombre) ?></span>
+            <?php if ($nombre === ''): ?>
+                <input type="text" name="nombre_candidato_nuevo" form="form-evaluacion" placeholder="Nombre del candidato..." required style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 4px 8px; border-radius: 8px;">
+            <?php else: ?>
+                <span class="value" style="font-size:20px"><?= exp_h($nombre) ?></span>
+            <?php endif; ?>
         </div>
         <div class="metric">
             <span class="label">Área</span>
@@ -674,23 +693,23 @@ exp_render_layout_start(
         <section class="card">
             <div class="subgrid-2">
                 <div class="nota-maximos">
-                    <strong>Distribución orientativa PCD/PUP · Experimentales</strong>
+                    <strong>Distribución orientativa PCD/PUP · Experimentales</strong><br>
                     B1: 1A=35, 1B=7, 1C=7, 1D=4, 1E=4, 1F=2, 1G=1<br>
                     B2: 30 · B3: 8 · B4: 2
                 </div>
                 <div class="nota-maximos">
-                    <strong>Regla de evaluación positiva</strong>
+                    <strong>Regla de evaluación positiva</strong><br>
                     1 + 2 ≥ 50<br>
                     1 + 2 + 3 + 4 ≥ 55
                 </div>
             </div>
 
-            <form action="guardar_complemento.php" method="post">
+            <form action="guardar_complemento.php" id="form-evaluacion" method="post">
                 <input type="hidden" name="nombre_candidato" value="<?= htmlspecialchars($nombre, ENT_QUOTES, 'UTF-8') ?>">
                 <textarea name="json_entrada_base" style="display:none;"><?= htmlspecialchars($jsonEntrada, ENT_QUOTES, 'UTF-8') ?></textarea>
 
                 <div style="margin: 18px 0 4px;">
-                    <h2 style="color:#fff;">Bloque 1. Experiencia investigadora</h2>
+                    <h2>Bloque 1. Experiencia investigadora</h2>
                 </div>
 
                 <div class="bloque">
@@ -744,7 +763,7 @@ exp_render_layout_start(
                 </div>
 
                 <div style="margin: 18px 0 4px;">
-                    <h2 style="color:#fff;">Bloque 2. Experiencia docente</h2>
+                    <h2>Bloque 2. Experiencia docente</h2>
                 </div>
 
                 <div class="bloque">
@@ -776,7 +795,7 @@ exp_render_layout_start(
                 </div>
 
                 <div style="margin: 18px 0 4px;">
-                    <h2 style="color:#fff;">Bloque 3. Formación académica y experiencia profesional</h2>
+                    <h2>Bloque 3. Formación académica y experiencia profesional</h2>
                 </div>
 
                 <div class="bloque">
@@ -794,7 +813,7 @@ exp_render_layout_start(
                 </div>
 
                 <div style="margin: 18px 0 4px;">
-                    <h2 style="color:#fff;">Bloque 4. Otros méritos</h2>
+                    <h2>Bloque 4. Otros méritos</h2>
                 </div>
 
                 <div class="bloque">
@@ -806,7 +825,7 @@ exp_render_layout_start(
 
                 <div class="acciones">
                     <button type="submit">Fusionar, recalcular y guardar</button>
-                    <a class="btn outline" href="index.php" style="background:transparent; border: 1px solid rgba(255,255,255,0.2); text-decoration:none; display:inline-block; line-height:1; vertical-align:middle; padding-top:14px;">Cancelar</a>
+                    <a class="btn outline" href="index.php" style="background:transparent; border: 1px solid rgba(255,255,255,0.2); text-decoration:none; display:inline-block; line-height:1; vertical-align:middle; padding-top:14px; box-sizing:border-box;">Cancelar</a>
                 </div>
             </form>
         </section>
@@ -820,26 +839,46 @@ exp_render_layout_start(
     </div>
 
     <aside class="stack">
-        <section class="card">
-            <h2>Resumen de extracción</h2>
-            <p class="muted">Vista rápida del expediente detectado antes de añadir o corregir datos manualmente.</p>
+        <section class="card aside-card-short">
+            <h2 style="margin-bottom:8px;">Resumen</h2>
             <div class="kpis">
                 <?php foreach ($resumen as $label => $valor): ?>
                     <div class="kpi">
-                        <span class="label"><?= exp_h($label) ?></span>
-                        <strong><?= exp_h((string)$valor) ?></strong>
+                        <span class="label" style="font-size:12px;"><?= h($label) ?></span>
+                        <strong style="font-size:24px;"><?= h((string)$valor) ?></strong>
                     </div>
                 <?php endforeach; ?>
             </div>
         </section>
 
-        <section class="card">
-            <h2>Ayuda rápida</h2>
-            <ul class="muted" style="padding-left: 20px;">
-                <li>Los cambios manuales se fusionarán con la extracción del PDF.</li>
-                <li>El recalculo aplicará los criterios específicos de la rama.</li>
-                <li>Asegúrate de pulsar "Fusionar y guardar" para persistir los cambios.</li>
-            </ul>
+        <section class="card aside-card-short">
+            <h2 style="margin-bottom:12px;"><i class="bi bi-lightbulb-fill text-warning me-2"></i>Ayuda rápida</h2>
+            <div class="d-flex flex-column gap-2">
+                <div class="help-item" style="border-left: 4px solid #f59e0b;">
+                    <div class="help-tag" style="color: #f59e0b;">
+                        <i class="bi bi-layers-half"></i> Fusión Inteligente
+                    </div>
+                    <div style="font-size: 14px; color: rgba(255,255,255,0.9);">
+                        Los cambios se <strong>integran</strong> con los datos del PDF automáticamente.
+                    </div>
+                </div>
+                <div class="help-item" style="border-left: 4px solid #10b981;">
+                    <div class="help-tag" style="color: #10b981;">
+                        <i class="bi bi-patch-check"></i> Normativa Oficial
+                    </div>
+                    <div style="font-size: 14px; color: rgba(255,255,255,0.9);">
+                        Validado según los criterios actualizados de la rama <strong>Experimentales</strong>.
+                    </div>
+                </div>
+                <div class="help-item" style="border-left: 4px solid #3b82f6;">
+                    <div class="help-tag" style="color: #3b82f6;">
+                        <i class="bi bi-cloud-arrow-up-fill"></i> Guardado Seguro
+                    </div>
+                    <div style="font-size: 14px; color: rgba(255,255,255,0.9);">
+                        Pulsa <strong>"Fusionar y guardar"</strong> para persistir toda la información.
+                    </div>
+                </div>
+            </div>
         </section>
     </aside>
 </section>

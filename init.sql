@@ -14,7 +14,7 @@ CREATE DATABASE IF NOT EXISTS `evaluador_aneca_csyj`;
 CREATE DATABASE IF NOT EXISTS `evaluador_aneca_experimentales`;
 
 -- ========================================================
--- 2. USUARIO Y PERMISOS
+-- 2. USUARIO Y PERMISOS (RESTAURADOS POR COMPATIBILIDAD)
 -- ========================================================
 CREATE USER IF NOT EXISTS 'usuario_web'@'%' IDENTIFIED BY 'password_segura';
 GRANT ALL PRIVILEGES ON *.* TO 'usuario_web'@'%';

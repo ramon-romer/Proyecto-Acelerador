@@ -4,11 +4,18 @@ declare(strict_types=1);
 require __DIR__ . '/config.php';
 require __DIR__ . '/funciones_evaluador_salud.php';
 
+if (session_status() !== PHP_SESSION_ACTIVE) { session_start(); }
+$orcidSesion = trim((string)($_SESSION['orcid_usuario'] ?? ''));
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     die('Acceso no permitido.');
 }
 
 $nombre = trim($_POST['nombre_candidato'] ?? '');
+if ($nombre === '') {
+    $nombre = trim($_POST['nombre_candidato_nuevo'] ?? '');
+}
+
 $jsonBaseTexto = trim($_POST['json_entrada_base'] ?? '');
 
 if ($nombre === '' || $jsonBaseTexto === '') {
@@ -211,11 +218,19 @@ $jsonBase['bloque_4'] = fusionar_listas_salud(
 );
 
 $resultado = evaluar_expediente($jsonBase);
+
+if ($orcidSesion !== '') { $jsonBase['orcid_candidato'] = $orcidSesion; }
+
 $jsonFinal = json_encode($jsonBase, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
 
 if ($jsonFinal === false) {
     die('No se pudo codificar el JSON final.');
 }
+
+$b1Val = (float)($resultado['bloque_1']['B1'] ?? $resultado['bloque_1_total'] ?? $resultado['bloque_1_flat'] ?? $resultado['bloque_1'] ?? 0);
+$b2Val = (float)($resultado['bloque_2']['B2'] ?? $resultado['bloque_2_total'] ?? $resultado['bloque_2_flat'] ?? $resultado['bloque_2'] ?? 0);
+$b3Val = (float)($resultado['bloque_3']['B3'] ?? $resultado['bloque_3_total'] ?? $resultado['bloque_3_flat'] ?? $resultado['bloque_3'] ?? 0);
+$b4Val = (float)($resultado['bloque_4']['B4'] ?? $resultado['bloque_4_total'] ?? $resultado['bloque_4_flat'] ?? $resultado['bloque_4'] ?? 0);
 
 $sql = "INSERT INTO evaluaciones (
     nombre_candidato,
@@ -288,22 +303,22 @@ $stmt->execute([
     ':puntuacion_1e' => $resultado['puntuacion_1e'],
     ':puntuacion_1f' => $resultado['puntuacion_1f'],
     ':puntuacion_1g' => $resultado['puntuacion_1g'],
-    ':bloque_1' => $resultado['bloque_1'],
+    ':bloque_1' => $b1Val,
 
     ':puntuacion_2a' => $resultado['puntuacion_2a'],
     ':puntuacion_2b' => $resultado['puntuacion_2b'],
     ':puntuacion_2c' => $resultado['puntuacion_2c'],
     ':puntuacion_2d' => $resultado['puntuacion_2d'],
-    ':bloque_2' => $resultado['bloque_2'],
+    ':bloque_2' => $b2Val,
 
     ':puntuacion_3a' => $resultado['puntuacion_3a'],
     ':puntuacion_3b' => $resultado['puntuacion_3b'],
-    ':bloque_3' => $resultado['bloque_3'],
+    ':bloque_3' => $b3Val,
 
-    ':bloque_4' => $resultado['bloque_4'],
+    ':bloque_4' => $b4Val,
 
-    ':total_b1_b2' => $resultado['total_b1_b2'],
-    ':total_final' => $resultado['total_final'],
+    ':total_b1_b2' => ($b1Val + $b2Val),
+    ':total_final' => ($b1Val + $b2Val + $b3Val + $b4Val),
     ':resultado' => $resultado['resultado'],
     ':cumple_regla_1' => $resultado['cumple_regla_1'],
     ':cumple_regla_2' => $resultado['cumple_regla_2'],

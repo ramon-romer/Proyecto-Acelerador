@@ -64,6 +64,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nombre_grupo'])) {
   <link rel="stylesheet" href="css/styles.css?v=<?= time() ?>">
   <style>
     .popover-body { white-space: pre-line; }
+    
+    /* FIX RESPONSIVE: Forzar visibilidad y evitar rotura de texto */
+    @media (max-width: 768px) {
+      .panel-wrapper .formulario-tabla {
+        position: relative !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: auto !important;
+        margin: 20px auto !important;
+        display: flex !important;
+        flex-direction: column !important;
+        transform: none !important;
+        z-index: 1 !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        padding: 20px 10px !important; /* Reducir padding lateral */
+      }
+      .panel-wrapper {
+        padding: 10px !important;
+      }
+      .form-label {
+        white-space: nowrap !important;
+        font-size: 0.9rem !important;
+      }
+      /* Ajustar el contenedor interno para que no asfixie el texto */
+      .p-4.rounded-4 {
+        padding: 20px 15px !important;
+      }
+    }
   </style>
 </head>
 

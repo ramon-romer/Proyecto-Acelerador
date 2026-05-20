@@ -62,6 +62,7 @@ if (!is_array($jsonExtraido)) {
 }
 
 $jsonExtraido['nombre_candidato'] = $nombreCandidato;
+$jsonExtraido['orcid_candidato'] = $orcidSesion;
 $jsonExtraido['area'] = 'CSyJ';
 $jsonExtraido['categoria'] = 'PCD/PUP';
 $jsonExtraido['formato_cv'] = $formatoCv;

@@ -54,6 +54,96 @@ if ($query_grupos && mysqli_num_rows($query_grupos) > 0) {
   <link rel="stylesheet" href="css/styles.css?v=<?= time() ?>">
   <style>
     .popover-body { white-space: pre-line; }
+    
+    /* FIX RESPONSIVE: Evitar que el contenido se oculte por el CSS global */
+    @media (max-width: 768px) {
+      .panel-wrapper .formulario {
+        position: relative !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: auto !important;
+        margin: 20px auto !important;
+        display: flex !important;
+        transform: none !important;
+        z-index: 1 !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+      }
+      .panel-wrapper {
+        padding: 15px !important;
+      }
+    }
+
+    /* Ajuste responsivo independiente para mantener ambos logos en la misma línea */
+    @media (max-width: 1100px) {
+      .contenedorimg {
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        flex-wrap: nowrap !important;
+        width: 100% !important;
+        padding: 10px 15px !important;
+      }
+      .imagen img {
+        height: 35px !important;
+        width: auto !important;
+        object-fit: contain !important;
+      }
+      #academy {
+        height: 45px !important;
+      }
+    }
+
+    /* Estilos para asegurar que la tabla tenga esquinas perfectamente redondeadas en todos los dispositivos */
+    .tabla-glass {
+      border-collapse: separate !important;
+      border-spacing: 0 !important;
+      border-radius: 16px !important;
+      overflow: hidden !important;
+      border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    }
+    .tabla-glass thead tr:first-child th:first-child {
+      border-top-left-radius: 16px !important;
+    }
+    .tabla-glass thead tr:first-child th:last-child {
+      border-top-right-radius: 16px !important;
+    }
+    .tabla-glass tbody tr:last-child td:first-child {
+      border-bottom-left-radius: 16px !important;
+    }
+    .tabla-glass tbody tr:last-child td:last-child {
+      border-bottom-right-radius: 16px !important;
+    }
+
+    /* Ajuste responsivo independiente para optimizar la visualización de la tabla en móviles y eliminar scroll horizontal */
+    @media (max-width: 768px) {
+      .table-responsive {
+        overflow-x: hidden !important;
+      }
+      .tabla-glass {
+        font-size: 0.8rem !important;
+        width: 100% !important;
+        table-layout: fixed !important;
+      }
+      .tabla-glass th, .tabla-glass td {
+        padding: 10px 6px !important;
+        white-space: normal !important;
+        word-break: normal !important;
+        overflow-wrap: break-word !important;
+      }
+      .tabla-glass th i {
+        font-size: 0.85rem !important;
+      }
+      .tabla-glass td a {
+        display: inline-block !important;
+        max-width: 100% !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        vertical-align: middle !important;
+        font-size: 0.78rem !important;
+      }
+    }
   </style>
 </head>
 
@@ -84,8 +174,7 @@ if ($query_grupos && mysqli_num_rows($query_grupos) > 0) {
           </div>
 
           <?php if (count($mis_grupos) > 0): ?>
-            <div class="table-responsive w-100 mb-4 p-3 p-md-4"
-              style="border-radius: 15px; background-color: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15);">
+            <div class="table-responsive w-100 mb-4">
               <table class="table tabla-glass mb-0 text-start">
                 <thead>
                   <tr>

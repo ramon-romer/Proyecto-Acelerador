@@ -38,6 +38,7 @@ function hum_render_layout_start(string $title, string $subtitle = '', array $br
     echo '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
     echo '<title>' . hum_h($title) . '</title>';
     ?>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <style>
         :root {
             --azul-900: #173a77;
@@ -294,8 +295,168 @@ function hum_render_layout_start(string $title, string $subtitle = '', array $br
         .kpi strong { display: block; font-size: 28px; font-weight: 800; color: #fff; }
         .resumen { margin: 0; padding: 0; background: transparent; border: none; }
         .resumen .num { width: 120px; text-align: center; }
-        @media (max-width: 1024px) { .split { grid-template-columns: 1fr; } }
-        @media (max-width: 768px) { .shell { padding: 24px 16px; } .hero { padding: 25px; } .hero h1 { font-size: 28px; } }
+
+        /* ==========================================================================
+           MASTER RESPONSIVE CSS - FLUIDEZ TOTAL & ZERO SCROLL HORIZONTAL
+           ========================================================================== */
+
+        /* 1. ERRADICACIÓN ABSOLUTA DEL SCROLL HORIZONTAL Y CONTENCIÓN GLOBAL */
+        *, *::before, *::after {
+            box-sizing: border-box !important;
+        }
+
+        html, body {
+            max-width: 100vw !important;
+            overflow-x: hidden !important;
+            position: relative;
+            width: 100% !important;
+        }
+
+        /* Contención estricta de textos largos y desbordamientos (Regla: Contención de Textos) */
+        h1, h2, h3, h4, h5, h6, p, span, div, a, li, td, th {
+            overflow-wrap: anywhere !important;
+            word-wrap: break-word !important;
+            word-break: break-word !important;
+            max-width: 100%;
+        }
+
+        /* Imágenes, videos, y contenedores multimedia 100% fluidos */
+        img, video, canvas, iframe, object {
+            max-width: 100% !important;
+            height: auto !important;
+        }
+
+        /* Contenedores con desbordamiento interno forzado (Para proteger el scroll en Tablas y Código) */
+        table, pre, .tabla-glass, .custom-scrollbar {
+            max-width: 100%;
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch;
+            display: block; 
+        }
+
+        /* 2. ADAPTACIÓN DE PANTALLAS MEDIANAS Y TABLETS (Hasta 1024px) */
+        @media (max-width: 1024px) {
+            /* Módulo Evaluador: Reestructurar Grid */
+            .split, .split-columns {
+                display: flex !important;
+                flex-direction: column !important;
+                grid-template-columns: 1fr !important;
+                gap: 24px;
+            }
+
+            /* Módulo Panel y Formularios Mayores */
+            .panel-wrapper, .formulario-tabla {
+                width: 95% !important;
+                flex-direction: column !important;
+                margin: 40px auto !important;
+                padding: 20px !important;
+            }
+
+            .dashboard {
+                width: 100% !important;
+                margin-top: 20px;
+            }
+        }
+
+        /* 3. APILAMIENTO LÓGICO Y RESPIRACIÓN EN MÓVILES (Hasta 768px) */
+        @media (max-width: 768px) {
+            /* Formularios Generales (Login, Registro, Primera Pantalla) */
+            .formulario, .cuadroPrincipal {
+                width: 92% !important;
+                margin: 30px auto !important;
+                padding: 30px 20px !important;
+            }
+
+            /* Filas de formulario, grids y listas divididas apiladas */
+            .mb-3, .form-grid, .listas {
+                display: flex !important;
+                flex-direction: column !important;
+                width: 100% !important;
+                gap: 15px !important;
+                align-items: flex-start !important;
+            }
+
+            /* Inputs y Labels forzados al 100% */
+            .cuerpo, .form-control, .form-label, .check, .lista1, .lista2 {
+                width: 100% !important;
+                margin: 0 !important;
+                padding-left: 0 !important;
+            }
+
+            /* Header y Logos Responsivos */
+            .contenedorimg {
+                flex-direction: column !important;
+                padding: 10px 20px !important;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .imagen img {
+                height: auto !important;
+                max-height: 80px !important;
+            }
+            
+            #academy {
+                max-height: 70px !important;
+            }
+
+            /* Footer: Apilamiento Completo */
+            .mipie, .requerimientolegal, .hero-top {
+                flex-direction: column !important;
+                align-items: center !important;
+                text-align: center !important;
+                padding: 30px 15px !important;
+                height: auto !important;
+                max-height: none !important;
+            }
+
+            .direccion, .requerimientolegal, .columna {
+                width: 100% !important;
+                max-height: none !important;
+                margin-bottom: 20px !important;
+            }
+
+            .mipie img {
+                margin: 0 auto 15px auto !important;
+            }
+
+            .direccion p {
+                margin-left: 0 !important;
+            }
+
+            /* Expansión de Botones y Acciones en Móvil */
+            .boton button, .form-actions button, .hero-actions a, .btn {
+                width: 100% !important;
+                justify-content: center !important;
+                margin-bottom: 10px !important;
+            }
+        }
+
+        /* 4. REFINAMIENTO PARA MÓVILES PEQUEÑOS (Hasta 480px) */
+        @media (max-width: 480px) {
+            body {
+                font-size: 15px !important;
+            }
+
+            /* Tipografía Fluida controlada para Títulos */
+            h1, h2 {
+                font-size: clamp(1.5rem, 5vw, 2.5rem) !important;
+            }
+
+            /* Stats y KPIs apilados */
+            .stats-grid, .meta-grid, .kpis {
+                grid-template-columns: 1fr !important;
+                gap: 15px !important;
+            }
+
+            .dashboard-stat-card .stat-value {
+                font-size: 1.5rem !important;
+            }
+            
+            .shell {
+                padding: 15px 10px !important;
+            }
+        }
     </style>
     <?php
     echo '</head><body><div class="shell">';

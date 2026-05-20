@@ -1,6 +1,15 @@
 <?php
+ob_start();
 session_start();
+header('Content-Type: text/html; charset=utf-8');
+require_once('../../acelerador_frontend_security.php');
 include('login.php');
+
+// Protección global contra CSRF en todas las acciones de modificación
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    acelerador_require_csrf();
+}
+
 error_reporting(0);
 
 // Si no hay sesión activa, redirigir al login
@@ -46,7 +55,7 @@ if ($query_perfil && mysqli_num_rows($query_perfil) > 0) {
   $facultad = htmlspecialchars($datos_perfil['facultad'] ?? '');
   $rama = htmlspecialchars($datos_perfil['rama'] ?? '');
 
-  // ── Propagar a sesión para que los evaluadores conozcan ORCID y rama ──
+  // -- Propagar a sesión para que los evaluadores conozcan ORCID y rama --
   $_SESSION['orcid_usuario'] = $datos_perfil['orcid'] ?? '';
   $_SESSION['rama_usuario']  = $datos_perfil['rama']  ?? '';
 
@@ -62,14 +71,14 @@ if ($query_perfil && mysqli_num_rows($query_perfil) > 0) {
   $rama = 'No registrado';
 }
 
-// ── Dashboard: id del tutor desde su correo de sesión ──────────────────
+// -- Dashboard: id del tutor desde su correo de sesión -----------------
 $correoRaw = $_SESSION['nombredelusuario'];
 
 $resId = mysqli_query($conn, "SELECT id_profesor FROM tbl_profesor WHERE correo = '" . mysqli_real_escape_string($conn, $correoRaw) . "' AND perfil = 'TUTOR' LIMIT 1");
 $rowId  = $resId ? mysqli_fetch_assoc($resId) : null;
 $idTutor = $rowId ? (int)$rowId['id_profesor'] : 0;
 
-// ── ACCIÓN: eliminar_cuenta_propia (TUTOR) ──────────────────────────────
+// -- ACCIÓN: eliminar_cuenta_propia (TUTOR) ---------------------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['accion'] === 'eliminar_cuenta_propia') {
     mysqli_query($conn, "CREATE TABLE IF NOT EXISTS tbl_info_usuario_eliminado (
       id INT AUTO_INCREMENT PRIMARY KEY,
@@ -111,7 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['
     exit();
 }
 
-// ── ACCIÓN: decision_readmision (TUTOR) ──────────────────────────────
+// ------------------------------------------------------------------------- ACCIÓN: decision_readmision (TUTOR) --------------------------------------------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['accion'] === 'decision_readmision') {
     $id_solicitud = (int)($_POST['id_solicitud'] ?? 0);
     $decision = $_POST['decision'] ?? ''; // 'ACEPTAR' o 'RECHAZAR'
@@ -125,8 +134,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['
             if ($decision === 'ACEPTAR') {
                 mysqli_query($conn, "INSERT IGNORE INTO tbl_grupo_profesor (id_grupo, id_profesor) VALUES ($id_grupo_r, $id_prof_r)");
                 mysqli_query($conn, "UPDATE tbl_solicitud_readmision SET estado = 'ACEPTADA' WHERE id = $id_solicitud");
-                $mensaje = "Profesor readmitido con éxito.";
-                $tipo_mensaje = "success";
+                mysqli_query($conn, "DELETE FROM tbl_notificacion_tutor WHERE id_tutor = $idTutor AND tipo = 'readmision' AND id_referencia = $id_prof_r");
+                header("Location: panel_tutor.php?msg=readmitido");
+                exit();
             } else {
                 mysqli_query($conn, "UPDATE tbl_solicitud_readmision SET estado = 'RECHAZADA' WHERE id = $id_solicitud");
                 // Notificar al profesor el rechazo
@@ -138,16 +148,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['
                 )");
                 $msg_notif = mysqli_real_escape_string($conn, "Se le asignara un grupo a la mayor brevedad posible");
                 mysqli_query($conn, "INSERT INTO tbl_notificacion_pendiente (id_profesor, mensaje) VALUES ($id_prof_r, '$msg_notif')");
-                $mensaje = "Petición de readmisión rechazada.";
-                $tipo_mensaje = "info";
+                mysqli_query($conn, "DELETE FROM tbl_notificacion_tutor WHERE id_tutor = $idTutor AND tipo = 'readmision' AND id_referencia = $id_prof_r");
+                header("Location: panel_tutor.php?msg=rechazado");
+                exit();
             }
-            // Eliminar la notificación del tutor una vez tomada la decisión
-            mysqli_query($conn, "DELETE FROM tbl_notificacion_tutor WHERE id_tutor = $idTutor AND tipo = 'readmision' AND id_referencia = $id_prof_r");
         }
     }
 }
 
-// ── Notificaciones del tutor (incluyendo readmisiones) ────────────────
+// ------------------------------------------------------------------------- Notificaciones del tutor (incluyendo readmisiones) -----------------------------------
 $notifsTutor = [];
 if ($idTutor > 0) {
     $tablaExistsT = mysqli_query($conn, "SHOW TABLES LIKE 'tbl_notificacion_tutor'");
@@ -172,7 +181,7 @@ $dbUser = getenv('ACELERADOR_DB_USER') ?: (getenv('DB_USER') ?: 'root');
 $dbPass = getenv('ACELERADOR_DB_PASS') ?: (getenv('DB_PASS') ?: 'root_super_segura');
 $dbPort = (int)(getenv('ACELERADOR_DB_PORT') ?: getenv('DB_PORT') ?: 3306);
 
-// ── ACCIÓN: get_estado_candidato (ADITIVO - DISEÑADOR SENIOR / TARJETAS) ─
+// ------------------------------------------------------------------------- ACCIÓN: get_estado_candidato (ADITIVO - DISEÑADOR SENIOR / TARJETAS) -----------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['accion'] === 'get_estado_candidato') {
     $orcid_req = mysqli_real_escape_string($conn, $_POST['orcid'] ?? '');
     
@@ -191,15 +200,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['
                 ]);
 
                 $orcid_limpio = str_replace('-', '', $orcid_req);
+                $dni_prof = $p_info['dni'] ?? ($p_info['DNI'] ?? '');
 
                 // 1. Conteo total de evaluaciones históricas
-                $stCount = $pdo_e->prepare("SELECT COUNT(*) as total FROM evaluaciones WHERE json_entrada LIKE :o1 OR json_entrada LIKE :o2");
-                $stCount->execute([':o1' => '%'.$orcid_req.'%', ':o2' => '%'.$orcid_limpio.'%']);
+                $stCount = $pdo_e->prepare("SELECT COUNT(*) as total FROM evaluaciones WHERE json_entrada LIKE :o1 OR json_entrada LIKE :o2 OR json_entrada LIKE :d1");
+                $stCount->execute([':o1' => '%'.$orcid_req.'%', ':o2' => '%'.$orcid_limpio.'%', ':d1' => '%'.$dni_prof.'%']);
                 $totalEvals = (int)$stCount->fetch()['total'];
 
                 // 2. Última evaluación para extraer JSON bruto integral
-                $stLast = $pdo_e->prepare("SELECT json_entrada FROM evaluaciones WHERE json_entrada LIKE :o1 OR json_entrada LIKE :o2 ORDER BY fecha_creacion DESC LIMIT 1");
-                $stLast->execute([':o1' => '%'.$orcid_req.'%', ':o2' => '%'.$orcid_limpio.'%']);
+                $stLast = $pdo_e->prepare("SELECT json_entrada FROM evaluaciones WHERE json_entrada LIKE :o1 OR json_entrada LIKE :o2 OR json_entrada LIKE :d1 ORDER BY fecha_creacion DESC LIMIT 1");
+                $stLast->execute([':o1' => '%'.$orcid_req.'%', ':o2' => '%'.$orcid_limpio.'%', ':d1' => '%'.$dni_prof.'%']);
                 $lastEv = $stLast->fetch();
 
                 $meritData = [
@@ -251,23 +261,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['
                     }
                 }
 
-                header('Content-Type: application/json');
+                header('Content-Type: application/json; charset=utf-8');
                 echo json_encode(['status' => 'success', 'data' => $meritData]);
                 exit;
 
             } catch (Exception $e) {
-                header('Content-Type: application/json');
+                header('Content-Type: application/json; charset=utf-8');
                 echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
                 exit;
             }
         }
     }
-    header('Content-Type: application/json');
+    header('Content-Type: application/json; charset=utf-8');
     echo json_encode(['status' => 'error', 'message' => 'Error al procesar el inventario.']);
     exit;
 }
 
-// ── ACCIÓN: marcar_entrega_hecha (ARQUITECTURA DE SISTEMAS CRÍTICOS) ──
+// ------------------------------------------------------------------------- ACCIÓN: marcar_entrega_hecha (ARQUITECTURA DE SISTEMAS CRÍTICOS) ---------------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && ($_POST['accion'] === 'marcar_entrega_hecha' || $_POST['accion'] === 'marcar_tarea_hecha')) {
     $id_tarea = (int)($_POST['id_tarea'] ?? 0);
     $indice = (int)($_POST['indice'] ?? 0);
@@ -296,40 +306,63 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && ($_POST[
             $stmtUpdate = $pdo->prepare("UPDATE tbl_tarea_entrega SET fechas_reales_entregas = ? WHERE id = ?");
             $stmtUpdate->execute([json_encode($reales), $id_tarea]);
 
-            header('Content-Type: application/json');
+            header('Content-Type: application/json; charset=utf-8');
             echo json_encode(['status' => 'success', 'timestamp' => $ahora]);
             exit;
         } catch (Exception $e) {
-            header('Content-Type: application/json');
+            header('Content-Type: application/json; charset=utf-8');
             echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
             exit;
         }
     }
 }
 
-// ── ACCIÓN: get_datos_gantt (DIFUSIÓN DE DATOS CRÍTICOS - ALTO RENDIMIENTO) ──
+// ------------------------------------------------------------------------- ACCIÓN: get_datos_gantt (DIFUSIÓN DE DATOS CRÍTICOS - ALTO RENDIMIENTO) --------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['accion'] === 'get_datos_gantt') {
     $pid_req = (int)($_POST['id_profesor'] ?? 0);
     if ($pid_req > 0) {
         try {
+            // Asegurar que la columna de fechas reales existe (Compatibilidad total)
+            $checkCol = mysqli_query($conn, "SHOW COLUMNS FROM tbl_tarea_entrega LIKE 'fechas_reales_entregas'");
+            if ($checkCol && mysqli_num_rows($checkCol) == 0) {
+                mysqli_query($conn, "ALTER TABLE tbl_tarea_entrega ADD COLUMN fechas_reales_entregas JSON DEFAULT NULL");
+            }
+
             // SELECT quirúrgico: capturamos solo lo indispensable para el gráfico
+            // Flexibilizamos eliminando AND id_tutor = $idTutor para evitar fallos por inconsistencias de transferencia
             $resTareas = mysqli_query($conn, 
-                "SELECT id, titulo_tarea, fecha_creacion, num_entregas, fechas_entregas, fechas_reales_entregas, fechas_inicio_entregas 
+                "SELECT id, titulo_tarea, fecha_creacion, num_entregas, fechas_entregas, fechas_reales_entregas 
                  FROM tbl_tarea_entrega 
-                 WHERE id_profesor = $pid_req AND id_tutor = $idTutor 
+                 WHERE id_profesor = $pid_req 
                  ORDER BY fecha_creacion DESC"
             );
             
+            if (!$resTareas) {
+                throw new Exception(mysqli_error($conn));
+            }
+
             $gData = [];
             while ($t = mysqli_fetch_assoc($resTareas)) {
+                $numEntregas = (int)($t['num_entregas'] ?? 1);
+                $hechas = json_decode($t['fechas_reales_entregas'] ?? '[]', true) ?: [];
+                $todasHechas = true;
+                for ($idx = 0; $idx < $numEntregas; $idx++) {
+                    if (empty($hechas[$idx])) {
+                        $todasHechas = false;
+                        break;
+                    }
+                }
+                if ($todasHechas) {
+                    continue; // Quitar del gráfico de Gantt al estar todos los hitos cumplidos
+                }
+
                 $gData[] = [
                     'id' => $t['id'], 
                     'titulo' => $t['titulo_tarea'], 
                     'creacion' => $t['fecha_creacion'],
-                    'n' => (int)$t['num_entregas'], 
+                    'n' => $numEntregas, 
                     'teoricas' => json_decode($t['fechas_entregas'] ?? '[]', true),
-                    'reales' => json_decode($t['fechas_reales_entregas'] ?? '[]', true),
-                    'inicios' => json_decode($t['fechas_inicio_entregas'] ?? '[]', true)
+                    'reales' => $hechas
                 ];
             }
             
@@ -348,7 +381,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['
     exit;
 }
 
-// ── Procesar actualización de tarea (POST) ──────────────────────────────
+// --------------------€â”€ Procesar actualización de tarea (POST) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 $mensaje = '';
 $tipo_mensaje = '';
 
@@ -365,42 +398,60 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['
         $fechas_json  = json_encode($fechas_arr, JSON_UNESCAPED_UNICODE);
 
         if (!empty($titulo_tarea) && count($fechas_arr) > 0) {
-            try {
-                // Configuración para PDO
-                $dbCfg = [
-                    'host' => getenv('ACELERADOR_DB_HOST') ?: (getenv('DB_HOST') ?: 'base-de-datos'),
-                    'user' => getenv('ACELERADOR_DB_USER') ?: (getenv('DB_USER') ?: 'root'),
-                    'pass' => getenv('ACELERADOR_DB_PASS') ?: (getenv('DB_PASS') ?: 'root_super_segura'),
-                    'port' => (int)(getenv('ACELERADOR_DB_PORT') ?: getenv('DB_PORT') ?: 3306),
-                    'name' => 'acelerador'
-                ];
-                $pdoU = new PDO("mysql:host={$dbCfg['host']};port={$dbCfg['port']};dbname={$dbCfg['name']};charset=utf8mb4", $dbCfg['user'], $dbCfg['pass'], [
-                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
-                ]);
-                
-                $sqlU = "UPDATE tbl_tarea_entrega SET titulo_tarea = ?, descripcion_tarea = ?, num_entregas = ?, fechas_entregas = ? WHERE id = ? AND id_tutor = ?";
-                $stmtU = $pdoU->prepare($sqlU);
-                $stmtU->execute([$titulo_tarea, $desc_tarea, $num_entregas, $fechas_json, $id_tarea_edit, $idTutor]);
+            // Validar orden cronológico de las entregas
+            $fechasValidas = true;
+            for ($i = 1; $i < count($fechas_arr); $i++) {
+                if (strtotime($fechas_arr[$i]) < strtotime($fechas_arr[$i - 1])) {
+                    $fechasValidas = false;
+                    break;
+                }
+            }
+            if (!$fechasValidas) {
+                if (isset($_POST['ajax'])) {
+                    header('Content-Type: application/json; charset=utf-8');
+                    echo json_encode(['status' => 'warning', 'message' => 'Error: Cada entrega debe ser programada para una fecha posterior o igual a la anterior.']);
+                    exit;
+                }
+                $mensaje = 'Error: Cada entrega debe ser programada para una fecha posterior o igual a la anterior.';
+                $tipo_mensaje = 'warning';
+            } else {
+                try {
+                    // Configuración para PDO
+                    $dbCfg = [
+                        'host' => getenv('ACELERADOR_DB_HOST') ?: (getenv('DB_HOST') ?: 'base-de-datos'),
+                        'user' => getenv('ACELERADOR_DB_USER') ?: (getenv('DB_USER') ?: 'root'),
+                        'pass' => getenv('ACELERADOR_DB_PASS') ?: (getenv('DB_PASS') ?: 'root_super_segura'),
+                        'port' => (int)(getenv('ACELERADOR_DB_PORT') ?: getenv('DB_PORT') ?: 3306),
+                        'name' => 'acelerador'
+                    ];
+                    $pdoU = new PDO("mysql:host={$dbCfg['host']};port={$dbCfg['port']};dbname={$dbCfg['name']};charset=utf8mb4", $dbCfg['user'], $dbCfg['pass'], [
+                        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+                    ]);
+                    
+                    $sqlU = "UPDATE tbl_tarea_entrega SET titulo_tarea = ?, descripcion_tarea = ?, num_entregas = ?, fechas_entregas = ? WHERE id = ? AND id_tutor = ?";
+                    $stmtU = $pdoU->prepare($sqlU);
+                    $stmtU->execute([$titulo_tarea, $desc_tarea, $num_entregas, $fechas_json, $id_tarea_edit, $idTutor]);
 
-                if (isset($_POST['ajax'])) {
-                    header('Content-Type: application/json');
-                    echo json_encode(['status' => 'success', 'message' => 'Tarea actualizada con éxito.']);
-                    exit;
+                    if (isset($_POST['ajax'])) {
+                        header('Content-Type: application/json; charset=utf-8');
+                        echo json_encode(['status' => 'success', 'message' => 'Tarea actualizada con éxito.']);
+                        exit;
+                    }
+                    $mensaje = 'Tarea actualizada correctamente.';
+                    $tipo_mensaje = 'success';
+                } catch (Exception $e) {
+                    if (isset($_POST['ajax'])) {
+                        header('Content-Type: application/json; charset=utf-8');
+                        echo json_encode(['status' => 'error', 'message' => 'Error al actualizar: ' . $e->getMessage()]);
+                        exit;
+                    }
+                    $mensaje = 'Error al actualizar la tarea.';
+                    $tipo_mensaje = 'danger';
                 }
-                $mensaje = 'Tarea actualizada correctamente.';
-                $tipo_mensaje = 'success';
-            } catch (Exception $e) {
-                if (isset($_POST['ajax'])) {
-                    header('Content-Type: application/json');
-                    echo json_encode(['status' => 'error', 'message' => 'Error al actualizar: ' . $e->getMessage()]);
-                    exit;
-                }
-                $mensaje = 'Error al actualizar la tarea.';
-                $tipo_mensaje = 'danger';
             }
         } else {
             if (isset($_POST['ajax'])) {
-                header('Content-Type: application/json');
+                header('Content-Type: application/json; charset=utf-8');
                 echo json_encode(['status' => 'warning', 'message' => 'Faltan datos obligatorios.']);
                 exit;
             }
@@ -419,24 +470,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['
         $fechas_arr = array_values(array_filter($fechas_arr, function($f) { return !empty(trim($f)); }));
         
         if ($idProfAsignado > 0 && !empty($titulo_tarea) && count($fechas_arr) > 0) {
-            $titulo_esc = mysqli_real_escape_string($conn, $titulo_tarea);
-            $desc_esc   = mysqli_real_escape_string($conn, $desc_tarea);
-            $fechas_json = mysqli_real_escape_string($conn, json_encode($fechas_arr, JSON_UNESCAPED_UNICODE));
-            
-            try {
-                mysqli_query($conn,
-                    "INSERT INTO tbl_tarea_entrega (id_grupo, id_profesor, id_tutor, titulo_tarea, descripcion_tarea, num_entregas, fechas_entregas)
-                     VALUES ($idGrupoAsignado, $idProfAsignado, $idTutor, '$titulo_esc', '$desc_esc', $num_entregas, '$fechas_json')"
-                );
-                $mensaje = 'Tarea asignada correctamente al profesor.';
-                $tipo_mensaje = 'success';
-            } catch (Exception $e) {
-                $mensaje = 'Error al guardar la tarea. Verifica la base de datos.';
-                $tipo_mensaje = 'danger';
+            // Validar orden cronológico de las entregas
+            $fechasValidas = true;
+            for ($i = 1; $i < count($fechas_arr); $i++) {
+                if (strtotime($fechas_arr[$i]) < strtotime($fechas_arr[$i - 1])) {
+                    $fechasValidas = false;
+                    break;
+                }
+            }
+            if (!$fechasValidas) {
+                header("Location: panel_tutor.php?msg=task_warning");
+                exit();
+            } else {
+                $titulo_esc = mysqli_real_escape_string($conn, $titulo_tarea);
+                $desc_esc   = mysqli_real_escape_string($conn, $desc_tarea);
+                $fechas_json = mysqli_real_escape_string($conn, json_encode($fechas_arr, JSON_UNESCAPED_UNICODE));
+                
+                try {
+                    mysqli_query($conn,
+                        "INSERT INTO tbl_tarea_entrega (id_grupo, id_profesor, id_tutor, titulo_tarea, descripcion_tarea, num_entregas, fechas_entregas)
+                         VALUES ($idGrupoAsignado, $idProfAsignado, $idTutor, '$titulo_esc', '$desc_esc', $num_entregas, '$fechas_json')"
+                    );
+                    header("Location: panel_tutor.php?msg=task_created");
+                    exit();
+                } catch (Exception $e) {
+                    header("Location: panel_tutor.php?msg=task_error");
+                    exit();
+                }
             }
         } else {
-            $mensaje = 'Faltan datos obligatorios para asignar la tarea.';
-            $tipo_mensaje = 'warning';
+            header("Location: panel_tutor.php?msg=task_missing");
+            exit();
         }
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['accion'] === 'borrar_tarea') {
@@ -444,11 +508,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['
     if ($id_tarea > 0) {
         try {
             mysqli_query($conn, "DELETE FROM tbl_tarea_entrega WHERE id = $id_tarea AND id_tutor = $idTutor");
-            $mensaje = 'Tarea eliminada correctamente.';
-            $tipo_mensaje = 'info';
+            header("Location: panel_tutor.php?msg=deleted");
+            exit();
         } catch (Exception $e) {
-            $mensaje = 'Error al eliminar la tarea.';
-            $tipo_mensaje = 'danger';
+            header("Location: panel_tutor.php?msg=error_delete");
+            exit();
         }
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['accion'] === 'editar_tarea') {
@@ -463,28 +527,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['
     $fechas_arr = array_values(array_filter($fechas_arr, function($f) { return !empty(trim($f)); }));
     
     if ($id_tarea > 0 && !empty($titulo_tarea) && count($fechas_arr) > 0) {
-        $titulo_esc = mysqli_real_escape_string($conn, $titulo_tarea);
-        $desc_esc   = mysqli_real_escape_string($conn, $desc_tarea);
-        $fechas_json = mysqli_real_escape_string($conn, json_encode($fechas_arr, JSON_UNESCAPED_UNICODE));
-        
-        try {
-            mysqli_query($conn,
-                "UPDATE tbl_tarea_entrega 
-                 SET titulo_tarea = '$titulo_esc', 
-                     descripcion_tarea = '$desc_esc', 
-                     num_entregas = $num_entregas, 
-                     fechas_entregas = '$fechas_json'
-                 WHERE id = $id_tarea AND id_tutor = $idTutor"
-            );
-            $mensaje = 'Tarea actualizada correctamente.';
-            $tipo_mensaje = 'success';
-        } catch (Exception $e) {
-            $mensaje = 'Error al actualizar la tarea. Verifica la base de datos.';
-            $tipo_mensaje = 'danger';
+        // Validar orden cronológico de las entregas
+        $fechasValidas = true;
+        for ($i = 1; $i < count($fechas_arr); $i++) {
+            if (strtotime($fechas_arr[$i]) < strtotime($fechas_arr[$i - 1])) {
+                $fechasValidas = false;
+                break;
+            }
+        }
+        if (!$fechasValidas) {
+            header("Location: panel_tutor.php?msg=task_warning");
+            exit();
+        } else {
+            $titulo_esc = mysqli_real_escape_string($conn, $titulo_tarea);
+            $desc_esc   = mysqli_real_escape_string($conn, $desc_tarea);
+            $fechas_json = mysqli_real_escape_string($conn, json_encode($fechas_arr, JSON_UNESCAPED_UNICODE));
+            
+            try {
+                mysqli_query($conn,
+                    "UPDATE tbl_tarea_entrega 
+                     SET titulo_tarea = '$titulo_esc', 
+                         descripcion_tarea = '$desc_esc', 
+                         num_entregas = $num_entregas, 
+                         fechas_entregas = '$fechas_json'
+                     WHERE id = $id_tarea AND id_tutor = $idTutor"
+                );
+                header("Location: panel_tutor.php?msg=task_updated");
+                exit();
+            } catch (Exception $e) {
+                header("Location: panel_tutor.php?msg=task_update_error");
+                exit();
+            }
         }
     } else {
-        $mensaje = 'Faltan datos obligatorios para actualizar la tarea.';
-        $tipo_mensaje = 'warning';
+        header("Location: panel_tutor.php?msg=task_missing");
+        exit();
     }
 }
 
@@ -494,42 +571,27 @@ $grupos = [];
 if ($resGrupos) { while ($g = mysqli_fetch_assoc($resGrupos)) $grupos[] = $g; }
 $totalGrupos = count($grupos);
 
-// Profesores asignados al tutor a través de sus grupos
+// Profesores asignados al tutor a través de sus grupos (Flexibilizado)
 $resProfesores = mysqli_query($conn,
-  "SELECT DISTINCT p.id_profesor, p.nombre, p.apellidos, p.ORCID AS orcid, p.correo, p.departamento, p.facultad, p.rama, g.nombre AS grupo
+  "SELECT DISTINCT p.id_profesor, p.nombre, p.apellidos, p.DNI AS dni, p.ORCID AS orcid, p.correo, p.departamento, p.facultad, p.rama, g.nombre AS grupo
    FROM tbl_grupo g
    INNER JOIN tbl_grupo_profesor gp ON gp.id_grupo = g.id_grupo
    INNER JOIN tbl_profesor p ON p.id_profesor = gp.id_profesor
-   WHERE g.id_tutor = $idTutor AND p.perfil = 'PROFESOR'
+   WHERE g.id_tutor = $idTutor
    ORDER BY p.apellidos, p.nombre"
 );
 $profesores = [];
 if ($resProfesores) { while ($p = mysqli_fetch_assoc($resProfesores)) $profesores[] = $p; }
 $totalProfesores = count($profesores);
 
-// Datos por profesor: evaluaciones, tareas, publicaciones
-$profEvals   = [];  // id_profesor => [todas las evaluaciones]
+// Datos por profesor: tareas, publicaciones y EVALUACIONES (Restaurado)
 $profTareas  = [];  // id_profesor => [tareas]
 $profPubs    = [];  // id_profesor => count publicaciones
+$profEvals   = [];  // id_profesor => [evaluaciones]
 
 foreach ($profesores as $prof) {
     $pid = (int)$prof['id_profesor'];
-
-    // -- Evaluaciones ANECA --
     $profEvals[$pid] = [];
-    $ramaNorm = strtoupper(trim($prof['rama'] ?? ''));
-    $dbName = $mapaDB[$ramaNorm] ?? null;
-    if ($dbName) {
-        try {
-            $pdoEval = new PDO("mysql:host={$dbHost};port={$dbPort};dbname={$dbName};charset=utf8mb4", $dbUser, $dbPass, [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            ]);
-            $stEval = $pdoEval->prepare("SELECT * FROM evaluaciones WHERE nombre_candidato LIKE :n OR nombre_candidato LIKE :na ORDER BY fecha_creacion DESC");
-            $nombreCompleto = trim($prof['nombre'] . ' ' . $prof['apellidos']);
-            $stEval->execute(['n' => '%' . trim($prof['nombre']) . '%', 'na' => '%' . $nombreCompleto . '%']);
-            $profEvals[$pid] = $stEval->fetchAll();
-        } catch (Exception $e) { /* BD no disponible */ }
-    }
 
     // -- Tareas de entrega --
     $profTareas[$pid] = [];
@@ -538,25 +600,140 @@ foreach ($profesores as $prof) {
             "SELECT * FROM tbl_tarea_entrega WHERE id_profesor = $pid AND id_tutor = $idTutor ORDER BY fecha_creacion DESC"
         );
         if ($resTareas) { while ($t = mysqli_fetch_assoc($resTareas)) $profTareas[$pid][] = $t; }
-    } catch (Exception $e) { /* tabla puede no existir */ }
+    } catch (Exception $e) { }
 
     // -- Publicaciones --
     $profPubs[$pid] = 0;
     $resPub = mysqli_query($conn, "SELECT COUNT(*) AS total FROM tbl_publicacion WHERE ORCID_autor = '" . mysqli_real_escape_string($conn, $prof['correo']) . "'");
     if (!$resPub) {
-        // Intentar por ORCID en tbl_publicacion_profesor
-        $resOrcid = mysqli_query($conn, "SELECT ORCID FROM tbl_profesor WHERE id_profesor = $pid LIMIT 1");
-        if ($resOrcid && $rowO = mysqli_fetch_assoc($resOrcid)) {
-            $orcidProf = mysqli_real_escape_string($conn, $rowO['ORCID']);
-            $resPub2 = mysqli_query($conn, "SELECT COUNT(*) AS total FROM tbl_publicacion_profesor WHERE orcid_profesor = '$orcidProf'");
-            if ($resPub2) $profPubs[$pid] = (int)mysqli_fetch_assoc($resPub2)['total'];
-        }
+        $resPub2 = mysqli_query($conn, "SELECT COUNT(*) AS total FROM tbl_publicacion_profesor WHERE orcid_profesor = '" . mysqli_real_escape_string($conn, $prof['orcid']) . "'");
+        if ($resPub2) $profPubs[$pid] = (int)mysqli_fetch_assoc($resPub2)['total'];
     } else {
         $profPubs[$pid] = (int)mysqli_fetch_assoc($resPub)['total'];
     }
+
+    // -- Evaluaciones ANECA (BLOQUE RESTAURADO) --
+    $r_norm = strtoupper(trim($prof['rama'] ?? ''));
+    $db_eval = $mapaDB[$r_norm] ?? null;
+    if ($db_eval) {
+        try {
+            $pdo_loop = new PDO("mysql:host={$dbHost};port={$dbPort};dbname={$db_eval};charset=utf8mb4", $dbUser, $dbPass);
+            $orcid_p = $prof['orcid'];
+            $orcid_l = str_replace('-', '', $orcid_p);
+            $dni_p   = $prof['dni'] ?? ($prof['DNI'] ?? '');
+            $st_loop = $pdo_loop->prepare("SELECT * FROM evaluaciones WHERE json_entrada LIKE ? OR json_entrada LIKE ? OR json_entrada LIKE ? ORDER BY fecha_creacion DESC");
+            $st_loop->execute(['%'.$orcid_p.'%', '%'.$orcid_l.'%', '%'.$dni_p.'%']);
+            $profEvals[$pid] = $st_loop->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) { }
+    }
 }
 
-// ── AJAX: Obtener Histórico ANECA ─────────────────────────────────────
+// --- SISTEMA DE RESUMEN DE GRUPOS Y RETRASOS (ADITIVO) ---
+$grupoStats = [];
+foreach ($grupos as $g) {
+    $gid = (int)$g['id_grupo'];
+    $grupoStats[$gid] = [
+        'id_grupo' => $gid,
+        'nombre' => $g['nombre'],
+        'total_profesores' => 0,
+        'total_tareas' => 0,
+        'tareas_completadas' => 0,
+        'hitos_retrasados' => 0,
+        'dias_retraso_max' => 0,
+        'dias_retraso_total' => 0
+    ];
+}
+
+// Mapa rápido del nombre del grupo a su ID
+$groupNameToId = [];
+foreach ($grupos as $g) {
+    $groupNameToId[$g['nombre']] = (int)$g['id_grupo'];
+}
+
+$hoyTimestamp = time();
+
+foreach ($profesores as $prof) {
+    $gName = $prof['grupo'];
+    if (!isset($groupNameToId[$gName])) continue;
+    $gid = $groupNameToId[$gName];
+    
+    $grupoStats[$gid]['total_profesores']++;
+    
+    $pid = (int)$prof['id_profesor'];
+    $tareas = $profTareas[$pid] ?? [];
+    
+    foreach ($tareas as $t) {
+        $numEntregas = (int)$t['num_entregas'];
+        $fechasLimite = json_decode($t['fechas_entregas'] ?? '[]', true) ?: [];
+        $fechasReales = json_decode($t['fechas_reales_entregas'] ?? '[]', true) ?: [];
+        
+        $todasHechas = true;
+        for ($i = 0; $i < $numEntregas; $i++) {
+            if (empty($fechasReales[$i])) {
+                $todasHechas = false;
+                break;
+            }
+        }
+        if ($todasHechas) {
+            continue; // Si la tarea está completamente completada, se archiva y ya no cuenta en el Semáforo de Retraso Activo
+        }
+        
+        $grupoStats[$gid]['total_tareas']++;
+        
+        $numEntregas = (int)$t['num_entregas'];
+        
+        for ($i = 0; $i < $numEntregas; $i++) {
+            if (!isset($fechasLimite[$i])) continue;
+            
+            $limiteStr = $fechasLimite[$i];
+            $limiteTime = strtotime($limiteStr);
+            if (!$limiteTime) continue;
+            
+            // Si la fecha límite no incluye hora (ej: YYYY-MM-DD), se extiende hasta las 23:59:59 de ese día
+            if (strlen(trim($limiteStr)) <= 10) {
+                $limiteTime = strtotime(date('Y-m-d', $limiteTime) . ' 23:59:59');
+            }
+            
+            $realTime = isset($fechasReales[$i]) ? strtotime($fechasReales[$i]) : null;
+            
+            if ($realTime !== null) {
+                $grupoStats[$gid]['tareas_completadas']++;
+                if ($realTime > $limiteTime) {
+                    $grupoStats[$gid]['hitos_retrasados']++;
+                    $diffDias = ($realTime - $limiteTime) / 86400;
+                    if ($diffDias > 0) {
+                        $grupoStats[$gid]['dias_retraso_total'] += $diffDias;
+                        if ($diffDias > $grupoStats[$gid]['dias_retraso_max']) {
+                            $grupoStats[$gid]['dias_retraso_max'] = $diffDias;
+                        }
+                    }
+                }
+            } else {
+                // Hito pendiente. Si hoy ya pasó el límite, cuenta como retraso activo
+                if ($hoyTimestamp > $limiteTime) {
+                    $grupoStats[$gid]['hitos_retrasados']++;
+                    $diffDias = ($hoyTimestamp - $limiteTime) / 86400;
+                    if ($diffDias > 0) {
+                        $grupoStats[$gid]['dias_retraso_total'] += $diffDias;
+                        if ($diffDias > $grupoStats[$gid]['dias_retraso_max']) {
+                            $grupoStats[$gid]['dias_retraso_max'] = $diffDias;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Ordenar los grupos para mostrar primero los más retrasados
+uasort($grupoStats, function($a, $b) {
+    if ($a['dias_retraso_total'] != $b['dias_retraso_total']) {
+        return $b['dias_retraso_total'] <=> $a['dias_retraso_total'];
+    }
+    return $b['hitos_retrasados'] <=> $a['hitos_retrasados'];
+});
+
+// ------------------------------------------------------------------------- AJAX: Obtener Histórico ANECA ---------------------------------------------------------
 if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset($_GET['orcid'])) {
     $orcid_req = mysqli_real_escape_string($conn, $_GET['orcid']);
     
@@ -583,13 +760,15 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
                 // Consulta blindada por identificador único (DNI/ORCID) o Nombre
                 $sql = "SELECT * FROM `evaluaciones` 
                         WHERE (`json_entrada` LIKE :orcid_original 
-                           OR `json_entrada` LIKE :orcid_limpio)
+                           OR `json_entrada` LIKE :orcid_limpio
+                           OR `json_entrada` LIKE :dni_prof)
                         ORDER BY `fecha_creacion` DESC";
                 
                 $st_h = $pdo_h->prepare($sql);
                 $st_h->execute([
                     ':orcid_original' => '%' . $orcid_original . '%',
-                    ':orcid_limpio'   => '%' . $orcid_limpio . '%'
+                    ':orcid_limpio'   => '%' . $orcid_limpio . '%',
+                    ':dni_prof'       => '%' . $dni_prof . '%'
                 ]);
                 $evals_h = $st_h->fetchAll();
                 
@@ -703,21 +882,98 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
   <link rel="stylesheet" href="css/styles.css?v=<?= time() ?>">
   <style>
     .popover-body { white-space: pre-line; }
+    
+    /* FIX RESPONSIVE: Evitar scroll horizontal y optimizar cards */
+    @media (max-width: 768px) {
+      .panel-wrapper {
+        padding: 10px !important;
+        width: 100% !important;
+        margin: 0 !important;
+      }
+      .dashboard {
+        padding: 0 !important;
+        overflow-x: hidden;
+      }
+      .row {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+      }
+      .col-12, .col-md-4 {
+        padding-left: 5px !important;
+        padding-right: 5px !important;
+      }
+      .prof-panel-card {
+        padding: 15px !important;
+      }
+      .prof-panel-card .d-flex {
+        align-items: center !important;
+        text-align: center;
+      }
+      .prof-panel-card .justify-content-end {
+        justify-content: center !important;
+        width: 100%;
+        max-width: 1440px;
+        gap: 10px !important;
+      }
+      .prof-panel-card .btn-sm {
+        flex: 1 1 auto;
+        min-width: 65px !important;
+        height: 52px !important;
+        padding: 5px !important;
+        justify-content: center !important;
+      }
+      .prof-panel-card .btn-sm i {
+        font-size: 0.95rem !important;
+      }
+      .prof-panel-card .btn-sm span {
+        font-size: 0.55rem !important;
+      }
+      .formulario {
+        width: clamp(280px, 30%, 460px);
+        max-width: 90vw;
+      }
+      /* Header en una sola línea con hamburguesa a la izquierda */
+      .contenedorimg {
+        flex-direction: row !important;
+        justify-content: flex-start !important;
+        align-items: center !important;
+        gap: 10px !important;
+        padding: 10px 15px !important;
+        flex-wrap: nowrap !important;
+      }
+      .hamburger-btn {
+        margin-right: 5px !important;
+        order: -1; /* Asegura que esté a la izquierda */
+      }
+      .imagen img {
+        max-height: 35px !important; /* Ajuste para que quepan en una línea */
+      }
+      #academy {
+        max-height: 45px !important;
+        margin-left: auto; /* Empuja el segundo logo a la derecha si hay espacio */
+      }
+    }
   </style>
 </head>
 
 <body>
   <header>
     <div class="contenedorimg">
+      <!-- Menú Hamburguesa en la misma línea que los logos -->
+      <button class="hamburger-btn" id="hamburgerBtn" aria-label="Mostrar menú">
+        <i class="bi bi-list"></i>
+      </button>
+
       <div class="imagen">
         <img src="https://uf3ceu.es/wp-content/uploads/logo-uf3-2k25.svg" alt="CEU Universidad Fernando III"
-          style="height:50px; width:auto;" id="#acele" />
+          id="#acele" />
       </div>
       <div class="imagen">
         <img src="../../acelerador_login/fronten/img/AcademyAccelerator_def.png" id="academy" alt="academy" />
       </div>
     </div>
-  </header>
+  <!-- Overlay para el menú lateral -->
+  <div class="overlay-menu" id="overlayMenu"></div>
   <main>
     <div class="panel-wrapper">
       <div class="formulario">
@@ -731,7 +987,7 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
         <div class="lista-perfil w-100 px-lg-4">
           <ul class="list-unstyled d-flex flex-column gap-2 mb-0 text-start w-100 mx-auto">
 
-            <!-- ✅ Datos visibles siempre -->
+            <!-- âœ… Datos visibles siempre -->
             <li
               class="d-flex flex-column bg-light bg-opacity-10 py-2 px-3 rounded-4 border border-light border-opacity-25 shadow-sm">
               <span class="text-white-50 small mb-1 fw-bold text-uppercase">
@@ -772,7 +1028,7 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
               </span>
             </li>
 
-            <!-- ✅ Datos ocultos por defecto → se mostrarán al pulsar el botón -->
+            <!-- âœ… Datos ocultos por defecto â†’ se mostrarán al pulsar el botón -->
             <li
               class="extraDato d-none d-flex flex-column bg-light bg-opacity-10 py-2 px-3 rounded-4 border border-light border-opacity-25 shadow-sm">
               <span class="text-white-50 small mb-1 fw-bold text-uppercase">
@@ -836,6 +1092,7 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
             <i class="bi bi-person-lines-fill"></i> Mostrar todos mis datos
           </button>
 
+
           <a href="grupos_profesor.php"
             class="btn btn-outline-light px-4 py-2 rounded-pill fw-medium d-inline-flex align-items-center gap-2 transition-all text-decoration-none">
             <i class="bi bi-people-fill"></i> Mostrar mis grupos de profesores
@@ -859,6 +1116,7 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
           </button>
 
           <form id="formEliminarCuenta" method="POST" class="d-none">
+              <?php echo acelerador_csrf_field(); ?>
               <input type="hidden" name="accion" value="eliminar_cuenta_propia">
           </form>
 
@@ -866,21 +1124,22 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
 
       </div>
 
-      <!-- ════════════════════════════════════════════════════════
-           DASHBOARD TUTOR — Grupos y profesores asignados
-      ════════════════════════════════════════════════════════ -->
+      <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+           DASHBOARD TUTOR - Grupos y profesores asignados
+      â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
       <div class="dashboard">
 
         <?php if (!empty($mensaje)): ?>
-          <div class="alert alert-<?= $tipo_mensaje ?> alert-dismissible fade show" role="alert">
-            <?= htmlspecialchars($mensaje) ?>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-          </div>
+          <script>
+            document.addEventListener('DOMContentLoaded', () => {
+              showNotification(<?= json_encode($mensaje) ?>, <?= json_encode($tipo_mensaje) ?>);
+            });
+          </script>
         <?php endif; ?>
 
         <!-- Notificaciones de Decisiones Pendientes (Readmisiones) -->
         <?php if (!empty($notifsTutor)): ?>
-        <div class="row g-3 mb-4 w-100">
+        <div class="row g-3 mb-4">
           <div class="col-12">
             <div class="dashboard-info-card border-warning border-opacity-50">
               <h5 class="text-warning mb-3"><i class="bi bi-exclamation-triangle-fill me-2"></i>Decisiones Pendientes</h5>
@@ -892,6 +1151,7 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
                     </div>
                     <div class="d-flex gap-2">
                         <form method="POST" class="m-0 d-flex gap-3">
+                            <?php echo acelerador_csrf_field(); ?>
                             <input type="hidden" name="accion" value="decision_readmision">
                             <input type="hidden" name="id_solicitud" value="<?= $nt['id_solicitud'] ?>">
                             <button type="submit" name="decision" value="ACEPTAR" class="btn btn-sm btn-success rounded-pill px-4 fw-bold">ACEPTAR</button>
@@ -908,19 +1168,19 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
 
         <!-- Tarjetas de estadísticas -->
         <div class="row g-3 mb-4 w-100">
-          <div class="col-md-4">
+          <div class="col-6 col-md-4">
             <div class="dashboard-stat-card h-100">
               <div class="stat-label"><i class="bi bi-collection me-1"></i> Grupos asignados</div>
               <div class="stat-value"><?= $totalGrupos ?></div>
             </div>
           </div>
-          <div class="col-md-4">
+          <div class="col-6 col-md-4">
             <div class="dashboard-stat-card h-100">
               <div class="stat-label"><i class="bi bi-person-workspace me-1"></i> Profesores tutorizados</div>
               <div class="stat-value"><?= $totalProfesores ?></div>
             </div>
           </div>
-          <div class="col-md-4">
+          <div class="col-12 col-md-4">
             <div class="dashboard-stat-card h-100">
               <div class="stat-label"><i class="bi bi-envelope me-1"></i> Correo del tutor</div>
               <div class="stat-value stat-email"><?= htmlspecialchars($correo) ?></div>
@@ -928,10 +1188,262 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
           </div>
         </div>
 
+        <!-- Resumen de Grupos (Semáforo de retrasos) (ADITIVO) -->
+        <?php if ($totalGrupos > 0): ?>
+        <h2 class="dashboard-section-title mb-3"><i class="bi bi-diagram-3-fill me-2"></i>Semáforo de Retraso de los Grupos</h2>
+        <div class="row g-3 mb-5 w-100">
+          <?php 
+          $esPrimerGrupo = true;
+          foreach ($grupoStats as $gs):
+            $diasRetraso = round($gs['dias_retraso_total']);
+            $hitosRetrasados = $gs['hitos_retrasados'];
+            
+            // Determinar color de semáforo y estado
+            if ($diasRetraso > 10) {
+                $statusColor = '#f87171'; // Rojo
+                $statusBg = 'rgba(248, 113, 113, 0.1)';
+                $statusBorder = 'rgba(248, 113, 113, 0.4)';
+                $statusText = 'RETRASO CRÍTICO';
+                $statusIcon = 'bi-exclamation-triangle-fill';
+            } elseif ($diasRetraso > 0) {
+                $statusColor = '#fbbf24'; // Amarillo
+                $statusBg = 'rgba(251, 191, 36, 0.1)';
+                $statusBorder = 'rgba(251, 191, 36, 0.4)';
+                $statusText = 'RETRASO MODERADO';
+                $statusIcon = 'bi-exclamation-circle-fill';
+            } else {
+                $statusColor = '#4ade80'; // Verde
+                $statusBg = 'rgba(74, 222, 128, 0.1)';
+                $statusBorder = 'rgba(74, 222, 128, 0.4)';
+                $statusText = 'AL DÍA';
+                $statusIcon = 'bi-check-circle-fill';
+            }
+            
+            // Si es el primer grupo de la lista ordenada y tiene retraso, es el más retrasado de todos
+            $esMasRetrasado = $esPrimerGrupo && $diasRetraso > 0;
+            $esPrimerGrupo = false;
+          ?>
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="dashboard-stat-card h-100 position-relative p-4 rounded-4 shadow-lg transition-all" 
+                   style="background: rgba(20, 88, 204, 0.4) !important; border: 1px solid <?= $statusBorder ?> !important; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
+                
+                <?php if ($esMasRetrasado): ?>
+                  <span class="position-absolute top-0 end-0 translate-middle-y badge rounded-pill bg-danger px-3 py-2 fw-bold text-uppercase shadow-sm animate-pulse" style="font-size: 0.65rem; border: 1px solid rgba(255,255,255,0.2); z-index: 10;">
+                    <i class="bi bi-fire me-1"></i> El Más Retrasado
+                  </span>
+                <?php endif; ?>
+                
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                  <h4 class="text-white fw-bold mb-0" style="font-size: 1.1rem; max-width: 70%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                    <i class="bi bi-collection me-2 text-info"></i><?= htmlspecialchars($gs['nombre']) ?>
+                  </h4>
+                  <span class="badge rounded-pill fw-bold text-uppercase" 
+                        style="background: <?= $statusBg ?>; color: <?= $statusColor ?>; border: 1px solid <?= $statusColor ?>; font-size: 0.65rem; padding: 6px 10px;">
+                    <i class="bi <?= $statusIcon ?> me-1"></i><?= $statusText ?>
+                  </span>
+                </div>
+                
+                <div class="d-flex flex-column gap-2 text-white-50 small mb-2">
+                  <div class="d-flex align-items-center justify-content-between">
+                    <span><i class="bi bi-people me-2"></i>Profesores en grupo:</span>
+                    <span class="text-white fw-semibold"><?= $gs['total_profesores'] ?></span>
+                  </div>
+                  <div class="d-flex align-items-center justify-content-between">
+                    <span><i class="bi bi-journal-check me-2"></i>Tareas asignadas:</span>
+                    <span class="text-white fw-semibold"><?= $gs['total_tareas'] ?></span>
+                  </div>
+                  <div class="d-flex align-items-center justify-content-between">
+                    <span><i class="bi bi-calendar-x me-2 text-danger"></i>Hitos con retraso:</span>
+                    <span class="text-danger fw-bold"><?= $hitosRetrasados ?></span>
+                  </div>
+                  <div class="d-flex align-items-center justify-content-between">
+                    <span><i class="bi bi-clock-history me-2 text-warning"></i>Retraso acumulado:</span>
+                    <span class="fw-bold" style="color: <?= $diasRetraso > 0 ? '#fbbf24' : '#4ade80' ?>;"><?= $diasRetraso ?> días</span>
+                  </div>
+                </div>
+                
+                <!-- Barra de progreso visual de hitos -->
+                <?php 
+                  $pctHitosOk = $gs['total_tareas'] > 0 ? round((($gs['total_tareas'] - $hitosRetrasados) / $gs['total_tareas']) * 100) : 100;
+                  if ($pctHitosOk < 0) $pctHitosOk = 0;
+                ?>
+                <div class="mt-3">
+                  <div class="d-flex justify-content-between mb-1 small text-white-50">
+                    <span>Ritmo de entregas</span>
+                    <span class="fw-bold text-white"><?= $pctHitosOk ?>% al día</span>
+                  </div>
+                  <div class="progress rounded-pill" style="height: 6px; background: rgba(255, 255, 255, 0.05); overflow: hidden;">
+                    <div class="progress-bar" role="progressbar" 
+                         style="width: <?= $pctHitosOk ?>%; background-color: <?= $statusColor ?>; border-radius: 10px; transition: width 0.6s ease;" 
+                         aria-valuenow="<?= $pctHitosOk ?>" aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+                </div>
+
+                <!-- Botón de Desglose (ADITIVO) -->
+                <button type="button" class="btn btn-sm w-100 mt-3 rounded-pill fw-semibold transition-all" 
+                        style="border: 1px solid rgba(255,255,255,0.15) !important; color: #fff !important; background: rgba(20, 88, 204, 0.2) !important; padding: 8px 16px;"
+                        data-bs-toggle="modal" data-bs-target="#modalDesglose<?= $gs['id_grupo'] ?>"
+                        onmouseover="this.style.background='rgba(20, 88, 204, 0.6)'; this.style.borderColor='rgba(255,255,255,0.3)';"
+                        onmouseout="this.style.background='rgba(20, 88, 204, 0.2)'; this.style.borderColor='rgba(255,255,255,0.15)';">
+                  <i class="bi bi-clock-history me-1"></i> Desglose
+                </button>
+                
+              </div>
+            </div>
+
+            <!-- Modal de Desglose para el Grupo (ADITIVO) -->
+            <div class="modal fade" id="modalDesglose<?= $gs['id_grupo'] ?>" tabindex="-1" aria-hidden="true">
+              <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content text-white rounded-4 border border-light border-opacity-10" style="background: rgba(15, 23, 42, 0.95) !important; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); box-shadow: 0 20px 50px rgba(0,0,0,0.6);">
+                  
+                  <div class="modal-header border-bottom border-light border-opacity-10 p-3">
+                    <h5 class="modal-title fw-bold text-info"><i class="bi bi-diagram-3-fill me-2"></i>Desglose de Temporalidad: <?= htmlspecialchars($gs['nombre']) ?></h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                  </div>
+                  
+                  <div class="modal-body p-4 custom-scrollbar" style="max-height: 70vh; overflow-y: auto;">
+                    
+                    <?php
+                    // Obtener profesores del grupo actual
+                    $profsGrupo = [];
+                    foreach ($profesores as $prof) {
+                        if ($prof['grupo'] === $gs['nombre']) {
+                            $profsGrupo[] = $prof;
+                        }
+                    }
+                    
+                    if (empty($profsGrupo)):
+                    ?>
+                      <p class="text-white-50 text-center py-4">No hay profesores asignados en este grupo.</p>
+                    <?php else: ?>
+                      <div class="d-flex flex-column gap-4">
+                        <?php foreach ($profsGrupo as $pGrupo): 
+                          $pId = (int)$pGrupo['id_profesor'];
+                          $tList = $profTareas[$pId] ?? [];
+                        ?>
+                          <div class="p-3 rounded-4" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08);">
+                            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
+                              <h6 class="text-white fw-bold mb-0">
+                                <i class="bi bi-person-circle text-info me-2"></i><?= htmlspecialchars($pGrupo['nombre'] . ' ' . $pGrupo['apellidos']) ?>
+                              </h6>
+                              <span class="text-white-50 small"><i class="bi bi-envelope"></i> <?= htmlspecialchars($pGrupo['correo']) ?></span>
+                            </div>
+                            
+                            <?php
+                              $tareasActivasDesglose = [];
+                              foreach ($tList as $tl) {
+                                  $fReal = json_decode($tl['fechas_reales_entregas'] ?? '[]', true) ?: [];
+                                  $nEntr = (int)$tl['num_entregas'];
+                                  $todasHechas = true;
+                                  for ($idx = 0; $idx < $nEntr; $idx++) {
+                                      if (empty($fReal[$idx])) {
+                                          $todasHechas = false;
+                                          break;
+                                      }
+                                  }
+                                  if (!$todasHechas) {
+                                      $tareasActivasDesglose[] = $tl;
+                                  }
+                              }
+                            ?>
+                            <?php if (empty($tareasActivasDesglose)): ?>
+                              <div class="text-white-50 small p-3 text-center" style="background: rgba(0,0,0,0.15); border-radius: 8px;">
+                                <i class="bi bi-info-circle me-1 text-info"></i> El profesor no tiene tareas o hitos activos actualmente.
+                              </div>
+                            <?php else: ?>
+                              <div class="d-flex flex-column gap-3">
+                                <?php foreach ($tareasActivasDesglose as $tl): 
+                                  $fLimit = json_decode($tl['fechas_entregas'] ?? '[]', true) ?: [];
+                                  $fReal = json_decode($tl['fechas_reales_entregas'] ?? '[]', true) ?: [];
+                                  $nEntr = (int)$tl['num_entregas'];
+                                ?>
+                                  <div class="p-3 rounded-3" style="background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(255, 255, 255, 0.04);">
+                                    <div class="fw-semibold text-white small mb-2"><i class="bi bi-clipboard-check text-info me-1"></i> Tarea: <?= htmlspecialchars($tl['titulo_tarea']) ?></div>
+                                    
+                                    <div class="row g-2">
+                                      <?php for ($idx = 0; $idx < $nEntr; $idx++): 
+                                        if (!isset($fLimit[$idx])) continue;
+                                        $limiteStr = $fLimit[$idx];
+                                        $limiteT = strtotime($limiteStr);
+                                        if ($limiteT) {
+                                            // Si la fecha límite no incluye hora (ej: YYYY-MM-DD), se extiende hasta las 23:59:59 de ese día
+                                            if (strlen(trim($limiteStr)) <= 10) {
+                                                $limiteT = strtotime(date('Y-m-d', $limiteT) . ' 23:59:59');
+                                            }
+                                        }
+                                        $realStr = $fReal[$idx] ?? null;
+                                        $realT = $realStr ? strtotime($realStr) : null;
+                                        
+                                        $formattedLimit = date('d/m/Y H:i', $limiteT);
+                                        
+                                        if ($realT !== null) {
+                                            $formattedReal = date('d/m/Y H:i', $realT);
+                                            if ($realT > $limiteT) {
+                                                $diff = round(($realT - $limiteT) / 86400);
+                                                if ($diff == 0) $diff = 1;
+                                                $badgeBg = 'rgba(248, 113, 113, 0.15)';
+                                                $badgeColor = '#f87171';
+                                                $badgeText = "⚠️ Entregado con retraso ({$diff}d) el {$formattedReal}";
+                                            } else {
+                                                $badgeBg = 'rgba(74, 222, 128, 0.15)';
+                                                $badgeColor = '#4ade80';
+                                                $badgeText = "✅ Entregado a tiempo el {$formattedReal}";
+                                            }
+                                        } else {
+                                            if (time() > $limiteT) {
+                                                $diff = round((time() - $limiteT) / 86400);
+                                                if ($diff == 0) $diff = 1;
+                                                $badgeBg = 'rgba(248, 113, 113, 0.15)';
+                                                $badgeColor = '#f87171';
+                                                $badgeText = "❌ RETRASADO (Hace {$diff}d)";
+                                            } else {
+                                                $diff = round(($limiteT - time()) / 86400);
+                                                if ($diff == 0) $diff = 1;
+                                                $badgeBg = 'rgba(59, 130, 246, 0.15)';
+                                                $badgeColor = '#60a5fa';
+                                                $badgeText = "⏳ Pendiente (Faltan {$diff}d)";
+                                            }
+                                        }
+                                      ?>
+                                        <div class="col-12 col-md-6">
+                                          <div class="p-2 rounded-3 d-flex flex-column gap-1" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); font-size: 0.75rem;">
+                                            <div class="d-flex justify-content-between">
+                                              <span class="text-white-50">Plazo <?= $idx + 1 ?>:</span>
+                                              <span class="text-white fw-bold"><?= $formattedLimit ?></span>
+                                            </div>
+                                            <span class="badge w-100 py-2 text-start text-wrap mt-1" style="background: <?= $badgeBg ?>; color: <?= $badgeColor ?>; border: 1px solid <?= $badgeColor ?>; font-size: 0.7rem; font-weight: 600;">
+                                              <?= $badgeText ?>
+                                            </span>
+                                          </div>
+                                        </div>
+                                      <?php endfor; ?>
+                                    </div>
+                                  </div>
+                                <?php endforeach; ?>
+                              </div>
+                            <?php endif; ?>
+                          </div>
+                        <?php endforeach; ?>
+                      </div>
+                    <?php endif; ?>
+                    
+                  </div>
+                  
+                  <div class="modal-footer border-top border-light border-opacity-10 p-3">
+                    <button type="button" class="btn btn-outline-light rounded-pill px-4" data-bs-dismiss="modal">Cerrar</button>
+                  </div>
+                  
+                </div>
+              </div>
+            </div>
+          <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
+
         <!-- Tarjetas de profesores -->
         <?php if ($totalProfesores > 0): ?>
         <h2 class="dashboard-section-title mb-3"><i class="bi bi-people-fill me-2"></i>Mis profesores</h2>
-        <div class="row g-3 w-100">
+        <div class="row g-3">
           <?php foreach ($profesores as $prof):
             $pid = (int)$prof['id_profesor'];
             $evalsList = $profEvals[$pid] ?? [];
@@ -956,24 +1468,29 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
                   </div>
                   
                   <div class="d-flex flex-wrap gap-2 ms-lg-3 justify-content-end align-items-start">
-                    <a href="../../dashboard_profesor.php?nombre=<?= urlencode($prof['nombre']) ?>&rama=<?= urlencode($prof['rama']) ?>" class="btn btn-sm btn-primary rounded-3 d-flex flex-column align-items-center" style="min-width:68px; padding:8px 10px; gap:4px;">
-                      <i class="bi bi-diagram-3" style="font-size:1.25rem;"></i>
-                      <span style="font-size:.65rem; line-height:1;">Dashboard</span>
+                    <a href="../../dashboard_profesor.php?orcid=<?= urlencode($prof['orcid']) ?>&dni=<?= urlencode($prof['dni']) ?>&rama=<?= urlencode($prof['rama']) ?>&nombre=<?= urlencode($prof['nombre']) ?>" class="btn btn-sm btn-outline-light rounded-3 d-flex flex-column align-items-center" style="min-width:65px; padding:6px 4px; gap:2px;">
+                      <i class="bi bi-file-earmark-bar-graph" style="font-size:1.1rem;"></i>
+                      <span style="font-size:.6rem; line-height:1;">Expediente</span>
                     </a>
-                    <button type="button" class="btn btn-sm btn-outline-light rounded-3 d-flex flex-column align-items-center" style="min-width:68px; padding:8px 10px; gap:4px;" data-bs-toggle="modal" data-bs-target="#modalTarea<?= $pid ?>">
-                      <i class="bi bi-clipboard-check" style="font-size:1.25rem;"></i>
-                      <span style="font-size:.65rem; line-height:1;">Ver tarea</span>
+                    <button type="button" class="btn btn-sm btn-outline-light rounded-3 d-flex flex-column align-items-center" style="min-width:60px; padding:6px 4px; gap:2px;" data-bs-toggle="modal" data-bs-target="#modalTarea<?= $pid ?>">
+                      <i class="bi bi-clipboard-check" style="font-size:1.1rem;"></i>
+                      <span style="font-size:.6rem; line-height:1;">Tareas</span>
                     </button>
-                    <button type="button" class="btn btn-sm btn-outline-light rounded-3 d-flex flex-column align-items-center btn-estado-prof" style="min-width:68px; padding:8px 10px; gap:4px;" data-bs-toggle="modal" data-bs-target="#modalEstado<?= $pid ?>" data-orcid="<?= htmlspecialchars($prof['orcid']) ?>">
-                      <i class="bi bi-speedometer2" style="font-size:1.25rem;"></i>
-                      <span style="font-size:.65rem; line-height:1;">Estado</span>
+                    <button type="button" class="btn btn-sm btn-outline-light rounded-3 d-flex flex-column align-items-center" style="min-width:60px; padding:6px 4px; gap:2px;" data-bs-toggle="modal" data-bs-target="#modalHistoricoTareas<?= $pid ?>">
+                      <i class="bi bi-clock-history" style="font-size:1.1rem;"></i>
+                      <span style="font-size:.6rem; line-height:1;">Histórico</span>
                     </button>
-                    <button type="button" class="btn btn-sm btn-outline-light rounded-3 d-flex flex-column align-items-center btn-gantt-prof" style="min-width:68px; padding:8px 10px; gap:4px;" data-bs-toggle="modal" data-bs-target="#modalGrafico<?= $pid ?>" data-id="<?= $pid ?>">
-                      <i class="bi bi-bar-chart-line" style="font-size:1.25rem;"></i>
-                      <span style="font-size:.65rem; line-height:1;">Gráfico</span>
-                    </button>                    <button type="button" class="btn btn-sm btn-outline-light rounded-3 d-flex flex-column align-items-center" style="min-width:68px; padding:8px 10px; gap:4px;" data-bs-toggle="modal" data-bs-target="#modalOpciones<?= $pid ?>">
-                      <i class="bi bi-three-dots" style="font-size:1.25rem;"></i>
-                      <span style="font-size:.65rem; line-height:1;">Opciones</span>
+                    <button type="button" class="btn btn-sm btn-outline-light rounded-3 d-flex flex-column align-items-center btn-estado-prof" style="min-width:60px; padding:6px 4px; gap:2px;" data-bs-toggle="modal" data-bs-target="#modalEstado<?= $pid ?>" data-orcid="<?= htmlspecialchars($prof['orcid']) ?>">
+                      <i class="bi bi-speedometer2" style="font-size:1.1rem;"></i>
+                      <span style="font-size:.6rem; line-height:1;">Estado</span>
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-light rounded-3 d-flex flex-column align-items-center btn-gantt-prof" style="min-width:60px; padding:6px 4px; gap:2px;" data-bs-toggle="modal" data-bs-target="#modalGrafico<?= $pid ?>" data-id="<?= $pid ?>">
+                      <i class="bi bi-bar-chart-line" style="font-size:1.1rem;"></i>
+                      <span style="font-size:.6rem; line-height:1;">Gráfico</span>
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-light rounded-3 d-flex flex-column align-items-center" style="min-width:60px; padding:6px 4px; gap:2px;" data-bs-toggle="modal" data-bs-target="#modalOpciones<?= $pid ?>">
+                      <i class="bi bi-three-dots" style="font-size:1.1rem;"></i>
+                      <span style="font-size:.6rem; line-height:1;">Opciones</span>
                     </button>
                   </div>
                 </div>
@@ -991,10 +1508,10 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
 
     </div><!-- /.panel-wrapper -->
 
-    <!-- ═══════════════════════════════════════════════════════════════
+    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
          MODALES POR PROFESOR (fuera de panel-wrapper, dentro de main)
-    ═══════════════════════════════════════════════════════════════ -->
-    <?php foreach ($profesores as $prof):
+    â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+     <?php foreach ($profesores as $prof):
       $pid = (int)$prof['id_profesor'];
       $evalsList = $profEvals[$pid] ?? [];
       $tareasList = $profTareas[$pid] ?? [];
@@ -1003,6 +1520,28 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
       $numPubs = $profPubs[$pid] ?? 0;
       $totalFinal = $lastEval ? (float)$lastEval['total_final'] : 0;
       $profNombreCompleto = htmlspecialchars($prof['nombre'] . ' ' . $prof['apellidos']);
+      
+      // Separar tareas activas e históricas (completamente realizadas)
+      $tareasActivas = [];
+      $tareasHistoricas = [];
+      foreach ($tareasList as $tareaActual) {
+          $fechasT = json_decode($tareaActual['fechas_entregas'] ?? '[]', true) ?: [];
+          $hechas = json_decode($tareaActual['fechas_reales_entregas'] ?? '[]', true) ?: [];
+          $numEntregas = (int)$tareaActual['num_entregas'];
+          
+          $todasHechas = true;
+          for ($idx = 0; $idx < $numEntregas; $idx++) {
+              if (empty($hechas[$idx])) {
+                  $todasHechas = false;
+                  break;
+              }
+          }
+          if ($todasHechas) {
+              $tareasHistoricas[] = $tareaActual;
+          } else {
+              $tareasActivas[] = $tareaActual;
+          }
+      }
     ?>
 
     <!-- MODAL 1: Ver tarea -->
@@ -1010,21 +1549,20 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
       <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content" style="background:rgba(15,23,42,0.95); border:1px solid rgba(255,255,255,0.15); color:#fff;">
           <div class="modal-header border-bottom border-light border-opacity-25">
-            <h5 class="modal-title"><i class="bi bi-clipboard-check me-2"></i>Tareas — <?= $profNombreCompleto ?></h5>
+            <h5 class="modal-title"><i class="bi bi-clipboard-check me-2"></i>Tareas - <?= $profNombreCompleto ?></h5>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
           </div>
-          <div class="modal-body d-flex flex-column custom-scrollbar pe-2" style="max-width: 420px; margin: 0 auto; width: 100%; min-height: 70vh; overflow-y: auto; overflow-x: hidden; align-items: center;">
+          <div class="modal-body custom-scrollbar">
             
             <!-- Mostrar todas las tareas activas (múltiples simultáneas) -->
-            <?php if (!empty($tareasList)): ?>
+            <?php if (!empty($tareasActivas)): ?>
               <h6 class="text-white fw-bold mb-3 text-center w-100"><i class="bi bi-list-task me-2"></i>Tareas Activas</h6>
               <div class="d-flex flex-column gap-3 mb-4">
-              <?php foreach ($tareasList as $tareaActual): 
+              <?php foreach ($tareasActivas as $tareaActual):
                 $fechasT = json_decode($tareaActual['fechas_entregas'] ?? '[]', true) ?: [];
-                $hechas = json_decode($tareaActual['entregas_realizadas'] ?? '{}', true) ?: [];
+                $hechas = json_decode($tareaActual['fechas_reales_entregas'] ?? '[]', true) ?: [];
                 $tiempoPrincipal = !empty($fechasT) ? $fechasT[0] : '';
-              ?>
-                <div class="p-3 rounded-3 w-100" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.10);">
+              ?>                <div class="p-3 rounded-3 w-100" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.10);">
                   <!-- Cabecera centrada: título + acciones -->
                   <div class="text-center mb-2">
                     <h6 class="text-white fw-bold mb-1"><?= htmlspecialchars($tareaActual['titulo_tarea']) ?></h6>
@@ -1032,6 +1570,7 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
                   </div>
                   <!-- Botones editar/borrar centrados -->
                   <form method="POST" class="m-0 d-flex justify-content-center gap-3 mb-2" onsubmit="event.preventDefault(); customConfirm('¿Seguro que deseas eliminar esta tarea?', () => this.submit());">
+                    <?php echo acelerador_csrf_field(); ?>
                     <input type="hidden" name="accion" value="borrar_tarea">
                     <input type="hidden" name="id_tarea" value="<?= $tareaActual['id'] ?>">
                     <button type="button" class="btn btn-sm btn-outline-info rounded-3 d-flex flex-column align-items-center btn-editar-tarea" style="min-width:56px; padding:6px 10px; gap:3px;" title="Editar tarea"
@@ -1057,18 +1596,29 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
                     <div class="text-white-50 small fw-bold text-uppercase mb-1 text-center" style="font-size:.7rem;">Entregas programadas:</div>
                     <?php foreach ($fechasT as $fi => $fe): 
                       $estaHecha = !empty($hechas[$fi]);
+                      $esPasada  = (strtotime($fe) < time());
                     ?>
-                      <div class="d-flex align-items-center justify-content-between gap-1 mb-1">
-                        <div class="d-flex align-items-center gap-1">
-                          <i class="bi bi-clock me-1" style="color:rgba(255,255,255,0.4); font-size:.8rem;"></i>
-                          <span class="text-white small">Entrega <?= $fi+1 ?>: <?= date('d/m/Y H:i', strtotime($fe)) ?></span>
-                          <?php if ($estaHecha): ?>
-                            <span class="badge bg-success bg-opacity-10 text-success ms-1" style="font-size: .6rem;">HECHA</span>
+                      <div class="d-flex flex-column mb-2 p-2 rounded-3" style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.06);">
+                        <div class="d-flex align-items-center justify-content-between gap-1 mb-1">
+                          <div class="d-flex align-items-center gap-1">
+                            <i class="bi bi-clock me-1" style="color:rgba(255,255,255,0.4); font-size:.8rem;"></i>
+                            <span class="text-white small">Entrega <?= $fi+1 ?>: <?= date('d/m/Y H:i', strtotime($fe)) ?></span>
+                            <?php if ($estaHecha): ?>
+                              <span class="badge bg-success bg-opacity-10 text-success ms-1" style="font-size: .6rem;">HECHA</span>
+                            <?php endif; ?>
+                          </div>
+                          <?php if (!$estaHecha): ?>
+                            <button class="btn btn-xs btn-success py-0 px-2 rounded-pill btn-marcar-hecha" style="font-size: .6rem;"
+                                    data-id-tarea="<?= $tareaActual['id'] ?>" data-indice="<?= $fi ?>">Marcar como hecha</button>
                           <?php endif; ?>
                         </div>
-                        <?php if (!$estaHecha): ?>
-                          <button class="btn btn-xs btn-success py-0 px-2 rounded-pill btn-marcar-hecha" style="font-size: .6rem;"
-                                  data-id-tarea="<?= $tareaActual['id'] ?>" data-indice="<?= $fi ?>">Marcar como hecha</button>
+                        
+                        <?php if (!$estaHecha && !$esPasada): ?>
+                          <div class="countdown-item mt-1 text-info small fw-bold" style="font-size: .7rem;" data-deadline="<?= htmlspecialchars($fe) ?>">
+                            Restan: <span class="cdDias">--</span>d <span class="cdHoras">--</span>h <span class="cdMin">--</span>m <span class="cdSeg">--</span>s
+                          </div>
+                        <?php elseif (!$estaHecha && $esPasada): ?>
+                          <div class="small text-danger fw-bold" style="font-size: .7rem;">VENCIDA</div>
                         <?php endif; ?>
                       </div>
                     <?php endforeach; ?>
@@ -1089,6 +1639,7 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
             
             <!-- Formulario para UPDATE/INSERT -->
             <form method="POST" class="d-flex flex-column gap-3 w-100">
+              <?php echo acelerador_csrf_field(); ?>
               <input type="hidden" name="accion" value="actualizar_tarea">
               <input type="hidden" name="id_profesor" value="<?= $pid ?>">
               <!-- Obtener un grupo del profesor (el primero) -->
@@ -1133,7 +1684,7 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
       <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content" style="background:rgba(15,23,42,0.98); border:1px solid rgba(255,255,255,0.15); color:#fff;">
           <div class="modal-header border-bottom border-light border-opacity-25">
-            <h5 class="modal-title"><i class="bi bi-speedometer2 me-2"></i>Estado Ejecutivo — <?= $profNombreCompleto ?></h5>
+            <h5 class="modal-title"><i class="bi bi-speedometer2 me-2"></i>Estado Ejecutivo - <?= $profNombreCompleto ?></h5>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
           </div>
           <div class="modal-body custom-scrollbar">
@@ -1181,7 +1732,7 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
       <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content" style="background:rgba(15,23,42,0.95); border:1px solid rgba(255,255,255,0.15); color:#fff;">
           <div class="modal-header border-bottom border-light border-opacity-25">
-            <h5 class="modal-title"><i class="bi bi-bar-chart-line me-2"></i>Logística de Entregas — <?= $profNombreCompleto ?></h5>
+            <h5 class="modal-title"><i class="bi bi-bar-chart-line me-2"></i>Logística de Entregas - <?= $profNombreCompleto ?></h5>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
           </div>
           <div class="modal-body custom-scrollbar" style="max-height: 70vh; overflow-y: auto;">
@@ -1204,7 +1755,7 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content" style="background:rgba(15,23,42,0.95); border:1px solid rgba(255,255,255,0.15); color:#fff;">
           <div class="modal-header border-bottom border-light border-opacity-25">
-            <h5 class="modal-title"><i class="bi bi-three-dots me-2"></i>Opciones — <?= $profNombreCompleto ?></h5>
+            <h5 class="modal-title"><i class="bi bi-three-dots me-2"></i>Opciones - <?= $profNombreCompleto ?></h5>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
           </div>
           <div class="modal-body">
@@ -1232,7 +1783,7 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
       <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content" style="background:rgba(15,23,42,0.95); border:1px solid rgba(255,255,255,0.15); color:#fff;">
           <div class="modal-header border-bottom border-light border-opacity-25">
-            <h5 class="modal-title"><i class="bi bi-clock-history me-2"></i>Histórico ANECA — <?= $profNombreCompleto ?></h5>
+            <h5 class="modal-title"><i class="bi bi-clock-history me-2"></i>Histórico ANECA - <?= $profNombreCompleto ?></h5>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
           </div>
           <div class="modal-body">
@@ -1280,6 +1831,155 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
       </div>
     </div>
 
+    <!-- MODAL HISTÓRICO DE TAREAS -->
+    <div class="modal fade" id="modalHistoricoTareas<?= $pid ?>" tabindex="-1">
+      <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content" style="background:rgba(15,23,42,0.95); border:1px solid rgba(255,255,255,0.15); color:#fff;">
+          <div class="modal-header border-bottom border-light border-opacity-25">
+            <h5 class="modal-title text-success fw-bold"><i class="bi bi-clock-history me-2"></i>Histórico de Tareas - <?= $profNombreCompleto ?></h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body custom-scrollbar" style="max-height: 70vh; overflow-y: auto;">
+            <?php if (!empty($tareasHistoricas)): ?>
+              <div class="d-flex flex-column gap-3">
+                <?php foreach ($tareasHistoricas as $tareaActual):
+                  $fechasT = json_decode($tareaActual['fechas_entregas'] ?? '[]', true) ?: [];
+                  $hechas = json_decode($tareaActual['fechas_reales_entregas'] ?? '[]', true) ?: [];
+                ?>
+                  <div class="p-3 rounded-4 w-100" style="background:rgba(74,222,128,0.03); border:1px solid rgba(74,222,128,0.15);">
+                    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
+                      <h6 class="text-success fw-bold mb-0">
+                        <i class="bi bi-check2-all text-success me-2"></i><?= htmlspecialchars($tareaActual['titulo_tarea']) ?>
+                      </h6>
+                      <span class="badge rounded-pill bg-success bg-opacity-10 text-success" style="border: 1px solid rgba(74,222,128,0.25); font-size: 0.7rem;">
+                        <?= $tareaActual['num_entregas'] ?> entregas completadas
+                      </span>
+                    </div>
+                    <?php if (!empty($tareaActual['descripcion_tarea'])): ?>
+                      <p class="text-white-50 small mb-3"><?= htmlspecialchars($tareaActual['descripcion_tarea']) ?></p>
+                    <?php endif; ?>
+                    
+                    <div class="row g-2">
+                      <?php foreach ($fechasT as $fi => $fe): 
+                        $fechaReal = $hechas[$fi] ?? '';
+                      ?>
+                        <div class="col-12 col-md-6">
+                          <div class="p-2 rounded-3" style="background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.04); font-size:0.75rem;">
+                            <div class="d-flex justify-content-between mb-1">
+                              <span class="text-white-50">Plazo <?= $fi+1 ?>:</span>
+                              <span class="text-white fw-semibold"><?= date('d/m/Y H:i', strtotime($fe)) ?></span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                              <span class="text-success">Entregado el:</span>
+                              <span class="text-success fw-bold"><?= $fechaReal ? date('d/m/Y H:i', strtotime($fechaReal)) : '-' ?></span>
+                            </div>
+                          </div>
+                        </div>
+                      <?php endforeach; ?>
+                    </div>
+
+                    <!-- Gráfico Gantt Histórico -->
+                    <?php
+                    $inicioTarea = strtotime($tareaActual['fecha_creacion']) * 1000;
+                    $fechasLimMilli = array_map(function($f) { return strtotime($f) * 1000; }, $fechasT);
+                    $fechasRealMilli = array_map(function($f) { return strtotime($f) * 1000; }, array_filter($hechas));
+                    
+                    if (!empty($fechasLimMilli)) {
+                        $maxReal = !empty($fechasRealMilli) ? max($fechasRealMilli) : 0;
+                        $maxPlazo = max($fechasLimMilli);
+                        $finGrafico = max($maxReal, $maxPlazo);
+                        $totalDuracion = $finGrafico - $inicioTarea;
+                        if ($totalDuracion <= 0) $totalDuracion = 1;
+                        
+                        ?>
+                        <div class="mt-4 p-3 rounded-3" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.08);">
+                          <div class="text-white-50 small fw-bold text-uppercase mb-3" style="font-size:0.7rem;"><i class="bi bi-bar-chart-steps me-1 text-success"></i>Línea de Tiempo del Histórico</div>
+                          <div class="d-flex flex-column gap-3">
+                            <?php
+                            foreach ($fechasT as $idx => $fe) {
+                                $limite = $fechasLimMilli[$idx];
+                                $real = $fechasRealMilli[$idx] ?? null;
+                                
+                                $inicioSegmento = ($idx === 0) ? $inicioTarea : 
+                                                 (!empty($fechasRealMilli[$idx-1]) ? $fechasRealMilli[$idx-1] : $fechasLimMilli[$idx-1]);
+                                
+                                $finSegmento = $real ? $real : $limite;
+                                if ($finSegmento < $inicioSegmento) $finSegmento = $inicioSegmento;
+                                
+                                $esRetraso = $finSegmento > $limite;
+                                $widthRetraso = 0;
+                                $widthNormal = 0;
+                                $infoRetrasoTxt = '';
+                                
+                                if ($esRetraso) {
+                                    $diff = $finSegmento - $limite;
+                                    $dias = floor($diff / (1000 * 60 * 60 * 24));
+                                    $horas = floor(($diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                                    $infoRetrasoTxt = " (Retraso: {$dias}d {$horas}h)";
+                                    
+                                    $widthNormal = ((max($inicioSegmento, min($finSegmento, $limite)) - $inicioSegmento) / $totalDuracion) * 100;
+                                    $widthRetraso = (($finSegmento - max($inicioSegmento, $limite)) / $totalDuracion) * 100;
+                                } else {
+                                    $widthNormal = (($finSegmento - $inicioSegmento) / $totalDuracion) * 100;
+                                }
+                                
+                                $marginLeft = (($inicioSegmento - $inicioTarea) / $totalDuracion) * 100;
+                                $colorBarra = '#198754'; // Verde para completado
+                                $fechaLimiteLegible = date('d/m/Y H:i', strtotime($fe));
+                                
+                                ?>
+                                <div class="gantt-row">
+                                    <div class="d-flex justify-content-between mb-1" style="font-size:0.75rem;">
+                                        <span class="text-white-50">Entrega <?= $idx + 1 ?> (Hito Completado)</span>
+                                        <?php if ($esRetraso): ?>
+                                            <span class="text-danger fw-bold" style="font-size:0.7rem;">ENTREGA TARDÍA<?= $infoRetrasoTxt ?></span>
+                                        <?php else: ?>
+                                            <span class="text-success fw-bold" style="font-size:0.7rem;"><i class="bi bi-check-circle-fill me-1"></i>A TIEMPO</span>
+                                        <?php endif; ?>
+                                    </div>
+                                    <div class="progress position-relative" style="height:10px; background:rgba(255,255,255,0.05); overflow:visible; border-radius:10px;">
+                                        <!-- Rombo de Plazo Teórico -->
+                                        <div class="position-absolute" 
+                                             style="left:<?= (($limite - $inicioTarea) / $totalDuracion) * 100 ?>%; top:50%; width:14px; height:14px; border:2px solid <?= $esRetraso ? '#f87171' : '#fff' ?>; background:#0f172a; transform: translate(-50%, -50%) rotate(45deg); z-index:10; box-shadow: <?= $esRetraso ? '0 0 8px #f87171' : 'none' ?>;" 
+                                             title="Plazo Teórico: <?= $fechaLimiteLegible ?>"></div>
+                                        
+                                        <!-- Barra de Progreso Normal -->
+                                        <div class="progress-bar" 
+                                             style="width:<?= $widthNormal ?>%; margin-left:<?= $marginLeft ?>%; background-color:<?= $colorBarra ?>; border-radius:10px 0 0 10px;"></div>
+                                        
+                                        <!-- Barra de Retraso si existió -->
+                                        <?php if ($widthRetraso > 0): ?>
+                                        <div class="progress-bar progress-bar-striped" 
+                                             style="width:<?= $widthRetraso ?>%; background-color:#f87171; border-radius:0 10px 10px 0;"></div>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                                <?php
+                            }
+                            ?>
+                          </div>
+                        </div>
+                        <?php
+                    }
+                    ?>
+                  </div>
+                <?php endforeach; ?>
+              </div>
+            <?php else: ?>
+              <div class="text-center text-white-50 py-5 w-100">
+                <i class="bi bi-clock-history text-white-50 mb-3" style="font-size:3rem; opacity: 0.5;"></i>
+                <p class="mt-2 mb-1 fw-bold text-white">No hay tareas en el histórico</p>
+                <p class="small text-white-50 px-4">Las tareas se añadirán aquí automáticamente una vez que el profesor haya completado todos los hitos y entregas programadas.</p>
+              </div>
+            <?php endif; ?>
+          </div>
+          <div class="modal-footer border-top border-light border-opacity-25">
+            <button type="button" class="btn btn-sm btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Cerrar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <?php endforeach; ?>
 
   </main>
@@ -1290,7 +1990,7 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
     <div class="mipie" id="mipie">
       <div class="direccion">
         <img src="https://uf3ceu.es/wp-content/uploads/logo-uf3-2k25.svg" alt="CEU Universidad Fernando III"
-          style="height:50px; width:auto;" id="#acele" />
+          id="#acele" />
         <p>
           Glorieta Ángel Herrera Oria, s/n,<br />
           41930 Bormujos,<br />
@@ -1338,6 +2038,7 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
         </div>
         <form method="POST" id="formEditarTarea">
+          <?php echo acelerador_csrf_field(); ?>
           <div class="modal-body">
             <input type="hidden" name="accion" value="actualizar_tarea">
             <input type="hidden" name="id_tarea" id="editTareaId" value="">
@@ -1373,15 +2074,52 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
     crossorigin="anonymous"></script>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
-
   <script>
+    // Inyección de CSRF robusta para AJAX (Merge de datos)
+    $.ajaxPrefilter(function(options, originalOptions, jqXHR) {
+        if (options.type.toUpperCase() === 'POST') {
+            const token = '<?php echo acelerador_get_csrf_token(); ?>';
+            if (typeof options.data === 'string') {
+                options.data += (options.data.length > 0 ? '&' : '') + 'csrf_token=' + token;
+            } else if (typeof options.data === 'object' && !(options.data instanceof FormData)) {
+                options.data = $.extend(options.data, { csrf_token: token });
+            } else if (options.data instanceof FormData) {
+                options.data.append('csrf_token', token);
+            }
+        }
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+      // Validación cronológica global de entregas al enviar formularios
+      document.addEventListener("submit", function(e) {
+        const form = e.target;
+        const inputsFechas = form.querySelectorAll('input[name="fecha_entrega[]"]');
+        if (inputsFechas.length > 1) {
+          let lastTime = 0;
+          for (let i = 0; i < inputsFechas.length; i++) {
+            const val = inputsFechas[i].value;
+            if (val) {
+              const time = new Date(val).getTime();
+              if (lastTime > 0 && time < lastTime) {
+                e.preventDefault();
+                e.stopPropagation();
+                showNotification(`Error: La fecha de la entrega ${i + 1} no puede ser anterior a la entrega ${i}.`, 'danger');
+                return false;
+              }
+              lastTime = time;
+            }
+          }
+        }
+      });
+    });
+
     document.addEventListener("DOMContentLoaded", () => {
       const boton = document.getElementById("btnMostrarTodo");
       const extraDatos = document.querySelectorAll(".extraDato");
 
       boton.addEventListener("click", () => {
 
-        // ✅ Si los datos extra están ocultos → mostrarlos
+        // âœ… Si los datos extra están ocultos â†’ mostrarlos
         if (extraDatos[0].classList.contains("d-none")) {
 
           extraDatos.forEach(el => el.classList.remove("d-none"));
@@ -1389,7 +2127,7 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
           boton.innerHTML = '<i class="bi bi-eye-slash-fill"></i> Mostrar resumen datos';
 
         }
-        // ✅ Si están visibles → ocultarlos
+        // âœ… Si están visibles â†’ ocultarlos
         else {
 
           extraDatos.forEach(el => el.classList.add("d-none"));
@@ -1453,18 +2191,37 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
 
     });
 
-    // Función para generar fechas dinámicas en el modal "Ver tarea"
+    // Función auxiliar para dar formato compatible con input type="datetime-local" (YYYY-MM-DDTHH:MM)
+    function formatForDatetimeLocal(dateStr) {
+      if (!dateStr) return '';
+      let formatted = dateStr.trim().replace(' ', 'T');
+      if (formatted.length <= 10) {
+        formatted += 'T23:59';
+      } else if (formatted.length > 16) {
+        formatted = formatted.substring(0, 16);
+      }
+      return formatted;
+    }
+
+    // Función para generar fechas dinámicas en el modal "Ver tarea" (Añadir tarea)
     function generarFechasModal(pid) {
       const inputVal = parseInt(document.getElementById('inputNumEntregas' + pid).value, 10);
       const numFechas = isNaN(inputVal) || inputVal < 1 ? 1 : inputVal;
       const container = document.getElementById('fechasContainer' + pid);
       
+      // Conservar las fechas ya escritas para que no se borren mientras se añade una nueva entrega
+      const inputsFechas = container.querySelectorAll('input[type="datetime-local"]');
+      let valoresActuales = [];
+      inputsFechas.forEach(inp => valoresActuales.push(inp.value));
+      
       let html = '';
       for (let i = 1; i <= numFechas; i++) {
+        const rawValor = valoresActuales[i - 1] || '';
+        const valor = formatForDatetimeLocal(rawValor);
         html += `
           <div>
             <label class="form-label text-white-50 small mb-1">Fecha y hora de entrega ${i}</label>
-            <input type="datetime-local" name="fecha_entrega[]" class="form-control form-control-sm text-white" style="background:rgba(255,255,255,0.1); border-color:rgba(255,255,255,0.2);" required>
+            <input type="datetime-local" name="fecha_entrega[]" class="form-control form-control-sm text-white" style="background:rgba(255,255,255,0.1); border-color:rgba(255,255,255,0.2);" value="${valor}" required>
           </div>
         `;
       }
@@ -1521,7 +2278,8 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
       const container = document.getElementById('editFechasContainer');
       let html = '';
       for (let i = 1; i <= numFechas; i++) {
-        const valor = fechasValores[i - 1] || '';
+        const rawValor = fechasValores[i - 1] || '';
+        const valor = formatForDatetimeLocal(rawValor);
         html += `
           <div>
             <label class="form-label text-white-50 small mb-1">Fecha y hora de entrega ${i}</label>
@@ -1610,7 +2368,7 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
       }
     });
 
-    // ── AJAX: ANALISTA DE DATOS (DISEÑO EJECUTIVO REESTRUCTURADO) ───────
+    // ------------------------------------------------------------------------- AJAX: ANALISTA DE DATOS (DISEÑO EJECUTIVO REESTRUCTURADO) -------------------------
     document.addEventListener("DOMContentLoaded", () => {
       document.querySelectorAll('.btn-estado-prof').forEach(btn => {
         btn.addEventListener('click', function() {
@@ -1727,9 +2485,18 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
       });
     });
 
-    // ── AJAX: LOGÍSTICA GANTT (get_datos_gantt & SEMÁFORO ALERTAS) ───────
+    // --------------------€â”€ AJAX: LOGÍSTICA GANTT (get_datos_gantt & SEMÁFORO ALERTAS) â”€â”€â”€â”€â”€â”€â”€
     document.addEventListener("DOMContentLoaded", () => {
-      // Delegación de eventos para botones "Marcar como hecha" (SOLO DESDE MODAL TAREAS)
+      // Función auxiliar para parseo de fechas robusto (Cross-browser)
+      const parseSafeDate = (dateStr) => {
+        if (!dateStr) return null;
+        let d = dateStr.includes(' ') ? dateStr.replace(' ', 'T') : dateStr;
+        if (d.length === 10) d += 'T23:59:59';
+        const ts = new Date(d).getTime();
+        return isNaN(ts) ? null : ts;
+      };
+
+      // Delegación de eventos para botones "Marcar como hecha"
       $(document).on('click', '.btn-marcar-hecha', function() {
         const idTarea = $(this).data('id-tarea');
         const indice = $(this).data('indice');
@@ -1743,16 +2510,26 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
             success: function(response) {
               if (response.status === 'success') {
                 showNotification('Entrega registrada con éxito', 'success');
-                // Feedback visual inmediato
+                // Feedback visual inmediato en el modal de tareas
                 btn.closest('.d-flex').find('.badge').remove(); 
                 btn.after('<span class="badge bg-success bg-opacity-10 text-success ms-1" style="font-size: .6rem;">HECHA</span>');
                 btn.remove();
                 
-                const activeModal = document.querySelector('.modal.show[id^="modalGrafico"]');
+                // REFRESCO INTELIGENTE: Si el modal de tareas está abierto, buscamos su PID para refrescar el Gantt oculto
+                const activeModal = document.querySelector('.modal.show');
                 if (activeModal) {
-                    const pid = activeModal.id.replace('modalGrafico', '');
-                    const gBtn = document.querySelector(`.btn-gantt-prof[data-id="${pid}"]`);
-                    if (gBtn) gBtn.click();
+                    let pid = '';
+                    if (activeModal.id.startsWith('modalTarea')) pid = activeModal.id.replace('modalTarea', '');
+                    else if (activeModal.id.startsWith('modalGrafico')) pid = activeModal.id.replace('modalGrafico', '');
+                    
+                    if (pid) {
+                        const gBtn = document.querySelector(`.btn-gantt-prof[data-id="${pid}"]`);
+                        if (gBtn) {
+                            // Si el modal de gráfico no está abierto, el click lo abriría, pero solo queremos refrescar los datos
+                            // Así que forzamos la carga de datos sin disparar el toggle de bootstrap si ya estamos en otro modal
+                            actualizarDatosGantt(pid);
+                        }
+                    }
                 }
               } else {
                 showNotification(response.message, 'danger');
@@ -1765,108 +2542,108 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
         });
       });
 
-      document.querySelectorAll('.btn-gantt-prof').forEach(btn => {
-        btn.addEventListener('click', function() {
-          const pid = this.getAttribute('data-id');
-          const container = document.getElementById('ganttContainer' + pid);
-          
-          if (!pid || !container) return;
+      // Función aislada para cargar datos del Gantt
+      window.actualizarDatosGantt = function(pid) {
+        const container = document.getElementById('ganttContainer' + pid);
+        if (!pid || !container) return;
 
-          $.ajax({
-            url: 'panel_tutor.php',
-            type: 'POST',
-            data: { accion: 'get_datos_gantt', id_profesor: pid },
-            success: function(response) {
-    if (response.status === 'success' && response.data) {
-        let html = '';
-        const hoy = new Date();
+        $.ajax({
+          url: 'panel_tutor.php',
+          type: 'POST',
+          data: { accion: 'get_datos_gantt', id_profesor: pid },
+          success: function(response) {
+            if (response.status === 'success' && response.data) {
+                let html = '';
+                const hoy = new Date().getTime();
 
-        response.data.forEach(t => {
-            try {
-                const fechasLimite = t.teoricas || [];
-                const fechasReales = t.reales || [];
-                const inicioTarea = new Date(t.creacion).getTime();
-                
-                // Definimos el fin del gráfico: el mayor entre el último plazo o hoy
-                const maxPlazo = Math.max(...fechasLimite.map(f => new Date(f).getTime()));
-                const finGrafico = Math.max(maxPlazo, hoy.getTime());
-                const totalDuracion = finGrafico - inicioTarea;
+                response.data.forEach(t => {
+                    try {
+                        const inicioTarea = parseSafeDate(t.creacion);
+                        if (!inicioTarea) return;
 
-                html += `<div class="gantt-wrapper mb-5 p-3 rounded-4" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.08);">
-                            <h6 class="text-white fw-bold mb-4"><i class="bi bi-grid-3x2-gap me-2 text-info"></i>${t.titulo}</h6>
-                            <div class="gantt-body d-flex flex-column gap-3">`;
-
-                fechasLimite.forEach((limiteStr, idx) => {
-                    const limite = new Date(limiteStr).getTime();
-                    const real = fechasReales[idx] ? new Date(fechasReales[idx]).getTime() : null;
-                    
-                    // Lógica de Relevos: El inicio es el fin de la entrega anterior (o la creación si es la primera)
-                    const inicioSegmento = (idx === 0) ? inicioTarea : 
-                                         (fechasReales[idx-1] ? new Date(fechasReales[idx-1]).getTime() : hoy.getTime());
-                    
-                    // Fin del segmento: si está hecha, su fecha real. Si es la activa, hoy.
-                    let finSegmento = real ? real : hoy.getTime();
-                    if (finSegmento < inicioSegmento) finSegmento = inicioSegmento;
-
-                    // Cálculo de Retraso (Aditivo)
-                    const esRetraso = finSegmento > limite;
-                    let infoRetraso = '';
-                    let widthRetraso = 0;
-                    let widthNormal = 0;
-
-                    if (esRetraso) {
-                        const diff = finSegmento - limite;
-                        const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
-                        const horas = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                        const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                        infoRetraso = ` — Retraso: ${dias}d ${horas}h ${mins}m`;
+                        const fechasLimite = (t.teoricas || []).map(f => parseSafeDate(f)).filter(f => f !== null);
+                        const fechasReales = (t.reales || []).map(f => parseSafeDate(f));
                         
-                        // Si empezó antes del límite, la parte normal llega hasta el límite
-                        const finNormal = Math.max(inicioSegmento, limite);
-                        widthNormal = ((Math.min(finSegmento, limite) - inicioSegmento) / totalDuracion) * 100;
-                        widthRetraso = ((finSegmento - Math.max(inicioSegmento, limite)) / totalDuracion) * 100;
-                    } else {
-                        widthNormal = ((finSegmento - inicioSegmento) / totalDuracion) * 100;
-                    }
+                        if (fechasLimite.length === 0) return;
 
-                    const marginLeft = ((inicioSegmento - inicioTarea) / totalDuracion) * 100;
-                    const colorBarra = real ? '#198754' : '#3b82f6';
-                    const animation = (!real) ? 'progress-bar-animated progress-bar-striped' : '';
+                        // Definimos el fin del gráfico: el mayor entre el último plazo o hoy
+                        const maxPlazo = Math.max(...fechasLimite);
+                        const finGrafico = Math.max(maxPlazo, hoy);
+                        const totalDuracion = finGrafico - inicioTarea;
+                        if (totalDuracion <= 0) return;
 
-                    html += `
-                        <div class="gantt-row">
-                            <div class="d-flex justify-content-between mb-1">
-                                <span class="text-white-50" style="font-size:0.75rem;">Entrega ${idx + 1}</span>
-                                ${esRetraso ? `<span class="text-danger fw-bold" style="font-size:0.7rem;">${real ? 'ENTREGA TARDÍA' : 'FUERA DE PLAZO'}${infoRetraso}</span>` : ''}
-                            </div>
-                            <div class="progress position-relative" style="height:10px; background:rgba(255,255,255,0.05); overflow:visible;">
-                                <!-- Barra Normal -->
-                                <div class="progress-bar ${animation}" 
-                                     style="width:${widthNormal}%; margin-left:${marginLeft}%; background-color:${colorBarra}; transition:width 0.4s ease; border-radius:10px 0 0 10px;"></div>
-                                <!-- Barra de Retraso (Roja) -->
-                                ${widthRetraso > 0 ? `
-                                <div class="progress-bar progress-bar-striped progress-bar-animated" 
-                                     style="width:${widthRetraso}%; background-color:#f87171; transition:width 0.4s ease; border-radius:0 10px 10px 0;"></div>` : ''}
+                        html += `<div class="gantt-wrapper mb-5 p-3 rounded-4" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.08);">
+                                    <h6 class="text-white fw-bold mb-4"><i class="bi bi-grid-3x2-gap me-2 text-info"></i>${t.titulo}</h6>
+                                    <div class="gantt-body d-flex flex-column gap-3">`;
+
+                        fechasLimite.forEach((limite, idx) => {
+                            const real = fechasReales[idx] || null;
+                            
+                            // Lógica de Relevos Mejorada:
+                            // Si no hay entrega anterior, usamos inicioTarea para la primera o la fecha límite anterior para las siguientes
+                            const inicioSegmento = (idx === 0) ? inicioTarea : 
+                                                 (fechasReales[idx-1] ? fechasReales[idx-1] : fechasLimite[idx-1]);
+                            
+                            let finSegmento = real ? real : hoy;
+                            if (finSegmento < inicioSegmento) finSegmento = inicioSegmento;
+
+                            const esRetraso = finSegmento > limite;
+                            let widthRetraso = 0;
+                            let widthNormal = 0;
+                            let infoRetrasoTxt = '';
+
+                            if (esRetraso) {
+                                const diff = finSegmento - limite;
+                                const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
+                                const horas = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                                infoRetrasoTxt = ` (Retraso: ${dias}d ${horas}h)`;
                                 
-                                <!-- Rombo de Plazo Límite (Fin de Plazo) -->
-                                <div class="position-absolute" 
-                                     style="left:${((limite - inicioTarea) / totalDuracion) * 100}%; top:50%; width:16px; height:16px; border:3px solid ${esRetraso ? '#f87171' : '#fff'}; background:#0f172a; transform: translate(-50%, -50%) rotate(45deg); z-index:10; box-shadow: ${esRetraso ? '0 0 15px #f87171' : 'none'};" 
-                                     title="Plazo: ${limiteStr}"></div>
-                            </div>
-                        </div>`;
-                });
+                                widthNormal = ((Math.max(inicioSegmento, Math.min(finSegmento, limite)) - inicioSegmento) / totalDuracion) * 100;
+                                widthRetraso = ((finSegmento - Math.max(inicioSegmento, limite)) / totalDuracion) * 100;
+                            } else {
+                                widthNormal = ((finSegmento - inicioSegmento) / totalDuracion) * 100;
+                            }
 
-                html += `</div></div>`;
-            } catch (err) { console.error("Error procesando tarea:", err); }
-        });
-        container.innerHTML = html || '<p class="text-white-50">No hay datos de entregas.</p>';
-    }
-},
-            error: function() {
-                container.innerHTML = '<div class="alert alert-danger small rounded-4 mt-3">Error de comunicación Gantt.</div>';
+                            const marginLeft = ((inicioSegmento - inicioTarea) / totalDuracion) * 100;
+                            const colorBarra = real ? '#198754' : (esRetraso ? '#dc3545' : '#3b82f6');
+                            const animation = (!real) ? 'progress-bar-animated progress-bar-striped' : '';
+                            const fechaLimiteLegible = new Date(limite).toLocaleString();
+
+                            html += `
+                                <div class="gantt-row">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span class="text-white-50" style="font-size:0.75rem;">Entrega ${idx + 1}</span>
+                                        ${esRetraso ? `<span class="text-danger fw-bold" style="font-size:0.7rem;">${real ? 'ENTREGA TARDÍA' : 'FUERA DE PLAZO'}${infoRetrasoTxt}</span>` : ''}
+                                    </div>
+                                    <div class="progress position-relative" style="height:10px; background:rgba(255,255,255,0.05); overflow:visible; border-radius:10px;">
+                                        <div class="position-absolute" 
+                                             style="left:${((limite - inicioTarea) / totalDuracion) * 100}%; top:50%; width:14px; height:14px; border:2px solid ${esRetraso ? '#f87171' : '#fff'}; background:#0f172a; transform: translate(-50%, -50%) rotate(45deg); z-index:10; box-shadow: ${esRetraso ? '0 0 8px #f87171' : 'none'}; cursor: pointer;" 
+                                             title="Plazo: ${fechaLimiteLegible}"
+                                             onclick="showNotification('📅 Plazo de Entrega ${idx + 1}: ${fechaLimiteLegible}', 'info');"></div>
+                                        <div class="progress-bar ${animation}" 
+                                             style="width:${widthNormal}%; margin-left:${marginLeft}%; background-color:${colorBarra}; transition:width 0.4s ease; border-radius:10px 0 0 10px;"></div>
+                                        ${widthRetraso > 0 ? `
+                                        <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                                             style="width:${widthRetraso}%; background-color:#f87171; transition:width 0.4s ease; border-radius:0 10px 10px 0;"></div>` : ''}
+                                    </div>
+                                </div>`;
+                        });
+
+                        html += `</div></div>`;
+                    } catch (err) { console.error("Error Gantt:", err); }
+                });
+                container.innerHTML = html || '<p class="text-white-50">No hay datos de entregas.</p>';
             }
-          });
+          },
+          error: function() {
+              container.innerHTML = '<div class="alert alert-danger small rounded-4 mt-3">Error de comunicación Gantt.</div>';
+          }
         });
+      };
+
+      // Delegación de eventos para el botón Gantt (más robusto)
+      $(document).on('click', '.btn-gantt-prof', function() {
+          actualizarDatosGantt($(this).data('id'));
       });
     });
 
@@ -1875,7 +2652,88 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
       if (urlParams.has('validated')) {
         showNotification('Validación correcta', 'success');
         window.history.replaceState({}, document.title, window.location.pathname);
+      } else {
+        const msg = urlParams.get('msg');
+        if (msg) {
+          const cleanUrl = window.location.pathname;
+          window.history.replaceState({}, document.title, cleanUrl);
+          
+          if (msg === 'deleted') {
+            showNotification('Tarea eliminada correctamente.', 'info');
+          } else if (msg === 'error_delete') {
+            showNotification('Error al eliminar la tarea.', 'danger');
+          } else if (msg === 'readmitido') {
+            showNotification('Profesor readmitido con éxito.', 'success');
+          } else if (msg === 'rechazado') {
+            showNotification('Petición de readmisión rechazada.', 'info');
+          } else if (msg === 'task_created') {
+            showNotification('Tarea asignada correctamente al profesor.', 'success');
+          } else if (msg === 'task_error') {
+            showNotification('Error al guardar la tarea. Verifica la base de datos.', 'danger');
+          } else if (msg === 'task_updated') {
+            showNotification('Tarea actualizada correctamente.', 'success');
+          } else if (msg === 'task_update_error') {
+            showNotification('Error al actualizar la tarea. Verifica la base de datos.', 'danger');
+          } else if (msg === 'task_warning') {
+            showNotification('Error: Cada entrega debe ser programada para una fecha posterior o igual a la anterior.', 'warning');
+          } else if (msg === 'task_missing') {
+            showNotification('Faltan datos obligatorios para asignar la tarea.', 'warning');
+          }
+        }
       }
+    });
+
+    // -- Countdown dinámico hacia entregas múltiples -----------------------
+    document.addEventListener('DOMContentLoaded', () => {
+      const items = document.querySelectorAll('.countdown-item');
+      if (items.length === 0) return;
+
+      setInterval(() => {
+        const ahora = new Date().getTime();
+
+        items.forEach(item => {
+          const deadlineStr = item.getAttribute('data-deadline');
+          if (!deadlineStr) return;
+
+          let dateToParse = deadlineStr;
+          if (dateToParse.includes(' ')) {
+              dateToParse = dateToParse.replace(' ', 'T');
+          } else if (!dateToParse.includes('T')) {
+              dateToParse += 'T23:59:59';
+          }
+          
+          const deadline = new Date(dateToParse).getTime();
+          if (isNaN(deadline)) return;
+          
+          let diff = deadline - ahora;
+
+          const cdDias = item.querySelector('.cdDias');
+          const cdHoras = item.querySelector('.cdHoras');
+          const cdMin = item.querySelector('.cdMin');
+          const cdSeg = item.querySelector('.cdSeg');
+
+          if (diff <= 0) {
+            if (cdDias) cdDias.textContent = '00';
+            if (cdHoras) cdHoras.textContent = '00';
+            if (cdMin) cdMin.textContent = '00';
+            if (cdSeg) cdSeg.textContent = '00';
+            return;
+          }
+
+          const dias  = Math.floor(diff / (1000 * 60 * 60 * 24));
+          diff -= dias * (1000 * 60 * 60 * 24);
+          const horas = Math.floor(diff / (1000 * 60 * 60));
+          diff -= horas * (1000 * 60 * 60);
+          const min   = Math.floor(diff / (1000 * 60));
+          diff -= min * (1000 * 60);
+          const seg   = Math.floor(diff / 1000);
+
+          if (cdDias) cdDias.textContent  = String(dias).padStart(2, '0');
+          if (cdHoras) cdHoras.textContent = String(horas).padStart(2, '0');
+          if (cdMin) cdMin.textContent   = String(min).padStart(2, '0');
+          if (cdSeg) cdSeg.textContent   = String(seg).padStart(2, '0');
+        });
+      }, 1000);
     });
 
   </script>
@@ -1911,5 +2769,34 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'get_historico_aneca' && isset
 
   <link rel="stylesheet" href="css/notifications.css">
   <script src="js/notifications.js"></script>
+
+  <script>
+    // Lógica para el menú de hamburguesa / Drawer de perfil
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const profileDrawer = document.querySelector('.formulario');
+    const overlayMenu = document.getElementById('overlayMenu');
+
+    function toggleMenu() {
+      if(!profileDrawer) return;
+      profileDrawer.classList.toggle('active');
+      overlayMenu.classList.toggle('active');
+      document.body.classList.toggle('menu-open');
+      document.body.style.overflow = profileDrawer.classList.contains('active') ? 'hidden' : '';
+    }
+
+    if(hamburgerBtn) hamburgerBtn.addEventListener('click', toggleMenu);
+    if(overlayMenu) overlayMenu.addEventListener('click', toggleMenu);
+
+    // Cerrar menú al hacer click en botones de acción dentro del drawer
+    if(profileDrawer) {
+      const drawerButtons = profileDrawer.querySelectorAll('.btn');
+      drawerButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          if(profileDrawer.classList.contains('active')) toggleMenu();
+        });
+      });
+    }
+  </script>
 </body>
+
 </html>

@@ -19,6 +19,8 @@ require_once __DIR__ . '/acelerador_panel/fronten/lib/db.php';
 acelerador_apply_protected_page_session_guards();
 
 $nombre = isset($_GET['nombre']) ? trim($_GET['nombre']) : null;
+$orcidGet = isset($_GET['orcid']) ? trim($_GET['orcid']) : ($_SESSION['orcid_usuario'] ?? null);
+$dniGet = isset($_GET['dni']) ? trim($_GET['dni']) : null;
 
 // ── Determinar la rama para elegir la BD correcta ─────────────────────────
 $ramaRaw = $_GET['rama'] ?? $_SESSION['rama_usuario'] ?? 'SALUD';
@@ -73,32 +75,39 @@ try {
 }
 
 if (isset($pdo)) {
-    if ($nombre) {
-        $stmt = $pdo->prepare("
-            SELECT * FROM evaluaciones
-            WHERE nombre_candidato LIKE :nombre
-            ORDER BY fecha_creacion DESC
-            LIMIT 1
-        ");
-        $stmt->execute(['nombre' => '%' . $nombre . '%']);
-        $eval = $stmt->fetch();
+    if ($orcidGet || $nombre) {
+        $condiciones = [];
+        $params = [];
         
-        // Fallback si no encuentra por nombre (común si hay diferencias entre perfil y PDF extraído)
-        if (!$eval) {
-            $stmt = $pdo->query("
-                SELECT * FROM evaluaciones
-                ORDER BY fecha_creacion DESC
-                LIMIT 1
-            ");
-            $eval = $stmt->fetch();
+        if ($orcidGet) {
+            $condiciones[] = "json_entrada LIKE :orcid";
+            $params['orcid'] = '%"orcid_candidato":"' . $orcidGet . '"%';
         }
-    } else {
-        $stmt = $pdo->query("
-            SELECT * FROM evaluaciones
-            ORDER BY fecha_creacion DESC
-            LIMIT 1
-        ");
+
+        if ($dniGet) {
+            $condiciones[] = "json_entrada LIKE :dni";
+            $params['dni'] = '%' . $dniGet . '%';
+        }
+        
+        if ($nombre) {
+            $partes = explode(' ', $nombre);
+            $condiciones[] = "nombre_candidato LIKE :full";
+            $params['full'] = '%' . $nombre . '%';
+            
+            if (count($partes) > 1) {
+                $condiciones[] = "(nombre_candidato LIKE :n0 AND nombre_candidato LIKE :n1)";
+                $params['n0'] = '%' . $partes[0] . '%';
+                $params['n1'] = '%' . end($partes) . '%';
+            }
+        }
+
+        $sql = "SELECT * FROM evaluaciones WHERE (" . implode(") OR (", $condiciones) . ") ORDER BY fecha_creacion DESC LIMIT 1";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($params);
         $eval = $stmt->fetch();
+    } else {
+        // Si no hay criterio, no mostramos nada
+        $eval = null;
     }
 }
 
@@ -182,6 +191,12 @@ function recomendaciones(array $e): array {
         --radio: 24px;
     }
     * { box-sizing: border-box; }
+    html, body {
+        overflow-x: hidden;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
     body {
         margin: 0;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -192,6 +207,8 @@ function recomendaciones(array $e): array {
         background-attachment: fixed;
         color: #e2e8f0;
         min-height: 100vh;
+        word-break: break-word;
+        overflow-x: hidden;
     }
     .shell { max-width: 1280px; margin: 0 auto; padding: 40px 24px; }
     .hero {
@@ -212,7 +229,14 @@ function recomendaciones(array $e): array {
         gap: 16px;
         flex-wrap: wrap;
     }
-    .hero h1 { margin: 0; font-size: 36px; font-weight: 800; letter-spacing: -0.02em; }
+    .hero h1 { 
+        margin: 0; 
+        font-size: 36px; 
+        font-weight: 800; 
+        letter-spacing: -0.02em; 
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
     .hero p { margin: 12px 0 0; max-width: 850px; color: rgba(255,255,255,.7); font-size: 18px; }
     .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
     
@@ -347,6 +371,58 @@ function recomendaciones(array $e): array {
     
     @media (max-width: 992px) {
         .split { grid-template-columns: 1fr; }
+    }
+    
+    @media (max-width: 768px) {
+        .shell { 
+            padding: 15px 10px; 
+            width: 100%; 
+            max-width: 100vw; 
+        }
+        .hero { 
+            padding: 15px 20px; 
+            text-align: center;
+        }
+        .hero-top {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 10px;
+        }
+        .hero h1 { font-size: 22px !important; }
+        .hero p { font-size: 13px !important; }
+        .hero-actions { width: 100%; justify-content: center; }
+        
+        .card { padding: 15px; }
+        .card h2 { font-size: 18px; }
+        .card h3 { font-size: 16px; }
+        
+        .metric .label { font-size: 10px; }
+        .metric .value { font-size: 18px !important; }
+        .metrics-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .table-responsive { 
+            border-radius: 12px;
+        }
+        table { font-size: 13px; }
+        
+        /* Ajuste de números grandes */
+        [style*="font-size: 48px"] {
+            font-size: 32px !important;
+        }
+
+    }
+
+    /* Evitar que se corten las palabras en títulos y letreros (Global) */
+    h1, h2, h3, h4, h5, h6, .value, .label, .stat-value, .stat-label {
+        overflow-wrap: break-word !important;
+        word-break: normal !important;
+        white-space: normal !important;
+        hyphens: none !important;
     }
   </style>
 </head>

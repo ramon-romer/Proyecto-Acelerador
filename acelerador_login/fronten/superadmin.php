@@ -87,12 +87,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
     if ($_POST['action'] === 'delete_user') {
         $id = (int)$_POST['id'];
-        $q = mysqli_query($conn, "SELECT correo, perfil FROM tbl_profesor WHERE id_profesor = $id");
+        
+        // 1. OBTENER DATOS IDENTIFICATIVOS PARA PURGA Y RESPALDO
+        $q = mysqli_query($conn, "SELECT * FROM tbl_profesor WHERE id_profesor = $id");
         if ($row = mysqli_fetch_assoc($q)) {
-            $email = $row['correo'];
+            $email = mysqli_real_escape_string($conn, $row['correo']);
+            $orcid = mysqli_real_escape_string($conn, $row['ORCID']);
             $perfil = $row['perfil'];
 
-            // Asegurar tabla
+            // 2. ASEGURAR TABLA DE PAPELERA (HISTORIAL DE ELIMINADOS)
             mysqli_query($conn, "CREATE TABLE IF NOT EXISTS tbl_info_usuario_eliminado (
               id INT AUTO_INCREMENT PRIMARY KEY,
               id_profesor_original INT NOT NULL,
@@ -101,43 +104,76 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
               fecha_eliminacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )");
 
-            // ---- BACKUP TOTAL ANTES DE BORRAR ----
-            $info_json = [];
-            $q_prof = mysqli_query($conn, "SELECT * FROM tbl_profesor WHERE id_profesor = $id");
-            if($q_prof) $info_json['tbl_profesor'] = mysqli_fetch_assoc($q_prof);
+            // 3. RESPALDO INTEGRAL (BACKUP) EN JSON ANTES DE LA DESTRUCCIÓN
+            $info_json = ['tbl_profesor' => $row];
             
             $q_usu = mysqli_query($conn, "SELECT * FROM tbl_usuario WHERE correo = '$email'");
             if($q_usu) $info_json['tbl_usuario'] = mysqli_fetch_assoc($q_usu);
 
+            // Relaciones de grupos
             $info_json['tbl_grupo_profesor'] = [];
             $q_gp = mysqli_query($conn, "SELECT * FROM tbl_grupo_profesor WHERE id_profesor = $id");
-            if($q_gp) { while($r = mysqli_fetch_assoc($q_gp)) $info_json['tbl_grupo_profesor'][] = $r; }
+            while($r = mysqli_fetch_assoc($q_gp)) $info_json['tbl_grupo_profesor'][] = $r;
 
             if ($perfil === 'TUTOR') {
                $info_json['tbl_grupo_creados'] = [];
                $q_gc = mysqli_query($conn, "SELECT * FROM tbl_grupo WHERE id_tutor = $id");
-               if($q_gc) { while($r = mysqli_fetch_assoc($q_gc)) $info_json['tbl_grupo_creados'][] = $r; }
+               while($r = mysqli_fetch_assoc($q_gc)) $info_json['tbl_grupo_creados'][] = $r;
             }
+
+            // Nuevas tablas (Publicaciones, Méritos, Tareas)
+            $info_json['tbl_meritos'] = [];
+            $q_m = mysqli_query($conn, "SELECT * FROM tbl_merito WHERE ORCID_autor = '$orcid'");
+            while($r = mysqli_fetch_assoc($q_m)) $info_json['tbl_meritos'][] = $r;
+
+            $info_json['tbl_publicaciones'] = [];
+            $q_p = mysqli_query($conn, "SELECT * FROM tbl_publicacion WHERE ORCID_autor = '$orcid'");
+            while($r = mysqli_fetch_assoc($q_p)) $info_json['tbl_publicaciones'][] = $r;
+
+            $info_json['tbl_tareas'] = [];
+            $q_t_backup = mysqli_query($conn, "SELECT * FROM tbl_tarea_entrega WHERE id_profesor = $id OR id_tutor = $id");
+            while($r = mysqli_fetch_assoc($q_t_backup)) $info_json['tbl_tareas'][] = $r;
 
             $json_str = mysqli_real_escape_string($conn, json_encode($info_json, JSON_UNESCAPED_UNICODE));
             mysqli_query($conn, "INSERT INTO tbl_info_usuario_eliminado (id_profesor_original, correo, datos_completos) VALUES ($id, '$email', '$json_str')");
-            // ----------------------------------------
 
-            // LÓGICA DE BORRADO EN CASCADA
+            // 4. PURGA DE ARCHIVOS FÍSICOS
+            foreach ($info_json['tbl_publicaciones'] as $pub) {
+                if (!empty($pub['documento']) && file_exists($pub['documento'])) {
+                    @unlink($pub['documento']);
+                }
+            }
+
+            // 5. LIMPIEZA DE TABLAS RELACIONALES (NUCLEAR DELETE)
+            mysqli_query($conn, "DELETE FROM tbl_tarea_entrega WHERE id_profesor = $id OR id_tutor = $id");
+            mysqli_query($conn, "DELETE FROM tbl_merito WHERE ORCID_autor = '$orcid'");
+            mysqli_query($conn, "DELETE FROM tbl_publicacion_profesor WHERE orcid_profesor = '$orcid'");
+            mysqli_query($conn, "DELETE FROM tbl_publicacion WHERE ORCID_autor = '$orcid'");
+
             if ($perfil === 'TUTOR') {
-                mysqli_query($conn, "DELETE FROM tbl_tarea_entrega WHERE id_tutor = $id");
                 mysqli_query($conn, "DELETE FROM tbl_grupo_profesor WHERE id_grupo IN (SELECT id_grupo FROM tbl_grupo WHERE id_tutor = $id)");
                 mysqli_query($conn, "DELETE FROM tbl_grupo WHERE id_tutor = $id");
             } else {
-                mysqli_query($conn, "DELETE FROM tbl_tarea_entrega WHERE id_profesor = $id");
                 mysqli_query($conn, "DELETE FROM tbl_grupo_profesor WHERE id_profesor = $id");
             }
 
-            // Borrado del perfil y la cuenta de acceso
+            // 6. LIMPIEZA EN EVALUADORES
+            $db_evaluadores = ['evaluador_aneca_tecnicas', 'evaluador_aneca_csyj', 'evaluador_aneca_salud', 'evaluador_aneca_humanidades', 'evaluador_aneca_experimentales'];
+            foreach ($db_evaluadores as $db_name) {
+                mysqli_query($conn, "DELETE FROM `$db_name`.`evaluaciones` WHERE json_entrada LIKE '%$orcid%' OR json_entrada LIKE '%$email%'");
+            }
+
+            // 7. BORRADO FÍSICO FINAL
             mysqli_query($conn, "DELETE FROM tbl_profesor WHERE id_profesor = $id");
             mysqli_query($conn, "DELETE FROM tbl_usuario WHERE correo = '$email'");
-            
-            $response = ['status' => 'ok', 'message' => 'Usuario archivado y eliminado permanentemente del sistema.'];
+
+            if (isset($_SESSION['user_id']) && $_SESSION['user_id'] == $id) {
+                session_destroy();
+            }
+
+            $response = ['status' => 'ok', 'message' => 'Usuario archivado en papelera y erradicado permanentemente del sistema activo.'];
+        } else {
+            $response = ['status' => 'error', 'message' => 'Usuario no encontrado.'];
         }
     }
 
@@ -236,6 +272,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                         $pass_u = mysqli_real_escape_string($conn, $u['password']);
                         mysqli_query($conn, "INSERT IGNORE INTO tbl_usuario (correo, password) VALUES ('$correo_u', '$pass_u')");
                     }
+
+                    // --- RESTAURACIÓN DE DATOS RELACIONALES COMPLETA ---
+
+                    // 1. Restaurar Publicaciones
+                    if (isset($json_data['tbl_publicaciones'])) {
+                        foreach ($json_data['tbl_publicaciones'] as $p) {
+                            $cols = []; $vals = [];
+                            foreach ($p as $k => $v) {
+                                $cols[] = "`$k`";
+                                $vals[] = "'" . mysqli_real_escape_string($conn, $v) . "'";
+                            }
+                            mysqli_query($conn, "INSERT IGNORE INTO tbl_publicacion (" . implode(',', $cols) . ") VALUES (" . implode(',', $vals) . ")");
+                        }
+                    }
+
+                    // 2. Restaurar Méritos
+                    if (isset($json_data['tbl_meritos'])) {
+                        foreach ($json_data['tbl_meritos'] as $m) {
+                            $cols = []; $vals = [];
+                            foreach ($m as $k => $v) {
+                                $cols[] = "`$k`";
+                                $vals[] = "'" . mysqli_real_escape_string($conn, $v) . "'";
+                            }
+                            mysqli_query($conn, "INSERT IGNORE INTO tbl_merito (" . implode(',', $cols) . ") VALUES (" . implode(',', $vals) . ")");
+                        }
+                    }
+
+                    // 3. Restaurar Tareas y Entregas
+                    if (isset($json_data['tbl_tareas'])) {
+                        foreach ($json_data['tbl_tareas'] as $t) {
+                            $cols = []; $vals = [];
+                            foreach ($t as $k => $v) {
+                                $cols[] = "`$k`";
+                                $vals[] = "'" . mysqli_real_escape_string($conn, $v) . "'";
+                            }
+                            mysqli_query($conn, "INSERT IGNORE INTO tbl_tarea_entrega (" . implode(',', $cols) . ") VALUES (" . implode(',', $vals) . ")");
+                        }
+                    }
+
                     if (isset($json_data['tbl_grupo_creados'])) {
                         foreach ($json_data['tbl_grupo_creados'] as $g) {
                             $id_g = (int)$g['id_grupo']; $id_t = (int)$g['id_tutor']; $n_g = mysqli_real_escape_string($conn, $g['nombre']);
@@ -311,8 +386,71 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
     if ($_POST['action'] === 'purge_user') {
         $id_archivo = (int)$_POST['id'];
-        mysqli_query($conn, "DELETE FROM tbl_info_usuario_eliminado WHERE id = $id_archivo");
-        $response = ['status' => 'ok', 'message' => 'Archivo eliminado permanentemente.'];
+        
+        // 1. Obtener datos para la ERRADICACIÓN TOTAL
+        $q_arc = mysqli_query($conn, "SELECT id_profesor_original, correo, datos_completos FROM tbl_info_usuario_eliminado WHERE id = $id_archivo");
+        if ($arc_data = mysqli_fetch_assoc($q_arc)) {
+            $id_p = (int)$arc_data['id_profesor_original'];
+            $mail_p = mysqli_real_escape_string($conn, $arc_data['correo']);
+            $json_p = json_decode($arc_data['datos_completos'], true);
+            $orcid_p = mysqli_real_escape_string($conn, $json_p['tbl_profesor']['ORCID'] ?? '');
+
+            // 2. PURGA EXPLÍCITA DE TABLAS CONOCIDAS (Nuclear Backup Clean)
+            // Esto asegura que incluso si falló el borrado inicial, aquí se liquide todo.
+            mysqli_query($conn, "DELETE FROM tbl_tarea_entrega WHERE id_profesor = $id_p OR id_tutor = $id_p");
+            mysqli_query($conn, "DELETE FROM tbl_merito WHERE ORCID_autor = '$orcid_p'");
+            mysqli_query($conn, "DELETE FROM tbl_publicacion_profesor WHERE orcid_profesor = '$orcid_p'");
+            mysqli_query($conn, "DELETE FROM tbl_publicacion WHERE ORCID_autor = '$orcid_p'");
+            mysqli_query($conn, "DELETE FROM tbl_grupo_profesor WHERE id_profesor = $id_p");
+            mysqli_query($conn, "DELETE FROM tbl_grupo WHERE id_tutor = $id_p");
+            mysqli_query($conn, "DELETE FROM tbl_profesor WHERE id_profesor = $id_p OR ORCID = '$orcid_p'");
+            mysqli_query($conn, "DELETE FROM tbl_usuario WHERE correo = '$mail_p'");
+
+            // 3. LIMPIEZA DE EVALUADORES (Explicit)
+            $db_evaluadores = ['evaluador_aneca_tecnicas', 'evaluador_aneca_csyj', 'evaluador_aneca_salud', 'evaluador_aneca_humanidades', 'evaluador_aneca_experimentales'];
+            foreach ($db_evaluadores as $db_name) {
+                mysqli_query($conn, "DELETE FROM `$db_name`.`evaluaciones` WHERE json_entrada LIKE '%$orcid_p%' OR json_entrada LIKE '%$mail_p%'");
+            }
+
+            // 4. PURGA DINÁMICA (Safety Net) - Escaneo de todas las columnas en todas las BD
+            $databases = array_merge(['acelerador'], $db_evaluadores);
+            $db_list = "'" . implode("','", $databases) . "'";
+            $q_cols = mysqli_query($conn, "SELECT TABLE_SCHEMA, TABLE_NAME, COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA IN ($db_list)");
+            
+            while ($q_cols && $col = mysqli_fetch_assoc($q_cols)) {
+                $db = $col['TABLE_SCHEMA'];
+                $tbl = $col['TABLE_NAME'];
+                $clm = $col['COLUMN_NAME'];
+                
+                if ($tbl === 'tbl_info_usuario_eliminado') continue;
+
+                // Borrar por ID, Correo u ORCID si la columna parece relevante
+                $should_check = false;
+                if (preg_match('/id_|profesor|tutor|usuario|autor|candidato/i', $clm)) $should_check = true;
+                if (preg_match('/correo|email|orcid/i', $clm)) $should_check = true;
+
+                if ($should_check) {
+                    $sql_del = "DELETE FROM `$db`.`$tbl` WHERE `$clm` = '$id_p' OR `$clm` = '$mail_p' OR `$clm` = '$orcid_p'";
+                    @mysqli_query($conn, $sql_del);
+                }
+            }
+
+            // 5. PURGA DE ARCHIVOS FÍSICOS
+            if (!empty($json_p['tbl_publicaciones'])) {
+                foreach ($json_p['tbl_publicaciones'] as $pub) {
+                    if (!empty($pub['documento']) && file_exists($pub['documento'])) {
+                        @unlink($pub['documento']);
+                    }
+                }
+            }
+
+            // 6. DESTRUCCIÓN FINAL DEL REGISTRO EN LA PAPELERA
+            mysqli_query($conn, "DELETE FROM tbl_info_usuario_eliminado WHERE id = $id_archivo");
+
+            $response = ['status' => 'ok', 'message' => 'ERRADICACIÓN TOTAL COMPLETADA. El usuario y toda su información han sido borrados de raíz de todas las bases de datos.'];
+        } else {
+            $response = ['status' => 'error', 'message' => 'No se encontró el registro en la papelera para purgar.'];
+        }
     }
 
     header('Content-Type: application/json');

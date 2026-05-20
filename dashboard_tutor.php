@@ -63,6 +63,7 @@ $sqlProfesores = "
         p.id_profesor,
         p.nombre,
         p.apellidos,
+        p.ORCID,
         p.correo,
         p.departamento,
         p.facultad,
@@ -224,7 +225,7 @@ $totalGrupos = count($grupos);
               </div>
             </div>
 
-            <a href="dashboard_profesor.php?nombre=<?= urlencode($prof['nombre']) ?>&rama=<?= urlencode($prof['rama']) ?>"
+            <a href="dashboard_profesor.php?nombre=<?= urlencode($prof['nombre'] . ' ' . $prof['apellidos']) ?>&rama=<?= urlencode($prof['rama']) ?>&orcid=<?= urlencode($prof['ORCID']) ?>"
                class="btn btn-primary">
               Ver dashboard profesor
             </a>

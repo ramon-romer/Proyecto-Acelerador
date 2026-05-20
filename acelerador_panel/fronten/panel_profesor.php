@@ -31,13 +31,18 @@ $query_perfil = mysqli_query(
 if ($query_perfil && mysqli_num_rows($query_perfil) > 0) {
   $datos_perfil = mysqli_fetch_array($query_perfil);
 
-  // Datos básicos
-  $nombre     = htmlspecialchars($datos_perfil['nombre']      ?? '');
-  $apellidos  = htmlspecialchars($datos_perfil['apellidos']   ?? '');
-  $dni        = htmlspecialchars($datos_perfil['dni']         ?? '');
-  $orcid      = htmlspecialchars($datos_perfil['orcid']       ?? '');
+  // Datos para consultas SQL (CRUDOS)
+  $nombreRaw    = $datos_perfil['nombre']    ?? '';
+  $apellidosRaw = $datos_perfil['apellidos'] ?? '';
+  $orcidRaw     = $datos_perfil['orcid']     ?? '';
 
-  // Datos extra
+  // Datos para visualización (ESCAPADOS)
+  $nombre     = htmlspecialchars($nombreRaw);
+  $apellidos  = htmlspecialchars($apellidosRaw);
+  $dni        = htmlspecialchars($datos_perfil['dni'] ?? '');
+  $orcid      = htmlspecialchars($orcidRaw);
+
+  // Datos extra (ESCAPADOS)
   $correo      = htmlspecialchars($datos_perfil['correo']      ?? '');
   $departamento= htmlspecialchars($datos_perfil['departamento']?? '');
   $telefono    = htmlspecialchars($datos_perfil['telefono']    ?? '');
@@ -45,10 +50,11 @@ if ($query_perfil && mysqli_num_rows($query_perfil) > 0) {
   $rama        = htmlspecialchars($datos_perfil['rama']        ?? '');
 
   // ── Propagar a sesión para que los evaluadores conozcan ORCID y rama ──
-  $_SESSION['orcid_usuario'] = $datos_perfil['orcid'] ?? '';
+  $_SESSION['orcid_usuario'] = $orcidRaw;
   $_SESSION['rama_usuario']  = $datos_perfil['rama']  ?? '';
 
 } else {
+  $nombreRaw = $apellidosRaw = $orcidRaw = '';
   $nombre = $apellidos = $dni = $orcid = 'No registrado';
   $correo = $departamento = $telefono = $facultad = $rama = 'No registrado';
 }
@@ -131,6 +137,7 @@ if ($idProf > 0) {
 // ── Tareas pendientes del profesor ────────────────────────────────────────────────
 $tareasActivas = [];
 $entregasTotales = []; // Array plano con todas las entregas de todas las tareas
+$todaUrgencia = '';
 
 try {
     $resTarea = mysqli_query($conn,
@@ -146,11 +153,34 @@ try {
             $decoded    = json_decode($jsonFechas, true);
             $fechas     = is_array($decoded) ? $decoded : [];
             
+            // Ajustar fechas sin hora a final del día (23:59:59)
+            foreach ($fechas as $idx => $fe) {
+                $feT = strtotime($fe);
+                if ($feT) {
+                    if (strlen(trim($fe)) <= 10) {
+                        $fechas[$idx] = date('Y-m-d', $feT) . ' 23:59:59';
+                    }
+                }
+            }
+            
             $proximaFecha = null;
             $proximaIdx = -1;
             
             // Decodificar el estado de las entregas ya realizadas
             $hechas = json_decode($t['fechas_reales_entregas'] ?? '[]', true) ?: [];
+            
+            // Verificar si todas las entregas ya han sido completadas
+            $numEntregas = (int)($t['num_entregas'] ?? 1);
+            $todasHechas = true;
+            for ($idx = 0; $idx < $numEntregas; $idx++) {
+                if (empty($hechas[$idx])) {
+                    $todasHechas = false;
+                    break;
+                }
+            }
+            if ($todasHechas) {
+                continue; // Ocultar de la vista de tareas activas del profesor
+            }
             
             foreach ($fechas as $idx => $fe) {
                 // El hito activo es el primero que NO tiene fecha real registrada
@@ -161,9 +191,25 @@ try {
                 }
             }
             
+            $urgencia = '';
+            if ($proximaFecha) {
+                $diffSeconds = strtotime($proximaFecha) - time();
+                // Si el plazo ya ha vencido (retrasado) o quedan menos de 24h, es roja
+                if ($diffSeconds <= 24 * 3600) {
+                    $urgencia = 'roja';
+                    $todaUrgencia = 'roja';
+                } elseif ($diffSeconds <= 48 * 3600) {
+                    $urgencia = 'ambar';
+                    if ($todaUrgencia !== 'roja') {
+                        $todaUrgencia = 'ambar';
+                    }
+                }
+            }
+            
             $t['fechasEntregas'] = $fechas;
             $t['proximaFecha'] = $proximaFecha;
             $t['proximaIdx'] = $proximaIdx;
+            $t['urgencia'] = $urgencia;
             $tareasActivas[] = $t;
         }
     }
@@ -209,17 +255,28 @@ try {
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
     ]);
     
-    // El profesor está ingresado como nombre, buscamos coincidencias con LIKE
-    $stmt = $pdo->prepare("SELECT * FROM evaluaciones WHERE nombre_candidato LIKE :nombre ORDER BY fecha_creacion DESC LIMIT 1");
-    // Extraemos solo el primer nombre o nombre completo as-is
-    $stmt->execute(['nombre' => '%' . trim($nombre) . '%']);
+    // Búsqueda híbrida: ORCID (máxima precisión) o Nombre (respaldo)
+    $nombreTrim = trim($nombreRaw);
+    $apellidosTrim = trim($apellidosRaw);
+    $nombreCompleto = trim($nombreTrim . ' ' . $apellidosTrim);
+    $orcidLimpio = trim($orcidRaw);
+
+    $stmt = $pdo->prepare("SELECT * FROM evaluaciones 
+                           WHERE (json_entrada LIKE :orcid)
+                           OR (nombre_candidato LIKE :full)
+                           OR (nombre_candidato LIKE :nom AND nombre_candidato LIKE :ape)
+                           ORDER BY fecha_creacion DESC LIMIT 1");
+    
+    $stmt->execute([
+        'orcid' => '%' . $orcidLimpio . '%', // Más flexible: busca el ORCID directamente en el JSON
+        'full'  => '%' . $nombreCompleto . '%',
+        'nom'   => '%' . $nombreTrim . '%',
+        'ape'   => '%' . $apellidosTrim . '%'
+    ]);
     $eval = $stmt->fetch();
     
-    // Fallback si no se encontró exacto por nombre
-    if (!$eval) {
-        $stmt = $pdo->query("SELECT * FROM evaluaciones ORDER BY fecha_creacion DESC LIMIT 1");
-        $eval = $stmt->fetch();
-    }
+    // Eliminado el fallback que mostraba la última evaluación de CUALQUIER usuario
+    // si no se encontraba la del profesor actual, para evitar fugas de datos.
 } catch (PDOException $e) {
     $dbError = "No se pudo conectar a la base de datos de evaluaciones ({$dbName}). Comprueba que el servicio está activo.";
 }
@@ -235,8 +292,8 @@ if (!empty($eval['json_entrada'])) {
 }
 $esPositivaProf  = strtoupper(trim((string)($eval['resultado'] ?? ''))) === 'POSITIVA';
 $_totalFinalProf = (float)($eval['total_final'] ?? 0);
-$colorProf       = $_totalFinalProf >= 70 ? '#4ade80' : ($_totalFinalProf >= 50 ? '#fbbf24' : '#f87171');
-$gradientProf    = $_totalFinalProf >= 70 ? '#4ade80' : ($_totalFinalProf >= 50 ? '#fbbf24' : '#f87171');
+$colorProf       = $_totalFinalProf >= 70 ? '#10b981' : ($_totalFinalProf >= 50 ? '#f59e0b' : '#f97316');
+$gradientProf    = $_totalFinalProf >= 70 ? 'linear-gradient(90deg, #059669, #10b981)' : ($_totalFinalProf >= 50 ? 'linear-gradient(90deg, #d97706, #f59e0b)' : 'linear-gradient(90deg, #ea580c, #f97316)');
 $iconProf        = $_totalFinalProf >= 70 ? '✅' : ($_totalFinalProf >= 50 ? '⚠️' : '❌');
 
 // ── Funciones de análisis ────────────────────────────────────────────────
@@ -296,26 +353,197 @@ function recomendaciones(array $e): array {
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
   <link rel="stylesheet" href="css/styles.css?v=<?= time() ?>">
   <style>
+    @keyframes parpadeo {
+      0% { opacity: 0.3; transform: scale(0.9); }
+      50% { opacity: 1; transform: scale(1.15); }
+      100% { opacity: 0.3; transform: scale(0.9); }
+    }
+    .exclamacion-parpadeo {
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      width: 1.3rem !important;
+      height: 1.3rem !important;
+      min-width: 1.3rem !important;
+      min-height: 1.3rem !important;
+      flex-shrink: 0 !important;
+      border-radius: 50% !important;
+      font-weight: 900 !important;
+      font-size: 0.85rem !important;
+      animation: parpadeo 1.2s infinite ease-in-out;
+      vertical-align: middle;
+      box-shadow: 0 0 8px currentColor;
+    }
+    .exclamacion-roja {
+      background-color: #ef4444 !important;
+      color: #fff !important;
+    }
+    .exclamacion-ambar {
+      background-color: #f59e0b !important;
+      color: #fff !important;
+    }
     .popover-body { white-space: pre-line; }
     @media (min-width: 1200px) {
       .col-xl-custom-28 { flex: 0 0 auto; width: 28.333333%; }
       .col-xl-custom-21 { flex: 0 0 auto; width: 21.666667%; }
     }
+
+    /* Evitar que se corten las palabras en títulos y letreros (Global) */
+    .dashboard-section-title, .prof-panel-name, h1, h2, h3, h4, h5, h6, .stat-value, .stat-label, .value, .label, div, span, p {
+      overflow-wrap: break-word !important;
+      word-break: normal !important;
+      white-space: normal !important;
+      hyphens: none !important;
+    }
+
+    @media (max-width: 768px) {
+      .contenedorimg {
+        flex-direction: row !important;
+        justify-content: flex-start !important;
+        align-items: center !important;
+        padding: 5px 15px !important;
+        gap: 10px !important;
+        width: 100% !important;
+      }
+      .hamburger-btn {
+        order: -1 !important;
+        margin-right: 5px !important;
+      }
+      .imagen {
+        margin: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+      }
+      /* Forzar mismo tamaño para ambos logos */
+      .imagen img {
+        height: 40px !important;
+        width: auto !important;
+        display: block !important;
+        object-fit: contain !important;
+      }
+      /* El segundo logo a la derecha */
+      .imagen:last-of-type {
+        margin-left: auto !important;
+      }
+
+      /* Ajustes adaptativos para todo el panel */
+      .panel-wrapper {
+        padding: 15px 10px !important;
+        gap: 15px !important;
+      }
+      .formulario {
+        padding: 20px 15px !important;
+      }
+      .formulario h2 {
+        font-size: 1.5rem !important;
+      }
+      .formulario i[style*="font-size: 4rem"] {
+        font-size: 2.5rem !important;
+      }
+      .lista-perfil .fs-5 {
+        font-size: 1.1rem !important;
+      }
+      .lista-perfil .small {
+        font-size: 0.7rem !important;
+      }
+      
+      .dashboard {
+        padding: 10px 5px !important;
+      }
+      .dashboard-section-title {
+        font-size: 1.3rem !important;
+      }
+      .dashboard-stat-card .stat-label {
+        font-size: 0.65rem !important;
+      }
+      .dashboard-stat-card .stat-value {
+        font-size: 1.2rem !important;
+      }
+      
+      /* Botones más táctiles pero compactos */
+      .btn-outline-light, .btn-primary, .btn-danger, .btn-outline-info {
+        padding: 10px 16px !important;
+        font-size: 0.9rem !important;
+        flex: 1 1 auto !important;
+        min-width: 140px !important;
+        justify-content: center !important;
+      }
+
+      /* Reajustes finos para cajas de info */
+      .mini-info-box, .dashboard-stat-card {
+        padding: 15px 12px !important;
+        text-align: center !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+      .mini-info-label, .stat-label {
+        text-align: center !important;
+        width: 100% !important;
+      }
+      .mini-info-value, .stat-value {
+        font-size: 0.9rem !important;
+        text-align: center !important;
+        width: 100% !important;
+      }
+
+      /* Ajustes de secciones del asesor */
+      .dashboard-info-card p {
+        font-size: 0.9rem !important;
+      }
+      
+      /* Asegurar que el dashboard-section-title no se amontone */
+      .dashboard-section-title {
+        margin-top: 10px !important;
+      }
+
+      /* Estilos para el carrusel horizontal tipo libro */
+      .overflow-x-auto {
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none;  /* IE/Edge */
+      }
+      .overflow-x-auto::-webkit-scrollbar {
+        display: none; /* Chrome/Safari */
+      }
+    }
+
+    /* Asegurar que los botones de la tarjeta de grupos tengan el mismo tamaño en móviles */
+    @media (max-width: 991.98px) {
+      .prof-panel-card .d-flex.flex-column .text-lg-end,
+      .prof-panel-card .d-flex.flex-column .ms-lg-2 {
+        width: 100% !important;
+        margin-left: 0 !important;
+      }
+      .prof-panel-card .d-flex.flex-column .btn {
+        width: 100% !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+      }
+    }
   </style>
 </head>
 
 <body>
-  <header>
     <div class="contenedorimg">
+      <!-- Menú Hamburguesa en la misma línea que los logos -->
+      <button class="hamburger-btn" id="hamburgerBtn" aria-label="Mostrar menú">
+        <i class="bi bi-list"></i>
+      </button>
+
       <div class="imagen">
         <img src="https://uf3ceu.es/wp-content/uploads/logo-uf3-2k25.svg" alt="CEU Universidad Fernando III"
-          style="height:50px; width:auto;" id="#acele" />
+          id="#acele" />
       </div>
       <div class="imagen">
         <img src="../../acelerador_login/fronten/img/AcademyAccelerator_def.png" id="academy" alt="academy" />
       </div>
     </div>
   </header>
+
+  <!-- Overlay para el menú lateral -->
+  <div class="overlay-menu" id="overlayMenu"></div>
 
   <main>
     <div class="panel-wrapper">
@@ -436,111 +664,81 @@ function recomendaciones(array $e): array {
 
         </div>
 
-        <?php if (!empty($tareasActivas)): ?>
-        <hr class="w-100 border-light my-3 opacity-25">
-        <h6 class="text-white fw-bold mb-3" style="font-size:.95rem;">
-          <i class="bi bi-hourglass-split me-1"></i> Entregas Programadas
-        </h6>
+        <!-- SECCIÓN DE ENTREGAS (Desktop: Sidebar / Mobile: Hidden here, shown in Dashboard) -->
+        <div class="d-none d-lg-block">
+          <?php if (!empty($tareasActivas)): ?>
+          <hr class="w-100 border-light my-3 opacity-25">
+          <h6 class="text-white fw-bold mb-3 d-flex align-items-center gap-2" style="font-size:.95rem;">
+            <i class="bi bi-hourglass-split me-1"></i> Entregas Programadas
+            <?php if ($todaUrgencia === 'roja'): ?>
+              <span class="exclamacion-parpadeo exclamacion-roja" title="Menos de 24 horas restantes">!</span>
+            <?php elseif ($todaUrgencia === 'ambar'): ?>
+              <span class="exclamacion-parpadeo exclamacion-ambar" title="Menos de 48 horas restantes">!</span>
+            <?php endif; ?>
+          </h6>
 
-        <div class="w-100 custom-scrollbar pe-2" style="max-height: 450px; overflow-y: auto; overflow-x: hidden;">
-        <?php foreach ($tareasActivas as $tareaPendiente): 
-            $fechasEntregas = $tareaPendiente['fechasEntregas'];
-            $proximaFecha   = $tareaPendiente['proximaFecha'];
-            $proximaIdx     = $tareaPendiente['proximaIdx'];
-            $numEntregas    = (int)($tareaPendiente['num_entregas'] ?? 0);
-        ?>
-          <!-- ═══ CUENTA ATRÁS — Entregas pendientes de la tarea ═══ -->
-          <div class="w-100 mb-4 p-3 rounded-4" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.10);">
-            
-            <!-- Info de la tarea -->
-            <div class="w-100 mb-3 p-2 rounded-3" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.10);">
-              <div class="text-white-50 small text-uppercase fw-bold" style="font-size:.7rem;">Tarea asignada</div>
-              <div class="text-white fw-bold" style="font-size:.95rem;"><?= htmlspecialchars($tareaPendiente['titulo_tarea'] ?? '') ?></div>
-              <?php if (!empty($tareaPendiente['descripcion_tarea'])): ?>
-                <div class="text-white-50 small mt-1"><?= htmlspecialchars($tareaPendiente['descripcion_tarea']) ?></div>
-              <?php endif; ?>
-              <div class="text-white-50 small mt-1"><i class="bi bi-collection me-1"></i>Grupo: <?= htmlspecialchars($tareaPendiente['grupo_nombre'] ?? '') ?></div>
-            </div>
-
-            <?php if ($proximaFecha): ?>
-              <!-- Temporizador dinámico -->
-              <div class="w-100 text-center p-3 rounded-3 mb-3 countdown-item" style="background:rgba(0,0,0,0.20); border:1px solid rgba(255,255,255,0.10);" data-deadline="<?= htmlspecialchars($proximaFecha) ?>">
-                <div class="text-white-50 small text-uppercase fw-bold mb-2" style="font-size:.7rem;">Entrega <?= $proximaIdx + 1 ?> de <?= $numEntregas ?> — Tiempo restante</div>
-                <div class="d-flex justify-content-center gap-3 countdown-digits">
-                  <div class="text-center">
-                    <div class="text-white fw-bold cdDias" style="font-size:1.8rem; line-height:1;">--</div>
-                    <div class="text-white-50" style="font-size:.65rem; text-transform:uppercase;">Días</div>
-                  </div>
-                  <div class="text-white fw-bold" style="font-size:1.8rem; line-height:1; opacity:0.4;">:</div>
-                  <div class="text-center">
-                    <div class="text-white fw-bold cdHoras" style="font-size:1.8rem; line-height:1;">--</div>
-                    <div class="text-white-50" style="font-size:.65rem; text-transform:uppercase;">Horas</div>
-                  </div>
-                  <div class="text-white fw-bold" style="font-size:1.8rem; line-height:1; opacity:0.4;">:</div>
-                  <div class="text-center">
-                    <div class="text-white fw-bold cdMin" style="font-size:1.8rem; line-height:1;">--</div>
-                    <div class="text-white-50" style="font-size:.65rem; text-transform:uppercase;">Min</div>
-                  </div>
-                  <div class="text-white fw-bold" style="font-size:1.8rem; line-height:1; opacity:0.4;">:</div>
-                  <div class="text-center">
-                    <div class="text-white fw-bold cdSeg" style="font-size:1.8rem; line-height:1;">--</div>
-                    <div class="text-white-50" style="font-size:.65rem; text-transform:uppercase;">Seg</div>
-                  </div>
+          <div class="w-100 custom-scrollbar pe-2" style="max-height: 450px; overflow-y: auto; overflow-x: hidden;">
+          <?php foreach ($tareasActivas as $index => $tareaPendiente): 
+              $fechasEntregas = $tareaPendiente['fechasEntregas'];
+              $proximaFecha   = $tareaPendiente['proximaFecha'];
+              $proximaIdx     = $tareaPendiente['proximaIdx'];
+              $numEntregas    = (int)($tareaPendiente['num_entregas'] ?? 0);
+          ?>
+            <div class="w-100 mb-4 p-3 rounded-4" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.10);">
+              <div class="w-100 mb-3 p-3 rounded-3 position-relative" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.10);">
+                <button type="button" class="info-popover-btn" 
+                  style="position: absolute; top: 12px; right: 12px; background: none; border: none; color: rgba(255,255,255,0.5); cursor: pointer;"
+                  data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="left" data-bs-html="true" data-bs-title="Detalles de la Tarea"
+                  data-bs-content="<div style='color: #000 !important; font-size: 0.85rem;'><div class='mb-2'><strong>Descripción:</strong><br><?= !empty($tareaPendiente['descripcion_tarea']) ? addslashes(htmlspecialchars($tareaPendiente['descripcion_tarea'])) : 'Sin descripción' ?></div><div class='border-top border-dark border-opacity-10 pt-2 mt-2'><strong>Grupo:</strong><br><?= addslashes(htmlspecialchars($tareaPendiente['grupo_nombre'] ?? '')) ?></div></div>">
+                  <i class="bi bi-info-circle" style="font-size: 1.1rem;"></i>
+                </button>
+                <div class="text-white-50 small text-uppercase fw-bold mb-1" style="font-size:.7rem; letter-spacing: 0.05em;">Tarea <span style="font-size:.85rem;"><?= $index + 1 ?></span></div>
+                <div class="text-white fw-bold" style="font-size:1.1rem; line-height: 1.2;">
+                  <?= htmlspecialchars($tareaPendiente['titulo_tarea'] ?? '') ?>
+                  <?php if ($tareaPendiente['urgencia'] === 'roja'): ?>
+                    <span class="exclamacion-parpadeo exclamacion-roja ms-2" title="Menos de 24 horas restantes">!</span>
+                  <?php elseif ($tareaPendiente['urgencia'] === 'ambar'): ?>
+                    <span class="exclamacion-parpadeo exclamacion-ambar ms-2" title="Menos de 48 horas restantes">!</span>
+                  <?php endif; ?>
                 </div>
               </div>
-            <?php else: ?>
-              <div class="w-100 text-center p-3 rounded-3 mb-3" style="background:rgba(0,0,0,0.20); border:1px solid rgba(255,255,255,0.10);">
-                <div class="text-white-50 small"><i class="bi bi-check-circle me-1"></i> Todas las entregas de esta tarea han vencido o se han completado.</div>
-              </div>
-            <?php endif; ?>
-
-            <!-- Lista visual de entregas programadas -->
-            <?php if (count($fechasEntregas) > 0): ?>
-              <div class="text-white-50 small text-uppercase fw-bold mb-2" style="font-size:.7rem;">Calendario de entregas (<?= $numEntregas ?>)</div>
-              <div class="w-100 custom-scrollbar pe-1" style="max-height:160px; overflow-y:auto; overflow-x: hidden;">
-                <?php foreach ($fechasEntregas as $idx => $fe):
-                  $feTs   = strtotime($fe);
-                  $esPasada  = ($feTs !== false && $feTs < time());
-                  $esProxima = ($idx === $proximaIdx);
-                  $fechaFmt  = $feTs ? date('d/m/Y H:i', $feTs) : $fe;
-
-                  // CONDICIÓN VISUAL: Estado 'Hecha'
-                  $hechasCur = json_decode($tareaPendiente['fechas_reales_entregas'] ?? '{}', true) ?: [];
-                  $estaHecha = !empty($hechasCur[$idx]);
-                ?>
-                  <div class="d-flex align-items-center gap-2 py-1 px-2 rounded-2 mb-1"
-                       style="background:<?= $esProxima ? 'rgba(74,222,128,0.12)' : 'rgba(255,255,255,0.04)' ?>; border:1px solid <?= $esProxima ? 'rgba(74,222,128,0.25)' : 'rgba(255,255,255,0.06)' ?>;">
-                    <span style="font-size:.85rem;">
-                      <?php if ($estaHecha): ?>
-                        <i class="bi bi-check-circle-fill" style="color:#198754;"></i>
-                      <?php elseif ($esPasada): ?>
-                        <i class="bi bi-clock-history" style="color:#f87171;"></i>
-                      <?php elseif ($esProxima): ?>
-                        <i class="bi bi-arrow-right-circle-fill" style="color:#4ade80;"></i>
-                      <?php else: ?>
-                        <i class="bi bi-circle" style="color:rgba(255,255,255,0.3);"></i>
-                      <?php endif; ?>
-                    </span>
-                    <span class="text-white small fw-medium <?= ($esPasada && !$esProxima && !$estaHecha) ? 'text-decoration-line-through opacity-50' : '' ?>"
-                          style="<?= $estaHecha ? 'text-decoration: line-through; text-decoration-color: #198754; text-decoration-thickness: 4px;' : '' ?>">
-                      Entrega <?= $idx + 1 ?>: <?= $fechaFmt ?>
-                    </span>
-                    <?php if ($estaHecha): ?>
-                      <span class="badge rounded-pill ms-auto" style="background:rgba(25,135,84,0.2); color:#198754; font-size:.65rem;">HECHA</span>
-                    <?php elseif ($esProxima): ?>
-                      <span class="badge rounded-pill ms-auto" style="background:rgba(74,222,128,0.2); color:#4ade80; font-size:.65rem;">ACTIVA</span>
-                    <?php elseif ($esPasada): ?>
-                      <span class="badge rounded-pill ms-auto" style="background:rgba(248,113,113,0.2); color:#f87171; font-size:.65rem;">VENCIDA</span>
-                    <?php endif; ?>
+              <?php if ($proximaFecha): ?>
+                <div class="w-100 p-3 rounded-4 mb-3 countdown-item shadow-sm d-flex flex-column align-items-center justify-content-center" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.08);" data-deadline="<?= htmlspecialchars($proximaFecha) ?>">
+                  <div class="text-white-50 small text-uppercase fw-bold mb-2" style="font-size:.75rem; letter-spacing: 0.1em;">Entrega <?= $proximaIdx + 1 ?> de <?= $numEntregas ?> — Tiempo restante</div>
+                  <div class="d-flex justify-content-center align-items-center text-white fw-bold gap-1 gap-sm-2" style="font-size: clamp(1.2rem, 4vw, 1.4rem); white-space: nowrap;">
+                    <div class="d-flex align-items-baseline gap-1"><span class="cdDias">--</span><span class="text-white-50 text-uppercase fw-normal" style="font-size: 0.6rem;">D</span></div>
+                    <span class="opacity-25">:</span>
+                    <div class="d-flex align-items-baseline gap-1"><span class="cdHoras">--</span><span class="text-white-50 text-uppercase fw-normal" style="font-size: 0.6rem;">H</span></div>
+                    <span class="opacity-25">:</span>
+                    <div class="d-flex align-items-baseline gap-1"><span class="cdMin">--</span><span class="text-white-50 text-uppercase fw-normal" style="font-size: 0.6rem;">M</span></div>
+                    <span class="opacity-25">:</span>
+                    <div class="d-flex align-items-baseline gap-1"><span class="cdSeg">--</span><span class="text-white-50 text-uppercase fw-normal" style="font-size: 0.6rem;">S</span></div>
                   </div>
-                <?php endforeach; ?>
-              </div>
-            <?php endif; ?>
-
+                </div>
+              <?php else: ?>
+                <div class="w-100 text-center p-3 rounded-3 mb-3" style="background:rgba(0,0,0,0.20); border:1px solid rgba(255,255,255,0.10);">
+                  <div class="text-white-50 small"><i class="bi bi-check-circle me-1"></i> Entregas completadas.</div>
+                </div>
+              <?php endif; ?>
+              <?php if (count($fechasEntregas) > 0): ?>
+                <div class="text-white-50 small text-uppercase fw-bold mb-2" style="font-size:.7rem;">Calendario (<?= $numEntregas ?>)</div>
+                <div class="w-100 custom-scrollbar pe-1" style="max-height:160px; overflow-y:auto; overflow-x: hidden;">
+                  <?php foreach ($fechasEntregas as $idx => $fe):
+                    $feTs = strtotime($fe); $esPasada = ($feTs !== false && $feTs < time()); $esProxima = ($idx === $proximaIdx); $fechaFmt = $feTs ? date('d/m/Y H:i', $feTs) : $fe;
+                    $hechasCur = json_decode($tareaPendiente['fechas_reales_entregas'] ?? '{}', true) ?: []; $estaHecha = !empty($hechasCur[$idx]);
+                  ?>
+                    <div class="d-flex align-items-center gap-2 py-1 px-2 rounded-2 mb-1" style="background:<?= $esProxima ? 'rgba(74,222,128,0.12)' : 'rgba(255,255,255,0.04)' ?>; border:1px solid <?= $esProxima ? 'rgba(74,222,128,0.25)' : 'rgba(255,255,255,0.06)' ?>;">
+                      <span style="font-size:.85rem;"><?= $estaHecha ? '<i class="bi bi-check-circle-fill" style="color:#198754;"></i>' : ($esPasada ? '<i class="bi bi-clock-history" style="color:#f87171;"></i>' : ($esProxima ? '<i class="bi bi-arrow-right-circle-fill" style="color:#4ade80;"></i>' : '<i class="bi bi-circle" style="color:rgba(255,255,255,0.3);"></i>')) ?></span>
+                      <span class="text-white small fw-medium <?= ($esPasada && !$esProxima && !$estaHecha) ? 'text-decoration-line-through opacity-50' : '' ?>" style="<?= $estaHecha ? 'text-decoration: line-through; text-decoration-color: #198754;' : '' ?>">Entrega <?= $idx + 1 ?>: <?= $fechaFmt ?></span>
+                    </div>
+                  <?php endforeach; ?>
+                </div>
+              <?php endif; ?>
+            </div>
+          <?php endforeach; ?>
           </div>
-        <?php endforeach; ?>
+          <?php endif; ?>
         </div>
-        <?php endif; ?>
 
       </div><!-- /.formulario -->
 
@@ -568,7 +766,7 @@ function recomendaciones(array $e): array {
                 data-bs-title="Rama de conocimiento"
                 data-bs-content="Área de conocimiento ANECA a la que pertenece tu expediente de evaluación.">ⓘ</button>
               <div class="stat-label"><i class="bi bi-diagram-2 me-1"></i> Rama</div>
-              <div class="stat-value" style="font-size:1.1rem; word-break:break-word;"><?= htmlspecialchars($rama) ?></div>
+              <div class="stat-value" style="font-size:1.1rem; overflow-wrap: break-word; word-break: normal; hyphens: none;"><?= htmlspecialchars($rama) ?></div>
             </div>
           </div>
           <div class="col-md-4">
@@ -585,7 +783,7 @@ function recomendaciones(array $e): array {
 
         <!-- Tarjetas de grupos -->
         <?php if ($totalGrupos > 0): ?>
-        <h2 class="dashboard-section-title mb-3 w-100"><i class="bi bi-diagram-3-fill me-2"></i>Mis grupos</h2>
+        <h2 class="dashboard-section-title mb-3"><i class="bi bi-diagram-3-fill me-2"></i>Mis grupos</h2>
         <div class="row g-3 w-100 mb-4">
           <?php foreach ($misGrupos as $grupo): ?>
             <div class="col-12">
@@ -616,6 +814,89 @@ function recomendaciones(array $e): array {
             </div>
           <?php endforeach; ?>
         </div>
+
+        <!-- SECCIÓN DE ENTREGAS (Mobile: Shown here / Desktop: Hidden here, shown in Sidebar) -->
+        <div class="d-block d-lg-none w-100 mb-4 mt-2">
+          <?php if (!empty($tareasActivas)): ?>
+          <h2 class="dashboard-section-title mb-3 d-flex align-items-center gap-2">
+            <i class="bi bi-hourglass-split me-2"></i>Entregas Programadas
+            <?php if ($todaUrgencia === 'roja'): ?>
+              <span class="exclamacion-parpadeo exclamacion-roja" title="Menos de 24 horas restantes">!</span>
+            <?php elseif ($todaUrgencia === 'ambar'): ?>
+              <span class="exclamacion-parpadeo exclamacion-ambar" title="Menos de 48 horas restantes">!</span>
+            <?php endif; ?>
+          </h2>
+          <div class="row g-3">
+          <?php foreach ($tareasActivas as $index => $tareaPendiente): 
+              $fechasEntregas = $tareaPendiente['fechasEntregas'];
+              $proximaFecha   = $tareaPendiente['proximaFecha'];
+              $proximaIdx     = $tareaPendiente['proximaIdx'];
+              $numEntregas    = (int)($tareaPendiente['num_entregas'] ?? 0);
+          ?>
+            <div class="col-12">
+              <div class="prof-panel-card py-3 pe-3 ps-0 position-relative" style="padding-left: 0 !important;">
+                <!-- Indicador de Hito (Top Left) -->
+                <div style="position: absolute; top: 12px; left: 8px;">
+                  <div class="d-flex align-items-center gap-2 bg-white bg-opacity-10 rounded-pill px-3 py-1 border border-white border-opacity-15 shadow-sm">
+                    <i class="bi bi-layers-fill text-info" style="font-size: 0.9rem;"></i>
+                    <span class="text-white fw-bold" style="font-size: 0.8rem; letter-spacing: 0.02em;">Hito <?= $proximaIdx + 1 ?>/<?= $numEntregas ?></span>
+                  </div>
+                </div>
+
+                <!-- Icono de info (Popover) -->
+                <button type="button" class="info-popover-btn" 
+                  style="position: absolute; top: 12px; right: 12px; background: none; border: none; color: rgba(255,255,255,0.5); cursor: pointer;"
+                  data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="left" data-bs-html="true" data-bs-title="Detalles de la Tarea"
+                  data-bs-content="<div style='color: #000 !important; font-size: 0.85rem;'><div class='mb-2'><strong>Descripción:</strong><br><?= !empty($tareaPendiente['descripcion_tarea']) ? addslashes(htmlspecialchars($tareaPendiente['descripcion_tarea'])) : 'Sin descripción' ?></div><div class='border-top border-dark border-opacity-10 pt-2 mt-2'><strong>Grupo:</strong><br><?= addslashes(htmlspecialchars($tareaPendiente['grupo_nombre'] ?? '')) ?></div></div>">
+                  <i class="bi bi-info-circle" style="font-size: 1.1rem;"></i>
+                </button>
+
+                <div class="mb-3 mt-4 pt-3" style="padding-left: 6px;">
+                  <div class="mb-2">
+                    <span class="text-white-50 small text-uppercase fw-bold" style="font-size:.75rem; letter-spacing: 0.15em;">Tarea <?= $index + 1 ?></span>
+                  </div>
+                  <div class="text-white fw-bold" style="font-size:1.25rem; line-height: 1.3; letter-spacing: -0.01em;">
+                    <?= htmlspecialchars($tareaPendiente['titulo_tarea'] ?? '') ?>
+                    <?php if ($tareaPendiente['urgencia'] === 'roja'): ?>
+                      <span class="exclamacion-parpadeo exclamacion-roja ms-2" title="Menos de 24 horas restantes">!</span>
+                    <?php elseif ($tareaPendiente['urgencia'] === 'ambar'): ?>
+                      <span class="exclamacion-parpadeo exclamacion-ambar ms-2" title="Menos de 48 horas restantes">!</span>
+                    <?php endif; ?>
+                  </div>
+                </div>
+
+                <?php if ($proximaFecha): ?>
+                  <div class="w-100 p-3 rounded-4 mb-3 countdown-item shadow-sm d-flex flex-column align-items-center justify-content-center" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.08);" data-deadline="<?= htmlspecialchars($proximaFecha) ?>">
+                    <div class="text-white-50 small text-uppercase fw-bold mb-2" style="font-size:.7rem;">Tiempo restante para la próxima entrega</div>
+                    <div class="d-flex justify-content-center align-items-center text-white fw-bold gap-1" style="font-size: 1.5rem; white-space: nowrap;">
+                      <div class="d-flex align-items-baseline gap-1"><span class="cdDias">--</span><span class="text-white-50 text-uppercase fw-normal" style="font-size: 0.6rem;">D</span></div>
+                      <span class="opacity-25">:</span>
+                      <div class="d-flex align-items-baseline gap-1"><span class="cdHoras">--</span><span class="text-white-50 text-uppercase fw-normal" style="font-size: 0.6rem;">H</span></div>
+                      <span class="opacity-25">:</span>
+                      <div class="d-flex align-items-baseline gap-1"><span class="cdMin">--</span><span class="text-white-50 text-uppercase fw-normal" style="font-size: 0.6rem;">M</span></div>
+                      <span class="opacity-25">:</span>
+                      <div class="d-flex align-items-baseline gap-1"><span class="cdSeg">--</span><span class="text-white-50 text-uppercase fw-normal" style="font-size: 0.6rem;">S</span></div>
+                    </div>
+                  </div>
+                <?php endif; ?>
+
+                <div class="w-100 custom-scrollbar pe-1" style="max-height:140px; overflow-y:auto; overflow-x: hidden;">
+                  <?php foreach ($fechasEntregas as $idx => $fe):
+                    $feTs = strtotime($fe); $esPasada = ($feTs !== false && $feTs < time()); $esProxima = ($idx === $proximaIdx); $fechaFmt = $feTs ? date('d/m/Y H:i', $feTs) : $fe;
+                    $hechasCur = json_decode($tareaPendiente['fechas_reales_entregas'] ?? '{}', true) ?: []; $estaHecha = !empty($hechasCur[$idx]);
+                  ?>
+                    <div class="d-flex align-items-center gap-2 py-2 px-3 rounded-3 mb-2" style="background:<?= $esProxima ? 'rgba(74,222,128,0.12)' : 'rgba(255,255,255,0.04)' ?>; border:1px solid <?= $esProxima ? 'rgba(74,222,128,0.25)' : 'rgba(255,255,255,0.06)' ?>;">
+                      <span style="font-size:.9rem;"><?= $estaHecha ? '<i class="bi bi-check-circle-fill" style="color:#198754;"></i>' : ($esPasada ? '<i class="bi bi-clock-history" style="color:#f87171;"></i>' : ($esProxima ? '<i class="bi bi-arrow-right-circle-fill" style="color:#4ade80;"></i>' : '<i class="bi bi-circle" style="color:rgba(255,255,255,0.3);"></i>')) ?></span>
+                      <span class="text-white small fw-medium <?= ($esPasada && !$esProxima && !$estaHecha) ? 'text-decoration-line-through opacity-50' : '' ?>" style="<?= $estaHecha ? 'text-decoration: line-through; text-decoration-color: #198754;' : '' ?>">Entrega <?= $idx + 1 ?>: <?= $fechaFmt ?></span>
+                    </div>
+                  <?php endforeach; ?>
+                </div>
+              </div>
+            </div>
+          <?php endforeach; ?>
+          </div>
+          <?php endif; ?>
+        </div>
         <?php else: ?>
         <div class="alert alert-info rounded-4 w-100 mb-4">
           <i class="bi bi-info-circle me-2"></i>Aún no estás asignado a ningún grupo.
@@ -632,7 +913,7 @@ function recomendaciones(array $e): array {
             <i class="bi bi-exclamation-triangle me-2"></i><?= htmlspecialchars($dbError) ?>
           </div>
         <?php elseif (!empty($eval)): ?>
-          <h2 class="dashboard-section-title mb-3 w-100"><i class="bi bi-bar-chart-fill me-2"></i>Mi Expediente de Evaluación</h2>
+          <h2 class="dashboard-section-title mb-3"><i class="bi bi-bar-chart-fill me-2"></i>Mi Expediente de Evaluación</h2>
           
           <div class="row g-3 mb-4 w-100">
             <div class="col-md-6 col-xl-custom-28">
@@ -672,7 +953,7 @@ function recomendaciones(array $e): array {
                   data-bs-title="Bloque más débil"
                   data-bs-content="El bloque de méritos en el que tienes la puntuación más baja. Es el área prioritaria de mejora para acercarte a la evaluación positiva.">ⓘ</button>
                 <div class="stat-label">Bloque más débil</div>
-                <div class="stat-value text-break" style="font-size:1.4rem;"><?= bloqueDebil($eval) ?></div>
+                <div class="stat-value" style="font-size:1.4rem; overflow-wrap: break-word; word-break: normal; hyphens: none;"><?= bloqueDebil($eval) ?></div>
               </div>
             </div>
           </div>
@@ -692,7 +973,7 @@ function recomendaciones(array $e): array {
                       $falta = max(0, $max - $actual);
                       $pct_actual = ($max > 0) ? ($actual / $max) * 100 : 0;
                   ?>
-                    <div class="col-6 col-lg-3">
+                    <div class="col-12 col-lg-3">
                       <div class="mini-info-box" style="padding: 20px; border: 1px solid rgba(255,255,255,0.05);">
                         <div class="text-white-50 small mb-3"><?= strtoupper($nombres[$i-1]) ?></div>
                         
@@ -725,7 +1006,7 @@ function recomendaciones(array $e): array {
                 </div>
                   <div class="flex-grow-1">
                     <div class="progress rounded-pill bg-white bg-opacity-25" style="height: 12px;">
-                      <div class="progress-bar" role="progressbar" style="background-color: <?= $gradientProf ?>; width: <?= min(100, max(0, (float)$eval['total_final'])) ?>%;"></div>
+                      <div class="progress-bar" role="progressbar" style="background: <?= $gradientProf ?>; width: <?= min(100, max(0, (float)$eval['total_final'])) ?>%;"></div>
                     </div>
                   </div>
                 </div>
@@ -878,7 +1159,7 @@ function recomendaciones(array $e): array {
     <div class="mipie" id="mipie">
       <div class="direccion">
         <img src="https://uf3ceu.es/wp-content/uploads/logo-uf3-2k25.svg" alt="CEU Universidad Fernando III"
-          style="height:50px; width:auto;" id="#acele" />
+          id="#acele" />
         <p>
           Glorieta Ángel Herrera Oria, s/n,<br />
           41930 Bormujos,<br />
@@ -1030,6 +1311,24 @@ function recomendaciones(array $e): array {
     #toast-container {
       right: 95px !important; /* Original 25px + 70px shift */
     }
+
+    /* Estilos para Popover: Texto Negro y Legible */
+    .popover {
+      border: 1px solid rgba(0,0,0,0.2) !important;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .popover-header {
+      background-color: #f8f9fa !important;
+      color: #000 !important;
+      font-weight: bold !important;
+      border-bottom: 1px solid rgba(0,0,0,0.1) !important;
+    }
+    .popover-body {
+      color: #000 !important;
+      font-size: 0.85rem !important;
+      line-height: 1.4 !important;
+      background-color: #fff !important;
+    }
   </style>
   <link rel="stylesheet" href="css/notifications.css">
   <script src="js/notifications.js"></script>
@@ -1038,7 +1337,7 @@ function recomendaciones(array $e): array {
     // Inicializar todos los popovers
     document.addEventListener('DOMContentLoaded', () => {
       document.querySelectorAll('[data-bs-toggle="popover"]').forEach(el => {
-        new bootstrap.Popover(el, { html: false });
+        new bootstrap.Popover(el, { html: true });
       });
 
       // Notificación de validación correcta
@@ -1120,6 +1419,31 @@ function recomendaciones(array $e): array {
   </script>
   <?php endif; ?>
 
+
+  <script>
+    // Lógica para el menú de hamburguesa / Drawer de perfil
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const profileDrawer = document.querySelector('.formulario');
+    const overlayMenu = document.getElementById('overlayMenu');
+
+    function toggleMenu() {
+      profileDrawer.classList.toggle('active');
+      overlayMenu.classList.toggle('active');
+      document.body.classList.toggle('menu-open');
+      document.body.style.overflow = profileDrawer.classList.contains('active') ? 'hidden' : '';
+    }
+
+    if(hamburgerBtn) hamburgerBtn.addEventListener('click', toggleMenu);
+    if(overlayMenu) overlayMenu.addEventListener('click', toggleMenu);
+
+    // Cerrar menú al hacer click en botones de acción dentro del drawer (opcional)
+    const drawerButtons = profileDrawer.querySelectorAll('.btn');
+    drawerButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        if(profileDrawer.classList.contains('active')) toggleMenu();
+      });
+    });
+  </script>
 </body>
 
 </html>

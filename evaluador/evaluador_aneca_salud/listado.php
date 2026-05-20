@@ -45,6 +45,9 @@ salud_render_layout_start(
 ?>
 
 <style>
+    .shell {
+        max-width: 1600px !important;
+    }
     .tabla-listado {
         width: 100%;
         border-collapse: separate;
@@ -58,6 +61,8 @@ salud_render_layout_start(
     .tabla-listado td {
         padding: 14px 18px;
         border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        border-left: none !important;
+        border-right: none !important;
         text-align: left;
         vertical-align: middle;
         color: #e2e8f0;
@@ -78,12 +83,13 @@ salud_render_layout_start(
     }
     .tabla-listado .nombre {
         min-width: 220px;
-        white-space: normal;
+        white-space: nowrap;
         font-weight: 600;
         color: #fff;
     }
     .tabla-listado .num {
         text-align: right;
+        white-space: nowrap;
         font-variant-numeric: tabular-nums;
     }
     .resumen-top {
@@ -127,10 +133,69 @@ salud_render_layout_start(
         font-weight: 700;
     }
     .reglas-cell {
-        white-space: normal;
+        white-space: nowrap;
         min-width: 180px;
-        line-height: 1.45;
+        display: flex;
+        gap: 15px;
+        align-items: center;
         font-size: 13px;
+    }
+
+    /* 📱 RESPONSIVE: Transformar tabla en tarjetas */
+    @media (max-width: 992px) {
+        .tabla-listado, .tabla-listado thead, .tabla-listado tbody, .tabla-listado th, .tabla-listado td, .tabla-listado tr {
+            display: block;
+            width: 100%;
+        }
+        .tabla-listado thead {
+            display: none; /* Ocultar cabecera original */
+        }
+        .tabla-listado tr {
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            position: relative;
+        }
+        .tabla-listado td {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: right !important;
+            font-size: 14px;
+        }
+        .tabla-listado td:last-child {
+            border-bottom: none;
+            justify-content: center;
+            padding-top: 15px;
+        }
+        .tabla-listado td::before {
+            content: attr(data-label);
+            font-size: 11px;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.4);
+            text-align: left;
+            flex: 1;
+        }
+        .tabla-listado .nombre {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+            justify-content: center;
+            text-align: center !important;
+        }
+        .tabla-listado .nombre::before {
+            display: none;
+        }
+        .reglas-cell {
+            justify-content: flex-end;
+            min-width: 0;
+        }
     }
 </style>
 
@@ -191,19 +256,19 @@ salud_render_layout_start(
                 <?php else: ?>
                     <?php foreach ($evaluaciones as $fila): ?>
                         <tr>
-                            <td><?= salud_h((string)$fila['id']) ?></td>
-                            <td class="nombre"><?= salud_h((string)$fila['nombre_candidato']) ?></td>
-                            <td><?= salud_h((string)$fila['area']) ?></td>
-                            <td><?= salud_h((string)$fila['categoria']) ?></td>
+                            <td data-label="ID"><?= salud_h((string)$fila['id']) ?></td>
+                            <td class="nombre" data-label="Candidato"><?= salud_h((string)$fila['nombre_candidato']) ?></td>
+                            <td data-label="Área"><?= salud_h((string)$fila['area']) ?></td>
+                            <td data-label="Categoría"><?= salud_h((string)$fila['categoria']) ?></td>
 
-                            <td class="num"><?= salud_h(salud_nf($fila['bloque_1'] ?? 0)) ?></td>
-                            <td class="num"><?= salud_h(salud_nf($fila['bloque_2'] ?? 0)) ?></td>
-                            <td class="num"><?= salud_h(salud_nf($fila['bloque_3'] ?? 0)) ?></td>
-                            <td class="num"><?= salud_h(salud_nf($fila['bloque_4'] ?? 0)) ?></td>
-                            <td class="num"><?= salud_h(salud_nf($fila['total_b1_b2'] ?? 0)) ?></td>
-                            <td class="num"><strong><?= salud_h(salud_nf($fila['total_final'] ?? 0)) ?></strong></td>
+                            <td class="num" data-label="B1"><?= salud_h(salud_nf($fila['bloque_1'] ?? 0)) ?></td>
+                            <td class="num" data-label="B2"><?= salud_h(salud_nf($fila['bloque_2'] ?? 0)) ?></td>
+                            <td class="num" data-label="B3"><?= salud_h(salud_nf($fila['bloque_3'] ?? 0)) ?></td>
+                            <td class="num" data-label="B4"><?= salud_h(salud_nf($fila['bloque_4'] ?? 0)) ?></td>
+                            <td class="num" data-label="1+2"><?= salud_h(salud_nf($fila['total_b1_b2'] ?? 0)) ?></td>
+                            <td class="num" data-label="Total"><strong><?= salud_h(salud_nf($fila['total_final'] ?? 0)) ?></strong></td>
 
-                            <td class="reglas-cell">
+                            <td class="reglas-cell" data-label="Reglas">
                                 <div class="<?= ((int)($fila['cumple_regla_1'] ?? 0) === 1) ? 'regla-ok' : 'regla-ko' ?>">
                                     1+2 ≥ 50: <?= ((int)($fila['cumple_regla_1'] ?? 0) === 1) ? 'Sí' : 'No' ?>
                                 </div>
@@ -212,9 +277,9 @@ salud_render_layout_start(
                                 </div>
                             </td>
 
-                            <td><?= salud_render_result_badge((string)$fila['resultado']) ?></td>
-                            <td><?= salud_h((string)$fila['fecha_creacion']) ?></td>
-                            <td>
+                            <td data-label="Resultado"><?= salud_render_result_badge((string)$fila['resultado']) ?></td>
+                            <td data-label="Fecha"><?= salud_h((string)$fila['fecha_creacion']) ?></td>
+                            <td data-label="">
                                 <a class="btn outline" href="ver_evaluacion.php?id=<?= urlencode((string)$fila['id']) ?>">
                                     Abrir
                                 </a>

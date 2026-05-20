@@ -160,6 +160,154 @@ $query_profes = mysqli_query($conn, "
   <link rel="stylesheet" href="css/styles.css?v=<?= time() ?>">
   <style>
     .popover-body { white-space: pre-line; }
+
+    .tabla-glass {
+      display: table !important;
+      width: 100% !important;
+      table-layout: auto;
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+    .tabla-glass th, .tabla-glass td {
+      padding: 12px 10px !important;
+      word-break: normal;
+    }
+    /* ORCID, Departamento y Correo en una línea (Headers y Celdas) */
+    .tabla-glass th:nth-child(1), .tabla-glass td:nth-child(1),
+    .tabla-glass th:nth-child(3), .tabla-glass td:nth-child(3),
+    .tabla-glass th:nth-child(4), .tabla-glass td:nth-child(4) {
+      white-space: nowrap !important;
+    }
+    .tabla-glass th:nth-child(2), .tabla-glass td:nth-child(2) {
+      min-width: 150px;
+    }
+    .table-responsive {
+      width: 100% !important;
+      overflow-x: hidden !important; /* Quitar scroll forzadamente */
+      background: transparent !important;
+      border-radius: 15px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    @media (max-width: 768px) {
+      .panel-wrapper .formulario-tabla {
+        position: relative !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: auto !important;
+        margin: 10px auto !important;
+        display: flex !important;
+        flex-direction: column !important;
+        transform: none !important;
+        z-index: 1 !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        padding: 20px 12px !important;
+        border-radius: 20px !important;
+      }
+      .panel-wrapper { padding: 10px !important; }
+
+      /* TRANSFORMAR TABLA EN TARJETAS DE PERFIL (ARTE PREMIUM) */
+      .table-responsive { border: none !important; background: transparent !important; padding: 0 !important; }
+      .tabla-glass, .tabla-glass thead, .tabla-glass tbody, .tabla-glass th, .tabla-glass td, .tabla-glass tr { 
+        display: block !important; 
+        width: 100% !important;
+      }
+      .tabla-glass thead { display: none !important; }
+      
+      .tabla-glass tr {
+        background: rgba(255, 255, 255, 0.07);
+        margin-bottom: 30px;
+        border-radius: 24px;
+        padding: 0;
+        border: 1px solid rgba(255, 255, 255, 0.12) !important;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+        overflow: hidden;
+      }
+
+      /* Estilo para el Nombre (Destacado como cabecera de la tarjeta) */
+      .tabla-glass td[data-label="Nombre"] {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 20px !important;
+        text-align: center !important;
+        font-size: 1.25rem !important;
+        font-weight: 800 !important;
+        color: #fff !important;
+        border-bottom: 1px solid rgba(255,255,255,0.1) !important;
+        justify-content: center !important;
+        display: flex !important;
+        flex-direction: column !important;
+      }
+      .tabla-glass td[data-label="Nombre"]::before {
+        content: "DOCENTE ASIGNADO";
+        font-size: 0.65rem;
+        letter-spacing: 0.15em;
+        color: rgba(255,255,255,0.5);
+        margin-bottom: 5px;
+        margin-right: 0;
+      }
+
+      /* Datos internos */
+      .tabla-glass td:not([data-label="Nombre"]):not([data-label=""]) {
+        padding: 15px 20px !important;
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        border-bottom: 1px solid rgba(255,255,255,0.05) !important;
+        font-size: 0.95rem !important;
+      }
+
+      .tabla-glass td::before {
+        content: attr(data-label);
+        font-weight: 700;
+        color: rgba(255, 255, 255, 0.4);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        margin-right: 15px;
+      }
+
+      /* Acciones (Footer de la tarjeta) */
+      .tabla-glass td:last-child {
+        padding: 20px !important;
+        background: rgba(220, 53, 69, 0.05);
+        border: none !important;
+        justify-content: center !important;
+        margin-top: 0;
+      }
+
+      .btn-sm.rounded-pill { 
+        width: auto !important; 
+        min-width: 160px !important;
+        height: 46px !important;
+        font-size: 1rem !important;
+        font-weight: 600 !important;
+        letter-spacing: 0.02em;
+        display: inline-flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        margin: 0 auto !important;
+      }
+      .tabla-glass td:last-child form {
+        display: flex !important;
+        justify-content: center !important;
+        width: 100% !important;
+      }
+
+      /* Fix para textos largos (emails) */
+      .tabla-glass td[data-label="Correo"] {
+        flex-direction: column !important;
+        align-items: flex-end !important;
+        text-align: right !important;
+      }
+      .tabla-glass td[data-label="Acciones"]::before {
+        display: none !important;
+      }
+
+      /* Header Logos */
+      .contenedorimg { flex-direction: row !important; justify-content: space-between !important; padding: 10px 15px !important; }
+      #acele { height: 35px !important; }
+      #academy { height: 60px !important; }
+    }
   </style>
 </head>
 
@@ -261,8 +409,8 @@ $query_profes = mysqli_query($conn, "
             <h6 class="text-white mb-2 fw-bold d-inline-flex align-items-center gap-1"><i class="bi bi-list-ul"></i>
               Profesores en este grupo</h6>
             <?php if ($query_profes && mysqli_num_rows($query_profes) > 0): ?>
-              <div class="table-responsive w-100" style="border-radius: 15px;">
-                <table class="table tabla-glass mb-0">
+              <div class="table-responsive w-100">
+                <table class="table tabla-glass mb-0 w-100" style="width: 100% !important;">
                   <thead>
                     <tr>
                       <th scope="col" class="border-top-0 border-end-0">ORCID</th>
@@ -275,13 +423,13 @@ $query_profes = mysqli_query($conn, "
                   <tbody>
                     <?php while ($p = mysqli_fetch_assoc($query_profes)): ?>
                       <tr>
-                        <td class="border-end-0"><?php echo empty($p['ORCID']) ? '-' : htmlspecialchars($p['ORCID']); ?></td>
-                        <td class="border-end-0"><?php echo htmlspecialchars($p['nombre'] . ' ' . $p['apellidos']); ?></td>
-                        <td class="border-end-0">
+                        <td class="border-end-0" data-label="ORCID"><?php echo empty($p['ORCID']) ? '-' : htmlspecialchars($p['ORCID']); ?></td>
+                        <td class="border-end-0" data-label="Nombre"><?php echo htmlspecialchars($p['nombre'] . ' ' . $p['apellidos']); ?></td>
+                        <td class="border-end-0" data-label="Departamento">
                           <?php echo empty($p['departamento']) ? '-' : htmlspecialchars($p['departamento']); ?>
                         </td>
-                        <td class="border-end-0"><?php echo empty($p['correo']) ? '-' : htmlspecialchars($p['correo']); ?></td>
-                        <td class="border-end-0 text-center">
+                        <td class="border-end-0" data-label="Correo"><?php echo empty($p['correo']) ? '-' : htmlspecialchars($p['correo']); ?></td>
+                        <td class="border-end-0 text-center" data-label="">
                           <form method="POST" style="display:inline;"
                             onsubmit="event.preventDefault(); customConfirm('¿Eliminar a <?php echo htmlspecialchars(addslashes($p['nombre'] . ' ' . $p['apellidos'])); ?> de este grupo?', () => this.submit());">
                             <input type="hidden" name="accion" value="eliminar">

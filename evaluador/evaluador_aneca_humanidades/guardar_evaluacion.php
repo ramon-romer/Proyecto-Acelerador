@@ -8,6 +8,11 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     die('Acceso no permitido.');
 }
 
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
+$orcidSesion = trim((string)($_SESSION['orcid_usuario'] ?? ''));
+
 $nombre = trim($_POST['nombre_candidato'] ?? '');
 $jsonEntradaTexto = trim($_POST['json_entrada'] ?? '');
 
@@ -22,6 +27,10 @@ if ($jsonEntradaTexto === '') {
 $jsonEntrada = json_decode($jsonEntradaTexto, true);
 if (!is_array($jsonEntrada)) {
     die('El JSON de entrada no es válido.');
+}
+
+if ($orcidSesion !== '') {
+    $jsonEntrada['orcid_candidato'] = $orcidSesion;
 }
 
 /* =========================================================
@@ -83,12 +92,23 @@ foreach ($defaultsBloque3 as $key) {
  * ========================================================= */
 $resultado = evaluar_expediente($jsonEntrada);
 
-/*
- * Guardamos también el cálculo dentro del JSON para que la pantalla
- * ver_evaluacion.php pueda mostrar diagnóstico y asesor orientativo
- * con el mismo aspecto que Experimentales.
- */
-$jsonEntrada['resultado_calculo'] = $resultado;
+// Normalización de claves para asegurar que el INSERT tenga datos correctos
+$b1Val = (float)($resultado['bloque_1']['B1'] ?? $resultado['bloque_1_total'] ?? $resultado['bloque_1_flat'] ?? $resultado['bloque_1'] ?? 0);
+$b2Val = (float)($resultado['bloque_2']['B2'] ?? $resultado['bloque_2_total'] ?? $resultado['bloque_2_flat'] ?? $resultado['bloque_2'] ?? 0);
+$b3Val = (float)($resultado['bloque_3']['B3'] ?? $resultado['bloque_3_total'] ?? $resultado['bloque_3_flat'] ?? $resultado['bloque_3'] ?? 0);
+$b4Val = (float)($resultado['bloque_4']['B4'] ?? $resultado['bloque_4_total'] ?? $resultado['bloque_4_flat'] ?? $resultado['bloque_4'] ?? 0);
+
+$jsonEntrada['resultado_calculo'] = [
+    'puntuaciones' => $resultado['puntuaciones'] ?? [],
+    'bloque_1' => ['B1' => $b1Val],
+    'bloque_2' => ['B2' => $b2Val],
+    'bloque_3' => ['B3' => $b3Val],
+    'bloque_4' => ['B4' => $b4Val],
+    'totales' => $resultado['totales'] ?? [],
+    'decision' => $resultado['decision'] ?? [],
+    'diagnostico' => $resultado['diagnostico'] ?? [],
+    'asesor' => $resultado['asesor'] ?? [],
+];
 
 $jsonNormalizado = json_encode($jsonEntrada, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
 if ($jsonNormalizado === false) {
@@ -162,32 +182,32 @@ $stmt->execute([
     ':categoria' => 'PCD/PUP',
     ':json_entrada' => $jsonNormalizado,
 
-    ':puntuacion_1a' => $resultado['puntuacion_1a'],
-    ':puntuacion_1b' => $resultado['puntuacion_1b'],
-    ':puntuacion_1c' => $resultado['puntuacion_1c'],
-    ':puntuacion_1d' => $resultado['puntuacion_1d'],
-    ':puntuacion_1e' => $resultado['puntuacion_1e'],
-    ':puntuacion_1f' => $resultado['puntuacion_1f'],
-    ':puntuacion_1g' => $resultado['puntuacion_1g'],
-    ':bloque_1' => $resultado['bloque_1'],
+    ':puntuacion_1a' => $resultado['puntuacion_1a'] ?? $resultado['puntuaciones']['1A'] ?? 0,
+    ':puntuacion_1b' => $resultado['puntuacion_1b'] ?? $resultado['puntuaciones']['1B'] ?? 0,
+    ':puntuacion_1c' => $resultado['puntuacion_1c'] ?? $resultado['puntuaciones']['1C'] ?? 0,
+    ':puntuacion_1d' => $resultado['puntuacion_1d'] ?? $resultado['puntuaciones']['1D'] ?? 0,
+    ':puntuacion_1e' => $resultado['puntuacion_1e'] ?? $resultado['puntuaciones']['1E'] ?? 0,
+    ':puntuacion_1f' => $resultado['puntuacion_1f'] ?? $resultado['puntuaciones']['1F'] ?? 0,
+    ':puntuacion_1g' => $resultado['puntuacion_1g'] ?? $resultado['puntuaciones']['1G'] ?? 0,
+    ':bloque_1' => $b1Val,
 
-    ':puntuacion_2a' => $resultado['puntuacion_2a'],
-    ':puntuacion_2b' => $resultado['puntuacion_2b'],
-    ':puntuacion_2c' => $resultado['puntuacion_2c'],
-    ':puntuacion_2d' => $resultado['puntuacion_2d'],
-    ':bloque_2' => $resultado['bloque_2'],
+    ':puntuacion_2a' => $resultado['puntuacion_2a'] ?? $resultado['puntuaciones']['2A'] ?? 0,
+    ':puntuacion_2b' => $resultado['puntuacion_2b'] ?? $resultado['puntuaciones']['2B'] ?? 0,
+    ':puntuacion_2c' => $resultado['puntuacion_2c'] ?? $resultado['puntuaciones']['2C'] ?? 0,
+    ':puntuacion_2d' => $resultado['puntuacion_2d'] ?? $resultado['puntuaciones']['2D'] ?? 0,
+    ':bloque_2' => $b2Val,
 
-    ':puntuacion_3a' => $resultado['puntuacion_3a'],
-    ':puntuacion_3b' => $resultado['puntuacion_3b'],
-    ':bloque_3' => $resultado['bloque_3'],
+    ':puntuacion_3a' => $resultado['puntuacion_3a'] ?? $resultado['puntuaciones']['3A'] ?? 0,
+    ':puntuacion_3b' => $resultado['puntuacion_3b'] ?? $resultado['puntuaciones']['3B'] ?? 0,
+    ':bloque_3' => $b3Val,
 
-    ':bloque_4' => $resultado['bloque_4'],
+    ':bloque_4' => $b4Val,
 
-    ':total_b1_b2' => $resultado['total_b1_b2'],
-    ':total_final' => $resultado['total_final'],
-    ':resultado' => $resultado['resultado'],
-    ':cumple_regla_1' => $resultado['cumple_regla_1'],
-    ':cumple_regla_2' => $resultado['cumple_regla_2'],
+    ':total_b1_b2' => $resultado['total_b1_b2'] ?? ($b1Val + $b2Val),
+    ':total_final' => $resultado['total_final'] ?? ($b1Val + $b2Val + $b3Val + $b4Val),
+    ':resultado' => $resultado['resultado'] ?? $resultado['decision']['resultado'] ?? 'NEGATIVA',
+    ':cumple_regla_1' => !empty($resultado['cumple_regla_1']) ? 1 : 0,
+    ':cumple_regla_2' => !empty($resultado['cumple_regla_2']) ? 1 : 0,
 ]);
 
 $id = (int)$pdo->lastInsertId();

@@ -24,5 +24,18 @@ services:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
       - datos_bd:/var/lib/mysql
 
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: pma_aneca
+    restart: always
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: base-de-datos
+      PMA_USER: root
+      PMA_PASSWORD: root_super_segura
+    depends_on:
+      - base-de-datos
+
 volumes:
   datos_bd:

@@ -144,6 +144,31 @@ if (isset($_POST["guardar"])) {
     .requirement-item.valid { color: #4ade80; }
     .requirement-item i { font-size: 0.9rem; }
     
+    @media (max-width: 768px) {
+      header {
+        margin-bottom: 20px !important;
+      }
+      .contenedorimg {
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        padding: 10px 15px !important;
+      }
+      #acele { height: 35px !important; width: auto !important; }
+      #academy { height: 60px !important; width: auto !important; }
+      
+      .formulario {
+        margin-top: 45px !important;
+      }
+      
+      .d-flex.justify-content-center.gap-3.mt-4 {
+        gap: 10px !important;
+      }
+      .btn-primary, .btn-outline-warning {
+        padding: 8px 15px !important;
+        font-size: 0.85rem !important;
+      }
+    }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
   </style>
 </head>
@@ -217,10 +242,10 @@ if (isset($_POST["guardar"])) {
           </ul>
 
           <div class="d-flex justify-content-center gap-3 mt-4">
-            <button class="btn btn-primary px-4 py-2 rounded-pill fw-medium d-inline-flex align-items-center gap-2 shadow-sm transition-all" id="btnEditar">
+            <button class="btn btn-primary px-4 py-2 rounded-pill fw-medium d-inline-flex align-items-center gap-2 shadow-sm transition-all text-nowrap" id="btnEditar">
               <i class="bi bi-pencil-square"></i> Editar Datos
             </button>
-            <button type="button" id="btnValidar" class="btn btn-outline-warning px-4 py-2 rounded-pill fw-medium d-inline-flex align-items-center gap-2 transition-all" data-perfil="<?= htmlspecialchars($fila['perfil']) ?>">
+            <button type="button" id="btnValidar" class="btn btn-outline-warning px-4 py-2 rounded-pill fw-medium d-inline-flex align-items-center gap-2 transition-all text-nowrap" data-perfil="<?= htmlspecialchars($fila['perfil']) ?>">
               <i class="bi bi-shield-check"></i> Validar
             </button>
           </div>

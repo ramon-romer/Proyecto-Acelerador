@@ -4,6 +4,9 @@ declare(strict_types=1);
 require __DIR__ . '/config.php';
 require __DIR__ . '/funciones_evaluador_tecnicas.php';
 
+if (session_status() !== PHP_SESSION_ACTIVE) { session_start(); }
+$orcidSesion = trim((string)($_SESSION['orcid_usuario'] ?? ''));
+
 $nombreCandidato = trim($_POST['nombre_candidato'] ?? '');
 $jsonEntrada = trim($_POST['json_entrada'] ?? '');
 
@@ -56,6 +59,8 @@ $datosExtraidos['bloque_3']['experiencia_profesional'] = is_array($datosExtraido
 
 $resultado = evaluar_expediente($datosExtraidos);
 
+if ($orcidSesion !== '') { $datosExtraidos['orcid_candidato'] = $orcidSesion; }
+
 /*
  * Guardamos el resultado completo dentro del JSON para que
  * ver_evaluacion.php pueda mostrar diagnóstico y asesor.
@@ -67,6 +72,11 @@ $jsonFinal = json_encode($datosExtraidos, JSON_UNESCAPED_UNICODE);
 if ($jsonFinal === false) {
     die('No se pudo serializar el JSON final.');
 }
+
+$b1Val = (float)($resultado['bloque_1']['B1'] ?? $resultado['bloque_1_total'] ?? $resultado['bloque_1_flat'] ?? 0);
+$b2Val = (float)($resultado['bloque_2']['B2'] ?? $resultado['bloque_2_total'] ?? $resultado['bloque_2_flat'] ?? 0);
+$b3Val = (float)($resultado['bloque_3']['B3'] ?? $resultado['bloque_3_total'] ?? $resultado['bloque_3_flat'] ?? 0);
+$b4Val = (float)($resultado['bloque_4']['B4'] ?? $resultado['bloque_4_total'] ?? $resultado['bloque_4_flat'] ?? 0);
 
 $sql = "INSERT INTO evaluaciones (
     nombre_candidato,
@@ -170,13 +180,13 @@ $stmt->execute([
 
     ':p4' => $resultado['puntuaciones']['4'],
 
-    ':b1' => $resultado['bloque_1']['B1'],
-    ':b2' => $resultado['bloque_2']['B2'],
-    ':b3' => $resultado['bloque_3']['B3'],
-    ':b4' => $resultado['bloque_4']['B4'],
+    ':b1' => $b1Val,
+    ':b2' => $b2Val,
+    ':b3' => $b3Val,
+    ':b4' => $b4Val,
 
-    ':total_b1_b2' => $resultado['totales']['total_b1_b2'],
-    ':total_final' => $resultado['totales']['total_final'],
+    ':total_b1_b2' => ($b1Val + $b2Val),
+    ':total_final' => ($b1Val + $b2Val + $b3Val + $b4Val),
 
     ':cumple_regla_1' => $resultado['decision']['cumple_regla_1'] ? 1 : 0,
     ':cumple_regla_2' => $resultado['decision']['cumple_regla_2'] ? 1 : 0,

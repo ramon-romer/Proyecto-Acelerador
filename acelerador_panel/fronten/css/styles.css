@@ -9,10 +9,11 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 40px 24px 36px;
-    width: 460px;
-    max-width: 100%;
+    padding: clamp(20px, 4vw, 40px) clamp(15px, 3vw, 24px);
+    width: clamp(280px, 30%, 460px);
+    max-width: 90vw;
     flex-shrink: 0;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), left 0.4s ease;
 }
 
 /* Columna derecha: dashboard (estructural, sin fondo propio) */
@@ -31,10 +32,10 @@
     flex-wrap: nowrap;
     align-items: flex-start;
     justify-content: center;
-    gap: 32px;
-    width: 90%;
-    max-width: 1140px;
-    margin: 120px auto 40px;
+    gap: clamp(16px, 3vw, 32px);
+    width: 100%;
+    max-width: 1440px;
+    margin: 20px auto 40px;
     padding: 0;
 }
 
@@ -92,7 +93,7 @@
 }
 
 /* Fila de cada elemento del formulario (label + input) */
-.mb-3 {
+.cuerpo .mb-3 {
     display: flex;
     flex-direction: row;
     width: 63%;
@@ -118,7 +119,7 @@
 }
 
 /* Etiquetas del formulario */
-.form-label {
+.cuerpo .form-label {
     padding-left: 3px;
     align-items: center;
     display: flex;
@@ -326,19 +327,21 @@ form {
     align-items: center;
     width: 100%;
     margin: auto 0;
-    padding: 0 60px;
+    padding: 0 clamp(20px, 5vw, 60px);
 }
 
 
 .imagen img {
-    max-height: 150px;
-    width: 150px;
+    max-height: 80px;
+    width: auto;
 }
 
 
 
 header {
-    height: 20px;
+    position: relative;
+    height: auto;
+    min-height: 20px;
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -496,21 +499,224 @@ header {
     word-break: break-word;
 }
 
-/* Responsive: apilar formulario + dashboard en móvil */
-@media (max-width: 991.98px) {
+/* ==========================================================================
+   MASTER RESPONSIVE CSS - FLUIDEZ TOTAL & ZERO SCROLL HORIZONTAL
+   ========================================================================== */
+
+/* 1. ERRADICACIÓN ABSOLUTA DEL SCROLL HORIZONTAL Y CONTENCIÓN GLOBAL */
+*, *::before, *::after {
+    box-sizing: border-box !important;
+}
+
+html, body {
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+    position: relative;
+    width: 100% !important;
+}
+
+/* Contención estricta de textos largos y desbordamientos (Regla: Contención de Textos) */
+h1, h2, h3, h4, h5, h6, p, span, div, a, li, td, th {
+    overflow-wrap: anywhere !important;
+    word-wrap: break-word !important;
+    word-break: break-word !important;
+    max-width: 100%;
+}
+
+/* Imágenes, videos, y contenedores multimedia 100% fluidos */
+img, video, canvas, iframe, object {
+    max-width: 100% !important;
+    height: auto !important;
+}
+
+/* Contenedores con desbordamiento interno forzado (Para proteger el scroll en Tablas y Código) */
+pre, .custom-scrollbar {
+    max-width: 100%;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    display: block; 
+}
+
+/* ══════════════════════════════════════════════════════════════
+   SISTEMA DE MENÚ HAMBURGUESA (MÓVIL-FIRST)
+   ══════════════════════════════════════════════════════════════ */
+.hamburger-btn {
+    display: none;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    font-size: 1.8rem;
+    padding: 8px;
+    border-radius: 12px;
+    cursor: pointer;
+    backdrop-filter: blur(5px);
+    z-index: 1100;
+    transition: all 0.3s ease;
+    min-width: 48px;
+    min-height: 48px;
+    align-items: center;
+    justify-content: center;
+}
+
+.mobile-nav-bar {
+    display: none;
+    width: 100%;
+    padding: 10px clamp(20px, 5vw, 60px);
+}
+
+.hamburger-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+}
+
+@media (max-width: 1100px) {
+    .hamburger-btn {
+        display: flex;
+        background: rgba(0, 0, 0, 0.2);
+        margin-right: 15px; /* Separación del primer logo */
+    }
+
+    .mobile-nav-bar {
+        display: none !important;
+    }
+
+    .contenedorimg {
+        flex-direction: column !important;
+        padding: 10px 20px !important;
+        gap: 15px;
+        text-align: center;
+    }
+
+    #acele {
+        height: 30px !important;
+        max-height: 30px !important;
+    }
+    
+    #academy {
+        height: 60px !important;
+        max-height: 60px !important;
+        margin-left: auto; /* Empuja el logo de la derecha al final */
+    }
+
+    .formulario {
+        position: fixed;
+        top: 0;
+        left: -100%;
+        height: 100vh;
+        width: 280px;
+        z-index: 1050;
+        border-radius: 0 24px 24px 0;
+        overflow-y: auto;
+    }
+
+    .formulario.active {
+        left: 0;
+        box-shadow: 20px 0 50px rgba(0,0,0,0.5);
+    }
+
     .panel-wrapper {
         flex-direction: column;
-        width: 96%;
-        margin: 20px auto 40px;
-        gap: 20px;
+        align-items: center;
     }
-    .formulario {
-        width: 100%;
-    }
+
     .dashboard {
-        width: 100%;
+        width: 100% !important;
     }
-}@keyframes pulse {
+
+    /* Ocultar hamburguesa cuando el menú está abierto */
+    body.menu-open .hamburger-btn {
+        opacity: 0;
+        pointer-events: none;
+        visibility: hidden;
+    }
+}
+
+/* 3. APILAMIENTO LÓGICO Y RESPIRACIÓN EN MÓVILES (Hasta 768px) */
+@media (max-width: 768px) {
+    /* Footer: Apilamiento Completo (Idéntico al Login) */
+    .mipie, .requerimientolegal {
+        flex-direction: column !important;
+        align-items: center !important;
+        text-align: center !important;
+        padding: 30px 15px !important;
+        height: auto !important;
+        max-height: none !important;
+    }
+
+    .direccion, .requerimientolegal, .columna {
+        width: 100% !important;
+        max-height: none !important;
+        margin-bottom: 20px !important;
+    }
+
+    .mipie img {
+        margin: 0 auto 15px auto !important;
+    }
+
+    .direccion p {
+        margin-left: 0 !important;
+    }
+
+    .piepag {
+        padding: 20px 0 !important;
+        max-height: none !important;
+    }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   MEJORAS DE ACCESIBILIDAD TÁCTIL Y TIPOGRAFÍA CLAMP
+   ══════════════════════════════════════════════════════════════ */
+h2, .dashboard-section-title {
+    font-size: clamp(1.2rem, 4vw, 1.8rem) !important;
+}
+
+.btn, .form-control, .mini-info-box {
+    min-height: 44px;
+}
+
+.overlay-menu {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 1040;
+}
+
+.overlay-menu.active {
+    display: block;
+}
+
+/* 4. REFINAMIENTO PARA MÓVILES PEQUEÑOS (Hasta 480px) */
+@media (max-width: 480px) {
+    body {
+        font-size: 15px !important;
+    }
+
+    /* Tipografía Fluida controlada para Títulos */
+    h1, h2 {
+        font-size: clamp(1.5rem, 5vw, 2.5rem) !important;
+    }
+
+    /* Stats y KPIs apilados */
+    .stats-grid, .meta-grid, .kpis {
+        grid-template-columns: 1fr !important;
+        gap: 15px !important;
+    }
+
+    .dashboard-stat-card .stat-value {
+        font-size: 1.5rem !important;
+    }
+    
+    .shell {
+        padding: 15px 10px !important;
+    }
+}
+
+@keyframes pulse {
     0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(248, 113, 113, 0.7); }
     70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(248, 113, 113, 0); }
     100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(248, 113, 113, 0); }
@@ -536,4 +742,3 @@ header {
     flex-grow: 0 !important;
     object-fit: contain !important;
 }
-

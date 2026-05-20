@@ -98,6 +98,101 @@ if ($query_profesores && mysqli_num_rows($query_profesores) > 0) {
   <link rel="stylesheet" href="css/styles.css?v=<?= time() ?>">
   <style>
     .popover-body { white-space: pre-line; }
+
+    /* Forzar que la tabla se estire y llene el contenedor en todas las resoluciones */
+    .tabla-glass {
+      display: table !important;
+      width: 100% !important;
+      table-layout: auto;
+    }
+    .table-responsive {
+      overflow-x: auto;
+      background: rgba(0,0,0,0.1) !important;
+      border-radius: 15px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    /* Botones de gestión estrechos (menos ancho) */
+    .btn-group-action {
+      padding: 0 8px !important;
+      font-size: 0.85rem !important;
+      height: 30px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      line-height: 1 !important;
+      width: auto !important;
+    }
+    .btn-group-action i {
+      font-size: 0.95rem !important;
+    }
+    
+    @media (max-width: 768px) {
+      .panel-wrapper { padding: 10px 5px !important; }
+      .formulario-tabla {
+        background-color: rgba(20, 88, 204, 0.4) !important;
+        padding: 20px 10px !important;
+        border-radius: 20px !important;
+      }
+      
+      /* TRANSFORMAR TABLA EN TARJETAS (EL ARTE) */
+      .table-responsive { border: none !important; }
+      .tabla-glass, .tabla-glass thead, .tabla-glass tbody, .tabla-glass th, .tabla-glass td, .tabla-glass tr { 
+        display: block !important; 
+        width: 100% !important;
+      }
+      .tabla-glass thead { display: none !important; } /* Ocultar cabecera */
+      .tabla-glass tr {
+        background: rgba(255, 255, 255, 0.05);
+        margin-bottom: 15px;
+        border-radius: 15px;
+        padding: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      }
+      .tabla-glass td {
+        text-align: right !important;
+        padding: 8px 10px !important;
+        position: relative;
+        border: none !important;
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+      }
+      .tabla-glass td::before {
+        content: attr(data-label);
+        font-weight: 700;
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+      }
+      /* Cabeceras de grupo centradas en móvil */
+      .group-header-flex {
+        flex-direction: column !important;
+        align-items: center !important;
+        text-align: center !important;
+        gap: 12px !important;
+      }
+      .group-actions-flex {
+        width: 100% !important;
+        justify-content: center !important;
+        flex-wrap: wrap;
+      }
+      .btn-outline-info {
+        width: auto !important;
+        min-width: 120px !important;
+        justify-content: center !important;
+        height: 38px !important;
+        font-size: 0.8rem !important;
+        margin: 0 auto;
+      }
+
+      /* Botones de acción inferiores */
+      .d-flex.justify-content-center.w-100.mt-4.gap-3 { flex-direction: column !important; }
+      .d-flex.justify-content-center.w-100.mt-4.gap-3 .btn { width: 100% !important; }
+
+      /* Logos */
+      .contenedorimg { flex-direction: row !important; justify-content: space-between !important; padding: 10px !important; }
+      #acele { height: 35px !important; }
+      #academy { height: 60px !important; }
+    }
   </style>
 </head>
 
@@ -138,33 +233,38 @@ if ($query_profesores && mysqli_num_rows($query_profesores) > 0) {
             if (count($grupos_organizados) > 0) {
               foreach ($grupos_organizados as $id_g => $grupo) {
                   echo "<div class='mb-5 w-100'>";
-                  echo "<div class='d-flex align-items-center justify-content-between w-100 mb-3 pb-2 flex-nowrap' style='border-bottom: 1px solid rgba(255,255,255,0.3); gap: 1rem;'>";
-                  echo "<div class='text-start flex-grow-1 overflow-hidden'>";
-                  echo "<h5 class='text-white mb-0 lh-base text-truncate'>";
-                  echo "<i class='bi bi-diagram-3-fill me-1'></i> Grupo: " . htmlspecialchars($grupo['nombre']) . "<br>";
-                  echo "<span class='text-white-50 fs-6 ms-4'><i class='bi bi-person-badge me-1'></i> Tutor: " . htmlspecialchars(empty(trim($nombre_tutor)) ? 'No especificado' : $nombre_tutor) . "</span>";
+                  // Cabecera de grupo: Título y Botones en la misma línea en Desktop
+                  echo "<div class='d-flex align-items-center justify-content-between w-100 mb-3 pb-2 group-header-flex' style='border-bottom: 1px solid rgba(255,255,255,0.15);'>";
+                  
+                  // Título y Tutor
+                  echo "<div class='text-start'>";
+                  echo "<h5 class='text-white mb-0 lh-base'>";
+                  echo "<i class='bi bi-diagram-3-fill me-1'></i> Grupo: " . htmlspecialchars($grupo['nombre']);
                   echo "</h5>";
+                  echo "<div class='text-white-50 fs-6 ms-4'><i class='bi bi-person-badge me-1'></i> Tutor: " . htmlspecialchars(empty(trim($nombre_tutor)) ? 'No especificado' : $nombre_tutor) . "</div>";
                   echo "</div>";
-                  echo "<div class='text-end flex-shrink-0 d-flex gap-2'>";
-                  echo "<form method='POST' action='gestionar_grupo.php' class='m-0 p-0 text-md-end'>";
+                  
+                  // Botones de acción
+                  echo "<div class='d-flex gap-2 group-actions-flex'>";
+                  echo "<form method='POST' action='gestionar_grupo.php' class='m-0 p-0' style='width: fit-content; display: inline-block;'>";
                   echo "<input type='hidden' name='id_grupo_nav' value='" . intval($id_g) . "'>";
-                  echo "<button type='submit' class='btn btn-outline-warning btn-sm rounded-pill d-inline-flex align-items-center gap-1 text-nowrap'>";
+                  echo "<button type='submit' class='btn btn-outline-warning btn-sm rounded-pill d-inline-flex align-items-center gap-1 text-nowrap btn-group-action'>";
                   echo "<i class='bi bi-gear-fill'></i> Gestionar grupo";
                   echo "</button>";
                   echo "</form>";
 
-                  echo "<form method='POST' action='grupos_profesor.php' class='m-0 p-0 text-md-end'>";
+                  echo "<form method='POST' action='grupos_profesor.php' class='m-0 p-0' style='width: fit-content; display: inline-block;'>";
                   echo "<input type='hidden' name='accion' value='eliminar_grupo'>";
                   echo "<input type='hidden' name='id_grupo' value='" . intval($id_g) . "'>";
-                  echo "<button type='submit' class='btn btn-outline-danger btn-sm rounded-pill d-inline-flex align-items-center gap-1 text-nowrap' onclick='event.preventDefault(); customConfirm(\"¿Eliminar el grupo " . htmlspecialchars(addslashes($grupo['nombre'])) . " y todas sus asignaciones?\", () => this.form.submit());'>";
+                  echo "<button type='submit' class='btn btn-outline-danger btn-sm rounded-pill d-inline-flex align-items-center gap-1 text-nowrap btn-group-action' onclick='event.preventDefault(); customConfirm(\"¿Eliminar el grupo " . htmlspecialchars(addslashes($grupo['nombre'])) . " y todas sus asignaciones?\", () => this.form.submit());'>";
                   echo "<i class='bi bi-trash-fill'></i> Eliminar grupo";
                   echo "</button>";
                   echo "</form>";
                   echo "</div>";
                   echo "</div>";
 
-                  echo "<div class='table-responsive w-100' style='border-radius: 15px;'>";
-                  echo "<table class='table tabla-glass mb-0'>";
+                  echo "<div class='table-responsive w-100'>";
+                  echo "<table class='table tabla-glass mb-0 w-100' style='width: 100% !important;'>";
                   echo "<thead>";
                   echo "<tr>";
                   echo "<th scope='col' class='border-top-0 border-end-0 text-white px-3 py-2'>ORCID</th>";
@@ -179,10 +279,10 @@ if ($query_profesores && mysqli_num_rows($query_profesores) > 0) {
                       foreach ($grupo['profesores'] as $prof) {
                           $modalId = 'modalProf' . $prof['id_profesor'];
                           echo "<tr>";
-                          echo "<td class='border-end-0 text-white px-3 py-2'>" . (empty($prof['ORCID']) ? '-' : htmlspecialchars($prof['ORCID'])) . "</td>";
-                          echo "<td class='border-end-0 text-white px-3 py-2'>" . htmlspecialchars($prof['nombre'] . ' ' . $prof['apellidos']) . "</td>";
-                          echo "<td class='border-end-0 text-white px-3 py-2'>" . (empty($prof['departamento']) ? '-' : htmlspecialchars($prof['departamento'])) . "</td>";
-                          echo "<td class='border-end-0 text-center px-3 py-2'>";
+                          echo "<td class='border-end-0 text-white px-3 py-2' data-label='ORCID'>" . (empty($prof['ORCID']) ? '-' : htmlspecialchars($prof['ORCID'])) . "</td>";
+                          echo "<td class='border-end-0 text-white px-3 py-2' data-label='Nombre'>" . htmlspecialchars($prof['nombre'] . ' ' . $prof['apellidos']) . "</td>";
+                          echo "<td class='border-end-0 text-white px-3 py-2' data-label='Departamento'>" . (empty($prof['departamento']) ? '-' : htmlspecialchars($prof['departamento'])) . "</td>";
+                          echo "<td class='border-end-0 text-center px-3 py-2' data-label='Acciones'>";
                           echo "<button class='btn btn-outline-info btn-sm rounded-pill d-inline-flex align-items-center gap-1' data-bs-toggle='modal' data-bs-target='#$modalId'>";
                           echo "<i class='bi bi-eye-fill'></i> Ver datos";
                           echo "</button>";

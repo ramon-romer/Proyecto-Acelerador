@@ -1,5 +1,21 @@
 <?php
 session_start();
+
+// REDIRECCIÓN AUTOMÁTICA SI YA HAY SESIÓN ACTIVA
+if (isset($_SESSION['nombredelusuario']) && $_SESSION['nombredelusuario'] !== '') {
+    $perfil = strtoupper(trim((string)($_SESSION['perfil_usuario'] ?? '')));
+    $redirects = [
+        'TUTOR' => '../../acelerador_panel/fronten/panel_tutor.php', 
+        'PROFESOR' => '../../acelerador_panel/fronten/panel_profesor.php', 
+        'ADMIN' => '../../acelerador_login/fronten/superadmin.php',
+        'ADMINISTRADOR' => '../../acelerador_login/fronten/superadmin.php'
+    ];
+    
+    if (isset($redirects[$perfil])) {
+        header("Location: " . $redirects[$perfil]);
+        exit();
+    }
+}
 include('config.php');
 
 define('BASE_PATH', dirname(__DIR__));
@@ -227,6 +243,34 @@ if (isset($_POST['btn_verificar'])) {
     
     @keyframes fadeInCenter { from { opacity: 0; } to { opacity: 1; } }
     @keyframes zoomInCenter { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+    /* MOBILE OPTIMIZATIONS */
+    @media (max-width: 768px) {
+      .contenedorimg {
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        padding: 10px 15px !important;
+      }
+      #acele { height: 35px !important; width: auto !important; }
+      #academy { height: 60px !important; width: auto !important; }
+      
+      .formulario {
+        margin-top: 100px !important;
+        padding: 45px 25px !important;
+        border-radius: 30px !important;
+      }
+      header {
+        margin-bottom: 40px !important;
+      }
+      h2.text-white {
+        font-size: 1.6rem !important;
+        margin-top: 15px !important;
+      }
+      .mb-5 {
+        margin-bottom: 2.5rem !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -253,13 +297,15 @@ if (isset($_POST['btn_verificar'])) {
 
   <main>
     <div class="contenedor">
-      <div class="formulario px-4 py-5" style="max-width: 700px; width: 95%; margin: 50px auto;">
-        <div class="text-center mb-5">
-            <div class="d-inline-block p-3 rounded-circle bg-white bg-opacity-10 mb-3 shadow-lg">
-                <i class="bi bi-person-plus-fill text-white" style="font-size: 3rem;"></i>
+      <div class="formulario px-4 py-5" style="max-width: 700px; width: 95%; margin: 80px auto;">
+        <div class="text-center mb-5 d-flex flex-column align-items-center">
+            <div class="rounded-pill bg-white bg-opacity-10 p-4 shadow-lg border border-white border-opacity-10 w-100 d-flex flex-column align-items-center" style="max-width: 500px;">
+                <div class="mb-2">
+                    <i class="bi bi-person-plus-fill text-white" style="font-size: 3.5rem; filter: drop-shadow(0 0 10px rgba(255,255,255,0.3));"></i>
+                </div>
+                <h2 class="text-white fw-800 mb-0" style="font-size: 1.8rem;">Crea tu Cuenta</h2>
+                <p class="text-white-50 small text-uppercase fw-bold mb-0 mt-1" style="letter-spacing: 0.1em;">Únete al ecosistema Acelerador</p>
             </div>
-            <h2 class="text-white fw-800 mb-1">Crea tu Cuenta</h2>
-            <p class="text-white-50 small text-uppercase fw-bold">Únete al ecosistema Acelerador</p>
         </div>
 
         <form method="POST" class="w-100" id="registrationForm" novalidate>

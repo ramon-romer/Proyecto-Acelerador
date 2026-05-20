@@ -42,11 +42,15 @@ if ($query_perfil && mysqli_num_rows($query_perfil) > 0) {
 </head>
 
 <body>
-  <header>
     <div class="contenedorimg">
+      <!-- Menú Hamburguesa en la misma línea que los logos -->
+      <button class="hamburger-btn" id="hamburgerBtn" aria-label="Mostrar menú">
+        <i class="bi bi-list"></i>
+      </button>
+
       <div class="imagen">
         <img src="https://uf3ceu.es/wp-content/uploads/logo-uf3-2k25.svg" alt="CEU Universidad Fernando III"
-          style="height:50px; width:auto;" id="#acele" />
+          id="#acele" />
       </div>
       <div class="imagen">
         <img src="../../acelerador_login/fronten/img/AcademyAccelerator_def.png" id="academy" alt="academy" />
@@ -234,6 +238,27 @@ if ($query_perfil && mysqli_num_rows($query_perfil) > 0) {
 
   <?php include('chatbot.php'); ?>
 
+
+  <!-- Overlay para el menú lateral -->
+  <div class="overlay-menu" id="overlayMenu"></div>
+
+  <script>
+    // Lógica para el menú de hamburguesa
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const overlayMenu = document.getElementById('overlayMenu');
+
+    // Nota: El administrador no tiene sidebar .formulario por ahora,
+    // pero dejamos la lógica preparada o para cerrar otros elementos.
+    function toggleMenu() {
+      // Si en el futuro añades un drawer al admin, aquí se activaría
+      // profileDrawer.classList.toggle('active');
+      overlayMenu.classList.toggle('active');
+      document.body.classList.toggle('menu-open');
+    }
+
+    if(hamburgerBtn) hamburgerBtn.addEventListener('click', toggleMenu);
+    if(overlayMenu) overlayMenu.addEventListener('click', toggleMenu);
+  </script>
 </body>
 
 </html>

@@ -66,7 +66,16 @@ function csyj_append_items(array &$destino, array $items): void
     }
 }
 
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
+$orcidSesion = trim((string)($_SESSION['orcid_usuario'] ?? ''));
+
 $nombreCandidato = trim($_POST['nombre_candidato'] ?? '');
+if ($nombreCandidato === '') {
+    $nombreCandidato = trim($_POST['nombre_candidato_nuevo'] ?? '');
+}
+
 $jsonEntradaBase = trim($_POST['json_entrada_base'] ?? '');
 
 if ($nombreCandidato === '' || $jsonEntradaBase === '') {
@@ -79,6 +88,9 @@ if (!is_array($jsonBase)) {
 }
 
 $jsonBase['nombre_candidato'] = $nombreCandidato;
+if ($orcidSesion !== '') {
+    $jsonBase['orcid_candidato'] = $orcidSesion;
+}
 $jsonBase['area'] = 'Ciencias Sociales y Jurídicas';
 $jsonBase['categoria'] = 'PCD/PUP';
 
@@ -132,12 +144,19 @@ csyj_append_items($jsonBase['bloque_3']['experiencia_profesional'], csyj_normali
 csyj_append_items($jsonBase['bloque_4'], csyj_normalizar_lista_post(csyj_post_array('bloque4')));
 
 $resultado = evaluar_expediente($jsonBase);
+
+// Normalización de claves para asegurar que el INSERT tenga datos correctos
+$b1Val = (float)($resultado['bloque_1']['B1'] ?? $resultado['bloque_1_total'] ?? $resultado['bloque_1_flat'] ?? 0);
+$b2Val = (float)($resultado['bloque_2']['B2'] ?? $resultado['bloque_2_total'] ?? $resultado['bloque_2_flat'] ?? 0);
+$b3Val = (float)($resultado['bloque_3']['B3'] ?? $resultado['bloque_3_total'] ?? $resultado['bloque_3_flat'] ?? 0);
+$b4Val = (float)($resultado['bloque_4']['B4'] ?? $resultado['bloque_4_total'] ?? $resultado['bloque_4_flat'] ?? 0);
+
 $jsonBase['resultado_calculo'] = [
     'puntuaciones' => $resultado['puntuaciones'] ?? [],
-    'bloque_1' => $resultado['bloque_1'] ?? [],
-    'bloque_2' => $resultado['bloque_2'] ?? [],
-    'bloque_3' => $resultado['bloque_3'] ?? [],
-    'bloque_4' => $resultado['bloque_4'] ?? [],
+    'bloque_1' => ['B1' => $b1Val],
+    'bloque_2' => ['B2' => $b2Val],
+    'bloque_3' => ['B3' => $b3Val],
+    'bloque_4' => ['B4' => $b4Val],
     'totales' => $resultado['totales'] ?? [],
     'decision' => $resultado['decision'] ?? [],
     'diagnostico' => $resultado['diagnostico'] ?? [],
@@ -221,25 +240,25 @@ $stmt->execute([
     ':p1e' => $resultado['puntuaciones']['1E'] ?? 0,
     ':p1f' => $resultado['puntuaciones']['1F'] ?? 0,
     ':p1g' => $resultado['puntuaciones']['1G'] ?? 0,
-    ':b1' => $resultado['bloque_1']['B1'] ?? $resultado['bloque_1_total'] ?? 0,
+    ':b1' => $b1Val,
 
     ':p2a' => $resultado['puntuaciones']['2A'] ?? 0,
     ':p2b' => $resultado['puntuaciones']['2B'] ?? 0,
     ':p2c' => $resultado['puntuaciones']['2C'] ?? 0,
     ':p2d' => $resultado['puntuaciones']['2D'] ?? 0,
-    ':b2' => $resultado['bloque_2']['B2'] ?? $resultado['bloque_2_total'] ?? 0,
+    ':b2' => $b2Val,
 
     ':p3a' => $resultado['puntuaciones']['3A'] ?? 0,
     ':p3b' => $resultado['puntuaciones']['3B'] ?? 0,
-    ':b3' => $resultado['bloque_3']['B3'] ?? $resultado['bloque_3_total'] ?? 0,
+    ':b3' => $b3Val,
 
-    ':b4' => $resultado['bloque_4']['B4'] ?? $resultado['bloque_4_total'] ?? 0,
+    ':b4' => $b4Val,
 
-    ':total_b1_b2' => $resultado['totales']['total_b1_b2'] ?? $resultado['total_b1_b2'] ?? 0,
-    ':total_final' => $resultado['totales']['total_final'] ?? $resultado['total_final'] ?? 0,
-    ':resultado' => $resultado['decision']['resultado'] ?? $resultado['resultado'] ?? 'NEGATIVA',
-    ':cumple_regla_1' => !empty($resultado['decision']['cumple_regla_1']) ? 1 : (int)($resultado['cumple_regla_1'] ?? 0),
-    ':cumple_regla_2' => !empty($resultado['decision']['cumple_regla_2']) ? 1 : (int)($resultado['cumple_regla_2'] ?? 0),
+    ':total_b1_b2' => $resultado['totales']['total_b1_b2'] ?? ($b1Val + $b2Val),
+    ':total_final' => $resultado['totales']['total_final'] ?? ($b1Val + $b2Val + $b3Val + $b4Val),
+    ':resultado' => $resultado['decision']['resultado'] ?? 'NEGATIVA',
+    ':cumple_regla_1' => !empty($resultado['decision']['cumple_regla_1']) ? 1 : 0,
+    ':cumple_regla_2' => !empty($resultado['decision']['cumple_regla_2']) ? 1 : 0,
 ]);
 
 $idEvaluacion = (int)$pdo->lastInsertId();

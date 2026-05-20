@@ -4,14 +4,18 @@ declare(strict_types=1);
 $nombre = trim($_POST['nombre_candidato'] ?? '');
 $jsonEntrada = trim($_POST['json_entrada'] ?? '');
 
-if ($nombre === '' || $jsonEntrada === '') {
-    die('Faltan datos obligatorios para completar el expediente.');
+// Modo "ingreso manual directo": se permite acceso sin POST con formulario en blanco
+if ($nombre === '') {
+    $nombre = '';
+}
+if ($jsonEntrada === '' || json_decode($jsonEntrada, true) === null) {
+    $jsonEntrada = '{}';
 }
 
 $jsonExtraido = json_decode($jsonEntrada, true);
 
 if (!is_array($jsonExtraido)) {
-    die('El JSON extraído no es válido.');
+    $jsonExtraido = [];
 }
 
 require __DIR__ . '/ui.php';
@@ -61,7 +65,7 @@ tec_render_layout_start(
         border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 20px;
         padding: 24px;
-        margin: 20px 0;
+        margin: 32px 0;
         background: rgba(255, 255, 255, 0.03);
     }
     .bloque h3 {
@@ -72,18 +76,18 @@ tec_render_layout_start(
     .fila {
         border: 1px solid rgba(255, 255, 255, 0.05);
         border-radius: 15px;
-        padding: 16px;
-        margin: 12px 0;
+        padding: 12px;
+        margin: 10px 0;
         background: rgba(0, 0, 0, 0.2);
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        gap: 16px;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 12px;
     }
     .fila label {
         display: block;
         font-size: 11px;
         font-weight: 700;
-        margin-bottom: 8px;
+        margin-bottom: 6px;
         color: rgba(255, 255, 255, 0.5);
         text-transform: uppercase;
         letter-spacing: 0.05em;
@@ -92,58 +96,25 @@ tec_render_layout_start(
     .fila select,
     .fila textarea {
         width: 100%;
-        padding: 10px 14px;
+        padding: 8px 12px;
         border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 10px;
+        border-radius: 8px;
         font-size: 14px;
         background: rgba(255, 255, 255, 0.05);
         color: #fff;
         box-sizing: border-box;
-        transition: border-color 0.2s, background 0.2s;
-    }
-    .fila input:focus,
-    .fila select:focus,
-    .fila textarea:focus {
-        border-color: rgba(255, 255, 255, 0.3);
-        background: rgba(255, 255, 255, 0.08);
-        outline: none;
     }
     .hint {
         color: rgba(255, 255, 255, 0.4);
         font-size: 13px;
-        margin: 8px 0 16px;
-        line-height: 1.5;
+        margin: 6px 0 12px;
+        line-height: 1.4;
     }
     .acciones {
         display: flex;
         gap: 12px;
         flex-wrap: wrap;
-        margin-top: 32px;
-        padding: 24px;
-        background: rgba(255, 255, 255, 0.02);
-        border-radius: 20px;
-        border: 1px solid rgba(255, 255, 255, 0.05);
-    }
-    .acciones button,
-    .acciones .btn {
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        color: #fff;
-        padding: 10px 20px;
-        border-radius: 12px;
-        cursor: pointer;
-        font-weight: 600;
-        transition: all 0.2s;
-        text-decoration: none;
-    }
-    .acciones button:hover,
-    .acciones .btn:hover {
-        background: rgba(255, 255, 255, 0.1);
-        border-color: rgba(255, 255, 255, 0.2);
-    }
-    .acciones .outline {
-        background: transparent;
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        margin-top: 24px;
     }
     .subgrid-2 {
         display: grid;
@@ -169,9 +140,9 @@ tec_render_layout_start(
         font-style: italic;
         margin: 12px 0;
         text-align: center;
-        padding: 20px;
+        padding: 15px;
         border: 1px dashed rgba(255, 255, 255, 0.1);
-        border-radius: 15px;
+        border-radius: 12px;
     }
     button.btn {
         background: rgba(255, 255, 255, 0.05);
@@ -186,6 +157,40 @@ tec_render_layout_start(
     button.btn:hover {
         background: rgba(255, 255, 255, 0.1);
         border-color: rgba(255, 255, 255, 0.2);
+    }
+    .aside-card-short {
+        padding: 16px !important;
+    }
+    .aside-card-short h2 {
+        font-size: 18px !important;
+        margin-bottom: 12px !important;
+    }
+    .aside-card-short .kpi {
+        padding: 12px !important;
+    }
+    .help-item {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        padding: 10px;
+        border-radius: 12px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+    .help-item:hover {
+        background: rgba(255, 255, 255, 0.08);
+        transform: translateX(5px);
+        border-color: rgba(255, 255, 255, 0.2);
+    }
+    .help-tag {
+        font-size: 10px;
+        text-transform: uppercase;
+        font-weight: 800;
+        letter-spacing: 0.1em;
+        display: flex;
+        align-items: center;
+        gap: 6px;
     }
 </style>
 
@@ -235,7 +240,7 @@ tec_render_layout_start(
                         <option value="OTRO">OTRO</option>
                     </select>`)}
 
-                ${crearCampo('Tercil (Técnicas)', `
+                ${crearCampo('Tercil', `
                     <select name="publicaciones[${i}][tercil]">
                         <option value="">--</option>
                         <option value="T1">T1</option>
@@ -252,7 +257,7 @@ tec_render_layout_start(
                         <option value="Q4">Q4</option>
                     </select>`)}
 
-                ${crearCampo('Subtipo índice / clasificación', `
+                ${crearCampo('Subtipo índice', `
                     <select name="publicaciones[${i}][subtipo_indice]">
                         <option value="">--</option>
                         <option value="A+">CORE A+</option>
@@ -296,7 +301,7 @@ tec_render_layout_start(
                 ${crearCampo('Citas', `
                     <input type="number" name="publicaciones[${i}][citas]" min="0" value="0">`)}
 
-                ${crearCampo('Años desde publicación', `
+                ${crearCampo('Años publicación', `
                     <input type="number" name="publicaciones[${i}][anios_desde_publicacion]" min="0" value="3">`)}
 
                 ${crearCampo('Liderazgo', `
@@ -345,7 +350,7 @@ tec_render_layout_start(
                         <option value="intermedio">Intermedio</option>
                     </select>`)}
 
-                ${crearCampo('Libro de investigación', `
+                ${crearCampo('Libro investigación', `
                     <select name="libros[${i}][es_libro_investigacion]">
                         <option value="1">Sí</option>
                         <option value="0">No</option>
@@ -357,13 +362,13 @@ tec_render_layout_start(
                         <option value="1">Sí</option>
                     </select>`)}
 
-                ${crearCampo('Acta de congreso', `
+                ${crearCampo('Acta congreso', `
                     <select name="libros[${i}][es_acta_congreso]">
                         <option value="0">No</option>
                         <option value="1">Sí</option>
                     </select>`)}
 
-                ${crearCampo('Labor de edición', `
+                ${crearCampo('Labor edición', `
                     <select name="libros[${i}][es_labor_edicion]">
                         <option value="0">No</option>
                         <option value="1">Sí</option>
@@ -430,8 +435,8 @@ tec_render_layout_start(
                 ${crearCampo('Tipo', `
                     <select name="transferencia[${i}][tipo]">
                         <option value="patente_nacional">Patente nacional</option>
-                        <option value="contrato_empresa">Contrato de investigación con empresa</option>
-                        <option value="software_explotacion">Software registrado en explotación</option>
+                        <option value="contrato_empresa">Contrato investigación empresa</option>
+                        <option value="software_explotacion">Software registrado explotación</option>
                         <option value="ebt">EBT / spin-off</option>
                         <option value="otro">Otro</option>
                     </select>`)}
@@ -471,7 +476,7 @@ tec_render_layout_start(
                         <option value="codireccion">Codirección</option>
                     </select>`)}
 
-                ${crearCampo('Calidad especial / mención', `
+                ${crearCampo('Calidad especial', `
                     <select name="tesis[${i}][calidad_especial]">
                         <option value="0">No</option>
                         <option value="1">Sí</option>
@@ -504,7 +509,7 @@ tec_render_layout_start(
                         <option value="organizacion">Organización</option>
                     </select>`)}
 
-                ${crearCampo('ID evento (opcional)', `
+                ${crearCampo('ID evento', `
                     <input type="text" name="congresos[${i}][id_evento]" placeholder="evento_001">`)}
 
                 <input type="hidden" name="congresos[${i}][es_valido]" value="1">
@@ -523,7 +528,7 @@ tec_render_layout_start(
                         <option value="grupo_investigacion">Grupo de investigación</option>
                         <option value="comite_cientifico">Comité científico</option>
                         <option value="revision_revistas">Revisión de revistas</option>
-                        <option value="premio_investigacion">Premio de investigación</option>
+                        <option value="premio_investigacion">Premio investigación</option>
                         <option value="otro">Otro</option>
                     </select>`)}
 
@@ -617,7 +622,7 @@ tec_render_layout_start(
                 ${crearCampo('Tipo material', `
                     <select name="material_docente[${i}][tipo]">
                         <option value="material_publicado">Material publicado</option>
-                        <option value="proyecto_innovacion">Proyecto de innovación docente</option>
+                        <option value="proyecto_innovacion">Proyecto innovación docente</option>
                         <option value="recurso_digital">Recurso digital</option>
                         <option value="contribucion_eees">Contribución EEES</option>
                     </select>`)}
@@ -657,7 +662,7 @@ tec_render_layout_start(
                 ${crearCampo('Años', `
                     <input type="number" step="0.1" name="experiencia[${i}][anios]" min="0" value="1">`)}
 
-                ${crearCampo('Relación con el área', `
+                ${crearCampo('Relación área', `
                     <select name="experiencia[${i}][relacion]">
                         <option value="alta">Alta</option>
                         <option value="media">Media</option>
@@ -692,11 +697,15 @@ tec_render_layout_start(
     document.addEventListener('DOMContentLoaded', actualizarVacios);
 </script>
 
-<section class="card stack">
+<section class="card stack" style="margin-bottom: 32px;">
     <div class="meta-grid">
         <div class="metric">
             <span class="label">Candidato</span>
-            <span class="value" style="font-size:20px"><?= tec_h($nombre) ?></span>
+            <?php if ($nombre === ''): ?>
+                <input type="text" name="nombre_candidato_nuevo" form="form-evaluacion" placeholder="Nombre del candidato..." required style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 4px 8px; border-radius: 8px;">
+            <?php else: ?>
+                <span class="value" style="font-size:20px"><?= tec_h($nombre) ?></span>
+            <?php endif; ?>
         </div>
         <div class="metric">
             <span class="label">Área</span>
@@ -725,7 +734,7 @@ tec_render_layout_start(
                 </div>
             </div>
 
-            <form action="guardar_complemento.php" method="post">
+            <form action="guardar_complemento.php" id="form-evaluacion" method="post">
                 <input type="hidden" name="nombre_candidato" value="<?= htmlspecialchars($nombre, ENT_QUOTES, 'UTF-8') ?>">
                 <textarea name="json_entrada_base" style="display:none;"><?= htmlspecialchars($jsonEntrada, ENT_QUOTES, 'UTF-8') ?></textarea>
 
@@ -743,7 +752,6 @@ tec_render_layout_start(
 
                 <div class="bloque">
                     <h3>1.B Libros y capítulos de libro</h3>
-                    <p class="hint">Solo para libros/capítulos de investigación realmente valorables en el área.</p>
                     <div id="libros"></div>
                     <p class="vacio" data-vacio-for="libros">Sin filas añadidas todavía.</p>
                     <button type="button" class="btn" onclick="agregarLibro()">Añadir libro/capítulo</button>
@@ -751,7 +759,6 @@ tec_render_layout_start(
 
                 <div class="bloque">
                     <h3>1.C Proyectos y contratos de investigación</h3>
-                    <p class="hint">Incluye años, rol y certificación. Luego el cálculo se ajustará al criterio de Técnicas.</p>
                     <div id="proyectos"></div>
                     <p class="vacio" data-vacio-for="proyectos">Sin filas añadidas todavía.</p>
                     <button type="button" class="btn" onclick="agregarProyecto()">Añadir proyecto</button>
@@ -848,7 +855,7 @@ tec_render_layout_start(
 
                 <div class="acciones">
                     <button type="submit">Fusionar, recalcular y guardar</button>
-                    <a class="btn outline" href="index.php">Cancelar</a>
+                    <a class="btn outline" href="index.php" style="background:transparent; border: 1px solid rgba(255,255,255,0.2); text-decoration:none; display:inline-block; line-height:1; vertical-align:middle; padding-top:14px; box-sizing:border-box;">Cancelar</a>
                 </div>
             </form>
         </section>
@@ -862,26 +869,46 @@ tec_render_layout_start(
     </div>
 
     <aside class="stack">
-        <section class="card">
-            <h2>Resumen de extracción</h2>
-            <p class="muted">Vista rápida del expediente detectado antes de añadir o corregir datos manualmente.</p>
+        <section class="card aside-card-short">
+            <h2 style="margin-bottom:8px;">Resumen</h2>
             <div class="kpis">
                 <?php foreach ($resumen as $label => $valor): ?>
                     <div class="kpi">
-                        <span class="label"><?= tec_h($label) ?></span>
-                        <strong><?= tec_h((string)$valor) ?></strong>
+                        <span class="label" style="font-size:12px;"><?= tec_h($label) ?></span>
+                        <strong style="font-size:24px;"><?= tec_h((string)$valor) ?></strong>
                     </div>
                 <?php endforeach; ?>
             </div>
         </section>
 
-        <section class="card">
-            <h2>Ayuda rápida</h2>
-            <ul>
-                <li>Este formulario ya incorpora todos los apartados de Técnicas.</li>
-                <li>He dejado preparado el campo <strong>tercil</strong> para publicaciones JCR del área.</li>
-                <li>En el siguiente archivo ajustamos el guardado para que conserve todos estos datos al fusionar.</li>
-            </ul>
+        <section class="card aside-card-short">
+            <h2 style="margin-bottom:20px;"><i class="bi bi-lightbulb-fill text-warning me-2"></i>Ayuda rápida</h2>
+            <div class="d-flex flex-column gap-3">
+                <div class="help-item" style="border-left: 4px solid #f59e0b;">
+                    <div class="help-tag" style="color: #f59e0b;">
+                        <i class="bi bi-layers-half"></i> Fusión Inteligente
+                    </div>
+                    <div style="font-size: 14px; color: rgba(255,255,255,0.9);">
+                        Los cambios se <strong>integran</strong> con los datos del PDF automáticamente.
+                    </div>
+                </div>
+                <div class="help-item" style="border-left: 4px solid #10b981;">
+                    <div class="help-tag" style="color: #10b981;">
+                        <i class="bi bi-patch-check"></i> Normativa Oficial
+                    </div>
+                    <div style="font-size: 14px; color: rgba(255,255,255,0.9);">
+                        Validado según los criterios actualizados de la rama <strong>Técnicas</strong>.
+                    </div>
+                </div>
+                <div class="help-item" style="border-left: 4px solid #3b82f6;">
+                    <div class="help-tag" style="color: #3b82f6;">
+                        <i class="bi bi-cloud-arrow-up-fill"></i> Guardado Seguro
+                    </div>
+                    <div style="font-size: 14px; color: rgba(255,255,255,0.9);">
+                        Pulsa <strong>"Fusionar y guardar"</strong> para persistir toda la información.
+                    </div>
+                </div>
+            </div>
         </section>
     </aside>
 </section>

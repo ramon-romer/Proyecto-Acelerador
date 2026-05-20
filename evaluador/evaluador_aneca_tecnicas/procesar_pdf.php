@@ -6,9 +6,11 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 }
 
 require_once __DIR__ . '/../src/Pipeline.php';
+require_once __DIR__ . '/../src/FecytCvnExtractor.php';
 require __DIR__ . '/ui.php';
 
 $nombreCandidato = trim($_POST['nombre_candidato'] ?? '');
+$formatoCv = trim((string)($_POST['formato_cv'] ?? 'aneca'));
 
 if ($nombreCandidato === '') {
     die('Falta el nombre del candidato.');
@@ -49,7 +51,14 @@ if (!move_uploaded_file($_FILES['pdf_cv']['tmp_name'], $rutaPdf)) {
     die('No se pudo guardar el PDF.');
 }
 
-$pipeline = new Pipeline();
+$extractor = null;
+$etiquetaFormato = 'PDF estándar';
+if ($formatoCv === 'cvn_fecyt') {
+    $extractor = new FecytCvnExtractor();
+    $etiquetaFormato = 'CVN (FECYT)';
+}
+
+$pipeline = new Pipeline($extractor);
 $jsonExtraido = $pipeline->procesar($rutaPdf);
 
 if (!is_array($jsonExtraido)) {
@@ -60,6 +69,7 @@ if (!is_array($jsonExtraido)) {
  * NORMALIZACIÓN BÁSICA
  * ========================================================= */
 $jsonExtraido['nombre_candidato'] = $nombreCandidato;
+$jsonExtraido['orcid_candidato'] = $orcidSesion;
 $jsonExtraido['area'] = 'Técnicas';
 $jsonExtraido['categoria'] = 'PCD/PUP';
 
@@ -194,6 +204,10 @@ tec_render_layout_start(
         <div class="metric">
             <span class="label">Categoría</span>
             <span class="value" style="font-size:20px">PCD/PUP</span>
+        </div>
+        <div class="metric">
+            <span class="label">Formato</span>
+            <span class="value" style="font-size:20px"><?= tec_h($etiquetaFormato) ?></span>
         </div>
     </div>
 </section>

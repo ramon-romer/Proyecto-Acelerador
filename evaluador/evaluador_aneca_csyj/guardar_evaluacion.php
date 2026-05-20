@@ -4,6 +4,11 @@ declare(strict_types=1);
 require __DIR__ . '/config.php';
 require __DIR__ . '/funciones_evaluador_csyj.php';
 
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
+$orcidSesion = trim((string)($_SESSION['orcid_usuario'] ?? ''));
+
 $nombreCandidato = trim($_POST['nombre_candidato'] ?? '');
 $jsonEntrada = trim($_POST['json_entrada'] ?? '');
 
@@ -21,6 +26,9 @@ if (!is_array($datosExtraidos)) {
  * Normalización mínima para asegurar estructura estable.
  */
 $datosExtraidos['nombre_candidato'] = $nombreCandidato;
+if ($orcidSesion !== '') {
+    $datosExtraidos['orcid_candidato'] = $orcidSesion;
+}
 $datosExtraidos['area'] = 'Ciencias Sociales y Jurídicas';
 $datosExtraidos['categoria'] = 'PCD/PUP';
 

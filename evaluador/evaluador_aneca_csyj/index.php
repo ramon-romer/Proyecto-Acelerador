@@ -38,6 +38,7 @@ csyj_render_layout_start(
                 <button type="submit" name="formato_cv" value="aneca">Procesar PDF</button>
                 <button type="submit" name="formato_cv" value="cvn_fecyt" class="secondary">Procesar CVN (FECYT)</button>
                 <a class="btn outline" href="<?= csyj_h(csyj_listado_url()) ?>">Abrir listado</a>
+                <a class="btn secondary" href="completar_datos.php" id="btn-ingreso-manual" style="gap:8px;">&#9998; Ingreso manual</a>
             </div>
         </form>
     </section>
